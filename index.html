@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#182e24">
+  <meta name="description" content="An endless wetlands adventure with a golden Labrador.">
+  <title>Retriever Run</title>
+</head>
+<body>
+  <main id="game" aria-label="Retriever Run">
+    <canvas id="trail" aria-label="3D wetlands trail"></canvas>
+    <div class="vignette"></div>
+    <header>
+      <div class="brand"><span aria-hidden="true">✦</span> RETRIEVER RUN</div>
+      <div class="tools">
+        <button id="sound" type="button" aria-pressed="true">Sound on</button>
+        <button id="pause" type="button" hidden>Pause</button>
+      </div>
+    </header>
+    <section id="hud" hidden aria-label="Run statistics">
+      <dl>
+        <div><dt>Score</dt><dd id="score">0</dd></div>
+        <div><dt>Distance</dt><dd id="distance">0 m</dd></div>
+        <div><dt>Best</dt><dd id="best">0</dd></div>
+      </dl>
+      <div class="meter">
+        <label id="meter-label" for="charge">Good Boy Meter</label>
+        <progress id="charge" max="100" value="0"></progress>
+      </div>
+    </section>
+    <div id="callout" class="callout" aria-hidden="true"></div>
+    <section id="menu" class="menu" aria-labelledby="menu-title">
+      <div class="menu-content">
+        <p class="eyebrow" id="eyebrow">THE WETLANDS TRAIL</p>
+        <h1 id="menu-title">Retriever<br><em>Run.</em></h1>
+        <p id="menu-copy">Dash through the marsh, dodge the trail hazards, and follow the treats.</p>
+        <p id="record" class="record" hidden></p>
+        <button id="primary" class="primary" type="button">Start run <span aria-hidden="true">→</span></button>
+        <p class="control-hint" id="hint">Swipe to move, jump or slide <span>·</span> Keyboard: arrows or WASD</p>
+        <p class="rotate">Turn your phone sideways for a wider trail view.</p>
+      </div>
+    </section>
+    <nav id="controls" aria-label="Touch controls" hidden>
+      <div>
+        <button data-move="left" aria-label="Move left">←</button>
+        <button data-move="right" aria-label="Move right">→</button>
+      </div>
+      <div>
+        <button data-move="slide" aria-label="Slide">↓</button>
+        <button data-move="jump" aria-label="Jump">↑</button>
+      </div>
+    </nav>
+  </main>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
