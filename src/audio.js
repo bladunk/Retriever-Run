@@ -1,64 +1,128 @@
 export function createSound() {
   let context
-  let output
-  let enabled = true
+  let effects
+  let music
+  let wind
+  let rainfall
+  let sample
+  let effectsOn = true
+  let musicOn = false
+  let nextNote = 0
+  let beat = 0
+
+  function gain(value, destination) {
+    const node = context.createGain()
+    node.gain.value = value
+    node.connect(destination)
+    return node
+  }
+
+  function filteredNoise(destination, filterType, frequency, level, loop = false, duration = 0) {
+    const start = context.currentTime
+    const source = context.createBufferSource()
+    const filter = context.createBiquadFilter()
+    const envelope = gain(loop ? level : .001, destination)
+    filter.type = filterType
+    filter.frequency.value = frequency
+    source.buffer = sample
+    source.loop = loop
+    source.connect(filter).connect(envelope)
+    if (loop) {
+      source.start()
+    } else {
+      envelope.gain.exponentialRampToValueAtTime(level, start + .024)
+      envelope.gain.exponentialRampToValueAtTime(.001, start + duration)
+      source.start(start, Math.random() * 1.4, duration + .025)
+      source.onended = () => { source.disconnect(); filter.disconnect(); envelope.disconnect() }
+    }
+    return envelope.gain
+  }
 
   function unlock() {
-    if (!enabled) return
+    if (!effectsOn && !musicOn) return
     const Audio = window.AudioContext ?? window.webkitAudioContext
     if (!Audio) return
     try {
       if (!context) {
         context = new Audio()
-        output = context.createGain()
-        output.connect(context.destination)
+        effects = gain(Number(effectsOn), context.destination)
+        music = gain(Number(musicOn), context.destination)
+        sample = context.createBuffer(1, context.sampleRate * 2, context.sampleRate)
+        const data = sample.getChannelData(0)
+        for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
+        wind = filteredNoise(effects, 'lowpass', 425, 0, true)
+        rainfall = filteredNoise(effects, 'highpass', 1350, 0, true)
       }
       if (context.state !== 'running') context.resume().catch(() => {})
     } catch {
-      // The game is playable on devices that disable audio.
+      // Audio and play remain independent on devices that disable Web Audio.
     }
   }
 
-  function note(hz, delay, length, gain = .08, wave = 'sine', end = hz) {
-    if (!enabled || context?.state !== 'running') return
+  function note(destination, hz, delay, length, level = .08, wave = 'sine', end = hz, attack = .014) {
+    if (!destination || context?.state !== 'running' || !destination.gain.value) return
     const start = context.currentTime + delay
     const oscillator = context.createOscillator()
-    const envelope = context.createGain()
+    const envelope = gain(.001, destination)
     oscillator.type = wave
     oscillator.frequency.setValueAtTime(hz, start)
     oscillator.frequency.exponentialRampToValueAtTime(end, start + length)
     envelope.gain.setValueAtTime(.001, start)
-    envelope.gain.exponentialRampToValueAtTime(gain, start + .014)
+    envelope.gain.exponentialRampToValueAtTime(level, start + attack)
     envelope.gain.exponentialRampToValueAtTime(.001, start + length)
-    oscillator.connect(envelope).connect(output)
+    oscillator.connect(envelope)
     oscillator.start(start)
     oscillator.stop(start + length + .02)
-    oscillator.onended = () => {
-      oscillator.disconnect()
-      envelope.disconnect()
-    }
+    oscillator.onended = () => { oscillator.disconnect(); envelope.disconnect() }
   }
 
   return {
     unlock,
-    setEnabled(value) {
-      enabled = value
-      if (enabled) unlock()
-      if (output) output.gain.value = Number(enabled)
+    settings({ sfx, soundtrack }) {
+      effectsOn = sfx
+      musicOn = soundtrack
+      if (effects) effects.gain.value = Number(effectsOn)
+      if (music) music.gain.value = Number(musicOn)
+    },
+    ambience({ wind: breeze, rain }, active) {
+      if (context?.state !== 'running') return
+      wind.setTargetAtTime(active ? .03 + breeze * .16 : 0, context.currentTime, .30)
+      rainfall.setTargetAtTime(active ? rain * .10 : 0, context.currentTime, .34)
+      if (!active || !musicOn || context.currentTime < nextNote) return
+      const melody = [146.83, 220, 174.61, 261.63, 196, 293.66, 220, 174.61]
+      nextNote = context.currentTime + .72
+      note(music, melody[beat % melody.length], 0, 1.45, .043, 'triangle', melody[beat % melody.length], .13)
+      if (beat % 4 === 0) note(music, melody[beat % melody.length] / 2, 0, 2.75, .046, 'sine', melody[beat % melody.length] / 2, .24)
+      beat++
+    },
+    footstep(surface, heavy = false) {
+      if (!effectsOn || context?.state !== 'running') return
+      const wood = surface === 'wood'
+      const wet = surface === 'mud' || surface === 'splash'
+      filteredNoise(effects, wet ? 'bandpass' : 'lowpass', wet ? 1120 : wood ? 580 : 290,
+        (heavy ? .13 : .068) * (wet ? 1.45 : 1), wet ? .19 : .09)
+      if (wood) note(effects, heavy ? 124 : 163, 0, .08, .035, 'triangle', 79)
+    },
+    bird(type) {
+      if (!effectsOn || context?.state !== 'running') return
+      const hz = { goose: 390, mallard: 520, teal: 1130, pheasant: 720 }[type]
+      note(effects, hz, .02, .16, .026, 'triangle', hz * .76)
+      note(effects, hz * 1.15, .21, .18, .021, 'triangle', hz * .84)
+      filteredNoise(effects, 'bandpass', 820, .038, .34)
     },
     play(effect) {
       if (effect === 'treat') {
-        note(740, 0, .11)
-        note(1110, .04, .13, .045)
-      } else if (effect === 'bonus' || effect === 'power' || effect === 'start') {
-        const notes = effect === 'power' ? [523, 659, 784, 1047] : [523, 659, 784]
-        notes.forEach((hz, i) => note(hz, i * .065, .21, .075, 'triangle'))
+        note(effects, 690, 0, .11)
+        note(effects, 1040, .045, .13, .042)
+      } else if (['bonus', 'retrieve', 'power', 'start', 'milestone'].includes(effect)) {
+        const notes = effect === 'power' || effect === 'retrieve' ? [440, 554, 659, 880] : [392, 494, 587]
+        notes.forEach((hz, i) => note(effects, hz, i * .072, .26, .056, 'triangle'))
       } else if (effect === 'hit') {
-        note(175, 0, .32, .14, 'triangle', 48)
+        note(effects, 139, 0, .32, .13, 'triangle', 48)
       } else if (effect === 'jump') {
-        note(300, 0, .14, .045, 'sine', 580)
+        note(effects, 275, 0, .12, .035, 'sine', 455)
       } else if (effect === 'slide') {
-        note(160, 0, .16, .046, 'triangle', 68)
+        if (effectsOn && context?.state === 'running') filteredNoise(effects, 'bandpass', 560, .075, .24)
       }
     },
   }
