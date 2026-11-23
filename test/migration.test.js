@@ -46,7 +46,7 @@ test('all ten territory profiles stream distinct deterministic scenery on connec
     assert.equal(tile.territory, region.key)
     assert.equal(tile.plantType, region.plant)
     assert.notEqual(region.birds.length, 0)
-    assert.equal(tile.trees.length, region.treesPerSide * 12)
+    assert.equal(tile.trees.length, region.treesPerSide * 14)
     assert.deepEqual(buildTile(middle), tile)
     terrain.push(tile)
     plantAndSilhouette.add(tile.plantType + '/' + tile.treeStyle)
@@ -66,8 +66,9 @@ test('all ten territory profiles stream distinct deterministic scenery on connec
     }
   }
   assert.ok(plantAndSilhouette.size >= 6)
-  assert.equal(new Set(terrain.map(tile => tile.detail.index.length)).size, 10)
+  assert.ok(terrain.every(tile => tile.detail.index.length > 0))
   for (let index = 1; index < terrain.length; index++) {
+    assert.notDeepEqual(terrain[index].detail.buffers.position.values, terrain[index - 1].detail.buffers.position.values)
     assert.notDeepEqual(terrain[index].water.buffers.marshDepth.values, terrain[index - 1].water.buffers.marshDepth.values)
   }
 })

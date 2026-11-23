@@ -9,7 +9,8 @@ export function offlineWorker() {
     apply: 'build',
     enforce: 'post',
     generateBundle(_output, bundle) {
-      const files = [...new Set(['index.html', ...Object.keys(bundle).filter(file => !file.endsWith('.map') && !file.startsWith('assets/supabase-'))])].sort()
+      const files = [...new Set(['index.html', ...Object.keys(bundle).filter(file =>
+        !file.endsWith('.map') && !file.startsWith('assets/supabase-') && !file.startsWith('assets/landscape-'))])].sort()
       const hash = createHash('sha256').update(JSON.stringify(files)).update(worker)
       hash.update(String(bundle['index.html']?.source ?? ''))
       this.emitFile({ type: 'asset', fileName: 'offline-sw.js', source:

@@ -1,0 +1,3360 @@
+[
+  {
+    "name": "historic_miscellaneous_cabin_wood_old_ulotdffbw_low.glb",
+    "size_bytes": 3694116,
+    "transferStatus": "available",
+    "sha256": "ff452120448385c5dded9512a9969b09b0ec0cbab8389545edfcde64ea57a1ab",
+    "directory": [],
+    "models": [
+      {
+        "file": "historic_miscellaneous_cabin_wood_old_ulotdffbw_low.glb",
+        "triangles": 5409,
+        "vertices": 4239,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 540471
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1368014
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 1514626
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Cabin scan",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Potential close Borderlands cabin after rights confirmation. The 1K export is the practical tier."
+  },
+  {
+    "name": "ribbon_grass_tbdpec3r_ue_low.zip",
+    "size_bytes": 5344864,
+    "transferStatus": "available",
+    "sha256": "d28d8472a775f829d44827ed1b113598335f9ba6f885eaa8899de086041228af",
+    "directory": [
+      {
+        "path": "tbdpec3r_tier_3.bin",
+        "bytes": 451720,
+        "compressed": 251672
+      },
+      {
+        "path": "tbdpec3r_tier_3.gltf",
+        "bytes": 48338,
+        "compressed": 4255
+      },
+      {
+        "path": "standard/tbdpec3r_tier_3_nonUE.gltf",
+        "bytes": 50191,
+        "compressed": 4248
+      },
+      {
+        "path": "Textures/T_tbdpec3r_1K_B-O.png",
+        "bytes": 1221463,
+        "compressed": 1221838,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tbdpec3r_1K_B.jpg",
+        "bytes": 313100,
+        "compressed": 312992,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Textures/T_tbdpec3r_1K_Billboard_B-O.png",
+        "bytes": 1593368,
+        "compressed": 1593858,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tbdpec3r_1K_Billboard_N-T.png",
+        "bytes": 1467740,
+        "compressed": 1467713,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tbdpec3r_1K_N.jpg",
+        "bytes": 335347,
+        "compressed": 335254,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Textures/T_tbdpec3r_1K_ORT.jpg",
+        "bytes": 148544,
+        "compressed": 147776,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "tbdpec3r.json",
+        "bytes": 38674,
+        "compressed": 3722
+      }
+    ],
+    "models": [
+      {
+        "file": "tbdpec3r_tier_3.gltf",
+        "triangles": 14493,
+        "vertices": 13027,
+        "meshes": 18,
+        "materials": 2,
+        "images": [
+          {
+            "name": "Textures/T_tbdpec3r_1K_N.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 335347
+          },
+          {
+            "name": "Textures/T_tbdpec3r_1K_ORT.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 148544
+          },
+          {
+            "name": "Textures/T_tbdpec3r_1K_B.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 313100
+          },
+          {
+            "name": "Textures/T_tbdpec3r_1K_Billboard_N-T.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1467740
+          },
+          {
+            "name": "Textures/T_tbdpec3r_1K_Billboard_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1593368
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v3.6.27",
+        "extensions": [],
+        "copyright": null
+      },
+      {
+        "file": "standard/tbdpec3r_tier_3_nonUE.gltf",
+        "triangles": 14493,
+        "vertices": 13027,
+        "meshes": 18,
+        "materials": 2,
+        "images": [
+          {
+            "name": "../Textures/T_tbdpec3r_1K_N.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 335347
+          },
+          {
+            "name": "../Textures/T_tbdpec3r_1K_ORT.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 148544
+          },
+          {
+            "name": "../Textures/T_tbdpec3r_1K_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1221463
+          },
+          {
+            "name": "../Textures/T_tbdpec3r_1K_Billboard_N-T.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1467740
+          },
+          {
+            "name": "../Textures/T_tbdpec3r_1K_Billboard_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1593368
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v3.6.27",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [
+      {
+        "metadata": "tbdpec3r.json",
+        "asset": "Ribbon Grass",
+        "id": "tbdpec3r",
+        "license": null,
+        "references": []
+      }
+    ],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Ribbon grass",
+    "licenseStatus": "Quixel terms unconfirmed",
+    "recommendation": "Potential Gulf banks. Heavy for repeated clumps. UE and non-UE exports repeat geometry."
+  },
+  {
+    "name": "grass_slbm1_low.zip",
+    "size_bytes": 5061914,
+    "transferStatus": "available",
+    "sha256": "4688dcd73e7db3b209b17732ce2f32dfe7067177a788bfa4ecadd26341da3a41",
+    "directory": [
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarA_LOD0.fbx",
+        "bytes": 248880,
+        "compressed": 248920
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarA_LOD1.fbx",
+        "bytes": 116144,
+        "compressed": 116164
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarA_LOD2.fbx",
+        "bytes": 19072,
+        "compressed": 19077
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarB_LOD0.fbx",
+        "bytes": 120528,
+        "compressed": 120548
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarB_LOD1.fbx",
+        "bytes": 61456,
+        "compressed": 61466
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarB_LOD2.fbx",
+        "bytes": 18784,
+        "compressed": 18789
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarC_LOD0.fbx",
+        "bytes": 151344,
+        "compressed": 151369
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarC_LOD1.fbx",
+        "bytes": 71904,
+        "compressed": 71919
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarC_LOD2.fbx",
+        "bytes": 18976,
+        "compressed": 18981
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarD_LOD0.fbx",
+        "bytes": 74096,
+        "compressed": 74111
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarD_LOD1.fbx",
+        "bytes": 46208,
+        "compressed": 46218
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarD_LOD2.fbx",
+        "bytes": 18880,
+        "compressed": 18885
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarE_LOD0.fbx",
+        "bytes": 208656,
+        "compressed": 208691
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarE_LOD1.fbx",
+        "bytes": 129888,
+        "compressed": 129908
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarE_LOD2.fbx",
+        "bytes": 18880,
+        "compressed": 18885
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarF_LOD0.fbx",
+        "bytes": 142880,
+        "compressed": 142905
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarF_LOD1.fbx",
+        "bytes": 65248,
+        "compressed": 65258
+      },
+      {
+        "path": "Grass_slBm1_Low_slBm1_VarF_LOD2.fbx",
+        "bytes": 18880,
+        "compressed": 18885
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Bump.jpg",
+        "bytes": 249243,
+        "compressed": 249283,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Displacement.jpg",
+        "bytes": 70608,
+        "compressed": 70623,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Opacity.jpg",
+        "bytes": 196135,
+        "compressed": 196165,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_AO.jpg",
+        "bytes": 103681,
+        "compressed": 103701,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Specular.jpg",
+        "bytes": 40780,
+        "compressed": 40790,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Roughness.jpg",
+        "bytes": 159627,
+        "compressed": 159652,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Normal.jpg",
+        "bytes": 353292,
+        "compressed": 353347,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_BaseColor.jpg",
+        "bytes": 268822,
+        "compressed": 268867,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Gloss.jpg",
+        "bytes": 159408,
+        "compressed": 159433,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Translucency.jpg",
+        "bytes": 285820,
+        "compressed": 285865,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Cavity.jpg",
+        "bytes": 109243,
+        "compressed": 109263,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Billboard_Normal.jpg",
+        "bytes": 466168,
+        "compressed": 466243,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Billboard_BaseColor.jpg",
+        "bytes": 334806,
+        "compressed": 334861,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Billboard_Opacity.jpg",
+        "bytes": 397504,
+        "compressed": 397569,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Grass_slBm1_Low_1K_Billboard_Translucency.jpg",
+        "bytes": 256015,
+        "compressed": 256055,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "slBm1.json",
+        "bytes": 54324,
+        "compressed": 54334
+      }
+    ],
+    "models": [
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarA_LOD0.fbx",
+        "triangles": 4758,
+        "vertices": 5266,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_f9a5_VarA_LOD1"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarA_LOD1.fbx",
+        "triangles": 1722,
+        "vertices": 2164,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_faa2_VarA_LOD2"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarA_LOD2.fbx",
+        "triangles": 7,
+        "vertices": 9,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [],
+        "subjects": [
+          "_7050_VarA_LOD3"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarB_LOD0.fbx",
+        "triangles": 2066,
+        "vertices": 2292,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_15d6_VarB_LOD1"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarB_LOD1.fbx",
+        "triangles": 696,
+        "vertices": 874,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_f582_VarB_LOD2"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarB_LOD2.fbx",
+        "triangles": 4,
+        "vertices": 6,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [],
+        "subjects": [
+          "_3b04_VarB_LOD3"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarC_LOD0.fbx",
+        "triangles": 2760,
+        "vertices": 3082,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_171d_VarC_LOD1"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarC_LOD1.fbx",
+        "triangles": 900,
+        "vertices": 1146,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_08d8_VarC_LOD2"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarC_LOD2.fbx",
+        "triangles": 6,
+        "vertices": 8,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [],
+        "subjects": [
+          "_3fcd_VarC_LOD3"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarD_LOD0.fbx",
+        "triangles": 992,
+        "vertices": 1112,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_c018_VarD_LOD1"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarD_LOD1.fbx",
+        "triangles": 388,
+        "vertices": 496,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_446f_VarD_LOD2"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarD_LOD2.fbx",
+        "triangles": 5,
+        "vertices": 7,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [],
+        "subjects": [
+          "_4a98_VarD_LOD3"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarE_LOD0.fbx",
+        "triangles": 3846,
+        "vertices": 4494,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_77f9_VarE_LOD1"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarE_LOD1.fbx",
+        "triangles": 1944,
+        "vertices": 2592,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_8e9c_VarE_LOD2"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarE_LOD2.fbx",
+        "triangles": 5,
+        "vertices": 7,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [],
+        "subjects": [
+          "_f221_VarE_LOD3"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarF_LOD0.fbx",
+        "triangles": 2576,
+        "vertices": 2772,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_31ec_VarF_LOD1"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarF_LOD1.fbx",
+        "triangles": 802,
+        "vertices": 952,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [
+          {
+            "name": "Atlas_texture1",
+            "file": "slwmrsp_4K_Albedo.exr",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "_1783_VarF_LOD2"
+        ]
+      },
+      {
+        "file": "Grass_slBm1_Low_slBm1_VarF_LOD2.fbx",
+        "triangles": 5,
+        "vertices": 7,
+        "meshes": 1,
+        "materials": 1,
+        "animations": [],
+        "images": [],
+        "subjects": [
+          "_3189_VarF_LOD3"
+        ]
+      }
+    ],
+    "notes": [
+      {
+        "metadata": "slBm1.json",
+        "asset": "Grass",
+        "id": "slBm1",
+        "license": null,
+        "references": []
+      }
+    ],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Grass variants",
+    "licenseStatus": "Quixel terms unconfirmed",
+    "recommendation": "Potential low-LOD wetland tufts. Eighteen FBXs repeat six clumps at three tiers. Texture slots need relinking."
+  },
+  {
+    "name": "dead_trunk_pack.fbx",
+    "size_bytes": 13116812,
+    "transferStatus": "available",
+    "sha256": "707fe72cd85ca285cf023224a38569a3739f57752df68db0f9b45c4ab2887207",
+    "directory": [],
+    "models": [
+      {
+        "file": "dead_trunk_pack.fbx",
+        "triangles": 242844,
+        "vertices": 131711,
+        "meshes": 3,
+        "materials": 3,
+        "animations": [],
+        "images": [
+          {
+            "name": "Green_Stems_Mat_Normal.002",
+            "file": "Green_Stems_Normal.jpg",
+            "resolution": [
+              1024,
+              4096
+            ],
+            "format": "JPEG",
+            "resolved": true
+          },
+          {
+            "name": "Rough_Bark__Mat_Normal.002",
+            "file": "Rough_Bark__Normal.jpg",
+            "resolution": [
+              1024,
+              4096
+            ],
+            "format": "JPEG",
+            "resolved": true
+          },
+          {
+            "name": "Smooth_Bark_Mat_Normal.002",
+            "file": "Smooth_Bark_Normal.jpg",
+            "resolution": [
+              1024,
+              4096
+            ],
+            "format": "JPEG",
+            "resolved": true
+          }
+        ],
+        "subjects": [
+          "Rough_Bark__Mat.001",
+          "Rough_Bark__Mat.002",
+          "Rough_Bark__Mat"
+        ]
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Dead-trunk set",
+    "licenseStatus": "Publisher and license unconfirmed",
+    "recommendation": "Too heavy for repeated timber. Select and simplify individual meshes if rights are later verified."
+  },
+  {
+    "name": "forest_american_tree_branch_wood_medium_15_wgubcae_mid.glb",
+    "size_bytes": 13018664,
+    "transferStatus": "available",
+    "sha256": "eeae402b4d052cd372615db977acacf25926092ff2fb4f8fe92591efd6f92be4",
+    "directory": [],
+    "models": [
+      {
+        "file": "forest_american_tree_branch_wood_medium_15_wgubcae_mid.glb",
+        "triangles": 2570,
+        "vertices": 1605,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 1964015
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 5137596
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 5806543
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Branch scan",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Candidate hero fallen branch for Arkansas or Boreal Forest. Preserve the authored gameplay silhouettes."
+  },
+  {
+    "name": "tree_stump_2_glb.zip",
+    "size_bytes": 22246357,
+    "transferStatus": "available",
+    "sha256": "ef68ba6d39b6b5c8e34a2853c2f0c58367cecfb79db5d1b9f938f08a887c0fd0",
+    "directory": [
+      {
+        "path": "textures_extra/Tree_Stump_2_Height_4K.png",
+        "bytes": 3040904,
+        "compressed": 2810021,
+        "resolution": [
+          4096,
+          4096
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Tree_Stump_2_LOD0_4K.glb",
+        "bytes": 19993172,
+        "compressed": 19436032
+      }
+    ],
+    "models": [
+      {
+        "file": "Tree_Stump_2_LOD0_4K.glb",
+        "triangles": 3104,
+        "vertices": 1800,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "Stump 2_Normal",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              4096,
+              4096
+            ],
+            "format": "JPEG",
+            "bytes": 5752373
+          },
+          {
+            "name": "Stump 2_AO-Stump 2_Roughness",
+            "mimeType": "image/png",
+            "resolution": [
+              4096,
+              4096
+            ],
+            "format": "PNG",
+            "bytes": 10435210
+          },
+          {
+            "name": "Stump 2_BaseColor",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              4096,
+              4096
+            ],
+            "format": "JPEG",
+            "bytes": 3727533
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v5.2.40",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Stump scan",
+    "licenseStatus": "Publisher and license unconfirmed",
+    "recommendation": "4K maps dominate the payload. Candidate close timber prop after rights confirmation and downsampling."
+  },
+  {
+    "name": "dead_tree_qletl_low.glb",
+    "size_bytes": 4077584,
+    "transferStatus": "available",
+    "sha256": "2644eb9b4612e679bbef6081195bff78df474d2880c8aaaefe4d60b32216f1c8",
+    "directory": [],
+    "models": [
+      {
+        "file": "dead_tree_qletl_low.glb",
+        "triangles": 5590,
+        "vertices": 12515,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 621147
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1128306
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 1557640
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Dead tree scan",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Possible Arkansas hero snag. Avoid instancing the scanned export at scale."
+  },
+  {
+    "name": "forest_american_rock_assembly_mixed_large_wgrqefg_mid.glb",
+    "size_bytes": 16513916,
+    "transferStatus": "available",
+    "sha256": "93f4aaea0389bd6fb8e91eda5d3f4f58797ec70ecc2f20670afde569decd3d7d",
+    "directory": [],
+    "models": [
+      {
+        "file": "forest_american_rock_assembly_mixed_large_wgrqefg_mid.glb",
+        "triangles": 10743,
+        "vertices": 8220,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 2482606
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 6095777
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 7409422
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Rock assembly scan",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Candidate selective Borderlands landmark. Mesh and maps overshoot a repeated river-rock budget."
+  },
+  {
+    "name": "dead_tree_free.glb",
+    "size_bytes": null,
+    "transferStatus": "file exceeds the executor transfer limit of 32 MiB",
+    "sha256": null,
+    "directory": [],
+    "models": [],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Leafless tree",
+    "licenseStatus": "Transfer blocked",
+    "recommendation": "Check a smaller export and its source license if a hero snag is still needed."
+  },
+  {
+    "name": "mountain_house.glb",
+    "size_bytes": null,
+    "transferStatus": "file exceeds the executor transfer limit of 32 MiB",
+    "sha256": null,
+    "directory": [],
+    "models": [],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Mountain house",
+    "licenseStatus": "Transfer blocked",
+    "recommendation": "Check a smaller export and its license if the original northern camp needs a second building."
+  },
+  {
+    "name": "fence-pack-low-poly-style.zip",
+    "size_bytes": 860580,
+    "transferStatus": "available",
+    "sha256": "ee8ddc199adcd5e5f8cae9285f2aa8e95c9c70c13defc9ef32dd3adb57790323",
+    "directory": [
+      {
+        "path": "source/Fence Pack.blend",
+        "bytes": 860436,
+        "compressed": 860436
+      }
+    ],
+    "models": [
+      {
+        "file": "source/Fence Pack.blend",
+        "triangles": 2624,
+        "vertices": 1518,
+        "meshes": 5,
+        "materials": 3,
+        "animations": [],
+        "images": [],
+        "subjects": [
+          "Metal Rail",
+          "White Picket Fence",
+          "Full Gate",
+          "White Picket Fence.001",
+          "Full Gate.001"
+        ]
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Stylized fence pack",
+    "licenseStatus": "Publisher and license unconfirmed",
+    "recommendation": "Possible farm boundary set. The Blender file contains a broken shape-key pointer and needs cleanup."
+  },
+  {
+    "name": "historic_miscellaneous_cabin_wood_old_ulotdffbw_mid.glb",
+    "size_bytes": 12525728,
+    "transferStatus": "available",
+    "sha256": "572b315feec90285ac5ef1ec989ebdb14844646070c0773031211ab85f782198",
+    "directory": [],
+    "models": [
+      {
+        "file": "historic_miscellaneous_cabin_wood_old_ulotdffbw_mid.glb",
+        "triangles": 9891,
+        "vertices": 6837,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 1871839
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 4856376
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 5348013
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Cabin scan, alternate tier",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Higher tier of the same cabin. Use the low one for any approved first integration."
+  },
+  {
+    "name": "forest_american_tree_bark_wood_small_02_wjtuagls_mid.glb",
+    "size_bytes": 12091780,
+    "transferStatus": "available",
+    "sha256": "bd0c16dac8c65efbfe1f20aa611ae97690424c5a13dbb6c1c1f42b22d1be6716",
+    "directory": [],
+    "models": [
+      {
+        "file": "forest_american_tree_bark_wood_small_02_wjtuagls_mid.glb",
+        "triangles": 1062,
+        "vertices": 714,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 1890518
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 4948623
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 5203004
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Bark scan",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Potential Arkansas/Boreal ground debris. Shared original bark keeps the current shipping material budget."
+  },
+  {
+    "name": "forest_american_rock_boulder_stone_large_01_wjxuaco_mid.glb",
+    "size_bytes": 15853668,
+    "transferStatus": "available",
+    "sha256": "3c297ce30bce4fb0919175d01ae1cbb221b48e7e1a3b453bdb1640ed4d2128df",
+    "directory": [],
+    "models": [
+      {
+        "file": "forest_american_rock_boulder_stone_large_01_wjxuaco_mid.glb",
+        "triangles": 1999,
+        "vertices": 1188,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 2553139
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 5475106
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 7741779
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Boulder scan",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Potential single close river or alpine landmark once the 2K textures are reduced."
+  },
+  {
+    "name": "vegetation.zip",
+    "size_bytes": null,
+    "transferStatus": "file exceeds the executor transfer limit of 32 MiB",
+    "sha256": null,
+    "directory": [],
+    "models": [],
+    "notes": [],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Vegetation pack",
+    "licenseStatus": "Transfer blocked",
+    "recommendation": "Contents and rights require a smaller tree or marsh subset."
+  },
+  {
+    "name": "old_wooden_barn.glb",
+    "size_bytes": null,
+    "transferStatus": "file exceeds the executor transfer limit of 32 MiB",
+    "sha256": null,
+    "directory": [],
+    "models": [],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Wooden barn",
+    "licenseStatus": "Transfer blocked",
+    "recommendation": "Potential Midwest landmark. The current release uses an original red barn."
+  },
+  {
+    "name": "highpoly_tree_model.zip",
+    "size_bytes": 25714556,
+    "transferStatus": "available",
+    "sha256": "7d0bb1721eaa0b922b94d1360e81965f33e3bf3622b81c299c97a6e2172e7d05",
+    "directory": [
+      {
+        "path": "HighPoly Tree Model/HighPoly Tree Packs.pdf",
+        "bytes": 1907010,
+        "compressed": 1880393
+      },
+      {
+        "path": "HighPoly Tree Model/Model/SM_HP_Tree.FBX",
+        "bytes": 5133184,
+        "compressed": 5089385
+      },
+      {
+        "path": "HighPoly Tree Model/Textures/T_HP_Tree_Leaf.PNG",
+        "bytes": 4524728,
+        "compressed": 4508414,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "HighPoly Tree Model/Textures/T_HP_Tree_Trunk.PNG",
+        "bytes": 8720787,
+        "compressed": 8722099,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "HighPoly Tree Model/Textures/T_HP_Tree_Trunk_normal.PNG",
+        "bytes": 5512434,
+        "compressed": 5512731,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "format": "PNG"
+      }
+    ],
+    "models": [
+      {
+        "file": "HighPoly Tree Model/Model/SM_HP_Tree.FBX",
+        "triangles": 14827,
+        "vertices": 35248,
+        "meshes": 2,
+        "materials": 2,
+        "animations": [],
+        "images": [
+          {
+            "name": "EnvSamplerTex",
+            "file": "HP39_Trunk.png",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          },
+          {
+            "name": "EnvSamplerTex.001",
+            "file": "HP39_Trunk_normal.png",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          },
+          {
+            "name": "EnvSamplerTex.002",
+            "file": "HP39_Leaf.png",
+            "resolution": [
+              0,
+              0
+            ],
+            "format": "TARGA",
+            "resolved": false
+          }
+        ],
+        "subjects": [
+          "SM_HP_Tree",
+          "UCX_SM_HP_Tree"
+        ]
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "High-poly tree",
+    "licenseStatus": "Vendor PDF identifies Next Spring, terms unconfirmed",
+    "recommendation": "Too heavy for repeated near trees. Some texture claims require relinking."
+  },
+  {
+    "name": "billboard_tree_pack.glb",
+    "size_bytes": 20589800,
+    "transferStatus": "available",
+    "sha256": "b020bd44ab1517465039d53b847a13d1126122ac6794fa71d4ed47f07f26cb72",
+    "directory": [],
+    "models": [
+      {
+        "file": "billboard_tree_pack.glb",
+        "triangles": 16,
+        "vertices": 32,
+        "meshes": 6,
+        "materials": 6,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 7177676
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 5483782
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 4677589
+          },
+          {
+            "name": "embedded-4",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 881641
+          },
+          {
+            "name": "embedded-5",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 976645
+          },
+          {
+            "name": "embedded-6",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1382340
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [
+          "KHR_materials_specular"
+        ],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Tree billboards",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "16 triangles are inexpensive. The six shipped 1K/2K image allocations dominate the file."
+  },
+  {
+    "name": "realistic_grass_pack_for_games_free.glb",
+    "size_bytes": 3349264,
+    "transferStatus": "available",
+    "sha256": "7855d5d7be48800833452fb8387c536dbd223aa776038d17281c1983a9710f6e",
+    "directory": [],
+    "models": [
+      {
+        "file": "realistic_grass_pack_for_games_free.glb",
+        "triangles": 794,
+        "vertices": 1448,
+        "meshes": 9,
+        "materials": 5,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 442564
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 265193
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 330977
+          },
+          {
+            "name": "embedded-4",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 194550
+          },
+          {
+            "name": "embedded-5",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 440478
+          },
+          {
+            "name": "embedded-6",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 267063
+          },
+          {
+            "name": "embedded-7",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 456741
+          },
+          {
+            "name": "embedded-8",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 341379
+          },
+          {
+            "name": "embedded-9",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 286885
+          },
+          {
+            "name": "embedded-10",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 208197
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Wheat grass and grass clumps",
+    "licenseStatus": "Verified CC BY 4.0 \u00b7 Nicholas-3D",
+    "recommendation": "Use two selected clumps in Flyway through Dakota. Keep wheat grass separate from mature corn."
+  },
+  {
+    "name": "mountain_lake_part_world_machine.glb",
+    "size_bytes": null,
+    "transferStatus": "file exceeds the executor transfer limit of 32 MiB",
+    "sha256": null,
+    "directory": [],
+    "models": [],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Mountain and lake terrain",
+    "licenseStatus": "Transfer blocked",
+    "recommendation": "Compare a small far-field export if supplied. Keep stable authored ridge geometry for this release."
+  },
+  {
+    "name": "cylindrical_wooden_silo_grain_storage.glb",
+    "size_bytes": null,
+    "transferStatus": "file exceeds the executor transfer limit of 32 MiB",
+    "sha256": null,
+    "directory": [],
+    "models": [],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Wooden grain silo",
+    "licenseStatus": "Transfer blocked",
+    "recommendation": "Keep the existing silo until the model and license can be evaluated."
+  },
+  {
+    "name": "labrador_glb 2.glb",
+    "size_bytes": 11981348,
+    "transferStatus": "available",
+    "sha256": "19d63111a8cb2f2bcec1c376428ae20d59cf6d81675bcae4d98fb613fde58958",
+    "directory": [],
+    "models": [
+      {
+        "file": "labrador_glb 2.glb",
+        "triangles": 72160,
+        "vertices": 49580,
+        "meshes": 2,
+        "materials": 2,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 672175
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 617073
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 2776604
+          },
+          {
+            "name": "embedded-4",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 1917413
+          }
+        ],
+        "animations": [
+          "Idle",
+          "Walk",
+          "Trot",
+          "Gallop",
+          "Sniff",
+          "Sit",
+          "Sit_Idle",
+          "Lie_Down",
+          "Lie_Idle",
+          "Play_Bow",
+          "Shake",
+          "Bark",
+          "Attack",
+          "Bite",
+          "Bite_Up",
+          "Jump",
+          "Jump_Running",
+          "Death_Slow",
+          "Death_Fast",
+          "Look",
+          "Turn"
+        ],
+        "skins": 2,
+        "generator": "fab-model-conversion",
+        "extensions": [
+          "KHR_materials_specular"
+        ],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "FeralMotion Labrador",
+    "licenseStatus": "Publisher free-game terms restrict asset redistribution",
+    "recommendation": "Reference only. Retargeting, missing fitted slide, 2K maps and 72K triangles make it unsuitable on this release."
+  },
+  {
+    "name": "mountain_1.glb",
+    "size_bytes": null,
+    "transferStatus": "file exceeds the executor transfer limit of 32 MiB",
+    "sha256": null,
+    "directory": [],
+    "models": [],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Mountain mesh",
+    "licenseStatus": "Transfer blocked",
+    "recommendation": "Check a smaller, licensed candidate only against the established stable horizon."
+  },
+  {
+    "name": "wheat_grass_tdcrdbur_ue_low.zip",
+    "size_bytes": 4509105,
+    "transferStatus": "available",
+    "sha256": "d180681e09e3f38aee67b656bf3b99937da0e702c44df9c489ca447dd70c7ed3",
+    "directory": [
+      {
+        "path": "tdcrdbur_tier_3.bin",
+        "bytes": 363468,
+        "compressed": 207391
+      },
+      {
+        "path": "tdcrdbur_tier_3.gltf",
+        "bytes": 50763,
+        "compressed": 4386
+      },
+      {
+        "path": "standard/tdcrdbur_tier_3_nonUE.gltf",
+        "bytes": 52687,
+        "compressed": 4374
+      },
+      {
+        "path": "Textures/T_tdcrdbur_1K_B-O.png",
+        "bytes": 1085131,
+        "compressed": 1085458,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tdcrdbur_1K_B.jpg",
+        "bytes": 263296,
+        "compressed": 263194,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Textures/T_tdcrdbur_1K_Billboard_B-O.png",
+        "bytes": 1081486,
+        "compressed": 1081804,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tdcrdbur_1K_Billboard_N-T.png",
+        "bytes": 1292721,
+        "compressed": 1292403,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tdcrdbur_1K_N.jpg",
+        "bytes": 413392,
+        "compressed": 413326,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Textures/T_tdcrdbur_1K_ORT.jpg",
+        "bytes": 152222,
+        "compressed": 151497,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "tdcrdbur.json",
+        "bytes": 39027,
+        "compressed": 3736
+      }
+    ],
+    "models": [
+      {
+        "file": "tdcrdbur_tier_3.gltf",
+        "triangles": 9132,
+        "vertices": 11024,
+        "meshes": 18,
+        "materials": 2,
+        "images": [
+          {
+            "name": "Textures/T_tdcrdbur_1K_N.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 413392
+          },
+          {
+            "name": "Textures/T_tdcrdbur_1K_ORT.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 152222
+          },
+          {
+            "name": "Textures/T_tdcrdbur_1K_B.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 263296
+          },
+          {
+            "name": "Textures/T_tdcrdbur_1K_Billboard_N-T.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1292721
+          },
+          {
+            "name": "Textures/T_tdcrdbur_1K_Billboard_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1081486
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v3.6.27",
+        "extensions": [],
+        "copyright": null
+      },
+      {
+        "file": "standard/tdcrdbur_tier_3_nonUE.gltf",
+        "triangles": 9132,
+        "vertices": 11024,
+        "meshes": 18,
+        "materials": 2,
+        "images": [
+          {
+            "name": "../Textures/T_tdcrdbur_1K_N.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 413392
+          },
+          {
+            "name": "../Textures/T_tdcrdbur_1K_ORT.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 152222
+          },
+          {
+            "name": "../Textures/T_tdcrdbur_1K_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1085131
+          },
+          {
+            "name": "../Textures/T_tdcrdbur_1K_Billboard_N-T.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1292721
+          },
+          {
+            "name": "../Textures/T_tdcrdbur_1K_Billboard_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1081486
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v3.6.27",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [
+      {
+        "metadata": "tdcrdbur.json",
+        "asset": "Wheat Grass",
+        "id": "tdcrdbur",
+        "license": null,
+        "references": []
+      }
+    ],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Wheatgrass",
+    "licenseStatus": "Quixel terms unconfirmed",
+    "recommendation": "Possible dry field fringe. This plant is wheatgrass, and the two exports repeat geometry."
+  },
+  {
+    "name": "mobile_trees_model.zip",
+    "size_bytes": 27838670,
+    "transferStatus": "available",
+    "sha256": "45f7b6442c81a6675b3196c57c92d0901f908242cfb997557c0baf9df4e46e64",
+    "directory": [
+      {
+        "path": "Mobile Trees Model/Mobile Tree Packs.pdf",
+        "bytes": 1673845,
+        "compressed": 1649092
+      },
+      {
+        "path": "Mobile Trees Model/Model/SM_Mobile_Trees.fbx",
+        "bytes": 1426014,
+        "compressed": 308118
+      },
+      {
+        "path": "Mobile Trees Model/Textures/T_Mobile_Trees_Leaf.TGA",
+        "bytes": 16777260,
+        "compressed": 3151797,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "format": "TGA"
+      },
+      {
+        "path": "Mobile Trees Model/Textures/T_Mobile_Trees_Trunk.TGA",
+        "bytes": 12582956,
+        "compressed": 11794243,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "format": "TGA"
+      },
+      {
+        "path": "Mobile Trees Model/Textures/T_Mobile_Trees_Trunk_normal.TGA",
+        "bytes": 12582956,
+        "compressed": 10933866,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "format": "TGA"
+      }
+    ],
+    "models": [
+      {
+        "file": "Mobile Trees Model/Model/SM_Mobile_Trees.fbx",
+        "inspection": "ASCII geometry parsed from original. Blender 4.3 does not import ASCII FBX.",
+        "vertices": 1471,
+        "triangles": 1943,
+        "materials": 2,
+        "animations": []
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Mobile tree kit",
+    "licenseStatus": "Vendor PDF identifies Tree Master, terms unconfirmed",
+    "recommendation": "ASCII FBX needs a different conversion workflow. Candidate distant preview after rights confirmation."
+  },
+  {
+    "name": "modular_wooden_fence_xfrobaziy_low.glb",
+    "size_bytes": 2607008,
+    "transferStatus": "available",
+    "sha256": "df52ffd9e2d82eb8f3e61e70af5ea29d6871cbeca9be36eb84b7dbdcf995ac5b",
+    "directory": [],
+    "models": [
+      {
+        "file": "modular_wooden_fence_xfrobaziy_low.glb",
+        "triangles": 1948,
+        "vertices": 1592,
+        "meshes": 2,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 408558
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 920225
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 1175037
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Modular wood fence",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Potential Midwest farm edge. Current procedural fence remains in use."
+  },
+  {
+    "name": "fbx 2.glb",
+    "size_bytes": 18355780,
+    "transferStatus": "available",
+    "sha256": "d72c2ead5a7eb10a3bc3869f7632a47f79ca8e433d873106101d637af6398ff5",
+    "directory": [],
+    "models": [
+      {
+        "file": "fbx 2.glb",
+        "triangles": 70868,
+        "vertices": 92381,
+        "meshes": 2,
+        "materials": 2,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 1312129
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 7328457
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 2452675
+          },
+          {
+            "name": "embedded-4",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 1972931
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [
+          "KHR_materials_specular"
+        ],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Beech tree",
+    "licenseStatus": "Fab provenance, exact terms unconfirmed",
+    "recommendation": "Strong natural subject. The 70.9K-triangle raw tree is too heavy for repeated use."
+  },
+  {
+    "name": "forest_american_tree_trunk_wood_medium_wgsrfjks_mid.glb",
+    "size_bytes": 15217768,
+    "transferStatus": "available",
+    "sha256": "037b6e076feacfe71149d8ef07ab023a824ea0e07fedf42bdff3ab999b2e3f39",
+    "directory": [],
+    "models": [
+      {
+        "file": "forest_american_tree_trunk_wood_medium_wgsrfjks_mid.glb",
+        "triangles": 6663,
+        "vertices": 3844,
+        "meshes": 1,
+        "materials": 1,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 2114329
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/png",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "PNG",
+            "bytes": 5802266
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "bytes": 7034078
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Trunk scan",
+    "licenseStatus": "Fab provenance, rights unconfirmed",
+    "recommendation": "Potential hero fallen timber after licensing and downsampling."
+  },
+  {
+    "name": "trees-and-bush-pack-lowpoly.zip",
+    "size_bytes": 29272309,
+    "transferStatus": "available",
+    "sha256": "30e6c83b8fba5b8d806b3cf7d75f4a681f04adb542537e770dc698127e4034a4",
+    "directory": [
+      {
+        "path": "source/TreesBushLOW.fbx",
+        "bytes": 14677852,
+        "compressed": 14677852
+      },
+      {
+        "path": "textures/pine1.png",
+        "bytes": 761643,
+        "compressed": 761643,
+        "resolution": [
+          563,
+          1071
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "textures/internal_ground_ao_texture.jpeg",
+        "bytes": 19709,
+        "compressed": 19709,
+        "resolution": [
+          512,
+          512
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "textures/bushbig.png",
+        "bytes": 3013756,
+        "compressed": 3013756,
+        "resolution": [
+          1456,
+          1058
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "textures/bushflowers.png",
+        "bytes": 909571,
+        "compressed": 909571,
+        "resolution": [
+          1024,
+          852
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "textures/tree1.png",
+        "bytes": 401057,
+        "compressed": 401057,
+        "resolution": [
+          491,
+          500
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "textures/pine2.png",
+        "bytes": 3843651,
+        "compressed": 3843651,
+        "resolution": [
+          1502,
+          2107
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "textures/tree2.png",
+        "bytes": 4232678,
+        "compressed": 4232678,
+        "resolution": [
+          1918,
+          1731
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "textures/bushnormal.png",
+        "bytes": 1411282,
+        "compressed": 1411282,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      }
+    ],
+    "models": [
+      {
+        "file": "source/TreesBushLOW.fbx",
+        "triangles": 212,
+        "vertices": 412,
+        "meshes": 11,
+        "materials": 10,
+        "animations": [],
+        "images": [
+          {
+            "name": "bushbig.png",
+            "file": "bushbig.png",
+            "resolution": [
+              1456,
+              1058
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "bushbig.png.001",
+            "file": "bushbig.png",
+            "resolution": [
+              1456,
+              1058
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "bushbig.png.002",
+            "file": "bushbig.png",
+            "resolution": [
+              1456,
+              1058
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "bushflowers.png",
+            "file": "bushflowers.png",
+            "resolution": [
+              1024,
+              852
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "bushflowers.png.001",
+            "file": "bushflowers.png",
+            "resolution": [
+              1024,
+              852
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "bushflowers.png.002",
+            "file": "bushflowers.png",
+            "resolution": [
+              1024,
+              852
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "bushnormal.png",
+            "file": "bushnormal.png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "bushnormal.png.001",
+            "file": "bushnormal.png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "bushnormal.png.002",
+            "file": "bushnormal.png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "pine1.png",
+            "file": "pine1.png",
+            "resolution": [
+              563,
+              1071
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "pine1.png.001",
+            "file": "pine1.png",
+            "resolution": [
+              563,
+              1071
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "pine1.png.002",
+            "file": "pine1.png",
+            "resolution": [
+              563,
+              1071
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "pine1.png.003",
+            "file": "pine1.png",
+            "resolution": [
+              563,
+              1071
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "pine1.png.004",
+            "file": "pine1.png",
+            "resolution": [
+              563,
+              1071
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "pine2.png",
+            "file": "pine2.png",
+            "resolution": [
+              1502,
+              2107
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "pine2.png.001",
+            "file": "pine2.png",
+            "resolution": [
+              1502,
+              2107
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "pine2.png.002",
+            "file": "pine2.png",
+            "resolution": [
+              1502,
+              2107
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree1.png",
+            "file": "tree1.png",
+            "resolution": [
+              491,
+              500
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree1.png.001",
+            "file": "tree1.png",
+            "resolution": [
+              491,
+              500
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree1.png.002",
+            "file": "tree1.png",
+            "resolution": [
+              491,
+              500
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree1.png.003",
+            "file": "tree1.png",
+            "resolution": [
+              491,
+              500
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree1.png.004",
+            "file": "tree1.png",
+            "resolution": [
+              491,
+              500
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree2.png",
+            "file": "tree2.png",
+            "resolution": [
+              1918,
+              1731
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree2.png.001",
+            "file": "tree2.png",
+            "resolution": [
+              1918,
+              1731
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree2.png.002",
+            "file": "tree2.png",
+            "resolution": [
+              1918,
+              1731
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree2.png.003",
+            "file": "tree2.png",
+            "resolution": [
+              1918,
+              1731
+            ],
+            "format": "PNG",
+            "resolved": true
+          },
+          {
+            "name": "tree2.png.004",
+            "file": "tree2.png",
+            "resolution": [
+              1918,
+              1731
+            ],
+            "format": "PNG",
+            "resolved": true
+          }
+        ],
+        "subjects": [
+          "BushBig2",
+          "BushFlowerSmall",
+          "BushMed",
+          "BushMed2",
+          "BushSmall",
+          "BushSmall2",
+          "MushBig",
+          "pine1",
+          "Pine2",
+          "tree2",
+          "TreeSmall"
+        ]
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Tree and bush cards",
+    "licenseStatus": "Verified CC BY 4.0 \u00b7 EFX",
+    "recommendation": "Use tree2 and TreeSmall in Flyway through Dakota at distance. Near-plane intersections are visible in the full pack."
+  },
+  {
+    "name": "fbx.glb",
+    "size_bytes": 13353072,
+    "transferStatus": "available",
+    "sha256": "5bdfd78024fba780308f5e6cc34fe925df85f0652c6d93890695f6dfaac131c8",
+    "directory": [],
+    "models": [
+      {
+        "file": "fbx.glb",
+        "triangles": 139028,
+        "vertices": 115326,
+        "meshes": 3,
+        "materials": 2,
+        "images": [
+          {
+            "name": "embedded-1",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 290846
+          },
+          {
+            "name": "embedded-2",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 42673
+          },
+          {
+            "name": "embedded-3",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 2340711
+          },
+          {
+            "name": "embedded-4",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 541199
+          },
+          {
+            "name": "embedded-5",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 128962
+          },
+          {
+            "name": "embedded-6",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 743763
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "fab-model-conversion",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Autumn poplar",
+    "licenseStatus": "Fab provenance, exact terms unconfirmed",
+    "recommendation": "Promising Prairie windbreak silhouette. The 139K-triangle export needs verified rights and authored LODs."
+  },
+  {
+    "name": "grass_clumps_rbdoo_ue_low.zip",
+    "size_bytes": 4334706,
+    "transferStatus": "available",
+    "sha256": "821eaa73adea001bc9321e724f624b9be51557e467a79852275c5cec09115cfd",
+    "directory": [
+      {
+        "path": "rbdoo_tier_3.bin",
+        "bytes": 370784,
+        "compressed": 210858
+      },
+      {
+        "path": "rbdoo_tier_3.gltf",
+        "bytes": 27026,
+        "compressed": 2866
+      },
+      {
+        "path": "standard/rbdoo_tier_3_nonUE.gltf",
+        "bytes": 28055,
+        "compressed": 2873
+      },
+      {
+        "path": "Textures/T_rbdoo_1K_B-O.png",
+        "bytes": 625410,
+        "compressed": 625600,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_rbdoo_1K_B.jpg",
+        "bytes": 166416,
+        "compressed": 166006,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Textures/T_rbdoo_1K_Billboard_B-O.png",
+        "bytes": 1491217,
+        "compressed": 1491665,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_rbdoo_1K_Billboard_N-T.png",
+        "bytes": 1642997,
+        "compressed": 1642383,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_rbdoo_1K_N.jpg",
+        "bytes": 114983,
+        "compressed": 107349,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Textures/T_rbdoo_1K_ORT.jpg",
+        "bytes": 88682,
+        "compressed": 80448,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "rbdoo.json",
+        "bytes": 30367,
+        "compressed": 3182
+      }
+    ],
+    "models": [
+      {
+        "file": "rbdoo_tier_3.gltf",
+        "triangles": 7043,
+        "vertices": 11733,
+        "meshes": 9,
+        "materials": 2,
+        "images": [
+          {
+            "name": "Textures/T_rbdoo_1K_N.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 114983
+          },
+          {
+            "name": "Textures/T_rbdoo_1K_ORT.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 88682
+          },
+          {
+            "name": "Textures/T_rbdoo_1K_B.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 166416
+          },
+          {
+            "name": "Textures/T_rbdoo_1K_Billboard_N-T.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1642997
+          },
+          {
+            "name": "Textures/T_rbdoo_1K_Billboard_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1491217
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v3.6.27",
+        "extensions": [],
+        "copyright": null
+      },
+      {
+        "file": "standard/rbdoo_tier_3_nonUE.gltf",
+        "triangles": 7043,
+        "vertices": 11733,
+        "meshes": 9,
+        "materials": 2,
+        "images": [
+          {
+            "name": "../Textures/T_rbdoo_1K_N.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 114983
+          },
+          {
+            "name": "../Textures/T_rbdoo_1K_ORT.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 88682
+          },
+          {
+            "name": "../Textures/T_rbdoo_1K_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 625410
+          },
+          {
+            "name": "../Textures/T_rbdoo_1K_Billboard_N-T.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1642997
+          },
+          {
+            "name": "../Textures/T_rbdoo_1K_Billboard_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1491217
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v3.6.27",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [
+      {
+        "metadata": "rbdoo.json",
+        "asset": "Grass Clumps",
+        "id": "rbdoo",
+        "license": null,
+        "references": []
+      }
+    ],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Grass clumps",
+    "licenseStatus": "Quixel terms unconfirmed",
+    "recommendation": "Candidate Dakota rush banks. Heavy repeated geometry and duplicate UE/non-UE representations."
+  },
+  {
+    "name": "old_wooden_barn_house_4.glb",
+    "size_bytes": null,
+    "transferStatus": "file exceeds the executor transfer limit of 32 MiB",
+    "sha256": null,
+    "directory": [],
+    "models": [],
+    "notes": [],
+    "sourceDirectory": "Owner upload",
+    "category": "Barn house",
+    "licenseStatus": "Transfer blocked",
+    "recommendation": "Potential Midwest farmstead if supplied in a smaller licensed form."
+  },
+  {
+    "name": "cocksfoot_grass_tcfoejcr_ue_low.zip",
+    "size_bytes": 4769090,
+    "transferStatus": "available",
+    "sha256": "a9ef92835c75a19b1c897533b0e7dad4e8e111a387bf60bfee9270803079654b",
+    "directory": [
+      {
+        "path": "tcfoejcr_tier_3.bin",
+        "bytes": 618648,
+        "compressed": 331443
+      },
+      {
+        "path": "tcfoejcr_tier_3.gltf",
+        "bytes": 61757,
+        "compressed": 5213
+      },
+      {
+        "path": "standard/tcfoejcr_tier_3_nonUE.gltf",
+        "bytes": 64142,
+        "compressed": 5205
+      },
+      {
+        "path": "Textures/T_tcfoejcr_1K_B-O.png",
+        "bytes": 1162616,
+        "compressed": 1162971,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tcfoejcr_1K_B.jpg",
+        "bytes": 304392,
+        "compressed": 304297,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Textures/T_tcfoejcr_1K_Billboard_B-O.png",
+        "bytes": 1195331,
+        "compressed": 1195689,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tcfoejcr_1K_Billboard_N-T.png",
+        "bytes": 1141462,
+        "compressed": 1140466,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "PNG"
+      },
+      {
+        "path": "Textures/T_tcfoejcr_1K_N.jpg",
+        "bytes": 422402,
+        "compressed": 422341,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "Textures/T_tcfoejcr_1K_ORT.jpg",
+        "bytes": 202369,
+        "compressed": 195979,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "format": "JPEG"
+      },
+      {
+        "path": "tcfoejcr.json",
+        "bytes": 41420,
+        "compressed": 3950
+      }
+    ],
+    "models": [
+      {
+        "file": "tcfoejcr_tier_3.gltf",
+        "triangles": 15602,
+        "vertices": 18751,
+        "meshes": 24,
+        "materials": 2,
+        "images": [
+          {
+            "name": "Textures/T_tcfoejcr_1K_N.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 422402
+          },
+          {
+            "name": "Textures/T_tcfoejcr_1K_ORT.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 202369
+          },
+          {
+            "name": "Textures/T_tcfoejcr_1K_B.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 304392
+          },
+          {
+            "name": "Textures/T_tcfoejcr_1K_Billboard_N-T.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1141462
+          },
+          {
+            "name": "Textures/T_tcfoejcr_1K_Billboard_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1195331
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v3.6.27",
+        "extensions": [],
+        "copyright": null
+      },
+      {
+        "file": "standard/tcfoejcr_tier_3_nonUE.gltf",
+        "triangles": 15602,
+        "vertices": 18751,
+        "meshes": 24,
+        "materials": 2,
+        "images": [
+          {
+            "name": "../Textures/T_tcfoejcr_1K_N.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 422402
+          },
+          {
+            "name": "../Textures/T_tcfoejcr_1K_ORT.jpg",
+            "mimeType": "image/jpeg",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "bytes": 202369
+          },
+          {
+            "name": "../Textures/T_tcfoejcr_1K_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1162616
+          },
+          {
+            "name": "../Textures/T_tcfoejcr_1K_Billboard_N-T.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1141462
+          },
+          {
+            "name": "../Textures/T_tcfoejcr_1K_Billboard_B-O.png",
+            "mimeType": "image/png",
+            "resolution": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "bytes": 1195331
+          }
+        ],
+        "animations": [],
+        "skins": 0,
+        "generator": "Khronos glTF Blender I/O v3.6.27",
+        "extensions": [],
+        "copyright": null
+      }
+    ],
+    "notes": [
+      {
+        "metadata": "tcfoejcr.json",
+        "asset": "Cocksfoot Grass",
+        "id": "tcfoejcr",
+        "license": null,
+        "references": []
+      }
+    ],
+    "sourceDirectory": "Owner upload / archive root",
+    "category": "Cocksfoot grass",
+    "licenseStatus": "Quixel terms unconfirmed",
+    "recommendation": "Candidate dry trailside patches. Full archive mesh tiers are costly at dense placement."
+  }
+]

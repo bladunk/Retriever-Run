@@ -1,6 +1,10 @@
 import * as T from 'three'
 import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
+import { cornModel } from './corn.js'
+import { environmentAssets } from './environment-assets.js'
+import { expeditionRegions } from './expedition.js'
 import { fieldMaterials } from './materials.js'
+import { forestModel, forestProfiles, forestSurface } from './forest-models.js'
 import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
 import { createBankPlant } from './marsh-plants.js'
 import { marshWater, updateMarshWater } from './marsh-water.js'
@@ -9,7 +13,13 @@ import { centerAt, segmentLength } from './trail.js'
 const vegetation = Array.from({ length: 3 }, (_, type) => [createBankPlant(type, true), createBankPlant(type)])
 const distantTrees = Array.from({ length: 5 }, (_, style) => createDistantTree(style))
 const treeMaterial = new T.MeshLambertMaterial({ vertexColors: true })
-const treeTints = [0x9c8a74, 0xb49968, 0x87936c]
+const forestMaterial = forestSurface()
+const cropMaterial = new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide })
+const fieldTints = [0xf6e4c9, 0xfff5de, 0xe0dfc3]
+const coverTypes = new Set(['flyway', 'timber', 'farm', 'prairie', 'dakota'])
+const cropGeometries = [cornModel(), cornModel(false, true), cornModel(true)]
+const cropFarMaterial = cropMaterial.clone()
+const cardsReady = new WeakSet()
 const dummy = new T.Object3D()
 
 const { material: terrainMaterial, uniforms: field } = fieldMaterials
@@ -44,6 +54,9 @@ function softenLOD(material, distant, baseShader) {
 }
 softenLOD(detailMaterial, false, terrainMaterial.onBeforeCompile)
 softenLOD(treeMaterial, true)
+softenLOD(forestMaterial, false)
+softenLOD(cropMaterial, false)
+softenLOD(cropFarMaterial, true)
 
 const reedMaterial = new T.MeshLambertMaterial({ color: 0xffffff, side: T.DoubleSide, vertexColors: true })
 const windClock = { value: 0 }
@@ -70,6 +83,19 @@ function unpack(data) {
   return geometry
 }
 
+function batch(geometry, material, capacity) {
+  const mesh = new T.InstancedMesh(geometry, material, capacity)
+  mesh.count = 0
+  return mesh
+}
+
+function updateBatch(mesh) {
+  if (!mesh.count) return
+  mesh.instanceMatrix.needsUpdate = true
+  mesh.instanceColor.needsUpdate = true
+  mesh.computeBoundingSphere()
+}
+
 export function createTerrain(scene) {
   const tint = new T.Color()
   const tiles = Array.from({ length: 7 }, () => {
@@ -77,15 +103,17 @@ export function createTerrain(scene) {
     const ground = new T.Mesh(new T.BufferGeometry(), terrainMaterial)
     const water = new T.Mesh(new T.BufferGeometry(), marshWater)
     const detail = new T.Mesh(new T.BufferGeometry(), detailMaterial)
-    const trees = new T.InstancedMesh(distantTrees[0], treeMaterial, treeCount)
-    trees.count = 0
-    const reeds = new T.InstancedMesh(vegetation[0][0], reedMaterial, reedCount)
-    reeds.count = 0
+    const trees = batch(distantTrees[0], treeMaterial, treeCount)
+    const forest = [batch(distantTrees[0], forestMaterial, treeCount), batch(distantTrees[0], forestMaterial, treeCount)]
+    const crops = [batch(cropGeometries[0], cropMaterial, 112), batch(cropGeometries[1], cropFarMaterial, 112)]
+    const tufts = batch(vegetation[0][0], reedMaterial, 16)
+    const reeds = batch(vegetation[0][0], reedMaterial, reedCount)
     const smoke = createChimneySmoke()
     root.visible = false
-    root.add(ground, water, reeds, detail, trees, smoke)
+    root.add(ground, water, reeds, detail, trees, ...forest, ...crops, tufts, smoke)
     scene.add(root)
-    return { root, ground, water, detail, trees, reeds, smoke, hasChimney: false, plantType: 0, index: null, wanted: null }
+    return { root, ground, water, detail, trees, forest, variants: forestProfiles.gulf, crops, tufts, reeds, smoke, hasChimney: false,
+      plantType: 0, index: null, wanted: null }
   })
   const slot = (index) => tiles[((index % tiles.length) + tiles.length) % tiles.length]
   const order = [0, -1, 1, 2, 3, 4, 5]
@@ -95,6 +123,7 @@ export function createTerrain(scene) {
   let worker
   let workerDeadline
   let center = 0
+  let requestedEnvironment = false
 
   function load(packet) {
     const tile = slot(packet.index)
@@ -106,21 +135,71 @@ export function createTerrain(scene) {
     tile.water.geometry = packet.water ? unpack(packet.water) : new T.BufferGeometry()
     tile.detail.geometry = unpack(packet.detail)
     tile.water.visible = Boolean(packet.water)
-    tile.trees.geometry = distantTrees[packet.treeStyle]
-    tile.trees.count = packet.trees.length / 6
+    const variants = tile.variants = forestProfiles[packet.territory]
+    const cards = coverTypes.has(packet.territory) ? environmentAssets.get('trees') : null
+    const grasses = coverTypes.has(packet.territory) ? environmentAssets.get('grass') : null
+    if (cards && !cardsReady.has(cards)) {
+      softenLOD(cards.material, true)
+      cardsReady.add(cards)
+    }
+    const variant = Math.abs(packet.index) % 2
+    tile.trees.geometry = cards?.models[variant] ?? distantTrees[packet.treeStyle]
+    tile.trees.material = cards?.material ?? treeMaterial
+    tile.trees.count = packet.trees.length / 7
+    for (const [index, mesh] of tile.forest.entries()) {
+      mesh.geometry = forestModel(variants[index], true)
+      mesh.count = 0
+    }
     for (let n = 0; n < tile.trees.count; n++) {
-      const at = n * 6
+      const at = n * 7
       dummy.position.fromArray(packet.trees, at)
       dummy.rotation.set(0, packet.trees[at + 4], 0)
       const height = packet.trees[at + 3]
-      dummy.scale.set(height, height, height)
+      const width = height * (.86 + n % 5 * .072)
+      const near = tile.forest[variants[0] === variants[1] ? 0 : packet.trees[at + 6]]
+      dummy.scale.set(width, height, width)
       dummy.updateMatrix()
+      near.setMatrixAt(near.count, dummy.matrix)
+      near.setColorAt(near.count++, tint.setHex(fieldTints[packet.trees[at + 5]]))
+      if (cards) {
+        const unit = variant ? 4.8 : 6.2
+        dummy.scale.set(width / unit, height / unit, width / unit)
+        dummy.updateMatrix()
+      }
       tile.trees.setMatrixAt(n, dummy.matrix)
-      tile.trees.setColorAt(n, tint.setHex(treeTints[packet.trees[at + 5]]))
+      tile.trees.setColorAt(n, tint.multiplyScalar(cards ? .84 : .76))
     }
-    tile.trees.instanceMatrix.needsUpdate = true
-    if (tile.trees.instanceColor) tile.trees.instanceColor.needsUpdate = true
-    tile.trees.computeBoundingSphere()
+    for (const mesh of [tile.trees, ...tile.forest]) updateBatch(mesh)
+    for (const [index, mesh] of tile.crops.entries()) {
+      mesh.geometry = cropGeometries[packet.harvested ? 2 : index]
+      mesh.count = packet.crops.length / 6
+      for (let n = 0; n < mesh.count; n++) {
+        const at = n * 6
+        dummy.position.fromArray(packet.crops, at)
+        dummy.rotation.set(.03 * (n % 4), packet.crops[at + 4], .035 * (n % 3))
+        const size = packet.crops[at + 3]
+        dummy.scale.set(size, size, size)
+        dummy.updateMatrix()
+        mesh.setMatrixAt(n, dummy.matrix)
+        mesh.setColorAt(n, tint.setHex(fieldTints[packet.crops[at + 5]]))
+      }
+      updateBatch(mesh)
+    }
+    tile.tufts.count = 0
+    if (grasses) {
+      tile.tufts.geometry = grasses.models[packet.territory === 'farm' || packet.territory === 'prairie' ? 0 : 1]
+      tile.tufts.material = grasses.material
+      tile.tufts.count = 16
+      for (let n = 0; n < tile.tufts.count; n++) {
+        dummy.position.fromArray(packet.reeds, (n * 4 + 2) * 6)
+        dummy.rotation.set(0, n * 2.39996, 0)
+        dummy.scale.setScalar(1.43 + .21 * (n % 6))
+        dummy.updateMatrix()
+        tile.tufts.setMatrixAt(n, dummy.matrix)
+        tile.tufts.setColorAt(n, tint.setHex(fieldTints[n % 3]))
+      }
+      updateBatch(tile.tufts)
+    }
     tile.plantType = packet.plantType
     for (let n = 0; n < reedCount; n++) {
       const at = n * 6
@@ -192,6 +271,11 @@ export function createTerrain(scene) {
       return slot(index).index === index
     },
     update(distance, time, weather, detail) {
+      if (!requestedEnvironment && distance >= expeditionRegions[2].marker - 320 && distance <= expeditionRegions[7].marker + 120) {
+        requestedEnvironment = true
+        environmentAssets.request('trees')
+        environmentAssets.request('grass')
+      }
       center = Math.floor(distance / segmentLength)
       const offset = centerAt(distance)
       updateMarshWater(time, offset, distance, weather, detail)
@@ -217,6 +301,18 @@ export function createTerrain(scene) {
         tile.smoke.visible = tile.hasChimney && detail > 0 && chimneyZ > -65 && chimneyZ < -6
         tile.trees.visible = tile.trees.count > 0 &&
           tileStart + segmentLength + 8 > range[0] && tileStart < range[3] + 8
+        for (const [index, grove] of tile.forest.entries()) {
+          const mesh = forestModel(tile.variants[index], detail < 2)
+          if (mesh !== grove.geometry) {
+            grove.geometry = mesh
+            if (grove.count) grove.computeBoundingSphere()
+          }
+          grove.visible = grove.count > 0 && tileStart < range[1] + 8
+        }
+        tile.crops[0].visible = tile.crops[0].count > 0 && tileStart < range[1] + 2
+        tile.crops[1].visible = tile.crops[1].count > 0 &&
+          tileStart + segmentLength + 2 > range[0] && tileStart < range[3] + 2
+        tile.tufts.visible = detail > 0 && tile.tufts.count > 0 && tileStart < 38
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
         tile.reeds.geometry = vegetation[tile.plantType][richPlants]
         tile.reeds.count = i - center < 2 ? nearCount[detail] : farCount[detail]

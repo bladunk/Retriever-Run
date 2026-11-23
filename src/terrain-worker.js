@@ -2,7 +2,7 @@ import { buildTile } from './terrain-geometry.js'
 
 self.onmessage = ({ data: index }) => {
   const packet = buildTile(index)
-  const transfer = [packet.reeds.buffer, packet.trees.buffer]
+  const transfer = [packet.reeds.buffer, packet.trees.buffer, packet.crops.buffer]
   for (const geometry of [packet.ground, packet.detail, packet.water]) {
     if (!geometry) continue
     for (const { values } of Object.values(geometry.buffers)) transfer.push(values.buffer)

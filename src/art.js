@@ -2,6 +2,7 @@ import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { fieldMaterials } from './materials.js'
 import { marshWater } from './marsh-water.js'
+import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
 
 const sphere = new T.SphereGeometry(1, 12, 8)
 const box = new T.BoxGeometry(1, 1, 1)
@@ -17,6 +18,7 @@ const soakedGround = new T.CircleGeometry(1, 22).rotateX(-Math.PI / 2)
 const wetShapes = [pondSheet(), depthGeometry(crossingSurface.clone(), true)]
 const bankMaterial = new T.MeshLambertMaterial({ color: 0x645847 })
 const barkCylinder = new T.CylinderGeometry(1, 1, 1, 11, 3)
+const wheel = new T.CylinderGeometry(1, 1, 1, 12).rotateZ(Math.PI / 2)
 const timberPoints = barkCylinder.attributes.position
 for (let i = 0; i < timberPoints.count; i++) {
   const x = timberPoints.getX(i), y = timberPoints.getY(i), z = timberPoints.getZ(i)
@@ -57,6 +59,34 @@ function fitWaterHazard(object, stream) {
   mesh.position.y = .060
   object.add(bed, mesh)
   return object
+}
+
+export function prepareWashout(object, entity) {
+  let surface = object.children[0]
+  if (!surface) {
+    const ribbon = new T.PlaneGeometry(1, 1, 4, 28)
+    ribbon.setAttribute('marshDepth', new T.BufferAttribute(new Float32Array(ribbon.attributes.position.count).fill(1.38), 1))
+    object.add(surface = new T.Mesh(ribbon, marshWater))
+  }
+  const position = surface.geometry.attributes.position
+  const lane = entity.lane * laneWidth
+  const center = {}, sample = {}
+  const yaw = placeOnTrail(center, entity.distance, lane, entity.distance)
+  const cos = Math.cos(yaw), sin = Math.sin(yaw)
+  const floor = trailHeight(entity.distance, lane)
+  for (let row = 0; row <= 28; row++) {
+    const at = entity.distance + (.5 - row / 28) * (entity.span + 2.55)
+    for (let col = 0; col <= 4; col++) {
+      const bank = (col / 4 - .5) * (1.86 + .17 * Math.sin(row * .79))
+      placeOnTrail(sample, at, lane + bank, entity.distance)
+      const x = sample.x - center.x
+      const z = sample.z - center.z
+      position.setXYZ(row * 5 + col, x * cos - z * sin,
+        trailHeight(at, lane + bank) - floor + .048, x * sin + z * cos)
+    }
+  }
+  position.needsUpdate = true
+  surface.geometry.computeBoundingSphere()
 }
 
 function streamRibbon() {
@@ -116,6 +146,7 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
   const object = group(parent, x, 0, z)
   const key = 'hazard-' + type + (wide ? '-wide' : '')
   if (type === 'puddle' || type === 'stream') return fitWaterHazard(object, type === 'stream')
+  if (type === 'washout') return object
   if (type === 'root') object.scale.y = .7
   if (baked.has(key)) {
     object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
@@ -136,8 +167,35 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
       mesh(object, cylinder, bark, x, .58, 0, .096, 1.17, .105)
     }
     mesh(object, cylinder, bark, 0, 1.17, 0, .110, width, .110).rotation.z = Math.PI / 2
-    mesh(object, leaf, 0x776f46, -.79, 1.31, -.04, .41, .20, .35)
-    mesh(object, leaf, 0x6a6544, -.38, 1.34, -.10, .32, .20, .32)
+    mesh(object, barkCylinder, bark, 0, 1.72, .015, .51, width * .98, .232).rotation.z = Math.PI / 2
+    mesh(object, cylinder, 0x8c7052, 0, 2.10, .015, .14, width * .93, .113).rotation.z = Math.PI / 2
+    mesh(object, leaf, 0x776f46, -.79, 1.94, -.14, .41, .20, .24)
+    mesh(object, leaf, 0x6a6544, -.38, 1.57, -.15, .32, .14, .18)
+  } else if (type === 'fallen') {
+    mesh(object, barkCylinder, bark, .27, .69, .16, .47, 1.33, .45).rotation.z = Math.PI / 2
+    mesh(object, leaf, 0x6c5242, -.16, 1.13, 0, .76, 1.23, .50)
+    mesh(object, leaf, 0x857052, -.18, 1.21, .18, .61, .99, .38)
+    for (let root = 0; root < 5; root++) {
+      mesh(object, barkCylinder, 0x665032, -.19 + Math.sin(root * 2.1) * .32, .58 + root * .33,
+        .16 - .06 * root, .076, .51, .086).rotation.z = .44 * (root - 2)
+    }
+    mesh(object, cylinder, cut, .949, .69, .16, .41, .034, .39).rotation.z = Math.PI / 2
+  } else if (type === 'tractor') {
+    mesh(object, box, 0x665b47, 0, .69, -.03, 1.26, .32, 1.90)
+    mesh(object, box, 0x8b4534, 0, 1.02, -.47, 1.06, .62, 1.03)
+    mesh(object, box, 0x433b2e, 0, 1.0, -.997, .83, .48, .046)
+    for (let slat = -2; slat <= 2; slat++) {
+      mesh(object, box, 0x766753, slat * .136, .99, -1.025, .062, .38, .036)
+    }
+    for (const side of [-1, 1]) {
+      mesh(object, wheel, 0x33312b, side * .72, .51, .37, .46, 1.04, 1.12)
+      mesh(object, wheel, 0x927455, side * .958, .51, .37, .031, .48, .52)
+      mesh(object, wheel, 0x33312b, side * .62, .31, -.67, .31, .62, .62)
+      for (const z of [-.19, .89]) mesh(object, box, 0x82715a, side * .52, 1.83, z, .10, 1.15, .10)
+    }
+    mesh(object, box, 0x744336, 0, 2.42, .35, 1.13, .13, 1.15)
+    mesh(object, box, 0x58716a, 0, 1.88, -.16, .92, .84, .065)
+    mesh(object, cylinder, 0x41362e, .37, 1.51, -.64, .072, .66, .072)
   } else if (type === 'tree') {
     // A standing snag in a playable lane. Habitat trees remain decorative.
     mesh(object, barkCylinder, bark, 0, .625, 0, .292, 1.25, .292)

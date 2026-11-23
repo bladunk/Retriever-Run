@@ -1,4 +1,4 @@
-import { laneWidth, traceContact } from './collision.js'
+import { isWaterHazard, laneWidth, traceContact } from './collision.js'
 import { diveWarningLead } from './dive.js'
 import { score } from './runner.js'
 import { regionAt } from './expedition.js'
@@ -12,10 +12,12 @@ export const causeNames = { water: 'Water', logs: 'Timber', geese: 'Diving geese
 const hazardNames = {
   stream: 'Creek crossing', puddle: 'Puddle', log: 'Fallen log', drift: 'Driftwood',
   goose: 'Diving goose', fence: 'Fence', branch: 'Overhead branch', root: 'Exposed root', tree: 'Tree trunk',
+  fallen: 'Uprooted tree', tractor: 'Farm tractor', washout: 'Flooded lane',
 }
 
 export function deathCause(hazard) {
-  if (hazard === 'stream' || hazard === 'puddle') return 'water'
+  if (isWaterHazard(hazard)) return 'water'
+  if (hazard === 'fallen') return 'logs'
   if (logTypes.includes(hazard)) return 'logs'
   if (hazard === 'goose') return 'geese'
   return 'other'

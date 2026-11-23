@@ -4,10 +4,17 @@ import { diveFrame, diveScale } from './dive.js'
 export { laneWidth } from './trail.js'
 export const jumpDuration = .92
 export const slideDuration = .87
+export const washoutSegments = 13
+export const washoutSpacing = 2.25
 
 const volume = (name, x, y, z, hx, hy, hz) => ({ name, x, y, z, hx, hy, hz })
 const post = (x) => volume('upright', x, .58, 0, .076, .58, .089)
 const beam = (width) => volume('overhead timber', 0, 1.17, 0, width, .091, .095)
+const overhang = (width) => [
+  beam(width),
+  volume('overhanging trunk', 0, 1.67, .015, width * .98, .41, .174),
+  volume('raised timber', 0, 2.08, .015, width * .93, .16, .109),
+]
 const log = (scale = 1) => [
   volume('log core', 0, .32 * scale, 0, .96, .23 * scale, .255),
   volume('log crown', 0, .561 * scale, 0, .96, .083 * scale, .162),
@@ -21,20 +28,31 @@ const solids = {
     volume('goose head', 0, .22 * diveScale, -.46 * diveScale, .086 * diveScale, .095 * diveScale, .127 * diveScale),
   ],
   tree: [volume('tree trunk', 0, .64, 0, .27, .64, .27)],
+  fallen: [
+    volume('upturned root plate', -.16, 1.18, 0, .72, 1.18, .46),
+    volume('downed trunk', .29, .65, .17, .66, .48, .42),
+  ],
+  tractor: [
+    volume('engine and frame', 0, .94, 0, .63, .46, .98),
+    volume('cab', 0, 1.83, .35, .56, .60, .56),
+    volume('left wheel', -.72, .51, .37, .23, .52, .59),
+    volume('right wheel', .72, .51, .37, .23, .52, .59),
+  ],
 
   fence: [
     post(-.85), post(.85),
     volume('upper rail', 0, .81, 0, .987, .08, .074),
     volume('lower rail', 0, .38, 0, .987, .08, .074),
   ],
-  branch: [beam(1.055), post(1.01)],
-  'branch-wide': [beam(3.62), post(-3.56), post(3.56)],
+  branch: [...overhang(1.055), post(1.01)],
+  'branch-wide': [...overhang(3.62), post(-3.56), post(3.56)],
   log: log(),
   root: log(.7).concat(volume('outlying root', -.41, .13, -.31, .28, .08, .13)),
   drift: log().concat(volume('caught timber', -.31, .39, .064, .245, .055, .26)),
 }
 const water = {
   stream: [volume('wet channel', 0, .008, 0, 3.54, .095, .73)],
+  washout: [volume('flooded lane', 0, .018, 0, .83, .09, washoutSpacing * .55)],
   puddle: [
     volume('puddle center', 0, .002, 0, .83, .092, .44),
     volume('puddle middle', 0, .002, 0, .61, .086, .64),
@@ -56,6 +74,8 @@ const paws = [
 export function obstacleVolumes(entity) {
   return water[entity.type] ?? solids[entity.wide ? entity.type + '-wide' : entity.type]
 }
+
+export const isWaterHazard = type => Object.hasOwn(water, type)
 
 export function obstacleOffset(entity, distance) {
   const sweep = entity.type === 'drift' ? (entity.sweep ?? 1) * .69 * Math.sin((distance - entity.distance) * .32) : 0

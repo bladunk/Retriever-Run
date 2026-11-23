@@ -3,7 +3,8 @@ import { courseStages, director, distanceAtTime, speedAtTime } from './difficult
 import { regionAt } from './expedition.js'
 export { difficultyAt, difficultyCurve, director, distanceAtTime, speedAt, speedAtTime } from './difficulty.js'
 
-import { jumpDuration, jumpHeight, laneWidth, obstacleVolumes, slideDuration, traceContact } from './collision.js'
+import { jumpDuration, jumpHeight, laneWidth, obstacleVolumes, slideDuration, traceContact,
+  washoutSegments, washoutSpacing } from './collision.js'
 export { jumpDuration, laneWidth, obstacleOffset, slideDuration } from './collision.js'
 
 export const powerDuration = 6
@@ -158,6 +159,7 @@ export function createCourse(seed = 1, rules = director) {
     }
     const blocked = lanes.filter((slot) => slot !== lane)
     if (random() < .5) blocked.reverse()
+    const washout = stage >= 5 && !gate && !goose && !requiredLane && nextGoose - time > 3.8 && random() < .036
 
     if (index === 0) {
       for (let i = -2; i <= 2; i++) add('treat', 0, at + i * 1.7)
@@ -179,9 +181,23 @@ export function createCourse(seed = 1, rules = director) {
       row.gate = { distance: at, duration: type === 'branch' ? slideDuration : jumpDuration }
       add('treat', lane, at + 3.6)
       add('treat', lane, at + 5.6)
+    } else if (washout) {
+      for (let segment = 0; segment < washoutSegments; segment++) {
+        row.entities.push({ type: 'washout', lane: blocked[0], distance: at + segment * washoutSpacing,
+          hazard: true, span: segment === Math.floor(washoutSegments / 2) ? (washoutSegments - 1) * washoutSpacing : 0 })
+      }
+      row.end = row.entities.at(-1).distance
+      add('fallen', blocked[1], at, true)
+      add('treat', lane, at)
+      add('treat', lane, at + 5.4)
     } else {
       const count = requiredLane && row.lane !== previous.lane || random() < blockChance ? 2 : 1
-      for (let i = 0; i < count; i++) add(index > 6 && random() < stage * .035 ? 'drift' : pick(types), blocked[i], at, true)
+      for (let i = 0; i < count; i++) {
+        const large = stage >= 3 && random() < stage * .034
+        const type = large ? stage === 4 && random() < .75 ? 'tractor' : 'fallen'
+          : index > 6 && random() < stage * .035 ? 'drift' : pick(types)
+        add(type, blocked[i], at, true)
+      }
       for (let i = -1; i <= 1; i++) {
         add(i === 0 && (index === 4 || random() < .12) ? pick(bonuses) : 'treat', lane, at + i * 1.72)
       }
@@ -201,6 +217,8 @@ export function createCourse(seed = 1, rules = director) {
     } else if (goose) {
       nextGoose = time + between(rules.gooseInterval)
       gap = Math.max(gap, 1.22)
+    } else if (washout) {
+      gap = (row.end - row.at) / speedAtTime(time, rules) + 1.25
     } else if (!wasPaired && row.gate && time >= nextPair && nextGoose - time > 4 &&
       random() < Math.max(rules.pairChance * Number(row.entities[0].type === 'stream'), chainChance)) {
       pairPending = stage >= 4 && random() < .82

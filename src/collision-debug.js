@@ -1,7 +1,7 @@
 import * as T from 'three'
 import { distanceAtTime, speedAtTime } from './difficulty.js'
 import { diveAge, diveWarning } from './dive.js'
-import { hazardFrame, obstacleVolumes, playerFrame, playerVolumes, volumeY } from './collision.js'
+import { hazardFrame, isWaterHazard, obstacleVolumes, playerFrame, playerVolumes, volumeY } from './collision.js'
 
 export function collisionDebug(scene) {
   const flags = new URLSearchParams(location.search)
@@ -82,7 +82,7 @@ export function collisionDebug(scene) {
         if (!parts) continue
         if (!closest || entity.distance < closest.distance) closest = entity
         hazardFrame(transform, entity, run.distance, run.distance)
-        const wet = entity.type === 'puddle' || entity.type === 'stream'
+        const wet = isWaterHazard(entity.type)
         const hit = death?.obstacleDistance === entity.distance && death?.obstacleLane === entity.lane && death?.type === entity.type
         for (const part of parts) draw(part, transform, hit && death.solid === part.name ? 'hit' : wet ? 'water' : 'solid')
       }

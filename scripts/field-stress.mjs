@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { createCourse, newRun, advance, collect, reactionWindow, score, touchesPickup } from '../src/runner.js'
-import { firstContact, obstacleVolumes, playerVolumes } from '../src/collision.js'
+import { firstContact, isWaterHazard, obstacleVolumes, playerVolumes } from '../src/collision.js'
 import { diveAge, diveExit } from '../src/dive.js'
 import { createFixedClock, samplePose } from '../src/timing.js'
 import { seededRandom } from '../src/trail.js'
@@ -94,7 +94,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
     if (killer) {
       assert.ok(hit.fraction >= 0 && hit.fraction <= 1)
       assert.ok(obstacleVolumes(killer).some(part => part.name === hit.solid))
-      assert.ok(playerVolumes(killer.type === 'stream' || killer.type === 'puddle').some(part => part.name === hit.part))
+      assert.ok(playerVolumes(isWaterHazard(killer.type)).some(part => part.name === hit.part))
       samplePose(run, previous, run, hit.fraction)
       assert.equal(run.distance, hit.distance)
       assert.equal(hit.type, killer.type)
