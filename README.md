@@ -15,7 +15,7 @@ An endless runner through North American wetlands with an athletic yellow Labrad
 
 Portrait is the primary layout. Swipe with one thumb anywhere on the trail or use the on-screen controls. Landscape is also supported. The game requires a modern WebGL 2 browser.
 
-Comfort mode starts enabled. Open **Settings** to adjust camera tracking, choose Adaptive, Low, Balanced, or High graphics, and change your sound or outfit.
+Comfort mode starts enabled. Open **Settings** to adjust camera tracking, choose Adaptive, Battery Saver, Balanced, or High graphics, and change your sound or outfit.
 
 Jump streams and low ground hazards, slide under branches, and steer around drifting debris. When geese descend, use the marked clear lane or duck at the second cue. Treat streaks increase your multiplier every five treats, up to 4×. Rare mallard and pheasant retrieves, duck calls, and decoys award bonus points and fill the Good Boy Meter faster. A full meter gives you six seconds of double pickup points.
 
@@ -32,6 +32,8 @@ npm run dev
 ```
 
 Test the static production build with `npm run build` and `npm run preview`. The [4.0 Lodge notes](OUTFITTER.md) cover progression, local profiles, and save migration. The [audio notes](AUDIO.md) include the original score and recording licenses. The [3.2 update notes](DIVING-GEESE.md) document the pace curve and flight warnings. The [3.1 repair notes](REPAIR.md) cover fixed-step contact, diagnostics, and terrain streaming. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
+
+The [5.0 release report](WILD-FRONTIER-5.0.md) covers the Kennel scrolling repair, graphics overhaul, performance comparisons, and Safari acceptance checks.
 
 The [4.5 release report](SPORTING-DOG-4.5.md) covers the fitted hunting vests, wetlands rendering, Career requirements, returning-player migration, and iPhone acceptance tests.
 

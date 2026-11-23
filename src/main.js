@@ -195,6 +195,9 @@ function initialize() {
 
   let kennel
   let kennelStage
+  const kennelSize = typeof ResizeObserver === 'function' ? new ResizeObserver(() => {
+    if (kennelStage) resize()
+  }) : null
   let trailPose
   resize = () => {
     needsRedraw = true
@@ -215,10 +218,12 @@ function initialize() {
   }
   showKennel = stage => {
     if (stage === kennelStage || (!stage && !kennelStage)) return
+    kennelSize?.disconnect()
     kennelStage = stage
     if (stage) {
       kennel ??= createKennelView()
       stage.append(ui.trail)
+      kennelSize?.observe(stage)
       ui.trail.setAttribute('aria-label', '3D Labrador equipment preview')
       dog.moveTo(kennel.room)
     } else {
@@ -267,7 +272,8 @@ function initialize() {
     }
     if (mode === 'title' || mode === 'running' || frozen) populate()
     const autoLow = mode === 'running' && profile.quality === 'auto' && autoPreset === 'low'
-    if (!present(ms, wall, autoLow) && !needsRedraw) return
+    const batterySaver = mode === 'running' && profile.quality === 'low'
+    if (!present(ms, wall, autoLow, batterySaver) && !needsRedraw) return
     const dt = Math.min(.10, Math.max(0, (ms - (lastRenderMs ?? ms)) / 1000))
     lastRenderMs = ms
     const animate = mode === 'title' || mode === 'running' || frozen

@@ -1,8 +1,10 @@
 import * as T from 'three'
 import { seededRandom } from './trail.js'
 
+export const dawnDirection = new T.Vector3(-.58, .22, -.82).normalize()
+
 const states = [
-  ['Autumn sunrise', 0x647477, 0xbe9a73, 0xead6ab, .013, .08, 0, 0, .11, 1.9],
+  ['Autumn sunrise', 0x49728a, 0xcdb69c, 0xffd69e, .0124, .14, 0, 0, .11, 2.05],
   ['Overcast', 0x59676d, 0xa6a69a, 0xd0d0bf, .017, .71, 0, 0, .23, .62],
   ['Morning fog', 0x717c77, 0xaeb0a1, 0xd7ccaa, .027, .45, 0, 0, .11, .76],
   ['Light rain', 0x48595d, 0x8e9c98, 0xb9c8ca, .019, .82, .43, 0, .35, .64],
@@ -36,7 +38,8 @@ const skyFragment = `
   uniform vec3 horizon;
   uniform vec3 sunColor;
   uniform float cloud;
-  uniform float clock;
+  uniform float clock, skyDetail;
+  uniform vec3 dawn;
   varying vec3 ray;
 
   float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -49,13 +52,17 @@ const skyFragment = `
   void main() {
     vec3 direction = normalize(ray);
     float height = max(0., direction.y);
-    vec3 color = mix(horizon, zenith, smoothstep(0., .76, height));
-    float toward = max(0., dot(direction, normalize(vec3(-.33, .155, -1.))));
-    color += sunColor * (pow(toward, 17.) * .23 + smoothstep(.999, .99955, toward) * 1.45) * (1. - cloud);
-    vec2 p = direction.xz * vec2(4., 7.) / max(.12, height + .12) + vec2(clock * .024, clock * .007);
-    float texture = noise(p)*.53 + noise(p*2.04)*.30 + noise(p*4.13)*.17;
-    float cover = smoothstep(.60-cloud*.29, .88-cloud*.25, texture);
-    color = mix(color, mix(horizon*.55, sunColor*.99, texture), cover*smoothstep(.015, .23, height) * .85);
+    float toward = max(0., dot(direction, dawn));
+    float tint = pow(toward, 10.) * (1. - cloud * .76);
+    vec3 lowSky = mix(horizon, mix(horizon, sunColor, .39), tint);
+    vec3 color = mix(lowSky, zenith, smoothstep(.015, .59, height));
+    color += sunColor * (pow(toward, 27.) * .34 + smoothstep(.99935, .99964, toward) * 1.85) * (1. - cloud);
+    vec2 p = direction.xz * vec2(4.8, 8.3) / max(.16, height + .13) + vec2(clock * .013, clock * .006);
+    float billow = noise(p) * .67 + noise(p * 2.05) * .33;
+    if (skyDetail > .5) billow += (noise(p * 4.06) - .5) * .14;
+    float cover = smoothstep(.57-cloud*.27, .83-cloud*.19, billow);
+    vec3 cloudLight = mix(horizon*.70, mix(horizon, sunColor, .49), smoothstep(.45,.81,billow) * (.42 + tint * .58));
+    color = mix(color, cloudLight, cover*smoothstep(.025, .20, height) * .79);
     gl_FragColor = vec4(color, 1.);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
@@ -106,7 +113,7 @@ function precipitation(scene, snow) {
 export function createAtmosphere(scene) {
   const sky = new T.Mesh(new T.SphereGeometry(146, 32, 16), new T.ShaderMaterial({
     uniforms: { zenith: { value: new T.Color() }, horizon: { value: new T.Color() },
-      sunColor: { value: new T.Color() }, cloud: { value: 0 }, clock: { value: 0 } },
+      sunColor: { value: new T.Color() }, dawn: { value: dawnDirection }, cloud: { value: 0 }, clock: { value: 0 }, skyDetail: { value: 1 } },
     vertexShader: skyVertex, fragmentShader: skyFragment, side: T.BackSide, depthWrite: false,
   }))
   sky.renderOrder = -50
@@ -114,15 +121,15 @@ export function createAtmosphere(scene) {
   scene.add(sky)
   const fog = new T.FogExp2(0xb7a78a, .015)
   scene.fog = fog
-  const fill = new T.HemisphereLight(0xd1dfde, 0x887750, 1.61)
+  const fill = new T.HemisphereLight(0xcbddef, 0x89734e, 1.56)
   const sun = new T.DirectionalLight(0xf7cb8e, 1.8)
-  sun.position.set(-12, 7, -14)
-  const front = new T.DirectionalLight(0xf1dfc3, .79)
+  sun.position.copy(dawnDirection).multiplyScalar(28)
+  const front = new T.DirectionalLight(0xf4e8d7, .84)
   front.position.set(7, 6, 10)
   scene.add(sun, fill, front)
   const rain = precipitation(scene, false)
   const snow = precipitation(scene, true)
-  const result = { name: '', wind: 0, wet: 0, rain: 0, sky: new T.Color() }
+  const result = { name: '', wind: 0, wet: 0, rain: 0, sky: new T.Color(), zenith: new T.Color(), light: new T.Color() }
   return {
     update(elapsed, time, budget) {
       const { from, to, blend } = weatherAt(elapsed)
@@ -133,12 +140,15 @@ export function createAtmosphere(scene) {
       uniforms.sunColor.value.copy(from.sun).lerp(to.sun, blend)
       uniforms.cloud.value = lerp('cloud')
       uniforms.clock.value = time
+      uniforms.skyDetail.value = budget > .53 ? 1 : 0
       fog.color.copy(uniforms.horizon.value)
       result.sky.copy(uniforms.horizon.value)
-      fog.density = lerp('fog') * 1.045
+      result.zenith.copy(uniforms.zenith.value)
+      result.light.copy(uniforms.sunColor.value)
+      fog.density = lerp('fog')
       sun.color.copy(uniforms.sunColor.value)
       sun.intensity = lerp('light') * 1.12
-      fill.intensity = 1.47 - lerp('cloud') * .22
+      fill.intensity = 1.45 - lerp('cloud') * .17
       result.rain = lerp('rain')
       result.wind = lerp('wind')
       result.wet = Math.min(1, result.rain + lerp('snow') * .24)

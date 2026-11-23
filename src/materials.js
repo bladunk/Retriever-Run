@@ -40,19 +40,32 @@ export function createFieldMaterial() {
       .replace('#include <color_fragment>', `#include <color_fragment>
         bool onGround = vFieldLayer > .5;
         bool onWood = vFieldLayer > 1.5;
+        bool onCrossCut = vFieldLayer > 2.5;
         vec4 fieldPbr = vec4(.5, .5, .85, 1.);
         if (onGround) {
-          vec3 grain = onWood ? texture2D(fieldWood, vFieldUv).rgb : texture2D(fieldEarth, vFieldUv).rgb;
+          vec2 surfaceUV = vFieldUv;
+          if (!onWood) surfaceUV += vec2(sin(vFieldUv.y*.78), sin(vFieldUv.x*1.2 + vFieldUv.y*.39))*.09;
+          vec3 grain = onWood ? texture2D(fieldWood, surfaceUV).rgb : texture2D(fieldEarth, surfaceUV).rgb;
           diffuseColor.rgb *= mix(vec3(.70), grain * (onWood ? 2.75 : 2.40), onWood ? .66 : .88);
           if (fieldDetail > .0) {
-            fieldPbr = onWood ? texture2D(fieldWoodPbr, vFieldUv) : texture2D(fieldEarthPbr, vFieldUv);
+            fieldPbr = onWood ? texture2D(fieldWoodPbr, surfaceUV) : texture2D(fieldEarthPbr, surfaceUV);
             diffuseColor.rgb *= mix(.73, 1., fieldPbr.a);
           }
           if (!onWood) {
             float silt = sin(vFieldUv.y * 1.07 + sin(vFieldUv.x * 3.17)) *
               sin(vFieldUv.x * 4.71 + vFieldUv.y * .38);
-            diffuseColor.rgb *= mix(vec3(.83,.88,.89), vec3(1.19,1.14,1.10), smoothstep(-.72,.72,silt));
-            fieldPbr.b -= .13 * max(0., -silt);
+            float tracks = abs(abs(vFieldUv.x + .037 * sin(vFieldUv.y * .78)) - .42);
+            float rut = (1. - smoothstep(.09,.21,tracks)) * (.28 + .30*smoothstep(-.5,.58,silt));
+            float bank = smoothstep(1.26,1.75,abs(vFieldUv.x));
+            float damp = max(rut, bank * (.38 + .27 * silt));
+            diffuseColor.rgb *= mix(vec3(1.15,1.13,1.10), vec3(.56,.66,.67), damp);
+            fieldPbr.b -= .34 * damp;
+          }
+          if (onCrossCut) {
+            vec2 split = surfaceUV - vec2(.46,.53);
+            float rings = length(split) + .008*sin(split.x*18.) + .012*sin(split.y*13.);
+            float cut = smoothstep(-.1,.64,sin(rings*130. + grain.r*1.7));
+            diffuseColor.rgb *= mix(vec3(.74,.64,.52),vec3(1.34,1.17,.96),cut);
           }
           diffuseColor.rgb *= 1. - fieldWet * (onWood ? .16 : .23);
         }`)

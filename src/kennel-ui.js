@@ -9,73 +9,86 @@ export function kennelRoom(lodge, showAppearance) {
   const standing = careerStanding(player.career)
   const stage = node('div', null, 'kennel-stage')
   stage.setAttribute('aria-label', 'Labrador equipment preview')
+  stage.tabIndex = -1
+
   const filters = node('div', null, 'board-filters')
+  filters.setAttribute('role', 'group')
   filters.setAttribute('aria-label', 'Equipment category')
   const options = node('div', null, 'kennel-items')
   options.setAttribute('role', 'group')
   options.setAttribute('aria-label', 'Equipment options')
-  const feedback = node('div', null, 'kennel-selection')
-  const description = node('p')
+
+  const description = node('p', null, 'kennel-preview-status')
   description.setAttribute('role', 'status')
+  const fitting = node('div', null, 'kennel-fitting')
+  fitting.append(stage, description, filters)
+
+  const feedback = node('div', null, 'kennel-selection')
   const equip = node('button', 'Equip')
+  const peek = node('button', 'View preview')
   const reset = node('button', 'Reset to Classic')
-  equip.type = reset.type = 'button'
-  feedback.append(description, equip, reset)
+  equip.type = peek.type = reset.type = 'button'
+  feedback.append(equip, peek, reset)
   let category = 'collar'
   let selected = player.kennel.equipment[category]
+  let cards = []
 
-  function update(resetScroll = false) {
-    const scroll = options.scrollTop
-    for (const button of filters.children) button.setAttribute('aria-pressed', String(button.dataset.category === category))
-    options.replaceChildren(...kennelCatalog[category].filter(item => item.level || item.rank || player.kennel.inherited.includes(item.id))
+  const available = item => unlocked(item, standing, player.kennel.inherited)
+  function update() {
+    for (const { item, button, label } of cards) {
+      button.setAttribute('aria-pressed', String(selected === item.id))
+      label.textContent = player.kennel.equipment[category] === item.id ? 'Equipped'
+        : available(item) ? 'Unlocked' : gearRequirement(item)
+    }
+    const item = kennelCatalog[category].find(item => item.id === selected)
+    const equipped = player.kennel.equipment[category] === selected
+    description.textContent = equipped ? 'Wearing ' + item.name : 'Previewing ' + item.name
+    equip.textContent = equipped ? 'Equipped' : available(item) ? 'Equip' : gearRequirement(item)
+    equip.disabled = equipped || !available(item)
+    showAppearance({ ...player.kennel.equipment, [category]: selected })
+  }
+
+  function switchCategory(value) {
+    category = value
+    selected = player.kennel.equipment[category]
+    for (const button of filters.children) button.setAttribute('aria-pressed', String(button.dataset.category === value))
+    cards = kennelCatalog[category].filter(item => item.level || item.rank || player.kennel.inherited.includes(item.id))
       .map(item => {
-        const worn = player.kennel.equipment[category] === item.id
-        const available = unlocked(item, standing, player.kennel.inherited)
         const button = node('button', null, 'gear-option')
         button.type = 'button'
         button.dataset.gear = item.id
-        button.setAttribute('aria-pressed', String(selected === item.id))
         const swatch = node('span', null, 'gear-swatch')
-        swatch.style.setProperty('--gear-color', item.color === null ? 'transparent' : '#' + item.color.toString(16).padStart(6, '0'))
-        if (item.id === 'classic-yellow') swatch.style.setProperty('--gear-color', '#c49354')
-        button.append(swatch, node('strong', item.name),
-          node('small', worn ? 'Equipped' : available ? 'Unlocked' : gearRequirement(item)))
+        const color = item.id === 'classic-yellow' ? 0xc49354 : item.color
+        swatch.style.setProperty('--gear-color', color === null ? 'transparent' : '#' + color.toString(16).padStart(6, '0'))
+        const label = node('small')
+        button.append(swatch, node('strong', item.name), label)
         button.addEventListener('click', () => {
           selected = item.id
           update()
-          options.querySelector('[data-gear="' + selected + '"]').focus({ preventScroll: true })
         })
-        return button
-      }))
-    const item = kennelCatalog[category].find(item => item.id === selected)
-    const equipped = player.kennel.equipment[category] === selected
-    const available = unlocked(item, standing, player.kennel.inherited)
-    description.textContent = equipped ? 'Wearing ' + item.name : 'Previewing ' + item.name
-    equip.textContent = equipped ? 'Equipped' : available ? 'Equip' : gearRequirement(item)
-    equip.disabled = equipped || !available
-    options.scrollTop = resetScroll ? 0 : scroll
-    showAppearance({ ...player.kennel.equipment, [category]: selected })
+        return { item, button, label }
+      })
+    options.replaceChildren(...cards.map(card => card.button))
+    update()
   }
 
   for (const [id, label] of Object.entries(categories)) {
     const button = node('button', label)
     button.type = 'button'
     button.dataset.category = id
-    button.addEventListener('click', () => {
-      category = id
-      selected = player.kennel.equipment[category]
-      update(true)
-    })
+    button.addEventListener('click', () => switchCategory(id))
     filters.append(button)
   }
   equip.addEventListener('click', () => { if (lodge.equip(category, selected)) update() })
+  peek.addEventListener('click', () => {
+    stage.scrollIntoView({ block: 'start' })
+    stage.focus({ preventScroll: true })
+  })
   reset.addEventListener('click', () => {
     lodge.resetGear()
     selected = player.kennel.equipment[category]
     update()
   })
-  update()
-  const fitting = node('div', null, 'kennel-fitting')
-  fitting.append(stage, filters, feedback)
-  return { content: [fitting, options], stage }
+  switchCategory(category)
+  return { content: [fitting, options, feedback], stage }
 }

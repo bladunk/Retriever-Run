@@ -2,14 +2,25 @@ import * as T from 'three'
 
 export function createKennelView() {
   const room = new T.Scene()
-  room.background = new T.Color(0x29382f)
-  room.fog = new T.Fog(0x29382f, 5.5, 13)
-  const sky = new T.HemisphereLight(0xd9e5df, 0x827055, 1.80)
-  const key = new T.DirectionalLight(0xffdec1, 2.5)
-  key.position.set(2, 4, -3)
-  const rim = new T.DirectionalLight(0xcbdde5, 1.28)
-  rim.position.set(-2, 2, 3)
-  const floor = new T.Mesh(new T.PlaneGeometry(60, 60), new T.MeshStandardMaterial({ color: 0x494635, roughness: 1 }))
+  room.background = new T.Color(0x283831)
+  room.fog = new T.FogExp2(0x283831, .10)
+  const sky = new T.HemisphereLight(0xd8e6e2, 0x80654a, 1.90)
+  const key = new T.DirectionalLight(0xffe2ca, 2.55)
+  key.position.set(2.6, 3.8, -4.2)
+  const rim = new T.DirectionalLight(0xcce7e0, 1.53)
+  rim.position.set(-2.3, 2.6, 3.4)
+  const floorMaterial = new T.MeshStandardMaterial({ color: 0x4d4232, roughness: .96 })
+  floorMaterial.onBeforeCompile = shader => {
+    shader.vertexShader = 'varying vec2 stagePoint;\n' + shader.vertexShader
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nstagePoint = position.xy;')
+    shader.fragmentShader = 'varying vec2 stagePoint;\n' + shader.fragmentShader
+      .replace('#include <color_fragment>', `#include <color_fragment>
+        float ambient = 1. - smoothstep(1.2,6.2,length(stagePoint * vec2(.70,1.)));
+        float grain = 1. + sin(stagePoint.y*5.3 + .27*sin(stagePoint.x*12.6))*.055;
+        diffuseColor.rgb *= (.61 + ambient*.42) * grain;
+      `)
+  }
+  const floor = new T.Mesh(new T.PlaneGeometry(60, 60), floorMaterial)
   floor.rotation.x = -Math.PI / 2
   floor.position.y = -.01
   room.add(sky, key, rim, floor)
@@ -34,10 +45,10 @@ export function createKennelView() {
       previous = ms
       pose.time += reduced ? 0 : dt
       pose.dt = dt
-      const angle = 1.20 + (reduced ? 0 : .19 * Math.sin(pose.time * .37))
-      const radius = Math.max(3.65, 6.3 / Math.max(.75, orbit.aspect))
-      orbit.position.set(Math.sin(angle) * radius, 1.43, -Math.cos(angle) * radius)
-      orbit.lookAt(0, .76, -.085)
+      const angle = 1.06 + (reduced ? 0 : .19 * Math.sin(pose.time * .37))
+      const radius = Math.max(3.5, 6.05 / Math.max(.81, orbit.aspect))
+      orbit.position.set(Math.sin(angle) * radius, 1.51, -Math.cos(angle) * radius)
+      orbit.lookAt(0, .78, -.11)
       dog.pose(pose)
       renderer.render(room, orbit)
     },

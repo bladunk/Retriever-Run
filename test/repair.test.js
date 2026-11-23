@@ -145,3 +145,14 @@ test('natural surface tiles align at boardwalk-free boundaries and pack transfer
     assert.ok(current.detail.index.length > 0)
   }
 })
+
+
+test('the same streamed habitat reproduces shore planting, water depths and tree locations', () => {
+  const marsh = buildTile(3)
+  assert.deepEqual(buildTile(3), marsh)
+  assert.deepEqual([3, 8, 14, 20, 26].map(index => buildTile(index).plantType), [0, 1, 2, 2, 0])
+  assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth > .35))
+  assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth === 0))
+  assert.notDeepEqual(buildTile(4).reeds, marsh.reeds)
+  assert.equal(buildTile(20).water, null)
+})
