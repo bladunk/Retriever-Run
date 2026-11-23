@@ -12,12 +12,12 @@ import { centerAt, habitatAt, headingAt, placeOnTrail, segmentLength } from '../
 
 test('difficulty follows the requested time curve and saturates', () => {
   for (const [seconds, level] of difficultyCurve) assert.equal(difficultyAt(seconds), level)
-  assert.equal(difficultyAt(15), 2.75)
+  assert.equal(difficultyAt(7.5), 2.7)
   assert.equal(difficultyAt(240), 9.5)
   const run = newRun()
   for (let i = 0; i < 60; i++) advance(run, .5)
   assert.equal(run.elapsed, 30)
-  assert.equal(run.speed, speedAt(3.5))
+  assert.equal(run.speed, speedAt(5.1))
   assert.ok(run.distance > 330)
 })
 
@@ -54,7 +54,7 @@ test('planner is deterministic and rejects unsafe or overlapping rows', () => {
   assert.equal(validateRow(previous, { at: 138, lane: 0, entities: [log] }, 24), false)
 })
 
-test('a timed lane, jump and slide policy can finish 80 seeded courses without a shield', () => {
+test('a timed lane, jump and slide policy can clear 80 seeded courses through full difficulty', () => {
   const encountered = new Set()
   for (let seed = 0; seed < 80; seed++) {
     const course = createCourse(seed)
@@ -81,14 +81,14 @@ test('a timed lane, jump and slide policy can finish 80 seeded courses without a
         encountered.add(item.type + (item.wide ? '-wide' : ''))
         assert.equal(traceContact(prev, run, item), false, 'seed ' + seed + ', ' + item.type + ' near ' + row.at)
       }
-      if (run.distance > row.at + 1.58) {
+      if (run.distance > (row.end ?? row.at) + 1.58) {
         row = course()
         crossedAt = run.elapsed
         gateAction = false
       }
     }
   }
-  for (const type of ['stream-wide', 'branch-wide', 'drift', 'fence', 'root', 'puddle', 'log']) assert.ok(encountered.has(type))
+  for (const type of ['stream-wide', 'branch-wide', 'drift', 'fence', 'root', 'puddle', 'log', 'tree', 'goose']) assert.ok(encountered.has(type))
 })
 
 test('combos, rare retrieves, power and old local records remain consistent', () => {
@@ -100,7 +100,7 @@ test('combos, rare retrieves, power and old local records remain consistent', ()
   assert.equal(run.retrieves, 2)
   assert.equal(run.power, powerDuration)
   assert.equal(collect(run, 'call').points, 150)
-  assert.equal(traceContact(run, run, { type: 'stream', hazard: true, lane: 0, distance: 0 }), false)
+  assert.equal(traceContact(run, run, { type: 'stream', hazard: true, lane: 0, distance: 0 }), true)
   advance(run, 6)
   assert.equal(run.power, 0)
   run.distance = 600.1

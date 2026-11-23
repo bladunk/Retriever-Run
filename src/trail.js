@@ -1,4 +1,5 @@
 export const segmentLength = 30
+export const laneWidth = 2.3
 
 // The lane grid is measured along the cross-section of a continuous trail.
 export function centerAt(distance) {

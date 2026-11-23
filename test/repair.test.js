@@ -20,11 +20,12 @@ test('grounded stream contact uses paws and shallow jumps clear the rendered sur
   assert.equal(traceContact(pose, pose, fixture('puddle', 39)), false)
 })
 
-test('trees and other scenery are physics-free and passing a hazard clears it for good', () => {
+test('scenery is physics-free and passing a hazard clears it for good', () => {
   const log = fixture('log')
   const pose = { ...newRun(), distance: 100 }
   assert.equal(traceContact(pose, pose, { ...log, hazard: false }), false)
-  assert.equal(traceContact(pose, pose, fixture('tree')), false)
+  assert.equal(traceContact(pose, pose, { ...fixture('tree'), hazard: false }), false)
+  assert.equal(traceContact(pose, pose, fixture('tree')), true)
   for (let n = 0; n < 25; n++) {
     const old = { ...pose, distance: log.distance + 1.6 + n * .2 }
     const next = { ...old, distance: old.distance + .22 }
@@ -44,7 +45,7 @@ test('branch contact follows beam height, supports and the crouch envelope', () 
   assert.notDeepEqual(obstacleVolumes(beam), obstacleVolumes({ ...beam, wide: false }))
 })
 
-test('sweep reports earliest attributed contact and respects a shield expiring during the tick', () => {
+test('sweep reports the same earliest contact during a Good Boy scoring bonus', () => {
   const log = fixture('log')
   const before = { ...newRun(), distance: 98.45, elapsed: 2 }
   const after = { ...before, distance: 100.35, elapsed: 2.2 }
@@ -54,10 +55,9 @@ test('sweep reports earliest attributed contact and respects a shield expiring d
   assert.ok(details.part && details.solid && details.type === 'log')
   const impact = samplePose({}, before, after, details.fraction)
   assert.equal(impact.distance, details.distance)
-  const shielded = { ...before, power: .12 }
-  assert.ok(traceContact(shielded, after, log, details))
-  assert.ok(details.fraction >= .59)
-  assert.equal(traceContact({ ...before, power: 1 }, { ...after, power: .8 }, log), false)
+  const original = { ...details }
+  assert.ok(traceContact({ ...before, power: 1 }, { ...after, power: .8 }, log, details))
+  assert.deepEqual(details, original)
 })
 
 test('curve and lane changes share the same rendered positions with the solver', () => {

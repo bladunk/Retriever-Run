@@ -16,7 +16,8 @@ import {
 } from './runner.js'
 import { habitatAt, placeOnTrail, surfaceAt, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
-import { createWildlife } from './wildlife.js'
+import { createDivingFlocks, createWildlife } from './wildlife.js'
+import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
@@ -40,6 +41,11 @@ const candidate = {}
 const contact = {}
 const controls = []
 const hudCache = {}
+const clearLanes = ['Left lane clear', 'Center lane clear', 'Right lane clear']
+const flightWarnings = {
+  approach: clearLanes.map(lane => 'Low geese ahead · ' + lane),
+  duck: clearLanes.map(lane => '↓  Duck · ' + lane),
+}
 let ticks = 0
 let debug
 let viewWidth = 390
@@ -75,6 +81,7 @@ let previousTime
 let gesture
 let lastCondition = ''
 let cuePriority = 0
+let flightLabel = ''
 let cueUntil = 0
 let visualTime = 0
 let autoPreset = 'balanced'
@@ -104,6 +111,7 @@ function initialize() {
   const atmosphere = createAtmosphere(scene)
   const terrain = createTerrain(scene)
   const wildlife = createWildlife(scene, sound.bird)
+  const diving = createDivingFlocks(scene)
   if (new URLSearchParams(location.search).get('debug') === 'collision') {
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
   }
@@ -193,6 +201,7 @@ function initialize() {
       spray.update(distance, visualTime)
       populate()
       positionEntities(visualTime, distance)
+      diving(entities, distance, visualTime, preset.detail === 0)
       frozen = false
     }
     if (mode === 'title' || mode === 'running' || needsRedraw) {
@@ -233,6 +242,7 @@ function acquire(entity) {
 }
 
 function release(entity) {
+  if (!entity.model) return
   entity.model.removeFromParent()
   const key = entity.type + (entity.wide ? '-wide' : '')
   if (!entity.hazard) entity.model.scale.setScalar(1)
@@ -241,9 +251,9 @@ function release(entity) {
 }
 
 function populate() {
-  while (row.at < run.distance + 80) {
+  while (row.at < run.distance + 102) {
     for (const entity of row.entities) {
-      entity.model = acquire(entity)
+      if (entity.type !== 'goose') entity.model = acquire(entity)
       entities.push(entity)
     }
     row = nextRow()
@@ -252,6 +262,9 @@ function populate() {
 
 function positionEntities(time, distance) {
   for (const entity of entities) {
+    if (!entity.model) continue
+    entity.model.visible = entity.distance <= distance + 80
+    if (!entity.model.visible) continue
     const pose = hazardFrame(obstaclePosition, entity, distance, distance)
     entity.model.position.set(pose.x, pose.y, pose.z)
     entity.model.rotation.y = pose.angle
@@ -324,9 +337,22 @@ function step(dt) {
     sound.play('milestone')
   }
 
+  let warningLabel = ''
   for (let index = entities.length - 1; index >= 0; index--) {
     const entity = entities[index]
     const ahead = entity.distance - run.distance
+    if (entity.type === 'goose') {
+      const warning = diveWarning(entity, run.distance)
+      if (warning) {
+        warningLabel = flightWarnings[warning][entity.safeLane + 1]
+        if (warning === 'approach' && !entity.cued) {
+          entity.cued = true
+          sound.approachingGeese()
+        }
+      }
+      if (diveAge(entity, run.distance) > diveExit) entities.splice(index, 1)
+      continue
+    }
     if (entity.hazard) {
       if (entity.wide && !entity.cued && ahead > 0 && ahead < run.speed * 1.05) {
         announce(entity.type === 'stream' ? '↑  Jump the crossing' : '↓  Slide under the branch', 4)
@@ -343,9 +369,9 @@ function step(dt) {
       entity.duration = retrieve ? .72 : .30
       entity.remaining = entity.duration
       sound.play(retrieve ? 'retrieve' : result.activated ? 'power' : treat ? 'treat' : 'bonus')
-      if (retrieve && result.activated) announce(pickupNames[entity.type] + '  +' + result.points + ' · Good Boy shield', 3)
+      if (retrieve && result.activated) announce(pickupNames[entity.type] + '  +' + result.points + ' · Good Boy bonus', 3)
       else if (retrieve && run.retrieves + profile.retrieves === 3) announce(pickupNames[entity.type] + ' · Marsh bandana unlocked', 3)
-      else if (result.activated) announce('Good Boy!  ·  Shield + double pickups', 3)
+      else if (result.activated) announce('Good Boy!  ·  Double pickup points', 3)
       else if (!treat) announce(pickupNames[entity.type] + '  +' + result.points, 3)
       else announce('+' + result.points + (multiplier(run.streak) > 1 ? '  ·  ' + multiplier(run.streak) + '× streak' : ''), 1)
       effects.push(entity)
@@ -355,6 +381,11 @@ function step(dt) {
       release(entity)
       entities.splice(index, 1)
     }
+  }
+  if (warningLabel !== flightLabel) {
+    flightLabel = warningLabel
+    ui['flight-warning'].hidden = !flightLabel
+    ui['flight-warning'].textContent = flightLabel
   }
   for (let index = effects.length - 1; index >= 0; index--) {
     const effect = effects[index]
@@ -408,7 +439,7 @@ function updateHud() {
   const powered = run.power > 0
   if (hudCache.powered !== powered) {
     ui.hud.classList.toggle('power', powered)
-    ui['meter-label'].textContent = powered ? 'Good Boy · Shield + 2× pickups' : 'Good Boy Meter'
+    ui['meter-label'].textContent = powered ? 'Good Boy · 2× pickup points' : 'Good Boy Meter'
   }
   hudCache.points = points
   hudCache.distance = distance
@@ -462,6 +493,8 @@ function setMode(value) {
       : 'Your run is held at ' + Math.floor(run.distance) + ' m.'
   ui.primary.firstChild.textContent = title ? 'Start run ' : over ? 'Run again ' : 'Resume run '
   if (!running) {
+    flightLabel = ''
+    ui['flight-warning'].hidden = true
     sound.ambience({ wind: 0, rain: 0 }, false)
     calloutAnimation?.cancel()
     ui.callout.textContent = ''

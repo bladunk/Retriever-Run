@@ -1,6 +1,7 @@
-import { placeOnTrail, trailHeight } from './trail.js'
+import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
+import { diveFrame, diveScale } from './dive.js'
 
-export const laneWidth = 2.3
+export { laneWidth } from './trail.js'
 export const jumpDuration = .92
 export const slideDuration = .87
 
@@ -14,6 +15,13 @@ const log = (scale = 1) => [
 ]
 
 const solids = {
+  goose: [
+    volume('goose body', 0, 0, 0, .211 * diveScale, .166 * diveScale, .285 * diveScale),
+    volume('goose neck', 0, .147 * diveScale, -.326 * diveScale, .071 * diveScale, .162 * diveScale, .143 * diveScale),
+    volume('goose head', 0, .22 * diveScale, -.46 * diveScale, .086 * diveScale, .095 * diveScale, .127 * diveScale),
+  ],
+  tree: [volume('tree trunk', 0, .64, 0, .27, .64, .27)],
+
   fence: [
     post(-.85), post(.85),
     volume('upper rail', 0, .81, 0, .987, .08, .074),
@@ -73,6 +81,7 @@ export function playerFrame(frame, run, origin = 0) {
 }
 
 export function hazardFrame(frame, entity, distance, origin = 0) {
+  if (entity.type === 'goose') return diveFrame(frame, entity, distance, origin)
   const offset = obstacleOffset(entity, distance)
   frame.angle = placeOnTrail(frame, entity.distance, offset, origin)
   frame.y = trailHeight(entity.distance, offset)
@@ -128,8 +137,8 @@ function constrain(a, b, halfA, halfB) {
   return true
 }
 
-function sweptBox(a, b, solid, dog, minTime, maxTime) {
-  interval.enter = minTime
+function sweptBox(a, b, solid, dog, maxTime) {
+  interval.enter = 0
   interval.exit = maxTime
   const x = a.x - solid.x
   const z = a.z - solid.z
@@ -154,13 +163,10 @@ function sweptBox(a, b, solid, dog, minTime, maxTime) {
 }
 
 // Sweep endpoint poses relative to the same visible obstacle. Only playable hazards have volumes.
-// The in-tick bound is 0.23 m at maximum speed, so a linear sweep is conservative within one tick.
+// The fixed step keeps the endpoint sweep local, including when a goose moves toward the dog.
 export function traceContact(previous, current, entity, witness) {
   const bounds = obstacleVolumes(entity)
   if (!entity.hazard || !bounds || entity.distance < previous.distance - 3 || entity.distance > current.distance + 3) return false
-  if (previous.power > 0 && current.power > 0) return false
-  const dt = current.elapsed - previous.elapsed
-  const minTime = previous.power > 0 && dt > 0 ? Math.min(1, previous.power / dt) : 0
   playerFrame(dogStart, previous, previous.distance)
   playerFrame(dogEnd, current, previous.distance)
   hazardFrame(hazardStart, entity, previous.distance, previous.distance)
@@ -173,7 +179,7 @@ export function traceContact(previous, current, entity, witness) {
     relative(from, dogStart, hazardStart, part)
     relative(to, dogEnd, hazardEnd, part)
     for (const solid of bounds) {
-      const sample = sweptBox(from, to, solid, part, minTime, Math.min(1, time))
+      const sample = sweptBox(from, to, solid, part, Math.min(1, time))
       if (sample < time) {
         time = sample
         hitPart = part

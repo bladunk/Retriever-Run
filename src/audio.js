@@ -110,6 +110,14 @@ export function createSound() {
       note(effects, hz * 1.15, .21, .18, .021, 'triangle', hz * .84)
       filteredNoise(effects, 'bandpass', 820, .038, .34)
     },
+    approachingGeese() {
+      if (!effectsOn || context?.state !== 'running') return
+      for (const [delay, pitch] of [[0, 365], [.24, 421]]) {
+        note(effects, pitch, delay, .20, .076, 'triangle', pitch * .78, .031)
+        note(effects, pitch * 2, delay, .13, .024, 'triangle', pitch * 1.56, .024)
+      }
+      filteredNoise(effects, 'bandpass', 960, .034, .37)
+    },
     play(effect) {
       if (effect === 'treat') {
         note(effects, 690, 0, .11)
