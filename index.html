@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#20251c">
   <meta name="description" content="Follow a yellow Labrador into the Wildlands.">
-  <title>Retriever Run | Wildlands</title>
+  <title>Retriever Run | The Outfitter’s Lodge</title>
 </head>
 <body>
   <main id="game" aria-label="Retriever Run">
@@ -15,6 +15,7 @@
     <header>
       <div class="brand"><span aria-hidden="true">◆</span> RETRIEVER RUN</div>
       <div class="tools">
+        <button id="music-toggle" type="button">Play music</button>
         <button id="settings" type="button">Settings</button>
         <button id="pause" type="button" hidden>Pause</button>
       </div>
@@ -34,16 +35,71 @@
     <div id="conditions" hidden><span id="habitat"></span><span id="weather"></span></div>
     <div id="flight-warning" class="callout" role="status" hidden></div>
     <div id="callout" class="callout" aria-hidden="true"></div>
+    <div id="patch-toast" class="patch-toast" role="status" hidden></div>
     <section id="menu" class="menu" aria-labelledby="menu-title">
       <div class="menu-content">
         <p class="eyebrow" id="eyebrow">THE WETLANDS TRAIL</p>
         <h1 id="menu-title">Retriever<br><em>Run</em></h1>
         <p id="menu-copy">Follow a yellow Lab through the cattails, creek beds, and flooded timber.</p>
+        <p id="current-runner" class="current-runner"></p>
         <p id="record" class="record" hidden></p>
-        <button id="primary" class="primary" type="button">Start run <span aria-hidden="true">→</span></button>
+        <button id="primary" class="primary" type="button">Start run</button>
+        <button id="open-lodge" class="lodge-entry" type="button">Outfitter’s Lodge</button>
         <p class="control-hint" id="hint">Swipe or use arrows to steer, jump, and duck.</p>
       </div>
     </section>
+    <section id="field-report" class="report" aria-labelledby="report-title" hidden>
+      <div class="report-sheet">
+        <div class="report-intro">
+          <p class="lodge-kicker" id="report-nickname"></p>
+          <h2 id="report-title">Field Report</h2>
+          <p id="report-message"></p>
+          <div id="report-headline" class="record-grid"></div>
+        </div>
+        <div class="report-notes">
+          <dl class="field-list" id="report-tallies"></dl>
+          <section id="report-highlights" aria-label="Run highlights"></section>
+        </div>
+        <div class="report-actions">
+          <button id="run-again" class="primary" type="button">Run Again</button>
+          <div>
+            <button id="report-lodge" type="button">Outfitter’s Lodge</button>
+            <button id="main-menu" type="button">Main Menu</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <dialog id="lodge" aria-labelledby="lodge-title">
+      <div class="lodge-heading">
+        <div>
+          <p class="lodge-kicker">Retriever Run</p>
+          <h2 id="lodge-title">The Outfitter’s <em>Lodge</em></h2>
+        </div>
+        <button id="close-lodge" type="button" aria-label="Close Outfitter’s Lodge">×</button>
+      </div>
+      <details class="camp-profile" id="camp-profile">
+        <summary id="active-nickname"></summary>
+        <div class="profile-fields">
+          <label for="local-player">Local player</label>
+          <select id="local-player"></select>
+          <form id="nickname-form">
+            <label for="nickname">Nickname</label>
+            <input id="nickname" type="text" maxlength="24" autocomplete="off">
+            <div class="profile-actions">
+              <button type="submit" name="saveName" value="rename">Save name</button>
+              <button type="submit" name="saveName" value="new">New player</button>
+            </div>
+          </form>
+        </div>
+      </details>
+      <nav class="lodge-tabs" aria-label="Lodge rooms" role="tablist">
+        <button type="button" role="tab" id="tab-trophies" aria-selected="true" aria-controls="lodge-panel" data-room="trophies">Trophy Room</button>
+        <button type="button" role="tab" id="tab-board" aria-selected="false" aria-controls="lodge-panel" data-room="board" tabindex="-1">Camp Leaderboard</button>
+        <button type="button" role="tab" id="tab-journal" aria-selected="false" aria-controls="lodge-panel" data-room="journal" tabindex="-1">Field Journal</button>
+        <button type="button" role="tab" id="tab-records" aria-selected="false" aria-controls="lodge-panel" data-room="records" tabindex="-1">Personal Records</button>
+      </nav>
+      <div id="lodge-panel" class="lodge-panel" role="tabpanel" aria-labelledby="tab-trophies" tabindex="0"></div>
+    </dialog>
     <dialog id="preferences" aria-labelledby="preferences-title">
       <div class="preferences-heading">
         <h2 id="preferences-title">Field settings</h2>
