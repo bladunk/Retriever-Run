@@ -13,7 +13,9 @@ An endless runner through North American wetlands with an athletic yellow Labrad
 | Slide | Swipe down or tap ↓ | ↓ or S |
 | Pause or resume | Tap Pause or Resume | P or Esc |
 
-Landscape gives you the widest trail view. Portrait also works. The game requires a modern WebGL 2 browser.
+Portrait is the primary layout. Swipe with one thumb anywhere on the trail or use the on-screen controls. Landscape is also supported. The game requires a modern WebGL 2 browser.
+
+Comfort mode starts enabled. Open **Settings** to adjust camera tracking, choose Adaptive, Low, Balanced, or High graphics, and change your sound or outfit.
 
 Jump streams and low ground hazards, slide under branches, and steer around drifting debris. Treat streaks increase your multiplier every five treats, up to 4×. Rare mallard and pheasant retrieves, duck calls, and decoys award bonus points and fill the Good Boy Meter faster. A full meter gives you six seconds of collision protection and double pickup points.
 
@@ -29,7 +31,7 @@ npm test
 npm run dev
 ```
 
-Test the static production build with `npm run build` and `npm run preview`. The [engineering notes](WILDLANDS.md) describe course validation, performance decisions, and asset provenance.
+Test the static production build with `npm run build` and `npm run preview`. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
 
 ## GitHub Pages
 

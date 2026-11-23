@@ -1,4 +1,6 @@
 import * as T from 'three'
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
+import { fieldMaterials } from './materials.js'
 
 const sphere = new T.SphereGeometry(1, 12, 8)
 const box = new T.BoxGeometry(1, 1, 1)
@@ -6,7 +8,46 @@ const cylinder = new T.CylinderGeometry(1, 1, 1, 9)
 const cone = new T.ConeGeometry(1, 1, 5)
 const leaf = new T.IcosahedronGeometry(1, 0)
 const colors = new Map()
-const landscape = new T.MeshLambertMaterial({ vertexColors: true, flatShading: true })
+const pickupMaterial = new T.MeshLambertMaterial({ vertexColors: true })
+const baked = new Map()
+const hardwood = new Set([0x514033, 0xb18354, 0xb67c45, 0x8c7b58])
+const crossingSurface = streamRibbon()
+
+function streamRibbon() {
+  const width = 22
+  const geometry = new T.PlaneGeometry(1, 1, width, 3)
+  geometry.rotateX(-Math.PI / 2)
+  const positions = geometry.attributes.position
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i)
+    const z = positions.getZ(i)
+    positions.setZ(i, z * (.89 + .15 * Math.cos(x * 19)) + .10 * Math.sin(x * 8.6))
+  }
+  geometry.computeVertexNormals()
+  return geometry
+}
+
+function compact(object, key, hazard) {
+  const parts = object.children.map((part) => {
+    part.updateMatrix()
+    const geo = part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone()
+    geo.applyMatrix4(part.matrix)
+    const n = geo.attributes.position.count
+    const color = part.material.color
+    const colors = new Float32Array(n * 3)
+    const timber = hazard && hardwood.has(color.getHex())
+    for (let i = 0; i < colors.length; i += 3) color.toArray(colors, i)
+    geo.setAttribute('color', new T.BufferAttribute(colors, 3))
+    geo.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(n).fill(timber ? 2 : 0), 1))
+    return geo
+  })
+  const geometry = mergeGeometries(parts)
+  for (const part of parts) part.dispose()
+  object.clear()
+  baked.set(key, geometry)
+  object.add(new T.Mesh(geometry, hazard ? fieldMaterials.material : pickupMaterial))
+  return object
+}
 
 function mesh(parent, shape, tint, x, y, z, sx, sy, sz) {
   if (!colors.has(tint)) colors.set(tint, new T.MeshLambertMaterial({ color: tint }))
@@ -26,6 +67,13 @@ function group(parent, x = 0, y = 0, z = 0) {
 
 export function createHazard(parent, type, x = 0, z = 0, wide = false) {
   const object = group(parent, x, 0, z)
+  const key = 'hazard-' + type + (wide ? '-wide' : '')
+  if (type === 'branch' && wide) object.scale.x = 3.72
+  if (type === 'root') object.scale.y = .7
+  if (baked.has(key)) {
+    object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
+    return object
+  }
   const bark = 0x514033
   const cut = 0xb18354
   if (type === 'fence') {
@@ -40,7 +88,6 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
     mesh(object, cylinder, bark, -.08, 1.22, 0, .13, 2.16, .15).rotation.z = Math.PI / 2
     mesh(object, leaf, 0x789049, -.78, 1.45, -.04, .51, .34, .44)
     mesh(object, leaf, 0x8d9d53, -.37, 1.54, -.11, .41, .39, .43)
-    if (wide) object.scale.x = 3.72
   } else if (type === 'log' || type === 'root' || type === 'drift') {
     mesh(object, cylinder, bark, 0, .33, 0, .34, 1.97, .34).rotation.z = Math.PI / 2
     for (const side of [-1, 1]) {
@@ -48,7 +95,6 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
     }
     mesh(object, cylinder, bark, .42, .58, -.04, .09, .34, .09).rotation.z = -.39
     if (type === 'root') {
-      object.scale.y = .7
       mesh(object, cylinder, bark, -.40, .18, -.27, .07, .92, .07).rotation.set(.63, 0, -.99)
     }
     if (type === 'drift') {
@@ -59,18 +105,22 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
     const stream = type === 'stream'
     const width = stream ? 3.66 : .92
     const depth = stream ? 1.06 : .82
-    const shape = stream ? box : sphere
-    mesh(object, shape, 0x746646, 0, .025, 0, stream ? 7.4 : width + .12, .046, stream ? 2.25 : depth + .12)
-    mesh(object, shape, 0x3f6264, 0, .060, 0, stream ? 7.24 : width, .046, stream ? depth * 2 : depth)
+    const shape = stream ? crossingSurface : sphere
+    mesh(object, shape, 0x6b6453, 0, .018, 0, stream ? 7.4 : width + .12, .046, stream ? 2.25 : depth + .12)
+    mesh(object, shape, 0x596e6e, 0, .041, 0, stream ? 7.24 : width, .046, stream ? depth * 2 : depth)
     for (const i of [-1, 0, 1]) {
-      mesh(object, sphere, 0x99a8a3, i * width * .57, .112, i * .33, width * .17, .012, .035)
+      mesh(object, sphere, 0x99a8a3, i * width * .57, .062, i * .26, width * .15, .004, .024)
     }
   }
-  return object
+  return compact(object, key, true)
 }
 
 export function createPickup(parent, type, x = 0, z = 0) {
   const object = group(parent, x, .63, z)
+  if (baked.has(type)) {
+    object.add(new T.Mesh(baked.get(type), pickupMaterial))
+    return object
+  }
   if (type === 'treat') {
     mesh(object, box, 0xffce59, 0, 0, 0, .48, .17, .15)
     for (const x of [-.22, .22]) {
@@ -90,5 +140,5 @@ export function createPickup(parent, type, x = 0, z = 0) {
     if (pheasant) mesh(object, sphere, 0xffebbe, .19, .09, 0, .12, .051, .13)
     if (decoy) mesh(object, box, 0x8b5e3c, 0, -.19, 0, .6, .08, .27)
   }
-  return object
+  return compact(object, type, false)
 }

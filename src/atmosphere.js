@@ -2,9 +2,9 @@ import * as T from 'three'
 import { seededRandom } from './trail.js'
 
 const states = [
-  ['Autumn sunrise', 0x647477, 0xc88649, 0xead49b, .013, .08, 0, 0, .11, 1.9],
+  ['Autumn sunrise', 0x647477, 0xbe9a73, 0xead6ab, .013, .08, 0, 0, .11, 1.9],
   ['Overcast', 0x59676d, 0xa6a69a, 0xd0d0bf, .017, .71, 0, 0, .23, .62],
-  ['Morning fog', 0x717c77, 0xaeb0a1, 0xd7ccaa, .034, .45, 0, 0, .11, .76],
+  ['Morning fog', 0x717c77, 0xaeb0a1, 0xd7ccaa, .027, .45, 0, 0, .11, .76],
   ['Light rain', 0x48595d, 0x8e9c98, 0xb9c8ca, .019, .82, .43, 0, .35, .64],
   ['Heavy rain', 0x38464c, 0x798782, 0xa3bac2, .024, .94, 1, 0, .73, .48],
   ['Windy', 0x536b73, 0xaca087, 0xdcc5a1, .015, .42, 0, 0, 1, 1.0],
@@ -72,13 +72,13 @@ function precipitation(scene, snow) {
   const attr = new T.BufferAttribute(positions, 3)
   attr.setUsage(T.DynamicDrawUsage)
   geometry.setAttribute('position', attr)
-  const material = snow ? new T.PointsMaterial({ color: 0xd8e4e0, size: .065, transparent: true, opacity: .72, depthWrite: false })
-    : new T.LineBasicMaterial({ color: 0xc1d5dc, transparent: true, opacity: .34, depthWrite: false })
+  const material = snow ? new T.PointsMaterial({ color: 0xd8e4e0, size: .047, transparent: true, opacity: .58, depthWrite: false })
+    : new T.LineBasicMaterial({ color: 0xc1d5dc, transparent: true, opacity: .25, depthWrite: false })
   const model = snow ? new T.Points(geometry, material) : new T.LineSegments(geometry, material)
   model.frustumCulled = false
   scene.add(model)
-  return (amount, time, wind, lowQuality) => {
-    const count = Math.floor(max * amount * (lowQuality ? .45 : 1))
+  return (amount, time, wind, budget) => {
+    const count = Math.floor(max * amount * budget)
     model.visible = count > 0
     if (!count) return
     const modulo = (value) => ((value % 1) + 1) % 1
@@ -122,9 +122,9 @@ export function createAtmosphere(scene) {
   scene.add(sun, fill, front)
   const rain = precipitation(scene, false)
   const snow = precipitation(scene, true)
-  const result = { name: '', wind: 0, wet: 0, rain: 0 }
+  const result = { name: '', wind: 0, wet: 0, rain: 0, sky: new T.Color() }
   return {
-    update(elapsed, time, lowQuality) {
+    update(elapsed, time, budget) {
       const { from, to, blend } = weatherAt(elapsed)
       const lerp = (key) => T.MathUtils.lerp(from[key], to[key], blend)
       const uniforms = sky.material.uniforms
@@ -134,6 +134,7 @@ export function createAtmosphere(scene) {
       uniforms.cloud.value = lerp('cloud')
       uniforms.clock.value = time
       fog.color.copy(uniforms.horizon.value)
+      result.sky.copy(uniforms.horizon.value)
       fog.density = lerp('fog')
       sun.color.copy(uniforms.sunColor.value)
       sun.intensity = lerp('light')
@@ -142,8 +143,8 @@ export function createAtmosphere(scene) {
       result.wind = lerp('wind')
       result.wet = Math.min(1, result.rain + lerp('snow') * .24)
       result.name = blend > .5 ? to.name : from.name
-      rain(result.rain, time, result.wind, lowQuality)
-      snow(lerp('snow'), time, result.wind, lowQuality)
+      rain(result.rain, time, result.wind, budget)
+      snow(lerp('snow'), time, result.wind, budget)
       return result
     },
   }

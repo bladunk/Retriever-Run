@@ -125,8 +125,6 @@ export function createDog(scene) {
       legs.push({ hip, knee, foot, upper, lower, rear, side })
     }
   }
-  const shadow = oval(scene, new T.MeshBasicMaterial({ color: 0x151610, transparent: true, opacity: .34, depthWrite: false }),
-    0, .025, 0, .44, .007, .86)
   let crouch = 0
   let landing = 0
   let oldHeight = 0
@@ -148,9 +146,6 @@ export function createDog(scene) {
       crouch += ((sliding ? 1 : 0) - crouch) * smooth
       root.position.set(x, height, z)
       root.rotation.y = heading
-      shadow.position.set(x, .022, z)
-      shadow.rotation.y = heading
-      shadow.material.opacity = .32 / (1 + height)
       body.position.y = -crouch * .37 - landing * .072
         + (idle ? Math.sin(time * 2.4) * .012 : height > .03 ? 0 : Math.sin(stride * 2) * .038)
       body.rotation.x = crouch * .12 + (height > .03 ? Math.cos(stride * .46) * .18 : Math.sin(stride * 2) * .044)

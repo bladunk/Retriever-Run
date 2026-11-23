@@ -2,11 +2,11 @@ export const segmentLength = 30
 
 // The lane grid is measured along the cross-section of a continuous trail.
 export function centerAt(distance) {
-  return 9 * Math.sin(distance / 23) + 6 * Math.sin(distance / 53) - 3.3 * Math.sin(distance / 8.6)
+  return 17 * Math.sin(distance / 43) + 9 * Math.sin(distance / 74) + 2.6 * Math.sin(distance / 26)
 }
 
 export function slopeAt(distance) {
-  return 9 / 23 * Math.cos(distance / 23) + 6 / 53 * Math.cos(distance / 53) - 3.3 / 8.6 * Math.cos(distance / 8.6)
+  return 17 / 43 * Math.cos(distance / 43) + 9 / 74 * Math.cos(distance / 74) + 2.6 / 26 * Math.cos(distance / 26)
 }
 
 export function headingAt(distance) {

@@ -1,5 +1,5 @@
 const defaults = { score: 0, distance: 0, best: 0, farthest: 0, retrieves: 0, streak: 0,
-  outfit: 'field', quality: 'auto', sfx: true, soundtrack: false }
+  outfit: 'field', quality: 'auto', comfort: true, sfx: true, soundtrack: false }
 
 export const outfits = [
   { id: 'field', name: 'Field collar', hint: 'Standard issue', available: () => true },
@@ -16,10 +16,10 @@ export function normalizeProfile(raw) {
   }
   profile.best = Math.max(profile.best, profile.score)
   profile.farthest = Math.max(profile.farthest, profile.distance)
-  for (const key of ['sfx', 'soundtrack']) {
+  for (const key of ['sfx', 'soundtrack', 'comfort']) {
     if (typeof raw[key] === 'boolean') profile[key] = raw[key]
   }
-  if (['auto', 'low', 'high'].includes(raw.quality)) profile.quality = raw.quality
+  if (['auto', 'low', 'balanced', 'high'].includes(raw.quality)) profile.quality = raw.quality
   if (outfits.some((outfit) => outfit.id === raw.outfit && outfit.available(profile))) profile.outfit = raw.outfit
   return profile
 }
