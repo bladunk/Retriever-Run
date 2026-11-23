@@ -1,42 +1,109 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
+import { fieldMaterials } from './materials.js'
 import { centerAt, habitatAt, headingAt, seededRandom, segmentLength, surfaceAt } from './trail.js'
 
 const box = new T.BoxGeometry()
 const stone = new T.IcosahedronGeometry(1, 1)
-const canopy = new T.IcosahedronGeometry(1, 1)
+const canopy = leafCrown()
 const oval = new T.SphereGeometry(1, 7, 4)
 const twig = new T.CylinderGeometry(.47, 1, 1, 6)
 const strip = new T.ConeGeometry(1, 1, 3)
+const blades = createReedClump()
+const bankPatch = weatheredBank()
+const worldUp = new T.Vector3(0, 1, 0)
+const branchVector = new T.Vector3()
+const branchRotation = new T.Quaternion()
+
+function createReedClump() {
+  const random = seededRandom(77913)
+  const vertices = []
+  const shade = []
+  for (let i = 0; i < 9; i++) {
+    const angle = i * 2.39996
+    const reach = .2 + random() * .45
+    const h = .48 + random() * .58
+    const x = Math.cos(angle) * reach
+    const z = Math.sin(angle) * reach
+    const w = .022 + random() * .033
+    const dx = Math.sin(angle) * w
+    const dz = -Math.cos(angle) * w
+    vertices.push(x * .12 - dx, 0, z * .12 - dz, x * .12 + dx, 0, z * .12 + dz,
+      x * .42 + dx * .66, .56 * h, z * .42 + dz * .66,
+      x * .12 - dx, 0, z * .12 - dz, x * .42 + dx * .66, .56 * h, z * .42 + dz * .66,
+      x * .42 - dx * .7, .56 * h, z * .42 - dz * .7,
+      x * .42 - dx * .7, .56 * h, z * .42 - dz * .7, x * .42 + dx * .66, .56 * h, z * .42 + dz * .66, x, h, z)
+    for (const value of [.48, .51, .77, .48, .77, .75, .75, .77, 1]) shade.push(value, value * .94, value * .83)
+  }
+  const geom = new T.BufferGeometry()
+  geom.setAttribute('position', new T.Float32BufferAttribute(vertices, 3))
+  geom.setAttribute('color', new T.Float32BufferAttribute(shade, 3))
+  geom.computeVertexNormals()
+  return geom
+}
+
+function leafCrown() {
+  const geom = new T.IcosahedronGeometry(1, 1)
+  const points = geom.attributes.position
+  for (let i = 0; i < points.count; i++) {
+    const x = points.getX(i)
+    const y = points.getY(i)
+    const z = points.getZ(i)
+    const scatter = .95 + Math.sin(x * 7.4 + y * 4.9 + z * 5.3) * .16 + Math.cos(y * 10.4 - z * 13) * .07
+    points.setXYZ(i, x * scatter, y * scatter, z * scatter)
+  }
+  return geom
+}
+
+function weatheredBank() {
+  const geom = new T.IcosahedronGeometry(1, 2)
+  const position = geom.attributes.position
+  for (let i = 0; i < position.count; i++) {
+    const x = position.getX(i)
+    const y = position.getY(i)
+    const z = position.getZ(i)
+    const rough = 1 + Math.sin(x * 8 + z * 6) * .10 + Math.cos(z * 12 - x * 7) * .05
+    position.setXYZ(i, x * rough, y > 0 ? y * (.75 + Math.sin(z * 6 + x * 12) * .18) : y, z * rough)
+  }
+  geom.computeVertexNormals()
+  return geom
+}
 const dummy = new T.Object3D()
 
-const terrainMaterial = new T.MeshStandardMaterial({ vertexColors: true, roughness: .95, flatShading: true })
-const reedMaterial = new T.MeshLambertMaterial({ color: 0xffffff, side: T.DoubleSide })
+const { material: terrainMaterial, uniforms: field } = fieldMaterials
+const reedMaterial = new T.MeshLambertMaterial({ color: 0xffffff, side: T.DoubleSide, vertexColors: true })
 const waterMaterial = new T.MeshStandardMaterial({ color: 0x47645f, roughness: .38, metalness: .18, vertexColors: true })
 const waterClock = { value: 0 }
+const waterWeather = { value: 0 }
+const waterSky = { value: new T.Color(0xd5b082) }
 
 waterMaterial.onBeforeCompile = (shader) => {
   shader.uniforms.marshTime = waterClock
+  shader.uniforms.marshWeather = waterWeather
+  shader.uniforms.marshSky = waterSky
   shader.vertexShader = 'varying vec3 vMarsh;\n' + shader.vertexShader.replace('#include <begin_vertex>',
     '#include <begin_vertex>\nvMarsh = (modelMatrix * vec4(position, 1.)).xyz;')
-  shader.fragmentShader = 'uniform float marshTime; varying vec3 vMarsh;\n' + shader.fragmentShader.replace('#include <color_fragment>',
+  shader.fragmentShader = 'uniform float marshTime, marshWeather; uniform vec3 marshSky; varying vec3 vMarsh;\n' + shader.fragmentShader.replace('#include <color_fragment>',
     `#include <color_fragment>
     vec3 eye = normalize(cameraPosition - vMarsh);
-    float reflection = pow(1. - clamp(eye.y, 0., 1.), 3.);
-    float wave = sin(vMarsh.z * 5.1 + vMarsh.x * .78 + marshTime * 1.65);
-    wave *= sin(vMarsh.x * .99 - vMarsh.z * 1.21 + marshTime * .79);
-    float shimmer = smoothstep(.75, .985, wave) * .21;
-    diffuseColor.rgb *= 1. + wave * .075;
-    diffuseColor.rgb += mix(vec3(.018, .042, .047), vec3(.16, .15, .107), reflection);
-    diffuseColor.rgb += vec3(1., .72, .44) * shimmer * reflection * .40;`)
+    vec2 Q = vMarsh.xz;
+    float r1 = sin(dot(Q, vec2(1.43, 3.7)) + marshTime * 1.94);
+    float r2 = sin(dot(Q, vec2(-2.63, 4.8)) - marshTime * 2.45 + r1);
+    float r3 = sin(dot(Q, vec2(.71, 1.18)) - marshTime * .91);
+    vec3 waterNormal = normalize(vec3((r1 + r3) * .036, 1., (r2 - r3) * (.063 + marshWeather * .034)));
+    float fresnel = pow(1. - clamp(dot(eye, waterNormal), 0., 1.), 4.);
+    float skyGlint = max(0., dot(reflect(-eye, waterNormal), normalize(vec3(-.37,.23,-1.))));
+    diffuseColor.rgb = mix(diffuseColor.rgb * (.78 + r1 * .06 + r3 * .07),
+      diffuseColor.rgb * .52 + marshSky * (vec3(.19,.21,.23) + pow(skyGlint, 22.) * .19), fresnel * .85);
+    diffuseColor.rgb += marshSky * pow(skyGlint, 45.) * .024;`)
 }
 
 const palette = {
-  'Cattail Marsh': { soil: 0x766044, bank: 0x4f5232, trees: 0x4c552f, grass: 0x858057, water: true },
-  'Flooded Timber': { soil: 0x675746, bank: 0x414636, trees: 0x554638, grass: 0x5f6243, water: true },
-  'Prairie Potholes': { soil: 0x847053, bank: 0x747245, trees: 0x626440, grass: 0x9b8a56, water: true },
-  'Autumn Woodland': { soil: 0x5a4837, bank: 0x5f5533, trees: 0x8b572b, grass: 0x715e3b, water: false },
-  'Muddy Creek': { soil: 0x54483d, bank: 0x544b36, trees: 0x695c36, grass: 0x7f6f49, water: true },
+  'Cattail Marsh': { soil: 0x908476, bank: 0x6b714f, trees: 0x4c552f, grass: 0x858057, water: true },
+  'Flooded Timber': { soil: 0x827666, bank: 0x5a624e, trees: 0x554638, grass: 0x5f6243, water: true },
+  'Prairie Potholes': { soil: 0x9a8b71, bank: 0x777854, trees: 0x626440, grass: 0x9b8a56, water: true },
+  'Autumn Woodland': { soil: 0x9c826d, bank: 0x6f603d, trees: 0x8b572b, grass: 0x715e3b, water: false },
+  'Muddy Creek': { soil: 0x827265, bank: 0x6f6554, trees: 0x695c36, grass: 0x7f6f49, water: true },
 }
 
 function buildTile(tile, index) {
@@ -73,13 +140,17 @@ function buildTile(tile, index) {
     }
   }
 
-  function add(shape, color, x, y, z, sx, sy, sz, rx = 0, ry = 0, rz = 0, conform = false) {
+  function add(shape, color, x, y, z, sx, sy, sz, rx = 0, ry = 0, rz = 0, conform = false, layer = 0, rotation = null) {
     const geometry = shape.index ? shape.toNonIndexed() : shape.clone()
     geometry.scale(sx, sy, sz)
     geometry.rotateX(rx)
     geometry.rotateY(ry)
     geometry.rotateZ(rz)
+    if (rotation) geometry.applyQuaternion(rotation)
     if (conform) {
+      const uv = geometry.attributes.uv
+      const points = geometry.attributes.position
+      for (let i = 0; i < uv.count; i++) uv.setXY(i, (points.getX(i) + x) * .40, (points.getZ(i) + z) * .39)
       geometry.translate(x, y, z)
       warp(geometry.attributes.position.array)
       geometry.computeVertexNormals()
@@ -92,14 +163,32 @@ function buildTile(tile, index) {
     const count = geometry.attributes.position.count
     const data = new Float32Array(count * 3)
     tint.setHex(color).multiplyScalar(between(.84, 1.13))
-    for (let i = 0; i < data.length; i += 3) tint.toArray(data, i)
+    const vertex = geometry.attributes.position
+    for (let i = 0; i < data.length; i += 3) {
+      tint.toArray(data, i)
+      if (shape === canopy) {
+        const n = i / 3
+        const flake = .77 + .13 * Math.sin(vertex.getX(n) * 9 + vertex.getZ(n) * 6) + .19 * (vertex.getY(n) - y) / sy
+        for (let k = 0; k < 3; k++) data[i + k] *= flake
+      }
+    }
     geometry.setAttribute('color', new T.BufferAttribute(data, 3))
+    geometry.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(count).fill(layer), 1))
     list.push(geometry)
+  }
+
+  function branch(color, x, y, z, tx, ty, tz, thickness) {
+    branchVector.set(tx - x, ty - y, tz - z)
+    const length = branchVector.length()
+    branchRotation.setFromUnitVectors(worldUp, branchVector.multiplyScalar(1 / length))
+    add(twig, color, (x + tx) * .5, (y + ty) * .5, (z + tz) * .5,
+      thickness, length, thickness * .94, 0, 0, 0, false, 2, branchRotation)
   }
 
   // Longitudinal grid samples the same boundary coordinates on both neighboring tiles.
   const positions = []
   const values = []
+  const uvs = []
   const indices = []
   const offsets = [-51, -35, -19, -10, -6, -4.8, -3.65, -3.3, -2.45, -1.6, -.8, 0,
     .8, 1.6, 2.45, 3.3, 3.65, 4.8, 6, 10, 19, 35, 51]
@@ -116,12 +205,15 @@ function buildTile(tile, index) {
       const nearStart = Math.max(0, 1 + z / 4) * .5
       const nearEnd = Math.max(0, 1 - (segmentLength + z) / 4) * .5
       const basin = current + (before - current) * nearStart + (after - current) * nearEnd
-      const inland = Math.sin((start - z) * .41 + x * .8) * .16
-      const y = track ? -.012 : edge < 5 ? -.24 : basin + inland
+      const inland = Math.sin(distance * .31 + x * .49) * .17 + Math.sin(distance * .12 - x * .46) * .09
+      const shore = .10 * Math.sin(distance * .43 + x) + .07 * Math.cos(distance * .19 - x * .8)
+      const y = track ? -.014 + Math.sin(distance * .63 + x * .95) * .013 : edge < 5 ? -.27 + shore : basin + inland
+      uvs.push(x / 2.5, z / 2.5)
       const soil = edge > 3.1 ? colors.bank : colors.soil
       positions.push(x, y, z)
-      const rut = Math.sin(x * 5.5 + Math.sin(distance * .42) * .9) * .055
-      tint.setHex(soil).multiplyScalar(track ? between(.94, 1.07) + rut : between(.83, 1.12)).toArray(values, values.length)
+      const rut = Math.sin(x * 5.5 + Math.sin(distance * .42) * .9) * .022
+      const drift = Math.cos(distance * .18 + x * .63) * .047
+      tint.setHex(soil).multiplyScalar(track ? .94 + drift + rut : .91 + shore * .6).toArray(values, values.length)
       if (row && col) {
         const a = row * offsets.length + col
         indices.push(a, a - 1, a - offsets.length, a - 1, a - offsets.length - 1, a - offsets.length)
@@ -132,10 +224,11 @@ function buildTile(tile, index) {
   const land = new T.BufferGeometry()
   land.setAttribute('position', new T.Float32BufferAttribute(positions, 3))
   land.setAttribute('color', new T.Float32BufferAttribute(values, 3))
+  land.setAttribute('uv', new T.Float32BufferAttribute(uvs, 2))
+  land.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(positions.length / 3).fill(1), 1))
   land.setIndex(indices)
   land.computeVertexNormals()
   const landTriangles = land.toNonIndexed()
-  landTriangles.setAttribute('uv', new T.BufferAttribute(new Float32Array(landTriangles.attributes.position.count * 2), 2))
   list.push(landTriangles)
   land.dispose()
 
@@ -158,15 +251,15 @@ function buildTile(tile, index) {
   if (wood) {
     for (let z = -.29; z > -segmentLength; z -= .56) {
       add(box, [0x84705a, 0x705e4c, 0x937d64, 0x615243][Math.floor(random() * 4)],
-        0, -.003, z, 7.25, .09, .536, 0, 0, 0, true)
+        0, -.003, z, 7.25, .09, .536, 0, 0, 0, true, 2)
       if (Math.floor((-z + .29) / .56) % 5 === 0) {
-        for (const side of [-1, 1]) add(box, 0x665541, side * 3.68, .26, z, .16, 1.04, .17)
+        for (const side of [-1, 1]) add(box, 0x665541, side * 3.68, .26, z, .16, 1.04, .17, 0, 0, 0, false, 2)
       }
     }
   }
 
   for (const side of [-1, 1]) {
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < 38; i++) {
       const x = side * between(2.87, 5.96)
       const y = Math.abs(x) < 3.65 ? 0 : Math.abs(x) < 5 ? -.26 : colors.water ? -.57 : -.09
       const z = between(-29.7, -.3)
@@ -182,11 +275,11 @@ function buildTile(tile, index) {
       const x = side * between(banks, 20)
       const z = between(-29.6, -.4)
       if (Math.abs(x) > 5.3) {
-        add(stone, colors.bank, x, colors.water ? -.62 : -.03, z, between(.75, 3.7), .29, between(.9, 3.5))
+        add(bankPatch, colors.bank, x, colors.water ? -.66 : -.08, z, between(.65, 3.25), between(.22, .41), between(.9, 3.4), 0, between(0, 4), 0, false, 1)
       }
       if (i < 9 && colors.water) {
         const height = between(.75, 1.68)
-        add(twig, 0x77704a, x, height / 2 - .46, z, .026, height, .026)
+        add(twig, 0x77704a, x, height / 2 - .46, z, .013, height, .014)
         add(oval, 0x4c3525, x, height - .49, z, .048, .168, .052)
       }
     }
@@ -202,17 +295,29 @@ function buildTile(tile, index) {
       const h = between(2.6, 6.5)
       const dead = habitat === 'Flooded Timber' || (colors.water && random() < .20)
       const bark = dead ? 0x5b5348 : 0x594437
-      add(stone, colors.bank, x, -.6, z, 1.9, .43, 1.7)
-      add(twig, bark, x, h / 2 - .52, z, h * .052, h, h * .047, between(-.15, .15), 0, between(-.14, .14))
-      for (let j = 0; j < 4; j++) {
-        const direction = j % 2 ? 1 : -1
-        const tip = x + direction * h * .19
-        const top = h * (.62 + j * .085)
-        add(twig, bark, x + direction * h * .11, top, z, h * .021, h * .49, h * .022, between(-.2, .2), 0, direction * -.66)
+      const bend = between(-h * .12, h * .12)
+      const rake = between(-h * .17, h * .17)
+      add(bankPatch, colors.bank, x, -.65, z, between(1.15, 1.8), .34, between(.87, 1.59), 0, 0, 0, false, 1)
+      branch(bark, x, -.49, z, x + bend * .42, h * .53, z + rake * .45, h * .046)
+      branch(bark, x + bend * .42, h * .53, z + rake * .45, x + bend, h * .94, z + rake, h * .022)
+      const orientation = between(0, Math.PI * 2)
+      for (let j = 0; j < (dead ? 6 : 5); j++) {
+        const angle = orientation + j * 2.4
+        const reach = h * between(.18, .36)
+        const baseY = h * (.40 + j * .068)
+        const top = baseY + h * between(.22, .38)
+        const tipX = x + bend + Math.cos(angle) * reach
+        const tipZ = z + rake + Math.sin(angle) * reach
+        const midX = x + bend * .69 + (tipX - x) * .53
+        const midZ = z + rake * .63 + (tipZ - z) * .53
+        branch(bark, x + bend * .53, baseY, z + rake * .52, midX, (baseY + top) * .52, midZ, h * .018)
+        branch(bark, midX, (baseY + top) * .52, midZ, tipX, top, tipZ, h * .009)
         if (!dead) {
           const fall = habitat === 'Autumn Woodland' || i % 4 === 0
-          const leaves = fall ? [0x91492a, 0xa67a35, 0xa35c2b, 0x665a34][j] : colors.trees
-          add(canopy, leaves, tip, top + h * .29, z + between(-.45, .45), h * .31, h * .27, h * .29, .1, j * 2)
+          const leaves = fall ? [0x82482c, 0x967038, 0x93582f, 0x756236, 0x6a5530][j] : colors.trees
+          add(canopy, leaves, tipX, top, tipZ, h * .25, h * .145, h * .26, .36, angle, .23)
+          add(canopy, leaves, (tipX + midX) * .50, top + h * .093, (tipZ + midZ) * .50,
+            h * .178, h * .14, h * .19, -.3, angle, .11)
         }
       }
     }
@@ -225,12 +330,12 @@ function buildTile(tile, index) {
     const z = -16
     add(stone, colors.bank, x, -.52, z, 3.2, .6, 2.8)
     for (const dx of [-1.06, 1.06]) {
-      for (const dz of [-.64, .64]) add(box, 0x514330, x + dx, .36, z + dz, .16, 1.65, .17)
+      for (const dz of [-.64, .64]) add(box, 0x514330, x + dx, .36, z + dz, .16, 1.65, .17, 0, 0, 0, false, 2)
     }
     for (let i = 0; i < 7; i++) {
-      add(box, i % 2 ? 0x695743 : 0x554a38, x + (i - 3) * .33, .53, z + .70, .31, .97, .08)
+      add(box, i % 2 ? 0x695743 : 0x554a38, x + (i - 3) * .33, .53, z + .70, .31, .97, .08, 0, 0, 0, false, 2)
     }
-    add(box, 0x655b3d, x, 1.58, z, 2.6, .17, 1.69, .13)
+    add(box, 0x655b3d, x, 1.58, z, 2.6, .17, 1.69, .13, 0, 0, false, 2)
     add(box, 0x362f24, x, 1.15, z + .66, 2.15, .34, .10)
     for (let i = 0; i < 21; i++) {
       add(strip, colors.grass, x + between(-1.25, 1.25), 1.58, z + between(-.84, .82), .15, .53, .13, .38, i, -.38)
@@ -252,10 +357,10 @@ function buildTile(tile, index) {
   for (let i = 0; i < tile.reedPositions.length; i++) {
     const side = i % 2 === 0 ? 1 : -1
     const at = start + between(.6, segmentLength - .6)
-    const x = side * between(4.2, 8.9)
+    const x = side * between(3.52, 8.9)
     const heading = headingAt(at)
     const placement = tile.reedPositions[i]
-    placement.set(centerAt(at) - base + Math.cos(heading) * x, between(-.32, -.04), start - at - Math.sin(heading) * x)
+    placement.set(centerAt(at) - base + Math.cos(heading) * x, Math.abs(x) < 4.6 ? between(-.15, .01) : between(-.38, -.19), start - at - Math.sin(heading) * x)
     tile.reeds.setColorAt(i, tint.setHex(colors.grass).multiplyScalar(between(.72, 1.2)))
   }
   tile.reeds.instanceColor.needsUpdate = true
@@ -267,7 +372,7 @@ export function createTerrain(scene) {
     const root = new T.Group()
     const ground = new T.Mesh(new T.BufferGeometry(), terrainMaterial)
     const water = new T.Mesh(new T.BufferGeometry(), waterMaterial)
-    const reeds = new T.InstancedMesh(strip, reedMaterial, 52)
+    const reeds = new T.InstancedMesh(blades, reedMaterial, 70)
     reeds.frustumCulled = false
     root.add(ground, water, reeds)
     scene.add(root)
@@ -275,24 +380,29 @@ export function createTerrain(scene) {
   })
   let lastWindFrame = -1
   return {
-    update(distance, time, wind, wet, lowQuality) {
+    update(distance, time, weather, detail) {
       const containing = Math.floor(distance / segmentLength)
       const offset = centerAt(distance)
-      const windFrame = Math.floor(time * (lowQuality ? 12 : 24))
+      const { wind, wet, sky } = weather
+      const windFrame = Math.floor(time * (detail === 0 ? 11 : 20))
       waterClock.value = time
-      terrainMaterial.roughness = .95 - wet * .38
+      waterWeather.value = wet
+      waterSky.value.copy(sky)
+      field.fieldWet.value = wet
+      field.fieldDetail.value = detail
       for (let i = containing - 1; i < containing + 6; i++) {
         const tile = tiles[(i + tiles.length) % tiles.length]
         const rebuild = tile.index !== i
         if (rebuild) buildTile(tile, i)
         tile.root.position.set(centerAt(i * segmentLength) - offset, 0, distance - i * segmentLength)
         if (rebuild || windFrame !== lastWindFrame) {
-          const count = lowQuality ? 24 : 52
+          const near = i - containing < 2
+          const count = near ? [26, 47, 70][detail] : [13, 22, 33][detail]
           tile.reeds.count = count
           for (let n = 0; n < count; n++) {
             dummy.position.copy(tile.reedPositions[n])
             dummy.rotation.set(.13, n * .57, Math.sin(time * 2.7 + n * .7) * (.18 + wind * .47))
-            dummy.scale.set(.06 + n % 3 * .018, .47 + n % 8 * .087, .056)
+            dummy.scale.set(.36 + n % 3 * .11, .48 + n % 8 * .084, .39)
             dummy.updateMatrix()
             tile.reeds.setMatrixAt(n, dummy.matrix)
           }

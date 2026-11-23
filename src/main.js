@@ -2,13 +2,17 @@ import * as T from 'three'
 import { createHazard, createPickup } from './art.js'
 import { createAtmosphere } from './atmosphere.js'
 import { createSound } from './audio.js'
-import { createDog } from './dog.js'
+import { cameraLayout, newCameraState, updateFollow } from './camera.js'
+import { swipeDirection } from './gesture.js'
+import { adaptiveQuality, graphics, pixelRatio } from './quality.js'
+import { createPlayer } from './player.js'
+import { createFootSpray } from './spray.js'
 import { completeRun, normalizeProfile, outfits } from './profile.js'
 import {
   act, advance, collides, collect, createCourse, crossing, getHeight, laneWidth, multiplier, newRun,
-  obstacleOffset, pickupNames, powerDuration, score,
+  jumpDuration, obstacleOffset, pickupNames, powerDuration, score,
 } from './runner.js'
-import { habitatAt, headingAt, placeOnTrail, surfaceAt } from './trail.js'
+import { habitatAt, placeOnTrail, surfaceAt } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createWildlife } from './wildlife.js'
 import './style.css'
@@ -25,8 +29,6 @@ scene.add(scenery)
 const entities = []
 const effects = []
 const pool = new Map()
-const anchor = new T.Vector3()
-const look = new T.Vector3()
 const dogPosition = new T.Vector3()
 
 function loadProfile() {
@@ -47,9 +49,9 @@ let stride = 0
 let foot = 0
 let landing = 0
 let splashUntil = 0
-let cameraLane = 0
-let cameraBank = 0
-let tall = false
+let layout = cameraLayout(1)
+const follow = newCameraState()
+const adapt = adaptiveQuality()
 let previousTime
 let gesture
 let lastStats = ''
@@ -57,11 +59,10 @@ let lastCondition = ''
 let cuePriority = 0
 let cueUntil = 0
 let visualTime = 0
-let autoLow = false
-let activeLow = false
-let slowTime = 0
-let meanFrame = 1 / 60
+let autoPreset = 'balanced'
+let preset = graphics.balanced
 let dog
+let spray
 let resize
 let needsRedraw = true
 
@@ -85,7 +86,8 @@ function initialize() {
   const atmosphere = createAtmosphere(scene)
   const terrain = createTerrain(scene)
   const wildlife = createWildlife(scene, sound.bird)
-  dog = createDog(scene)
+  dog = createPlayer(scene)
+  spray = createFootSpray(scene)
   dog.appearance(profile.outfit)
   sound.settings(profile)
   const glow = new T.Mesh(
@@ -99,10 +101,12 @@ function initialize() {
     needsRedraw = true
     const width = ui.game.clientWidth
     const height = ui.game.clientHeight
-    activeLow = profile.quality === 'low' || (profile.quality === 'auto' && autoLow)
-    tall = width < height
+    preset = graphics[profile.quality === 'auto' ? autoPreset : profile.quality]
+    layout = cameraLayout(width / Math.max(1, height))
     camera.aspect = width / Math.max(1, height)
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, activeLow ? 1 : 1.55, 1536 / width, 950 / height))
+    camera.fov = layout.fov
+    camera.updateProjectionMatrix()
+    renderer.setPixelRatio(pixelRatio(width, height, devicePixelRatio, preset))
     renderer.setSize(width, height, false)
   }
 
@@ -110,11 +114,10 @@ function initialize() {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     const dt = Math.min(.075, wall)
     previousTime = ms
-    if (mode === 'running' && wall < .25 && profile.quality === 'auto' && !autoLow) {
-      meanFrame += (wall - meanFrame) * .023
-      slowTime = meanFrame > .031 ? slowTime + dt : Math.max(0, slowTime - dt)
-      if (slowTime > 2.8) {
-        autoLow = true
+    if (mode === 'running' && profile.quality === 'auto') {
+      const selected = adapt(wall)
+      if (selected !== autoPreset) {
+        autoPreset = selected
         resize()
       }
     }
@@ -129,48 +132,39 @@ function initialize() {
       const distance = run.distance
       const turn = run.lane * laneWidth - run.x
       const heading = placeOnTrail(dogPosition, distance, run.x, distance)
-      const target = idle ? 0 : run.x * .51
-      const blend = 1 - Math.exp(-6 * dt)
-      const speedBlend = (run.speed - 11) / 16
-      cameraLane += (target - cameraLane) * (idle ? 1 : blend)
-      landing *= Math.exp(-12 * dt)
-      if (idle && !tall) {
-        anchor.set(2.43, 1.81, 3.37)
-        look.set(-3.92, 1.08, -3.4)
+      const comfort = profile.comfort || reducedMotion.matches
+      if (idle) {
+        if (layout.portrait) {
+          camera.position.set(2.4, 1.95, 3.85)
+          camera.lookAt(.06, -.26, -.65)
+        } else {
+          camera.position.set(2.43, 1.81, 3.37)
+          camera.lookAt(-3.92, 1.08, -3.4)
+        }
       } else {
-        placeOnTrail(anchor, distance - (tall ? 7.45 : 5.95) - speedBlend * .84, cameraLane, distance)
-        placeOnTrail(look, distance + (tall ? 10 : 10.6), cameraLane * .47, distance)
-        anchor.y = (tall ? 3.52 : 3.14) + getHeight(run) * .15
-        look.y = .94 + getHeight(run) * .16
+        updateFollow(follow, layout, distance, run.x, dt, comfort)
+        camera.position.set(follow.x, follow.y, follow.z)
+        camera.lookAt(follow.tx, follow.ty, follow.tz)
       }
-      const bank = reducedMotion.matches || idle ? 0 : (headingAt(distance + 8) - heading) * .16 + turn * .022
-      cameraBank += (bank - cameraBank) * blend
-      if (!reducedMotion.matches && !idle) anchor.y -= landing * .048
-      camera.position.copy(anchor)
-      camera.up.set(cameraBank, 1, 0)
-      camera.lookAt(look)
-      const fov = (tall ? 59 : 49) + (reducedMotion.matches ? 0 : speedBlend * 5)
-      if (camera.fov !== fov || camera._aspect !== camera.aspect) {
-        camera.fov = fov
-        camera._aspect = camera.aspect
-        camera.updateProjectionMatrix()
-      }
+      landing *= Math.exp(-12 * dt)
       const height = getHeight(run)
       dog.pose({
         x: dogPosition.x, z: dogPosition.z, height, sliding: run.slide > 0, stride, time: visualTime,
-        heading: idle ? -1.89 : heading - turn * .105, turn, dt, idle,
+        heading: idle ? -2.38 : heading - turn * .080, turn, dt, idle, landing,
+        airborne: run.jump > 0, jumpPhase: run.jump > 0 ? 1 - run.jump / jumpDuration : 1,
       })
       glow.visible = run.power > 0
       glow.position.set(dogPosition.x, .045, dogPosition.z)
       const pulse = 1.05 + Math.sin(visualTime * 11) * .13
       glow.scale.set(pulse, pulse, 1)
-      const weather = atmosphere.update(run.elapsed, visualTime, activeLow || reducedMotion.matches)
-      terrain.update(distance, visualTime, weather.wind, weather.wet, activeLow || reducedMotion.matches)
-      wildlife(visualTime, distance, activeLow, !idle && !ui.preferences.open)
+      const weather = atmosphere.update(run.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather)
+      terrain.update(distance, visualTime, weather, preset.detail)
+      wildlife(visualTime, distance, preset.detail === 0, !idle && !ui.preferences.open)
       if (!idle) {
         updateConditions(weather.name)
         sound.ambience(weather, true)
       }
+      spray.update(distance, visualTime)
       populate()
       positionEntities(visualTime)
     }
@@ -180,7 +174,7 @@ function initialize() {
     }
   }
 
-  window.addEventListener('resize', () => { resize(); camera.updateProjectionMatrix() })
+  window.addEventListener('resize', resize)
   ui.trail.addEventListener('webglcontextlost', (event) => {
     event.preventDefault()
     if (mode === 'running') setMode('paused')
@@ -246,10 +240,12 @@ function positionEntities(time) {
 function step(dt) {
   const wasAirborne = run.jump > 0
   const previous = advance(run, dt)
-  stride += dt * run.speed * 1.35
+  stride += dt * Math.PI * 2 * Math.min(2.86, 1.84 + (run.speed - 11) * .061)
   const nextFoot = Math.floor(stride / Math.PI)
   if (!run.jump && (nextFoot !== foot || wasAirborne) && !run.slide) {
-    sound.footstep(splashUntil > run.distance ? 'splash' : surfaceAt(run.distance), wasAirborne)
+    const surface = splashUntil > run.distance ? 'splash' : surfaceAt(run.distance)
+    sound.footstep(surface, wasAirborne)
+    if (surface === 'mud' || surface === 'splash') spray.step(run.distance, run.x, visualTime, surface === 'splash', preset.detail)
     if (wasAirborne) landing = 1
   }
   foot = nextFoot
@@ -347,6 +343,7 @@ function setMode(value) {
   needsRedraw = true
   const oldMode = mode
   mode = value
+  ui.game.dataset.mode = value
   const running = value === 'running'
   const title = value === 'title'
   const over = value === 'over'
@@ -372,7 +369,7 @@ function setMode(value) {
   ui.record.textContent = over
     ? (newBest ? 'New best · ' : '') + format.format(profile.score) + ' points  ·  ' + profile.distance + ' m  ·  Best ' + format.format(profile.best)
     : 'Best ' + format.format(profile.best) + '  ·  Longest run ' + format.format(profile.farthest) + ' m'
-  ui.eyebrow.textContent = title ? 'THE WILDLANDS UPDATE' : over ? 'FIELD REPORT' : habitatAt(run.distance).toUpperCase()
+  ui.eyebrow.textContent = title ? 'THE WETLANDS TRAIL' : over ? 'FIELD REPORT' : habitatAt(run.distance).toUpperCase()
   ui['menu-title'].innerHTML = title ? 'Retriever<br><em>Run</em>' : over ? 'Trail<br><em>end</em>' : '<em>Paused</em>'
   ui['menu-copy'].textContent = title ? 'Follow a yellow Lab through the cattails, creek beds, and flooded timber.'
     : over ? (unlocks.length ? 'Outfitter unlocked · ' + unlocks.join(', ') : run.retrieves + ' retrieved · ' + run.bestStreak + ' best treat streak')
@@ -406,10 +403,11 @@ function start() {
   landing = 0
   splashUntil = 0
   cueUntil = 0
-  cameraLane = 0
-  cameraBank = 0
+  follow.heading = null
+  follow.offset = 0
   visualTime = 0
   dog.reset()
+  spray.reset()
   setMode('running')
   populate()
 }
@@ -431,6 +429,7 @@ function openSettings() {
   ui.sfx.checked = profile.sfx
   ui.soundtrack.checked = profile.soundtrack
   ui.quality.value = profile.quality
+  ui.comfort.checked = profile.comfort
   function drawOutfits() {
     ui.outfits.replaceChildren(...outfits.map((outfit) => {
       const button = document.createElement('button')
@@ -458,11 +457,11 @@ function bindInput() {
   ui.settings.addEventListener('click', openSettings)
   ui['close-settings'].addEventListener('click', () => ui.preferences.close())
   ui.preferences.addEventListener('close', () => ui.settings.focus())
-  for (const key of ['sfx', 'soundtrack', 'quality']) {
+  for (const key of ['sfx', 'soundtrack', 'quality', 'comfort']) {
     ui[key].addEventListener('change', () => {
       profile[key] = key === 'quality' ? ui[key].value : ui[key].checked
       if (key === 'quality') resize()
-      else {
+      else if (key !== 'comfort') {
         sound.settings(profile)
         sound.unlock()
       }
@@ -496,14 +495,16 @@ function bindInput() {
     gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false }
     ui.game.setPointerCapture(event.pointerId)
   })
-  ui.game.addEventListener('pointermove', (event) => {
+  function sendSwipe(event, finished) {
     if (gesture?.id !== event.pointerId || gesture.moved) return
-    const dx = event.clientX - gesture.x
-    const dy = event.clientY - gesture.y
-    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return
-    gesture.moved = true
-    move(Math.abs(dx) > Math.abs(dy) ? dx < 0 ? 'left' : 'right' : dy < 0 ? 'jump' : 'slide')
-  })
+    const direction = swipeDirection(event.clientX - gesture.x, event.clientY - gesture.y, ui.game.clientWidth, finished)
+    if (direction) {
+      gesture.moved = true
+      move(direction)
+    }
+  }
+  ui.game.addEventListener('pointermove', (event) => sendSwipe(event, false))
+  ui.game.addEventListener('pointerup', (event) => sendSwipe(event, true))
   for (const name of ['pointerup', 'pointercancel', 'lostpointercapture']) {
     ui.game.addEventListener(name, (event) => {
       if (gesture?.id === event.pointerId) gesture = undefined

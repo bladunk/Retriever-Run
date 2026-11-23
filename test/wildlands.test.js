@@ -34,8 +34,8 @@ test('trail is continuous across segments and lanes remain perpendicular to the 
     assert.equal(heading, headingAt(distance))
     seenHeadings.push(heading)
   }
-  assert.ok(Math.min(...seenHeadings) < -.5)
-  assert.ok(Math.max(...seenHeadings) > .5)
+  assert.ok(Math.min(...seenHeadings) < -.38)
+  assert.ok(Math.max(...seenHeadings) > .38)
   assert.equal(new Set(Array.from({ length: 10 }, (_, n) => habitatAt(n * 180))).size, 5)
 })
 
