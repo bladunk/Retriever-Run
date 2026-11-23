@@ -81,14 +81,27 @@ export function createWildlife(scene, call) {
   const flocks = species.map((info) => flockBatch(scene, info))
   const write = animateBird()
   let lastEvent = -1
+  let lastFlyby = -1
+  let lastTime = 0
   return function update(time, distance, lowQuality, audible) {
+    if (time < lastTime) lastEvent = lastFlyby = -1
+    lastTime = time
     const clock = time + 3
     const event = Math.floor(clock / 14)
     const progress = (clock % 14) / 10
     const preferred = event % flocks.length
-    if (audible && event !== lastEvent && progress > .21 && progress < .48) {
-      call(flocks[preferred].info.name)
+    const bird = flocks[preferred].info.name
+    const direction = event % 2 === 0 ? 1 : -1
+    const landscapeOffset = centerAt(distance + 27) - centerAt(distance)
+    const x = (-23 + progress * 48) * direction + landscapeOffset
+    const isWaterfowl = bird === 'goose' || bird === 'mallard'
+    if (audible && isWaterfowl && event !== lastEvent && progress > .21 && progress < .48) {
+      call(bird, { x, distance: Math.hypot(x, 31 - progress * 6), movement: direction })
       lastEvent = event
+    }
+    if (audible && bird === 'mallard' && event !== lastFlyby && progress > .50 && progress < .59) {
+      call(bird, { x, distance: Math.hypot(x, 31 - progress * 6), movement: direction, wings: true, vocal: false })
+      lastFlyby = event
     }
     for (const [index, flock] of flocks.entries()) {
       const { info } = flock
@@ -99,8 +112,6 @@ export function createWildlife(scene, call) {
       const pheasant = info.name === 'pheasant'
       const goose = info.name === 'goose'
       const height = goose ? 8 : info.name === 'mallard' ? 4.6 : pheasant ? .2 : 1.4
-      const direction = event % 2 === 0 ? 1 : -1
-      const landscapeOffset = centerAt(distance + 27) - centerAt(distance)
       for (let n = 0; n < count; n++) {
         const line = Math.ceil(n / 2)
         const side = n % 2 ? -1 : 1

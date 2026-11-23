@@ -109,6 +109,7 @@ progress::-moz-progress-bar { background: var(--brass); }
 .preferences-heading button { width: 44px; height: 44px; font-size: 1.3rem; }
 .setting-row { display: flex; min-height: 44px; justify-content: space-between; align-items: center; gap: 8px; border-bottom: 1px solid #ddc39230; font-size: .85rem; }
 .setting-row input { width: 22px; height: 22px; accent-color: var(--brass); }
+.setting-row input[type="range"] { width: 43%; min-height: 44px; margin: 0; touch-action: none; }
 .setting-row select { min-height: 40px; padding: 0 9px; }
 fieldset { margin: 14px 0 0; padding: 8px; border: 1px solid #ddc39245; }
 legend { color: var(--brass); font: 700 .82rem Georgia, serif; padding: 0 4px; }
@@ -117,6 +118,7 @@ legend { color: var(--brass); font: 700 .82rem Georgia, serif; padding: 0 4px; }
 #outfits button[aria-pressed="true"] { border-color: var(--brass); background: #63503a; }
 #outfits button:disabled { cursor: default; color: #d1c9b68c; }
 .asset-credits { display: inline-block; margin-top: 12px; color: var(--brass); font-size: .71rem; }
+.asset-credits + .asset-credits { margin-left: 12px; }
 @media (pointer: fine) { #controls { opacity: .76; } }
 @media (orientation: portrait) {
   #game {

@@ -1,136 +1,369 @@
-export function createSound() {
+import { instrumentSample, sampleUrls } from './audio-samples.js'
+import { beatSeconds, composeBar, loopBeats, musicIntensity } from './marshland.js'
+import { audioDefaults } from './profile.js'
+
+const clamp = (value, low, high) => Math.min(high, Math.max(low, value))
+const vary = (low, high) => low + Math.random() * (high - low)
+const footsteps = {
+  mud: [370, .037, .124, 'lowpass'],
+  grass: [610, .027, .083, 'lowpass'],
+  dirt: [310, .032, .077, 'lowpass'],
+  wood: [590, .035, .073, 'lowpass'],
+  splash: [1090, .048, .169, 'bandpass'],
+}
+
+const rewards = {
+  treat: [62, 69],
+  bonus: [57, 62, 66],
+  retrieve: [54, 62, 69],
+  power: [50, 57, 62, 66],
+  milestone: [57, 62, 66],
+}
+
+const score = Array.from({ length: loopBeats / 4 }, (_, bar) =>
+  composeBar(bar).map(note => ({ ...note, at: (bar * 4 + note.beat) * beatSeconds }))).flat()
+const loopLength = loopBeats * beatSeconds
+
+export function createSound(onInterruption) {
   let context
-  let effects
-  let music
+  let buses
+  let trail
+  let layers
+  let noise
   let wind
-  let rainfall
-  let sample
-  let effectsOn = true
-  let musicOn = false
-  let nextNote = 0
-  let beat = 0
+  let water
+  let rain
+  let levels = { ...audioDefaults }
+  let playing = false
+  let scheduler
+  let finishTimer
+  let elapsed = 0
+  let intensity
+  let origin
+  let cycle = 0
+  let event = 0
+  let lastEnvironment = -Infinity
+  let nextDistant
+  let nextBreath
+  const buffers = new Map()
+  const pending = new Set()
+  const voices = new Set()
 
   function gain(value, destination) {
-    const node = context.createGain()
-    node.gain.value = value
-    node.connect(destination)
-    return node
+    const bus = context.createGain()
+    bus.gain.value = value
+    bus.connect(destination)
+    return bus
   }
 
-  function filteredNoise(destination, filterType, frequency, level, loop = false, duration = 0) {
-    const start = context.currentTime
+  function ramp(param, value, seconds = .09) {
+    const now = context.currentTime
+    param.cancelScheduledValues(now)
+    param.setTargetAtTime(value, now, seconds)
+  }
+
+  function noiseBed(frequency, type) {
     const source = context.createBufferSource()
     const filter = context.createBiquadFilter()
-    const envelope = gain(loop ? level : .001, destination)
-    filter.type = filterType
+    const volume = gain(0, trail)
+    filter.type = type
     filter.frequency.value = frequency
-    source.buffer = sample
-    source.loop = loop
-    source.connect(filter).connect(envelope)
-    if (loop) {
-      source.start()
-    } else {
-      envelope.gain.exponentialRampToValueAtTime(level, start + .024)
-      envelope.gain.exponentialRampToValueAtTime(.001, start + duration)
-      source.start(start, Math.random() * 1.4, duration + .025)
-      source.onended = () => { source.disconnect(); filter.disconnect(); envelope.disconnect() }
-    }
-    return envelope.gain
+    source.buffer = noise
+    source.loop = true
+    source.connect(filter).connect(volume)
+    source.start()
+    return volume.gain
   }
 
-  function unlock() {
-    if (!effectsOn && !musicOn) return
-    const Audio = window.AudioContext ?? window.webkitAudioContext
-    if (!Audio) return
-    try {
-      if (!context) {
-        context = new Audio()
-        effects = gain(Number(effectsOn), context.destination)
-        music = gain(Number(musicOn), context.destination)
-        sample = context.createBuffer(1, context.sampleRate * 2, context.sampleRate)
-        const data = sample.getChannelData(0)
-        for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
-        wind = filteredNoise(effects, 'lowpass', 425, 0, true)
-        rainfall = filteredNoise(effects, 'highpass', 1350, 0, true)
+  function initialize(Audio) {
+    context = new Audio()
+    const master = gain(levels.masterVolume, context.destination)
+    const limit = context.createDynamicsCompressor()
+    limit.threshold.value = -13
+    limit.knee.value = 16
+    limit.ratio.value = 3
+    limit.attack.value = .006
+    limit.release.value = .19
+    limit.connect(master)
+    buses = {
+      masterVolume: master,
+      musicVolume: gain(levels.musicVolume * .65, limit),
+      wildlifeVolume: gain(levels.wildlifeVolume, limit),
+      effectsVolume: gain(levels.effectsVolume, limit),
+    }
+    trail = gain(.001, buses.wildlifeVolume)
+    layers = musicIntensity(elapsed).map(level => gain(level, buses.musicVolume))
+    noise = context.createBuffer(1, context.sampleRate * 2, context.sampleRate)
+    const data = noise.getChannelData(0)
+    for (let i = 0; i < data.length; i++) data[i] = vary(-1, 1)
+    wind = noiseBed(710, 'lowpass')
+    water = noiseBed(960, 'bandpass')
+    rain = noiseBed(1810, 'highpass')
+    context.addEventListener('statechange', () => {
+      if (!playing) return
+      if (context.state === 'running') {
+        if (document.hidden) pause()
+        else beginScheduling()
+      } else {
+        clearInterval(scheduler)
+        scheduler = undefined
+        if (context.state === 'interrupted') onInterruption?.()
       }
-      if (context.state !== 'running') context.resume().catch(() => {})
+    })
+  }
+
+  async function load(name) {
+    if (buffers.has(name) || pending.has(name)) return
+    pending.add(name)
+    try {
+      const response = await fetch(sampleUrls[name])
+      if (!response.ok) return
+      const buffer = await response.arrayBuffer()
+      // The callback form also works in Safari versions with a prefixed context.
+      const decoded = await new Promise((resolve, reject) => context.decodeAudioData(buffer, resolve, reject))
+      buffers.set(name, decoded)
     } catch {
-      // Audio and play remain independent on devices that disable Web Audio.
+      // The game and procedural foley can still run if an audio download fails.
+    } finally {
+      pending.delete(name)
     }
   }
 
-  function note(destination, hz, delay, length, level = .08, wave = 'sine', end = hz, attack = .014) {
-    if (!destination || context?.state !== 'running' || !destination.gain.value) return
-    const start = context.currentTime + delay
-    const oscillator = context.createOscillator()
-    const envelope = gain(.001, destination)
-    oscillator.type = wave
-    oscillator.frequency.setValueAtTime(hz, start)
-    oscillator.frequency.exponentialRampToValueAtTime(end, start + length)
-    envelope.gain.setValueAtTime(.001, start)
-    envelope.gain.exponentialRampToValueAtTime(level, start + attack)
-    envelope.gain.exponentialRampToValueAtTime(.001, start + length)
-    oscillator.connect(envelope)
-    oscillator.start(start)
-    oscillator.stop(start + length + .02)
-    oscillator.onended = () => { oscillator.disconnect(); envelope.disconnect() }
+  function canPlay(bus) {
+    return playing && context?.state === 'running' && levels.masterVolume > 0 && levels[bus] > 0
+  }
+
+  function voice({ buffer, destination, start, duration, volume, offset = 0, speed = 1, pan = 0,
+    panTo = pan, filter, frequency, attack = .009, release = .055, music = false }) {
+    if (!buffer || voices.size >= (music ? 30 : 40)) return
+    duration = Math.min(duration, (buffer.duration - offset) / speed)
+    if (duration < .025) return
+    const source = context.createBufferSource()
+    source.buffer = buffer
+    source.playbackRate.value = speed
+    const envelope = gain(.0001, destination)
+    envelope.gain.setValueAtTime(.0001, start)
+    envelope.gain.linearRampToValueAtTime(volume, start + Math.min(attack, duration * .32))
+    envelope.gain.setValueAtTime(volume, start + Math.max(duration * .38, duration - release))
+    envelope.gain.linearRampToValueAtTime(.0001, start + duration)
+    let output = source
+    let eq
+    let stereo
+    if (filter) {
+      eq = context.createBiquadFilter()
+      eq.type = filter
+      eq.frequency.value = frequency
+      output = output.connect(eq)
+    }
+    if ((pan || panTo) && context.createStereoPanner) {
+      stereo = context.createStereoPanner()
+      stereo.pan.setValueAtTime(pan, start)
+      stereo.pan.linearRampToValueAtTime(panTo, start + duration)
+      output = output.connect(stereo)
+    }
+    output.connect(envelope)
+    voices.add(source)
+    source.onended = () => {
+      voices.delete(source)
+      source.disconnect()
+      envelope.disconnect()
+      eq?.disconnect()
+      stereo?.disconnect()
+    }
+    source.start(start, offset, duration * speed)
+  }
+
+  function instrument(name, pitch, start, duration, volume, pan, destination, music = false) {
+    const sheet = buffers.get('instruments')
+    if (!sheet) return
+    const { speed, offset, length } = instrumentSample(name, pitch)
+    voice({ buffer: sheet, destination, start, offset, speed, duration: Math.min(duration, length / speed),
+      volume, pan, music, release: .083 })
+  }
+
+  function pump() {
+    if (!playing || context?.state !== 'running' || !buffers.has('instruments')) return
+    const now = context.currentTime
+    origin ??= now + .063
+    const audible = canPlay('musicVolume')
+    const mix = intensity ?? musicIntensity(elapsed)
+    const current = score[event]
+    let scheduled = origin + cycle * loopLength + current.at
+    if (scheduled < now - .25) {
+      cycle = Math.max(0, Math.floor((now - origin) / loopLength))
+      event = 0
+      scheduled = origin + cycle * loopLength + score[event].at
+    }
+    while (scheduled < now + .23) {
+      const note = score[event]
+      if (audible && mix[note.layer] > 0 && scheduled >= now - .018) {
+        instrument(note.instrument, note.pitch, Math.max(scheduled, now + .002), note.length * beatSeconds,
+          note.volume, note.pan, layers[note.layer], true)
+      }
+      if (++event === score.length) {
+        event = 0
+        cycle++
+      }
+      scheduled = origin + cycle * loopLength + score[event].at
+    }
+  }
+
+  function beginScheduling() {
+    if (scheduler === undefined) scheduler = setInterval(pump, 75)
+    pump()
+  }
+
+  function stopVoices() {
+    for (const source of voices) {
+      try { source.stop() } catch { /* The sample may have already ended. */ }
+    }
+  }
+
+  function unlock(restart = false) {
+    clearTimeout(finishTimer)
+    if (restart) {
+      elapsed = 0
+      origin = undefined
+      cycle = event = 0
+      lastEnvironment = -Infinity
+      nextDistant = vary(10, 17)
+      nextBreath = vary(9, 14)
+      intensity = undefined
+      stopVoices()
+    }
+    const Audio = window.AudioContext ?? window.webkitAudioContext
+    if (!Audio || document.hidden) return
+    try {
+      if (!context) initialize(Audio)
+      playing = true
+      ramp(trail.gain, 1)
+      // Call resume directly on the Start/Resume gesture, before any promises.
+      if (context.state !== 'running') {
+        context.resume().then(() => {
+          if (!playing || document.hidden) pause()
+          else beginScheduling()
+        }).catch(() => {})
+      } else {
+        beginScheduling()
+      }
+      void load('instruments')
+      void load('goose')
+      void load('mallard')
+    } catch {
+      // Audio availability is independent of play.
+    }
+  }
+
+  function stopScheduling() {
+    playing = false
+    clearTimeout(finishTimer)
+    clearInterval(scheduler)
+    scheduler = undefined
+  }
+
+  function pause() {
+    stopScheduling()
+    if (context && context.state !== 'suspended') context.suspend().catch(() => {})
+  }
+
+  function finish() {
+    stopScheduling()
+    if (context?.state !== 'running') return
+    ramp(trail.gain, .001, .055)
+    for (const layer of layers) ramp(layer.gain, .001, .07)
+    finishTimer = setTimeout(() => { stopVoices(); pause() }, 360)
+  }
+
+  function rustle(destination, filter, frequency, volume, duration, delay = 0, pan = 0, panTo = pan, attack = .015) {
+    voice({ buffer: noise, destination, start: context.currentTime + delay, offset: vary(.03, 1.05),
+      filter, frequency, volume, duration, pan, panTo, attack, release: duration * .62 })
+  }
+
+  function bird(type, { distance, x, movement = 0, near = false, wings = false, vocal = true, volume = 1 }) {
+    if (!canPlay('wildlifeVolume') || (type !== 'goose' && type !== 'mallard')) return
+    const attenuation = 1 / (1 + (distance / (near ? 12 : 19)) ** 1.45)
+    const pan = clamp(x / Math.max(5, distance * .55), -.84, .84)
+    const panTo = clamp(pan + movement * .35, -.90, .90)
+    const buffer = buffers.get(type)
+    const offset = near && type === 'goose' ? vary(.92, 1.15) : vary(.012, .060)
+    if (vocal) {
+      voice({ buffer, destination: trail, start: context.currentTime + (near ? .004 : vary(.04, .29)),
+        offset, duration: near ? 1.18 : (type === 'goose' ? 2.70 : 2.95),
+        volume: (near ? .29 : type === 'goose' ? .27 : .23) * volume * attenuation,
+        speed: vary(.967, 1.033), pan, panTo, filter: 'lowpass',
+        frequency: clamp(5500 - distance * 78, 850, 5450), attack: .032, release: .13 })
+    }
+    if (wings) {
+      for (let beat = 0; beat < (near ? 3 : 2); beat++) {
+        rustle(trail, 'bandpass', vary(780, 1280), .083 * attenuation, .15,
+          .026 + beat * (type === 'goose' ? .158 : .109), pan, panTo, .032)
+      }
+    }
   }
 
   return {
     unlock,
-    settings({ sfx, soundtrack }) {
-      effectsOn = sfx
-      musicOn = soundtrack
-      if (effects) effects.gain.value = Number(effectsOn)
-      if (music) music.gain.value = Number(musicOn)
-    },
-    ambience({ wind: breeze, rain }, active) {
-      if (context?.state !== 'running') return
-      wind.setTargetAtTime(active ? .03 + breeze * .16 : 0, context.currentTime, .30)
-      rainfall.setTargetAtTime(active ? rain * .10 : 0, context.currentTime, .34)
-      if (!active || !musicOn || context.currentTime < nextNote) return
-      const melody = [146.83, 220, 174.61, 261.63, 196, 293.66, 220, 174.61]
-      nextNote = context.currentTime + .72
-      note(music, melody[beat % melody.length], 0, 1.45, .043, 'triangle', melody[beat % melody.length], .13)
-      if (beat % 4 === 0) note(music, melody[beat % melody.length] / 2, 0, 2.75, .046, 'sine', melody[beat % melody.length] / 2, .24)
-      beat++
-    },
-    footstep(surface, heavy = false) {
-      if (!effectsOn || context?.state !== 'running') return
-      const wood = surface === 'wood'
-      const wet = surface === 'mud' || surface === 'splash'
-      filteredNoise(effects, wet ? 'bandpass' : 'lowpass', wet ? 1120 : wood ? 580 : 290,
-        (heavy ? .13 : .068) * (wet ? 1.45 : 1), wet ? .19 : .09)
-      if (wood) note(effects, heavy ? 124 : 163, 0, .08, .035, 'triangle', 79)
-    },
-    bird(type) {
-      if (!effectsOn || context?.state !== 'running') return
-      const hz = { goose: 390, mallard: 520, teal: 1130, pheasant: 720 }[type]
-      note(effects, hz, .02, .16, .026, 'triangle', hz * .76)
-      note(effects, hz * 1.15, .21, .18, .021, 'triangle', hz * .84)
-      filteredNoise(effects, 'bandpass', 820, .038, .34)
-    },
-    approachingGeese() {
-      if (!effectsOn || context?.state !== 'running') return
-      for (const [delay, pitch] of [[0, 365], [.24, 421]]) {
-        note(effects, pitch, delay, .20, .076, 'triangle', pitch * .78, .031)
-        note(effects, pitch * 2, delay, .13, .024, 'triangle', pitch * 1.56, .024)
+    pause,
+    finish,
+    bird,
+    settings(profile) {
+      for (const key of Object.keys(levels)) {
+        levels[key] = profile[key]
+        if (buses) ramp(buses[key].gain, levels[key] * (key === 'musicVolume' ? .65 : 1), .025)
       }
-      filteredNoise(effects, 'bandpass', 960, .034, .37)
     },
-    play(effect) {
-      if (effect === 'treat') {
-        note(effects, 690, 0, .11)
-        note(effects, 1040, .045, .13, .042)
-      } else if (['bonus', 'retrieve', 'power', 'start', 'milestone'].includes(effect)) {
-        const notes = effect === 'power' || effect === 'retrieve' ? [440, 554, 659, 880] : [392, 494, 587]
-        notes.forEach((hz, i) => note(effects, hz, i * .072, .26, .056, 'triangle'))
-      } else if (effect === 'hit') {
-        note(effects, 139, 0, .32, .13, 'triangle', 48)
-      } else if (effect === 'jump') {
-        note(effects, 275, 0, .12, .035, 'sine', 455)
-      } else if (effect === 'slide') {
-        if (effectsOn && context?.state === 'running') filteredNoise(effects, 'bandpass', 560, .075, .24)
+    ambience(weather, seconds, wetland, runningOnGround) {
+      elapsed = seconds
+      if (!playing || context?.state !== 'running') return
+      const nextIntensity = musicIntensity(elapsed)
+      if (intensity !== nextIntensity) {
+        intensity = nextIntensity
+        layers.forEach((layer, index) => ramp(layer.gain, intensity[index], .74))
+      }
+      if (elapsed - lastEnvironment < .15) return
+      lastEnvironment = elapsed
+      const breeze = .77 + .23 * Math.sin(elapsed * .66)
+      ramp(wind, (.020 + weather.wind * .073) * breeze, .34)
+      ramp(water, wetland ? (.011 + .006 * Math.sin(elapsed * 1.1)) : .002, .36)
+      ramp(rain, weather.rain * .053, .34)
+      if (elapsed >= nextDistant) {
+        nextDistant = elapsed + vary(19, 36)
+        bird(Math.random() > .42 ? 'mallard' : 'goose', {
+          distance: vary(40, 61), x: vary(17, 29) * (Math.random() < .5 ? -1 : 1), volume: .82,
+        })
+      }
+      if (elapsed >= nextBreath && runningOnGround && canPlay('effectsVolume')) {
+        nextBreath = elapsed + vary(7, 16)
+        rustle(buses.effectsVolume, 'bandpass', 840, .017, .18, 0, -.08, 0, .052)
+        rustle(buses.effectsVolume, 'bandpass', 750, .013, .16, .31, -.06, 0, .042)
+      }
+    },
+    footstep(surface, landing = false) {
+      if (!canPlay('effectsVolume')) return
+      const [frequency, level, length, kind] = footsteps[surface] ?? footsteps.dirt
+      const bus = buses.effectsVolume
+      rustle(bus, kind, frequency * vary(.83, 1.15), level * vary(.77, 1.19) * (landing ? 1.50 : 1),
+        length * vary(.82, 1.2), 0, vary(-.10, .10), 0, .008)
+      if (surface === 'wood') instrument('wood', 0, context.currentTime + .004, .10, level * .56, 0, bus)
+      if (surface === 'splash') rustle(bus, 'bandpass', 1690, .024, .14, .035, .09)
+    },
+    play(effect, surface = 'dirt') {
+      if (!canPlay('effectsVolume')) return
+      const bus = buses.effectsVolume
+      if (effect === 'jump') rustle(bus, 'lowpass', 450, .027, .081)
+      if (effect === 'slide') {
+        rustle(bus, 'bandpass', surface === 'mud' ? 485 : 720, .049, .36, 0, -.08, .07, .044)
+        rustle(bus, 'lowpass', 360, .024, .39, .08, -.04, .12, .036)
+      }
+      if (effect === 'hit') {
+        instrument('drum', 0, context.currentTime + .005, .22, .14, 0, bus)
+        rustle(bus, 'lowpass', 300, .074, .18)
+      }
+      const notes = rewards[effect]
+      if (notes) {
+        if (!buffers.has('instruments')) rustle(bus, 'bandpass', 780, .039, .090)
+        notes.forEach((pitch, index) => instrument('guitar', pitch, context.currentTime + .007 + index * .048,
+          .32, (effect === 'treat' ? .093 : .13) / (1 + index * .18), index * .06, bus))
       }
     },
   }

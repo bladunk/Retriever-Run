@@ -19,7 +19,7 @@ Comfort mode starts enabled. Open **Settings** to adjust camera tracking, choose
 
 Jump streams and low ground hazards, slide under branches, and steer around drifting debris. When geese descend, use the marked clear lane or duck at the second cue. Treat streaks increase your multiplier every five treats, up to 4×. Rare mallard and pheasant retrieves, duck calls, and decoys award bonus points and fill the Good Boy Meter faster. A full meter gives you six seconds of double pickup points.
 
-Each completed run saves your best score, longest distance, and retrieve count locally. The Outfitter in Settings lets you equip unlocked coats, collars, and bandanas. The sound effects, music, and render quality settings are stored on the same device.
+Each completed run saves your best score, longest distance, and retrieve count locally. The Outfitter in Settings lets you equip unlocked coats, collars, and bandanas. Master volume, music, wildlife and ambience, gameplay effects, and render quality are stored on the same device.
 
 ## Local development
 
@@ -31,7 +31,7 @@ npm test
 npm run dev
 ```
 
-Test the static production build with `npm run build` and `npm run preview`. The [3.2 update notes](DIVING-GEESE.md) document the pace curve and flight warnings. The [3.1 repair notes](REPAIR.md) cover fixed-step contact, diagnostics, and terrain streaming. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
+Test the static production build with `npm run build` and `npm run preview`. The [3.3 audio and slide notes](AUDIO.md) include the original score, recording licenses, and slide checks. The [3.2 update notes](DIVING-GEESE.md) document the pace curve and flight warnings. The [3.1 repair notes](REPAIR.md) cover fixed-step contact, diagnostics, and terrain streaming. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
 
 ## GitHub Pages
 

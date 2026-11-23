@@ -93,8 +93,8 @@ export function playerVolumes(wet = false) {
 }
 
 export function volumeY(part, depth) {
-  const scale = 1 - depth * .42
-  return part.y * scale
+  // The crouched head and neck sit higher than a uniformly scaled running pose.
+  return part.y * (1 - depth * .42) + (part.name === 'head' ? depth * .143 : 0)
 }
 
 const dogStart = {}
