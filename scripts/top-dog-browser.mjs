@@ -9,6 +9,8 @@ import { extname, join, resolve, sep } from 'node:path'
 import { chromium, webkit, devices } from 'playwright'
 import { xpAt } from '../src/career.js'
 
+const seasonal = process.argv.includes('season-one')
+const season = seasonal ? { season: 'season-one', generation: 1 } : { season: 'preseason', generation: 0 }
 const browserKind = process.argv.includes('webkit') ? webkit : chromium
 const viewport = process.argv.includes('small') ? { width: 320, height: 640 } : { width: 390, height: 844 }
 const base = '/Retriever-Run/'
@@ -28,6 +30,7 @@ const players = new Map([
   ['sage', { nickname: 'Sage Runner', score: 500, distance: 50, retrieves: 1, recorded_at: fixedDate }],
 ])
 const receipts = new Set()
+const tickets = new Map()
 const calls = { signup: 0, nickname: 0, rival: 0, submit: 0 }
 const tokenPart = value => Buffer.from(JSON.stringify(value)).toString('base64url')
 
@@ -88,17 +91,21 @@ try {
         return send({ status: 'ok', nickname })
       }
       if (endpoint === 'rr_camp_start_run') {
-        return send(owner ? { status: 'ok', season: 'preseason', generation: 0 } : { status: 'auth_required' })
+        if (!owner) return send({ status: 'auth_required' })
+        const runId = seasonal ? randomUUID() : undefined
+        if (runId) tickets.set(runId, owner)
+        return send({ status: 'ok', ...season, run_id: runId })
       }
       if (endpoint === 'rr_camp_submit') {
         if (!owner || !players.has(owner)) return send({ status: 'auth_required' })
+        if (seasonal && tickets.get(args.p_run_id) !== owner) return send({ status: 'season_changed', ...season })
         calls.submit++
         const row = players.get(owner)
-        if (receipts.has(args.p_run_id)) return send({ status: 'duplicate', ...row })
+        if (receipts.has(args.p_run_id)) return send({ status: 'duplicate', ...season, ...row })
         receipts.add(args.p_run_id)
         for (const metric of metrics) row[metric] = Math.max(row[metric] ?? 0, args['p_' + metric])
         row.recorded_at = '2026-11-21T08:00:00Z'
-        return send({ status: 'ok', ...row })
+        return send({ status: 'ok', ...season, ...row })
       }
       if (endpoint === 'rr_camp_board' || endpoint === 'rr_camp_rival') {
         const ranked = [...players].filter(([, row]) => row.recorded_at)
@@ -108,12 +115,12 @@ try {
         const own = ranked.findIndex(([id]) => id === owner)
         const mine = rows[own] ?? null
         if (endpoint === 'rr_camp_board') {
-          return send({ status: 'ok', mine, rows: rows.slice(args.p_offset, args.p_offset + args.p_limit), has_more: false })
+          return send({ status: 'ok', ...season, mine, rows: rows.slice(args.p_offset, args.p_offset + args.p_limit), has_more: false })
         }
         if (!owner) return send({ status: 'auth_required' })
         calls.rival++
         const target = rows.find(row => row.nickname === args.p_compare_name && row.recorded_at === args.p_compare_at)
-        return send({ status: 'ok', mine, rival: own > 0 ? rows[own - 1] : null, passed: target ? own + 1 < target.rank : null })
+        return send({ status: 'ok', ...season, mine, rival: own > 0 ? rows[own - 1] : null, passed: target ? own + 1 < target.rank : null })
       }
       return send({ status: 'unavailable' }, 404)
     })
@@ -182,6 +189,7 @@ try {
   assert.match(await page.locator('#title-rank').textContent(), /Pup · Level 1/)
   await open('worldwide')
   await page.getByText('Post a completed run to see your next rival.').waitFor()
+  assert.match(await page.locator('.camp-season').textContent(), seasonal ? /Season One/ : /Preseason/)
 
   const joined = [...players].find(([, row]) => row.nickname === 'Reed Scout')[1]
   Object.assign(joined, { score: 60, distance: 31, retrieves: 0, recorded_at: fixedDate })
@@ -323,7 +331,7 @@ try {
   await guest.close()
 
   assert.deepEqual([...errors], [])
-  console.log(JSON.stringify({ browser: browserKind.name(), viewport, cases: 'first-launch, guest, rival, career, promotion, kennel, recovery, offline', calls }))
+  console.log(JSON.stringify({ browser: browserKind.name(), viewport, season: season.season, cases: 'first-launch, guest, rival, career, promotion, kennel, recovery, offline', calls }))
 } finally {
   await browser?.close()
   site.close()

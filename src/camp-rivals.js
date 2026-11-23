@@ -75,12 +75,16 @@ export function createCampRivals(transport, { storage, online, now, member,
       if (fresh && !target) return Promise.resolve(withSeason(saved))
 
       const revision = generation
+      const requestSeason = season()
       const seat = profile + '/' + metric
       const key = JSON.stringify([owner, seat, revision, target?.nickname, target?.recorded_at])
       if (!requests.has(key)) {
         const task = Promise.resolve().then(() => transport.rival(profile, owner, metric, target)).then(raw => {
           if (member(profile)?.identity !== owner) return { status: 'reconnect' }
-          if (revision !== generation) return stale()
+          // The board can announce a rollover while this same season's rival response is in flight.
+          const activeGeneration = season().generation
+          const newSeasonResponse = requestSeason.generation !== activeGeneration && raw.generation === activeGeneration
+          if (revision !== generation && !newSeasonResponse) return stale()
           if (raw.status === 'reconnect') return { status: 'reconnect' }
           if (!acceptSeason(raw)) return stale()
           const active = season()
