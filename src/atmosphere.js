@@ -1,5 +1,7 @@
 import * as T from 'three'
 import { seededRandom } from './trail.js'
+import { blendProperty, expeditionBlend, northLevel, snowLevel } from './expedition.js'
+import { createNorthernHorizon } from './northern-horizon.js'
 
 export const dawnDirection = new T.Vector3(-.58, .22, -.82).normalize()
 
@@ -127,17 +129,28 @@ export function createAtmosphere(scene) {
   const front = new T.DirectionalLight(0xf4e8d7, .84)
   front.position.set(7, 6, 10)
   scene.add(sun, fill, front)
+  const horizon = createNorthernHorizon(scene)
+  const tone = new T.Color()
+  const accent = new T.Color()
   const rain = precipitation(scene, false)
   const snow = precipitation(scene, true)
-  const result = { name: '', wind: 0, wet: 0, rain: 0, sky: new T.Color(), zenith: new T.Color(), light: new T.Color() }
+  const result = { name: '', wind: 0, wet: 0, rain: 0, frost: 0, sky: new T.Color(), zenith: new T.Color(), light: new T.Color() }
   return {
-    update(elapsed, time, budget) {
+    update(elapsed, time, budget, distance = 0) {
       const { from, to, blend } = weatherAt(elapsed)
       const lerp = (key) => T.MathUtils.lerp(from[key], to[key], blend)
       const uniforms = sky.material.uniforms
       uniforms.zenith.value.copy(from.sky).lerp(to.sky, blend)
       uniforms.horizon.value.copy(from.horizon).lerp(to.horizon, blend)
       uniforms.sunColor.value.copy(from.sun).lerp(to.sun, blend)
+      const region = expeditionBlend(distance)
+      const tint = (target, key, influence) => target.lerp(tone.setHex(region.from[key])
+        .lerp(accent.setHex(region.to[key]), region.blend), influence)
+      tint(uniforms.zenith.value, 'sky', .76)
+      tint(uniforms.horizon.value, 'horizon', .70)
+      tint(uniforms.sunColor.value, 'sun', .64)
+      result.frost = snowLevel(region)
+      horizon(distance, northLevel(region), result.frost, uniforms.horizon.value)
       uniforms.cloud.value = lerp('cloud')
       uniforms.clock.value = time
       uniforms.skyDetail.value = budget > .53 ? 1 : 0
@@ -145,16 +158,16 @@ export function createAtmosphere(scene) {
       result.sky.copy(uniforms.horizon.value)
       result.zenith.copy(uniforms.zenith.value)
       result.light.copy(uniforms.sunColor.value)
-      fog.density = lerp('fog')
+      fog.density = T.MathUtils.lerp(lerp('fog'), blendProperty(region, 'fog'), .72)
       sun.color.copy(uniforms.sunColor.value)
       sun.intensity = lerp('light') * 1.12
       fill.intensity = 1.45 - lerp('cloud') * .17
-      result.rain = lerp('rain')
+      result.rain = lerp('rain') * (1 - result.frost)
       result.wind = lerp('wind')
       result.wet = Math.min(1, result.rain + lerp('snow') * .24)
-      result.name = blend > .5 ? to.name : from.name
+      result.name = result.frost > .55 ? 'Light snow' : blend > .5 ? to.name : from.name
       rain(result.rain, time, result.wind, budget)
-      snow(lerp('snow'), time, result.wind, budget)
+      snow(Math.max(lerp('snow') * .56, result.frost * .38), time, result.wind, budget)
       return result
     },
   }

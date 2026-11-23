@@ -23,8 +23,6 @@
   max-width: none;
   --lodge-top: max(10px, env(safe-area-inset-top));
   --lodge-bottom: max(10px, env(safe-area-inset-bottom));
-  max-block-size: min(830px, calc(100vh - var(--lodge-top) - var(--lodge-bottom)));
-  max-block-size: min(830px, calc(var(--lodge-viewport, 100dvh) - var(--lodge-top) - var(--lodge-bottom)));
   position: fixed;
   inset: calc(var(--lodge-offset, 0px) + var(--lodge-top)) 0 auto;
   margin: 0 auto;
@@ -34,10 +32,36 @@
   color: var(--parchment);
   background: #1a241f;
   box-shadow: 0 20px 80px #0a0e0bbd;
-  overflow: auto;
-  overscroll-behavior: contain;
+  max-block-size: none;
+  overflow: clip;
+}
+.lodge-scroll {
+  max-block-size: min(828px, calc(100vh - var(--lodge-top) - var(--lodge-bottom) - 2px));
+  max-block-size: min(828px, calc(var(--lodge-viewport, 100dvh) - var(--lodge-top) - var(--lodge-bottom) - 2px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
   touch-action: pan-y;
   scroll-padding-block: 12px max(12px, env(safe-area-inset-bottom));
+}
+.kennel-stage, .lodge-tabs, .lodge-panel { touch-action: pan-y; }
+.practice-status { display: none; }
+#game[data-practice] .practice-status {
+  display: block;
+  position: absolute;
+  z-index: 5;
+  bottom: max(118px, calc(env(safe-area-inset-bottom) + 98px));
+  left: 50%;
+  width: max-content;
+  max-width: 78vw;
+  translate: -50% 0;
+  pointer-events: none;
+  font-size: .69rem;
+  color: #f6dfb8;
+  padding: 5px 9px;
+  background: #252923e8;
+  border-radius: 5px;
 }
 @media (min-width: 760px) {
   #lodge { inset: 0; margin: auto; }

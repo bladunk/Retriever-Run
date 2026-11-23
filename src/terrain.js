@@ -1,4 +1,5 @@
 import * as T from 'three'
+import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
 import { fieldMaterials } from './materials.js'
 import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
 import { createBankPlant } from './marsh-plants.js'
@@ -6,7 +7,7 @@ import { marshWater, updateMarshWater } from './marsh-water.js'
 import { centerAt, segmentLength } from './trail.js'
 
 const vegetation = Array.from({ length: 3 }, (_, type) => [createBankPlant(type, true), createBankPlant(type)])
-const distantTrees = [createDistantTree(false), createDistantTree(true)]
+const distantTrees = Array.from({ length: 4 }, (_, style) => createDistantTree(style))
 const treeMaterial = new T.MeshLambertMaterial({ vertexColors: true })
 const treeTints = [0x9c8a74, 0xb49968, 0x87936c]
 const dummy = new T.Object3D()
@@ -48,10 +49,11 @@ export function createTerrain(scene) {
     trees.count = 0
     const reeds = new T.InstancedMesh(vegetation[0][0], reedMaterial, reedCount)
     reeds.count = 0
+    const smoke = createChimneySmoke()
     root.visible = false
-    root.add(ground, water, reeds, detail, trees)
+    root.add(ground, water, reeds, detail, trees, smoke)
     scene.add(root)
-    return { root, ground, water, detail, trees, reeds, plantType: 0, index: null, wanted: null }
+    return { root, ground, water, detail, trees, reeds, smoke, hasChimney: false, plantType: 0, index: null, wanted: null }
   })
   const slot = (index) => tiles[((index % tiles.length) + tiles.length) % tiles.length]
   const order = [0, -1, 1, 2, 3, 4, 5]
@@ -72,7 +74,7 @@ export function createTerrain(scene) {
     tile.water.geometry = packet.water ? unpack(packet.water) : new T.BufferGeometry()
     tile.detail.geometry = unpack(packet.detail)
     tile.water.visible = Boolean(packet.water)
-    tile.trees.geometry = distantTrees[Number(packet.flooded)]
+    tile.trees.geometry = distantTrees[packet.treeStyle]
     tile.trees.count = packet.trees.length / 6
     for (let n = 0; n < tile.trees.count; n++) {
       const at = n * 6
@@ -103,6 +105,8 @@ export function createTerrain(scene) {
     tile.reeds.count = reedCount
     tile.reeds.computeBoundingSphere()
     tile.reeds.boundingSphere.radius += .65
+    tile.hasChimney = Boolean(packet.chimney)
+    if (packet.chimney) tile.smoke.position.fromArray(packet.chimney)
     tile.index = packet.index
   }
 
@@ -159,9 +163,11 @@ export function createTerrain(scene) {
       center = Math.floor(distance / segmentLength)
       const offset = centerAt(distance)
       updateMarshWater(time, offset, distance, weather, detail)
+      updateChimneySmoke(time, weather.wind)
       windClock.value = time
       windStrength.value = weather.wind
       field.fieldWet.value = weather.wet
+      field.fieldFrost.value = weather.frost ?? 0
       field.fieldDetail.value = detail
       for (let i = center - 1; i < center + 6; i++) {
         const tile = slot(i)
@@ -172,6 +178,8 @@ export function createTerrain(scene) {
         tile.root.position.set(centerAt(i * segmentLength) - offset, 0, distance - i * segmentLength)
         const near = i - center < (detail === 0 ? 2 : 3)
         tile.detail.visible = near
+        const chimneyZ = tile.root.position.z + tile.smoke.position.z
+        tile.smoke.visible = tile.hasChimney && detail > 0 && chimneyZ > -65 && chimneyZ < -6
         tile.trees.visible = !near && tile.trees.count > 0
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
         tile.reeds.geometry = vegetation[tile.plantType][richPlants]

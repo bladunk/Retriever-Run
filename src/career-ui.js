@@ -1,4 +1,5 @@
 import { careerStanding, dogRanks, promotionRequirements, rankIndex } from './career.js'
+import { journalIssues } from './career-integrity.js'
 import { gearRequirement, kennelItems, unlocked } from './kennel-catalog.js'
 import { meters, node, number } from './lodge-elements.js'
 
@@ -27,6 +28,13 @@ export function careerRoom(player, insignia) {
     node('p', standing.nextRank ? 'Next promotion · ' + standing.nextRank.name
       : 'Marsh Legend · Keep earning career levels.', 'room-note'))
 
+  const problems = journalIssues(player)
+  if (player.career.reviewRank) {
+    const claimed = dogRanks[rankIndex(player.career.reviewRank)].name
+    panel.append(node('p', claimed + ' is recorded in this save, but the career requirements could not be verified. Your XP and journal are still available.',
+      'room-note'))
+  }
+  if (problems.length) panel.append(node('p', problems.join(' ') + ' New promotions are paused for this profile.', 'room-note'))
   if (player.career.legacyLevel > 1) {
     const legacy = dogRanks[rankIndex(player.career.legacyRank)]
     const note = (legacy.id === 'pup' ? 'Old level ' : legacy.name + ' · Old level ') + number(player.career.legacyLevel)

@@ -62,6 +62,7 @@ export function normalizeCareer(raw, welcomeCredit = 0, priorLevel) {
     legacyRank: dogRanks[legacyIndex].id,
     legacyLevel: priorLevel ?? careerCount(raw?.legacyLevel),
     lastRun: careerCount(raw?.lastRun),
+    reviewRank: dogRanks[rankIndex(raw?.reviewRank)].id,
     promotions: dogRanks.filter((rank, i) => i > 0 && i <= index && pending.has(rank.id)).map(rank => rank.id),
   }
 }
@@ -105,19 +106,20 @@ export function runXP(result, improved, earned) {
     earned.filter(({ patch, level }) => level === 0 && fieldHonors.includes(patch)).length * xpRates.honor)
 }
 
-export function applyRunXP(career, id, result, improved, earned, player) {
+export function applyRunXP(career, id, result, improved, earned, player, promotionAllowed = true) {
   if (id <= career.lastRun) return null
   const before = careerStanding(career)
   career.xp = validXP(career.xp + runXP(result, improved, earned))
   career.lastRun = id
   const { level } = careerStanding(career)
-  if (result.duration >= 2) {
+  if (result.duration >= 2 && promotionAllowed) {
     for (const rank of dogRanks.slice(rankIndex(career.rank) + 1)) {
       if (!promotionRequirements(rank, player, level).every(requirement => requirement.met)) break
       career.rank = rank.id
       career.promotions.push(rank.id)
     }
   }
+  if (rankIndex(career.reviewRank) <= rankIndex(career.rank)) delete career.reviewRank
   const after = careerStanding(career)
   return { earned: after.xp - before.xp, before, after }
 }

@@ -33,6 +33,8 @@ npm run dev
 
 Test the static production build with `npm run build` and `npm run preview`. The [4.0 Lodge notes](OUTFITTER.md) cover progression, local profiles, and save migration. The [audio notes](AUDIO.md) include the original score and recording licenses. The [3.2 update notes](DIVING-GEESE.md) document the pace curve and flight warnings. The [3.1 repair notes](REPAIR.md) cover fixed-step contact, diagnostics, and terrain streaming. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
 
+The [5.1 release report](NORTHERN-EXPEDITION-5.1.md) includes the four-region expedition, Season One rollout and rollback, mobile verification, and running-game captures.
+
 The [5.0 release report](WILD-FRONTIER-5.0.md) covers the Kennel scrolling repair, graphics overhaul, performance comparisons, and Safari acceptance checks.
 
 The [4.5 release report](SPORTING-DOG-4.5.md) covers the fitted hunting vests, wetlands rendering, Career requirements, returning-player migration, and iPhone acceptance tests.

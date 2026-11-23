@@ -26,6 +26,8 @@ import {
   advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun, touchesPickup,
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
+import { journalIssues } from './career-integrity.js'
+import { regionAt } from './expedition.js'
 import { habitatAt, placeOnTrail, surfaceAt, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
@@ -70,7 +72,8 @@ let calloutAnimation
 
 const diagnosticsRequested = new URLSearchParams(location.search).get('debug') === 'collision'
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
-const camp = createWorldwideCamp(createCampTransport())
+const camp = createWorldwideCamp(diagnosticsRequested ? null : createCampTransport())
+ui.game.toggleAttribute('data-practice', diagnosticsRequested)
 if (!diagnosticsRequested) {
   restoreEnrollment(lodge, camp)
   window.addEventListener('online', () => camp.syncPending())
@@ -85,6 +88,7 @@ const saveProfile = lodge.commit
 let profile = lodge.current().profile
 let runPlayer
 let runStatistics
+let runPermit
 let runRival
 let runMetric
 let audioGesture = false
@@ -312,7 +316,7 @@ function initialize() {
       glow.position.set(body.x, ground + .045, body.z)
       const pulse = 1.05 + Math.sin(visualTime * 11) * .13
       glow.scale.set(pulse, pulse, 1)
-      const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather)
+      const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather, distance)
       terrain.update(distance, visualTime, weather, preset.detail)
       wildlife(visualTime, distance, preset.detail === 0, mode === 'running')
       if (!idle && !frozen) {
@@ -548,7 +552,7 @@ function announce(message, priority) {
 }
 
 function updateConditions(weather) {
-  const habitat = habitatAt(run.distance)
+  const habitat = regionAt(run.distance).name
   const condition = habitat + weather
   if (lastCondition === condition) return
   lastCondition = condition
@@ -584,6 +588,7 @@ function updateHud() {
 function checkPatches() {
   if (run.elapsed >= nextPatchCheck) {
     nextPatchCheck = run.elapsed + .30
+    if (!diagnosticsRequested && journalIssues(lodge.current()).length) return
     patchNotices.push(...pendingPatches(lodge.current(), runStatistics.preview(run), seenPatches))
   }
   if (run.elapsed < toastUntil) return
@@ -646,7 +651,7 @@ function setMode(value, options = {}) {
       profile = lodge.current().profile
       fillReport(ui, report)
       fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
-      const posting = diagnosticsRequested ? null : camp.record(runPlayer, report)
+      const posting = diagnosticsRequested ? null : camp.record(runPlayer, report, runPermit)
       const worldwide = ui['report-worldwide']
       worldwide.dataset.run = String(report.id)
       worldwide.hidden = !posting
@@ -654,6 +659,7 @@ function setMode(value, options = {}) {
         worldwide.textContent = submissionMessages[posting.status]
         posting.done?.then(status => {
           if (worldwide.dataset.run === String(report.id)) {
+            worldwide.hidden = status === 'none'
             worldwide.textContent = submissionMessages[status] ?? submissionMessages.pending
           }
         })
@@ -679,7 +685,7 @@ function setMode(value, options = {}) {
   ui['open-lodge'].hidden = !title
   if (title) showTitleRecord()
   else ui.record.hidden = true
-  ui.eyebrow.textContent = title ? 'THE WETLANDS TRAIL' : habitatAt(run.distance).toUpperCase()
+  ui.eyebrow.textContent = title ? 'THE NORTHERN EXPEDITION' : regionAt(run.distance).name.toUpperCase()
   ui['menu-title'].innerHTML = title ? 'Retriever<br><em>Run</em>' : '<em>Paused</em>'
   ui['menu-copy'].textContent = title ? 'Follow a yellow Lab through the cattails, creek beds, and flooded timber.'
     : 'Your run is held at ' + Math.floor(run.distance) + ' m.'
@@ -714,6 +720,8 @@ function resetTrail(seed) {
   run = newRun()
   nextRow = createCourse(seed)
   row = nextRow()
+  debug?.depart(run)
+  while (row.at < run.distance - 2) row = nextRow()
   stride = previousStride = 0
   ticks = 0
   samplePose(previous, run, run, 1)
@@ -736,6 +744,7 @@ function start() {
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
   runStatistics = lodge.beginRun()
+  runPermit = camp.beginRun(runPlayer)
   runMetric = lodgeUI.rivalMetric()
   runRival = diagnosticsRequested ? null : camp.peekRival(runPlayer, runMetric)
   nextPatchCheck = toastUntil = 0

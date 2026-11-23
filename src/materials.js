@@ -14,7 +14,7 @@ export function createFieldMaterial() {
   const uniforms = {
     fieldEarth: { value: fallbackColor }, fieldWood: { value: fallbackColor },
     fieldEarthPbr: { value: fallbackPbr }, fieldWoodPbr: { value: fallbackPbr },
-    fieldDetail: { value: 1 }, fieldWet: { value: 0 },
+    fieldDetail: { value: 1 }, fieldWet: { value: 0 }, fieldFrost: { value: 0 },
   }
 
   for (const [key, url, space] of [
@@ -29,12 +29,12 @@ export function createFieldMaterial() {
 
   fieldMaterial.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, uniforms)
-    shader.vertexShader = 'attribute float fieldLayer; varying float vFieldLayer; varying vec2 vFieldUv;\n'
-      + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvFieldLayer = fieldLayer; vFieldUv = uv;')
+    shader.vertexShader = 'attribute float fieldLayer; varying float vFieldLayer, vSnowFace; varying vec2 vFieldUv;\n'
+      + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvFieldLayer = fieldLayer; vFieldUv = uv; vSnowFace = normalize(mat3(modelMatrix)*normal).y;')
     shader.fragmentShader = `
       uniform sampler2D fieldEarth, fieldWood, fieldEarthPbr, fieldWoodPbr;
-      uniform float fieldDetail, fieldWet;
-      varying float vFieldLayer;
+      uniform float fieldDetail, fieldWet, fieldFrost;
+      varying float vFieldLayer, vSnowFace;
       varying vec2 vFieldUv;
     ` + shader.fragmentShader
       .replace('#include <color_fragment>', `#include <color_fragment>
@@ -68,6 +68,11 @@ export function createFieldMaterial() {
             diffuseColor.rgb *= mix(vec3(.74,.64,.52),vec3(1.34,1.17,.96),cut);
           }
           diffuseColor.rgb *= 1. - fieldWet * (onWood ? .16 : .23);
+          if (fieldFrost > .03 && onWood && !onCrossCut) {
+            float dust = smoothstep(.52,.98,vSnowFace) * fieldFrost;
+            float scatter = .30+.28*sin(vFieldUv.x*28. + grain.r*3.4)*sin(vFieldUv.y*23. + grain.g*9.4);
+            diffuseColor.rgb = mix(diffuseColor.rgb,vec3(.57,.66,.70),dust*scatter);
+          }
         }`)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         if (onGround) roughnessFactor = clamp(fieldPbr.b * .83 + .21 - fieldWet * .36, .28, 1.);`)

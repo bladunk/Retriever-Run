@@ -64,6 +64,7 @@ export function createLabradorRig(gltf) {
   let idle = 1
   let groundCorrection = 0
   let compression = 0
+  let earFollow = 0
   const lean = new T.Quaternion()
   const headPose = head.quaternion.clone()
   const bodyPose = body.quaternion.clone()
@@ -86,7 +87,7 @@ export function createLabradorRig(gltf) {
       for (const dress of dressVest) dress(gear.vest)
     },
     reset() {
-      air = groundCorrection = compression = 0
+      air = groundCorrection = compression = earFollow = 0
       idle = 0
     },
     pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing, ground }) {
@@ -124,9 +125,10 @@ export function createLabradorRig(gltf) {
       body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105))
       head.quaternion.multiply(lean.setFromAxisAngle(up, -turn * .08 + (resting ? .07 * Math.sin(time * .8) : 0)))
       const activeEars = (1 - idle) * (1 - .82 * low)
-      const earRoll = activeEars * (.082 * Math.sin(stride * 2 - .72) + .041 * air + compression * .035)
-      secondaryMotion[0].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earRoll + idle * .021 * Math.sin(time * 2.1)))
-      secondaryMotion[1].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earRoll - idle * .022 * Math.sin(time * 1.6)))
+      const earRoll = activeEars * (.096 * Math.sin(stride * 2 - .79) + .041 * air + compression * .047)
+      earFollow += (earRoll - earFollow) * -Math.expm1(-23 * dt)
+      secondaryMotion[0].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earFollow + idle * .021 * Math.sin(time * 2.1)))
+      secondaryMotion[1].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earFollow - idle * .022 * Math.sin(time * 1.6)))
       const tailSway = idle * .045 * Math.sin(time * 2.6) + grounded * (1 - low) * .032 * Math.sin(stride - .7)
       secondaryMotion[2].bone.quaternion.multiply(lean.setFromAxisAngle(up, tailSway))
       root.position.y = restingFloor

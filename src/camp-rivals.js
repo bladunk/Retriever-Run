@@ -18,7 +18,8 @@ function snapshot(raw, metric) {
   return { status: 'ok', mine, rival: publicRow(raw.rival) }
 }
 
-export function createCampRivals(transport, { storage, online, now, member }) {
+export function createCampRivals(transport, { storage, online, now, member,
+  season = () => ({ season: 'preseason', generation: 0 }), acceptSeason = () => true }) {
   const storageKey = 'retriever-run.rivals.v1.' + transport?.namespace
   const entries = new Map()
   const requests = new Map()
@@ -40,7 +41,9 @@ export function createCampRivals(transport, { storage, online, now, member }) {
 
   function savedFor(profile, metric) {
     const saved = entries.get(profile + '/' + metric)
-    return saved && member(profile)?.identity === saved.owner ? saved : undefined
+    const active = season()
+    return saved && member(profile)?.identity === saved.owner && (saved.season ?? 'preseason') === active.season &&
+      (saved.seasonGeneration ?? 0) === active.generation ? saved : undefined
   }
 
   function persist() {
@@ -48,11 +51,14 @@ export function createCampRivals(transport, { storage, online, now, member }) {
     catch { /* The current page still has its last snapshot. */ }
   }
 
+  const withSeason = saved => ({ ...saved.result, season: saved.season ?? 'preseason',
+    generation: saved.seasonGeneration ?? 0, at: saved.at })
+
   return {
     invalidate() { generation++ },
     peek(profile, metric) {
       const saved = savedFor(profile, metric)
-      return saved ? { ...saved.result, at: saved.at, stale: true } : null
+      return saved ? { ...withSeason(saved), stale: true } : null
     },
     read(profile, metric, target) {
       const owner = member(profile)?.identity
@@ -61,27 +67,34 @@ export function createCampRivals(transport, { storage, online, now, member }) {
       const saved = savedFor(profile, metric)
       const stale = () => {
         const last = savedFor(profile, metric)
-        return last ? { ...last.result, at: last.at, stale: true, offline: !online() }
+        return last ? { ...withSeason(last), stale: true, offline: !online() }
           : { status: online() ? 'unavailable' : 'offline' }
       }
       if (!online() || typeof transport?.rival !== 'function') return Promise.resolve(stale())
       const fresh = saved?.generation === generation && now() - saved.at < freshFor
-      if (fresh && !target) return Promise.resolve({ ...saved.result, at: saved.at })
+      if (fresh && !target) return Promise.resolve(withSeason(saved))
 
       const revision = generation
+      const requestSeason = season()
       const seat = profile + '/' + metric
       const key = JSON.stringify([owner, seat, revision, target?.nickname, target?.recorded_at])
       if (!requests.has(key)) {
         const task = Promise.resolve().then(() => transport.rival(profile, owner, metric, target)).then(raw => {
           if (member(profile)?.identity !== owner) return { status: 'reconnect' }
-          if (revision !== generation) return stale()
+          // The board can announce a rollover while this same season's rival response is in flight.
+          const activeGeneration = season().generation
+          const newSeasonResponse = requestSeason.generation !== activeGeneration && raw.generation === activeGeneration
+          if (revision !== generation && !newSeasonResponse) return stale()
           if (raw.status === 'reconnect') return { status: 'reconnect' }
+          if (!acceptSeason(raw)) return stale()
+          const active = season()
           const result = snapshot(raw, metric)
           if (!result) return stale()
           const at = now()
-          entries.set(seat, { owner, result, at, generation: revision })
+          const saved = { owner, result, at, generation, season: active.season, seasonGeneration: active.generation }
+          entries.set(seat, saved)
           persist()
-          return { ...result, at, passed: target && typeof raw.passed === 'boolean' ? raw.passed : null }
+          return { ...withSeason(saved), passed: target && typeof raw.passed === 'boolean' ? raw.passed : null }
         }).catch(stale).finally(() => requests.delete(key))
         requests.set(key, task)
       }
@@ -96,7 +109,8 @@ export function rivalGap(mine, rival) {
 }
 
 export function confirmedRival(before, after, metric, result) {
-  return Boolean(!after?.stale && before?.mine && before?.rival && after?.mine &&
+  return Boolean(!after?.stale && (before?.season ?? 'preseason') === (after?.season ?? 'preseason') &&
+    (before?.generation ?? 0) === (after?.generation ?? 0) && before?.mine && before?.rival && after?.mine &&
     after.mine.rank < before.mine.rank && after.mine[metric] === result &&
     result >= before.rival[metric] && after.passed === true)
 }

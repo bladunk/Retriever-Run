@@ -1,5 +1,6 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
+import { regionAt } from './expedition.js'
 import { centerAt } from './trail.js'
 import { diveAge, diveApproach, diveExit, diveFrame, diveScale } from './dive.js'
 
@@ -160,7 +161,9 @@ export function createWildlife(scene, call) {
     const clock = time + 3
     const event = Math.floor(clock / 14)
     const progress = (clock % 14) / 10
-    const preferred = event % flocks.length
+    const region = regionAt(distance).key
+    const group = event % flocks.length
+    const preferred = region === 'snow' ? group % 2 : region === 'river' && group === 3 ? 0 : group
     const bird = flocks[preferred].info.name
     const direction = event % 2 === 0 ? 1 : -1
     const landscapeOffset = centerAt(distance + 27) - centerAt(distance)

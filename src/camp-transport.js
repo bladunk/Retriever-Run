@@ -76,7 +76,7 @@ export function createCampTransport(settings = config, {
 
   async function rpc(api, name, args) {
     const { data, error } = await api.rpc(name, args)
-    if (error || typeof data?.status !== 'string') throw new Error('camp_unavailable')
+    if (error || typeof data?.status !== 'string') throw new Error('camp_unavailable', { cause: error })
     return data
   }
 
@@ -113,6 +113,17 @@ export function createCampTransport(settings = config, {
       return rpc(api, 'rr_camp_rival', {
         p_metric: metric, p_compare_name: target?.nickname ?? null, p_compare_at: target?.recorded_at ?? null,
       })
+    },
+    async startRun(profile, owner) {
+      const api = await client(profile)
+      if ((await session(api))?.user.id !== owner) return { status: 'reconnect' }
+      try { return await rpc(api, 'rr_camp_start_run', {}) }
+      catch (error) {
+        if (['PGRST202', '42883'].includes(error.cause?.code)) {
+          return { status: 'ok', season: 'preseason', generation: 0 }
+        }
+        throw error
+      }
     },
     async submit(profile, owner, run) {
       const api = await client(profile)

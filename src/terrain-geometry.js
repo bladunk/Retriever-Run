@@ -1,7 +1,9 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
-import { bankPlantType, createLeafSpray } from './marsh-plants.js'
-import { centerAt, habitatAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
+import { createLeafSpray } from './marsh-plants.js'
+import { expeditionBlend, regionAt, snowLevel } from './expedition.js'
+import { dressNorthernBank } from './expedition-props.js'
+import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
 
 const box = new T.BoxGeometry()
 const stone = new T.IcosahedronGeometry(1, 0)
@@ -44,24 +46,71 @@ function weatheredBank() {
   geom.computeVertexNormals()
   return geom
 }
-const palette = {
-  'Cattail Marsh': { soil: 0x908476, bank: 0x6b714f, trees: 0x4c552f, grass: 0x858057, water: true },
-  'Flooded Timber': { soil: 0x827666, bank: 0x5a624e, trees: 0x554638, grass: 0x5f6243, water: true },
-  'Prairie Potholes': { soil: 0x9a8b71, bank: 0x777854, trees: 0x626440, grass: 0x9b8a56, water: true },
-  'Autumn Woodland': { soil: 0x9c826d, bank: 0x6f603d, trees: 0x8b572b, grass: 0x715e3b, water: false },
-  'Muddy Creek': { soil: 0x827265, bank: 0x6f6554, trees: 0x695c36, grass: 0x7f6f49, water: true },
+const needles = spruceWhorl()
+const snowTint = new T.Color(0xe7e5d7)
+const otherTint = new T.Color()
+const waterline = -.55
+
+function spruceWhorl() {
+  const xyz = [], uv = [], indices = []
+  const tips = 18
+  for (let row = 0; row < 3; row++) {
+    for (let n = 0; n < tips; n++) {
+      const angle = n * Math.PI * 2 / tips
+      const pointed = n % 2 === 0
+      const radius = row === 0 ? .16 : row === 1 ? (pointed ? 1 : .58) : .42
+      const y = row === 0 ? .80 : row === 1 ? -.11 + Math.sin(angle * 3) * .13 : -.28
+      xyz.push(Math.cos(angle) * radius, y + (pointed ? -.08 : .03), Math.sin(angle) * radius)
+      uv.push(.5 + Math.cos(angle) * radius * .5, .5 + Math.sin(angle) * radius * .5)
+      if (row > 0) {
+        const next = (n + 1) % tips
+        const a = (row - 1) * tips, b = row * tips
+        indices.push(a + n, a + next, b + n, a + next, b + next, b + n)
+      }
+    }
+  }
+  const mesh = new T.BufferGeometry()
+  mesh.setAttribute('position', new T.Float32BufferAttribute(xyz, 3))
+  mesh.setAttribute('uv', new T.Float32BufferAttribute(uv, 2))
+  mesh.setIndex(indices)
+  mesh.computeVertexNormals()
+  return mesh
+}
+
+function shoreHeight(region, distance, x) {
+  const edge = Math.abs(x)
+  const cross = x < 0 ? 1 : 4
+  const ripple = .13 * Math.sin(distance * .29 + x * .53) + .12 * Math.sin(distance * .11 - x * .51)
+  const wet = region.water + ripple
+  const width = 2.43 + Math.sin(distance * .061 + cross) * .88
+  if (region.key === 'timber') return [wet, width]
+  const bank = Math.sin(distance * .076 + cross + x * .098)
+  if (region.key === 'prairie') {
+    const pothole = Math.cos(distance * .048 + cross) * .57 + Math.sin(edge * .29 + distance * .046) * .53
+    const blindTile = Math.round((distance - 14) / 150)
+    const pondSide = blindTile * 5 % 14 === 0 ? 1 : -1
+    const pond = Math.max(0, 1 - Math.hypot((x - pondSide * 12) / 8, (distance - blindTile * 150 - 16) / 20))
+    const basin = region.water + .82 * pothole + ripple - .78 * pond
+    const ridge = Math.max(0, (edge - 16) / 35) * (1.56 + .53 * Math.sin(distance * .043 + cross))
+    return [basin + ridge, width + .44 + .43 * bank]
+  }
+  const bar = .58 * Math.sin(edge * .43 - .65 + bank * .88)
+  const upland = Math.min(1, Math.max(0, (edge - 12) / 30))
+  return [wet + bar * .72 + upland * (region.key === 'river' ? 1.55 : .88), width + .31 * bank]
 }
 
 export function buildTile(index) {
   const start = index * segmentLength
-  const habitat = habitatAt(start)
-  const colors = palette[habitat]
+  const colors = regionAt(start + segmentLength * .5)
+  const { key } = colors
+  const north = key === 'river' || key === 'snow'
+  const winter = key === 'snow'
   const random = seededRandom((index + 77) * 4871)
   const between = (min, max) => min + random() * (max - min)
   const tint = new T.Color()
   const list = []
   const trees = []
-  const plantType = bankPlantType(habitat)
+  const plantType = key === 'timber' ? 0 : key === 'river' ? 1 : 2
   const base = centerAt(start)
 
   function warp(array) {
@@ -136,23 +185,19 @@ export function buildTile(index) {
   function trailEdge(distance, x) {
     return 3.23 + .23 * Math.sin(distance * .12 + (x < 0 ? .4 : 2.9)) + .09 * Math.sin(distance * .36 + x * .81)
   }
-  function earth(distance, x) {
+  function earth(distance, x, zone = expeditionBlend(distance)) {
     const edge = Math.abs(x)
     const floor = trailHeight(distance, x) - .008
     if (edge <= 3.08) return floor
-    const s = distance - start
-    const current = colors.water ? -1.06 : -.11
-    const before = palette[habitatAt(start - 1)].water ? -1.06 : -.11
-    const after = palette[habitatAt(start + segmentLength)].water ? -1.06 : -.11
-    const basin = current + (before - current) * Math.max(0, 1 - s / 7) * .5
-      + (after - current) * Math.max(0, 1 - (segmentLength - s) / 7) * .5
-    const shore = .23 * Math.sin(distance * .31 + x * .49) + .17 * Math.sin(distance * .111 - x * .41)
-    const channel = Math.sin(distance * .062 + (x < 0 ? 1 : 4))
-    const width = 2.48 + channel * 1.12 + Math.sin(distance * .21 + x * .19) * .23
-    const u = Math.min(1, Math.max(0, (edge - 3.08) / width))
-    return floor + (basin + shore - floor) * u * u * (3 - 2 * u)
+    const [from, fromWidth] = shoreHeight(zone.from, distance, x)
+    const [to, toWidth] = shoreHeight(zone.to, distance, x)
+    const basin = T.MathUtils.lerp(from, to, zone.blend)
+    const width = T.MathUtils.lerp(fromWidth, toWidth, zone.blend)
+    const amount = T.MathUtils.smoothstep(edge, 3.08, 3.08 + width)
+    return floor + (basin - floor) * amount
   }
-  const olive = new T.Color(colors.bank)
+  const soil = new T.Color()
+  const olive = new T.Color()
   const vegetationTint = new T.Color(colors.grass)
 
   // Longitudinal grid samples the same boundary coordinates on both neighboring tiles.
@@ -164,17 +209,23 @@ export function buildTile(index) {
     .8, 1.6, 2.45, 3.2, 3.6, 4.3, 5.2, 6, 8, 10, 15, 23, 35, 51]
   for (let row = 0; row <= segmentLength * 2; row++) {
     const z = -row / 2
+    const distance = start - z
+    const zone = expeditionBlend(distance)
+    const snow = snowLevel(zone)
+    soil.setHex(zone.from.soil).lerp(otherTint.setHex(zone.to.soil), zone.blend)
+    olive.setHex(zone.from.bank).lerp(otherTint.setHex(zone.to.bank), zone.blend)
     for (let col = 0; col < offsets.length; col++) {
       const x = offsets[col]
       const edge = Math.abs(x)
-      const distance = start - z
-      const y = earth(distance, x)
+      const y = earth(distance, x, zone)
       const edgeFade = Math.min(1, Math.max(0, (edge - trailEdge(distance, x) + .44) / .88))
       uvs.push(x / 2.5, -distance / 2.5)
       positions.push(x, y, z)
       const rut = Math.sin(x * 5.5 + Math.sin(distance * .42) * .9) * .032
       const drift = Math.cos(distance * .18 + x * .63) * .058
-      tint.setHex(colors.soil).lerp(olive, edgeFade)
+      tint.copy(soil).lerp(olive, edgeFade)
+      const drifts = .5 + .5 * Math.sin(distance * .34 + x * 1.9)
+      tint.lerp(snowTint, snow * (.12 + .68 * edgeFade + .17 * drifts))
       tint.multiplyScalar(.91 + drift + rut).toArray(values, values.length)
       if (row && col) {
         const a = row * offsets.length + col
@@ -240,21 +291,38 @@ export function buildTile(index) {
       add(stone, i % 3 ? 0x655345 : 0x9a6638, side * between(.2, 3.03), -.005,
         between(-29.6, -.4), between(.035, .085), .014, between(.043, .10), 0, i)
     }
-    const totalTrees = habitat === 'Prairie Potholes' ? 3 : habitat === 'Autumn Woodland' ? 10 : 5 + (side === 1 ? 2 : 0)
+    const totalTrees = key === 'prairie' ? 2 : north ? 7 : 6 + (side === 1 ? 2 : 0)
     for (let i = 0; i < totalTrees; i++) {
       const z = between(-29.1, -.8)
-      const willow = i % 4 === 1 || (i === 0 && habitat === 'Muddy Creek')
-      const dead = habitat === 'Flooded Timber' || (colors.water && i > 1 && random() < .18)
+      const willow = !north && key === 'timber' && i % 4 === 1
+      const dead = key === 'timber' && i > 0 && (i % 3 === 0 || random() < .13)
       // Interleave closer landmark trees with an offset, broken treeline.
       const x = side * (i === 0 ? between(7, 9.9) : between(10 + i * .57, 38))
-      const h = willow ? between(3.9, 6.9) : dead ? between(4.3, 10.2) : between(4.4, 9.4)
+      const h = key === 'prairie' ? between(1.9, 4.3) : willow ? between(3.9, 6.9)
+        : dead ? between(4.3, 10.2) : between(4.4, 9.4)
       const ground = earth(start - z, x)
       const bark = dead ? 0x6b6254 : willow ? 0x655a46 : 0x76533d
       const at = start - z
       const heading = headingAt(at)
-      if (!dead || habitat === 'Flooded Timber') {
+      {
         trees.push(centerAt(at) - base + Math.cos(heading) * x, ground, z - Math.sin(heading) * x, h,
           i * 2.4 + side, i % 3)
+      }
+      if (north) {
+        branch(0x5d4f43, x, ground, z, x + .14, ground + h, z - .16, h * .030)
+        for (let whorl = 0; whorl < 6; whorl++) {
+          const t = whorl / 6
+          const bough = h * (.238 - t * .205) * between(.86, 1.10)
+          const level = ground + h * (.24 + t * .70)
+          const tint = winter ? (whorl % 3 ? 0x91b1b4 : 0xbacfd5) : (whorl % 3 ? 0x375449 : 0x58756a)
+          add(needles, tint, x + .1 * t, level, z, bough, h * .18, bough * .88,
+            .09 - t * .08, i * 1.3 + whorl * .92, -.08)
+          if (winter && whorl < 5) {
+            add(needles, whorl % 3 ? 0x4b6865 : 0x597676, x + .07, level - h * .068, z,
+              bough * .91, h * .142, bough * .83, .08, i * 1.3 + whorl * .92)
+          }
+        }
+        continue
       }
       const bend = between(-h * .16, h * .16)
       const rake = between(-h * .21, h * .21)
@@ -282,7 +350,7 @@ export function buildTile(index) {
           branch(bark, midX, (baseY + top) * .52, midZ, tipX + Math.cos(angle + 1.2) * h * .12,
             top - .17, tipZ + Math.sin(angle + 1.2) * h * .12, h * .005)
         } else {
-          const fall = habitat === 'Autumn Woodland' || i % 4 === 0
+          const fall = key === 'timber' && i % 4 !== 2
           const leaves = willow ? [0x929452, 0x737e4b, 0xa88749, 0x7a8148][j]
             : fall ? [0x9a653c, 0xbc8847, 0xa7673d, 0x867e48][j] : colors.trees
           const crown = h * (willow ? .16 : .12)
@@ -295,7 +363,7 @@ export function buildTile(index) {
   }
 
   // Weathered blinds and floating decoys sit outside the playable lanes.
-  if (colors.water && index % 7 === 0) {
+  if ((key === 'timber' && index % 5 === 0) || (key === 'prairie' && index % 5 === 0)) {
     const side = index % 14 === 0 ? 1 : -1
     const x = side * 7.1
     const z = -13.5
@@ -311,13 +379,17 @@ export function buildTile(index) {
     for (let i = 0; i < 21; i++) {
       add(strip, colors.grass, x + between(-1.25, 1.25), 1.58, z + between(-.84, .82), .15, .53, .13, .38, i, -.38)
     }
+    for (let brush = 0; brush < 7; brush++) {
+      add(sprays[1], brush % 3 ? 0x776d46 : 0x969071, x + between(-1.17, 1.17), between(.82, 1.58),
+        z + between(.58, .83), .54, .44, .23, -.41, brush * 1.9, .23)
+    }
     for (let stalk = 0; stalk < 32; stalk++) {
       const sx = x + between(-1.60, 1.66)
       const sz = z + between(-1.01, 1.13)
       add(strip, stalk % 2 ? 0x7d7856 : 0x5e6547, sx, .24 + between(0, .42), sz,
         between(.071, .14), between(.64, 1.39), .072, .13, stalk, between(-.48, .42))
     }
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < (key === 'prairie' ? 13 : 8); i++) {
       const d = x + side * between(1.0, 5.7)
       const waterZ = z + between(-12, -3.8)
       if (earth(start - waterZ, d) > -.60) continue
@@ -325,7 +397,8 @@ export function buildTile(index) {
       const nx = Math.sin(angle)
       const nz = Math.cos(angle)
       const drake = i % 3 !== 0
-      add(oval, drake ? 0x6b6c61 : 0x514939, d, -.511, waterZ, .162, .075, .270, 0, angle)
+      const goose = key === 'prairie' && i % 4 === 0
+      add(oval, goose ? 0x827c6c : drake ? 0x6b6c61 : 0x514939, d, -.511, waterZ, goose ? .252 : .162, .075, goose ? .36 : .270, 0, angle)
       add(oval, 0x5b5247, d + nx * .108, -.468, waterZ + nz * .108, .122, .081, .105, 0, angle)
       add(oval, drake ? 0x304535 : 0x5e5140, d + nx * .153, -.409, waterZ + nz * .153, .073, .082, .085, 0, angle)
       if (drake) add(oval, 0xa39b83, d + nx * .139, -.451, waterZ + nz * .139, .065, .017, .058, 0, angle)
@@ -333,7 +406,7 @@ export function buildTile(index) {
     }
   }
 
-  if (habitat === 'Prairie Potholes' && index % 3 !== 1) {
+  if (key === 'prairie' && index % 3 !== 1) {
     const side = index % 2 ? 1 : -1
     const x = side * between(7, 8.6)
     add(bankPatch, 0x665840, x, -.61, -11.2, 3.5, .41, 8.1, 0, .1, 0, false, 1)
@@ -344,6 +417,15 @@ export function buildTile(index) {
       add(twig, i % 3 ? 0x927b45 : 0x6e5d42, px, -.44 + h * .5, z, .020, h, .023, .03, i, between(-.20, .23))
       if (i % 3 === 0) add(strip, 0x907949, px + .092, -.42 + h * .42, z, .031, .25, .015, .23, i, -.90)
     }
+  }
+
+  const chimney = dressNorthernBank({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline, random })
+  if (chimney) {
+    const at = start - chimney[2]
+    const heading = headingAt(at)
+    const lateral = chimney[0]
+    chimney[0] = centerAt(at) - base + Math.cos(heading) * lateral
+    chimney[2] -= Math.sin(heading) * lateral
   }
 
   const landPoints = land.attributes.position
@@ -382,7 +464,7 @@ export function buildTile(index) {
     tint.setHex(0xf4e6c3).lerp(vegetationTint, .28 + random() * .33).toArray(reeds, n + 3)
   }
   return { index, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds,
-    plantType, trees: new Float32Array(trees), flooded: habitat === 'Flooded Timber' }
+    plantType, trees: new Float32Array(trees), treeStyle: winter ? 3 : north ? 2 : key === 'timber' ? 1 : 0, chimney }
 }
 
 function pack(geometry) {
@@ -411,7 +493,7 @@ function pack(geometry) {
 
 // Shared distant silhouettes use solid color and a few shaped branches. No alpha
 // overdraw or tile-specific buffers are needed for their mesh data.
-export function createDistantTree(flooded) {
+export function createDistantTree(style) {
   const pieces = []
   function piece(shape, color, x, y, z, sx, sy, sz, lean = 0) {
     const geometry = shape.index ? shape.toNonIndexed() : shape.clone()
@@ -424,11 +506,22 @@ export function createDistantTree(flooded) {
     geometry.setAttribute('color', new T.BufferAttribute(colors, 3))
     pieces.push(geometry)
   }
-  const bark = flooded ? 0x756254 : 0x5c4b36
+  if (style >= 2) {
+    piece(twig, 0x605647, 0, .42, 0, .029, .87, .029)
+    for (let tier = 0; tier < 4; tier++) {
+      const w = .23 - tier * .043
+      piece(strip, style === 3 ? 0x91a9af : 0x4c756a,
+        0, .30 + tier * .17, 0, w, .55, w, .055 * tier)
+    }
+    const result = mergeGeometries(pieces)
+    for (const geometry of pieces) geometry.dispose()
+    return result
+  }
+  const bark = style === 1 ? 0x756254 : 0x5c4b36
   piece(twig, bark, 0, .44, 0, .052, .89, .043, .05)
   piece(twig, bark, .118, .66, .028, .027, .49, .025, -.53)
   piece(twig, bark, -.119, .72, -.041, .025, .47, .026, .47)
-  if (!flooded) {
+  if (style !== 1) {
     piece(stone, 0xb3a17c, -.12, .81, -.04, .22, .16, .21, .21)
     piece(stone, 0xa8936f, .15, .77, .052, .23, .14, .20, -.17)
     piece(stone, 0xc4b791, .015, .93, 0, .20, .15, .17, .09)
