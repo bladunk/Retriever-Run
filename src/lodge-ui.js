@@ -82,7 +82,11 @@ function patchCard(patch, player, shame) {
   const footer = node('div', null, 'patch-progress')
   const suffix = patch.id === 'clean-paws' ? ' s' : ['marathon', 'marsh-legend'].includes(patch.id) ? ' m' : ''
   footer.append(track, node('span', number(progress) + ' / ' + number(goal) + suffix))
-  if (tier >= 0) footer.append(node('time', date(earned[tier])))
+  if (tier >= 0) {
+    const unlocked = node('time', date(earned[tier]))
+    unlocked.dateTime = earned[tier]
+    footer.append(unlocked)
+  }
   card.append(footer)
   return card
 }
@@ -229,6 +233,7 @@ export function createLodgeUI(ui, lodge, { onPlayer, onOpen, onClose }) {
       panel.querySelector('[data-metric=' + value + ']').focus({ preventScroll: true })
     }) : room === 'journal' ? journal(player) : personalRecords(player)
     panel.replaceChildren(...content)
+    panel.scrollTop = 0
   }
 
   function renderPlayers() {
