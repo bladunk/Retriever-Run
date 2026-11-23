@@ -419,7 +419,14 @@ export function buildTile(index) {
     }
   }
 
-  dressNorthernBank({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline, random })
+  const chimney = dressNorthernBank({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline, random })
+  if (chimney) {
+    const at = start - chimney[2]
+    const heading = headingAt(at)
+    const lateral = chimney[0]
+    chimney[0] = centerAt(at) - base + Math.cos(heading) * lateral
+    chimney[2] -= Math.sin(heading) * lateral
+  }
 
   const landPoints = land.attributes.position
   const landColors = land.attributes.color
@@ -457,7 +464,7 @@ export function buildTile(index) {
     tint.setHex(0xf4e6c3).lerp(vegetationTint, .28 + random() * .33).toArray(reeds, n + 3)
   }
   return { index, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds,
-    plantType, trees: new Float32Array(trees), treeStyle: winter ? 3 : north ? 2 : key === 'timber' ? 1 : 0 }
+    plantType, trees: new Float32Array(trees), treeStyle: winter ? 3 : north ? 2 : key === 'timber' ? 1 : 0, chimney }
 }
 
 function pack(geometry) {

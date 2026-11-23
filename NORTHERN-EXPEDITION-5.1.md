@@ -10,12 +10,12 @@ The available 5.1 brief was the expanded brief. The implementation includes the 
 | --- | ---: | --- | --- |
 | Southern Flooded Timber | 0 m | Flooded hardwood bottoms, snags, autumn leaf sprays, rooted cattails, winding shallows and dark mud | Brush-covered blinds, decoy pockets and golden morning mist |
 | Prairie Pothole Country | 240 m | Scalloped basins, raised prairie shoulders, golden sedges and short wind-shaped trees | Farm buildings, weathered fencing, brush blinds and mixed decoy spreads |
-| Northern River Wilderness | 540 m | Meandering side channels, stone bars, rugged banks and whorled conifers | Docks, an open-hull canoe with seats, a weathered cabin, camp gear, lanterns, distant foothills and cooler haze |
+| Northern River Wilderness | 540 m | Meandering side channels, stone bars, rugged banks and whorled conifers | Docks, a canoe, a flat-bottomed jon boat, a weathered stilt cabin, camp gear, lanterns, distant foothills and cooler haze |
 | Snowy Northern Wetlands | 900 m onward | Frosted spruce, snow patches, rocky winter banks, frozen shallows, open channels and light snowfall | Two layered mountain silhouettes, stronger snow cover, winter camp structures and warm highlights on the snow |
 
 Bank height, water depth, vertex color, frost and atmosphere vary smoothly over a 90 m band at each marker. Plants and landmarks remain seeded by tile and change as adjacent tiles scroll into view. The expedition remains endless in the north. The latest region and weather appear below the trail during play. The existing course controls and physics remain independent of these visual regions.
 
-The existing skinned Labrador keeps its original mesh and working animations. The revised coat relief adds shoulder definition and smaller muzzle highlights. The ear response now eases after the stride and landing input. Fabric normal detail and bartacks add texture to the existing fitted vest. Migrating geese and ducks carry the northern backdrop with the established instanced wing rig and cue timing. The river and ice share the water material. The mountain silhouettes share two compact procedural meshes and use atmospheric color separation. Plants and distant trees remain instanced, timber near the trail retains readable silhouettes, and the settings keep Adaptive, Battery Saver, Balanced and High.
+The existing skinned Labrador keeps its original mesh and working animations. The revised coat relief adds shoulder definition and smaller muzzle highlights. The ear response now eases after the stride and landing input. Fabric normal detail and bartacks add texture to the existing fitted vest. Migrating geese and ducks carry the northern backdrop with the established instanced wing rig and cue timing. The river and ice share the water material. The mountain silhouettes share two compact procedural meshes and use atmospheric color separation. Plants and distant trees remain instanced, timber near the trail retains readable silhouettes, and the settings keep Adaptive, Battery Saver, Balanced and High. Cabin smoke drifts with the wind on a shared two-triangle plane. It only draws near a visible northern cabin and turns off in Battery Saver.
 
 ### Running-game captures
 
@@ -26,6 +26,8 @@ The shots use the game build and seed 7. Diagnostic checkpoints select a route p
 ![Three running-game frames showing Prairie Pothole Country, Northern River Wilderness and Snowy Northern Wetlands](docs/northern-expedition-5.1/northbound.webp)
 
 ![A camouflaged Prairie blind and decoy pond beside the runnable trail](docs/northern-expedition-5.1/blind-and-decoys.webp)
+
+![A northern river camp with weathered dock and moored boats during a run](docs/northern-expedition-5.1/river-camp.webp)
 
 ![Crossing the snow boundary in Balanced and Battery Saver](docs/northern-expedition-5.1/snow-transition.webp)
 
@@ -75,23 +77,23 @@ Production builds ran in Linux Chromium with ANGLE SwiftShader, a 390 × 844 CSS
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Southern · Balanced | 49 | 145,181 / 150,825 | 7.42 MiB | 1,500 / 4,183 ms | 11.95 s |
 | Prairie · Balanced | 45 | 107,077 / 107,577 | 5.69 MiB | 517 / 2,667 ms | 3.49 s |
-| River · Balanced | 43 | 103,729 / 103,729 | 6.48 MiB | 417 / 933 ms | 2.34 s |
+| River · Balanced | 42 | 100,925 / 103,971 | 6.48 MiB | 192 / 483 ms | 1.66 s |
 | Snow · Balanced | 49 | 122,467 / 122,467 | 6.43 MiB | 250 / 1,367 ms | 3.13 s |
-| Snow transition · Balanced | 49 | 116,591 / 124,173 | 5.00 MiB | 300 / 683 ms | 2.82 s |
+| Snow transition · Balanced | 50 | 116,639 / 124,221 | 5.11 MiB | 267 / 533 ms | 1.56 s |
 | Snow transition · Battery Saver | 46 | 90,097 / 94,001 | 4.89 MiB | 200 / 417 ms | 1.48 s |
 
-The Southern opening had the highest observed geometry load. Its before-and-after above shows actual running gameplay. Merged 5.0's opening at the same drawing-buffer size measured 49 draws, 138,577 median triangles and 6.95 MiB median tracked buffers on Balanced. The updated opening adds about 5% median triangles. The snow boundary's largest single observed allocation upload was 1.97 MiB and its longest recorded present interval was 1,033 ms on Balanced desktop software WebGL. Battery Saver reduced the median transition triangle load by approximately 23%. GPU-resident texture estimates remain approximately 6.37 MiB and exclude framebuffer and driver overhead. The same visual binaries total 483,300 bytes. The complete uncompressed production build is about 2.05 MB versus 2.02 MB in 5.0. [5.0 baseline](WILD-FRONTIER-5.0.md#graphics-quality-and-performance)
+The Southern opening had the highest observed geometry load. Its before-and-after above shows actual running gameplay. Merged 5.0's opening at the same drawing-buffer size measured 49 draws, 138,577 median triangles and 6.95 MiB median tracked buffers on Balanced. The updated opening adds about 5% median triangles. Across the Balanced desktop snow-boundary probes, the largest single tracked buffer upload was 2.20 MiB and the longest present interval recorded was 1,033 ms. Battery Saver reduced the median transition triangle load by approximately 23%. GPU-resident texture estimates remain approximately 6.37 MiB and exclude framebuffer and driver overhead. The same visual binaries total 483,300 bytes. The complete uncompressed production build is about 2.05 MB versus 2.02 MB in 5.0. [5.0 baseline](WILD-FRONTIER-5.0.md#graphics-quality-and-performance)
 
 ### Test results
 
 - The production build and all 87 automated tests passed. Embedded PostgreSQL verified inert installation, archive totals, authenticated ticket ownership, receipt replay rejection, Season One boards and Rivals, RLS, idempotency, and rollback generation changes.
 - Deterministic stress testing passed **10,000 sessions and 31,804,151 fixed simulation steps**. New region tests cover deterministic tile creation, terrain seams and distinct plant and tree profiles.
 - Chromium and Linux WebKit exercised the five portrait sizes from 320 × 640 through 430 × 932, the last equipment card in each category, final Journal and Career rows, equipment persistence and viewport resizing.
-- Gameplay smoke and Worldwide browser fixtures exercised input, pause and restart, audio, WebGL recovery where available, anonymous identity, the local outbox and offline reload. All written scores were synthetic fixtures on local servers or embedded databases.
+- Gameplay smoke tests exercised input, pause and restart, audio, and WebGL recovery where available. The Preseason and Season One browser fixtures passed in Chromium and Linux WebKit, including anonymous identity, the local outbox and offline reload. Both engines also rendered the updated Northern River Wilderness. All written scores were synthetic fixtures on local servers or embedded databases.
 
 ## Remaining asset recommendations
 
-- A compatible adult hunter rig would make waders, calling and scanning gestures credible. Prefer a skinned GLB with one 512 px atlas, distant card and an active mesh under 2,500 triangles. A background dog needs a distinct silhouette, ≤2,500 triangles and unobtrusive idle motion. Adult hunters, background dogs and animated chimney smoke are deferred rather than represented with placeholder figures.
+- Adult hunters and background dogs remain open asset work. A compatible adult hunter rig would make waders, calling and scanning gestures credible. Prefer a skinned GLB with one 512 px atlas, a distant card and an active mesh under 2,500 triangles. A background dog needs a distinct silhouette, at most 2,500 triangles and unobtrusive idle motion.
 - A replacement playable Labrador should fit the existing collision envelope, support the four shipped poses, use a mapped ear, eye and paw rig, and keep the runtime export near 10k–15k triangles with ≤1K compressed textures. Confirm all vest fits and a low-slide pose before choosing a model. A better garment mesh can add sculpted closure relief without procedural tuning.
 - A foliage set is useful only if it improves near-camera conifer needles or wetland brush within the existing tile budget. Require compressed format, limited alpha overdraw and distance-based variants. The dominant distant trees and mountains already use original lightweight geometry.
 - Any replacement needs explicit rights for modification and browser delivery, including distribution from a public site. Check clips, rig, file weights and redistribution terms before spending.

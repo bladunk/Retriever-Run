@@ -1,4 +1,5 @@
 import * as T from 'three'
+import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
 import { fieldMaterials } from './materials.js'
 import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
 import { createBankPlant } from './marsh-plants.js'
@@ -48,10 +49,11 @@ export function createTerrain(scene) {
     trees.count = 0
     const reeds = new T.InstancedMesh(vegetation[0][0], reedMaterial, reedCount)
     reeds.count = 0
+    const smoke = createChimneySmoke()
     root.visible = false
-    root.add(ground, water, reeds, detail, trees)
+    root.add(ground, water, reeds, detail, trees, smoke)
     scene.add(root)
-    return { root, ground, water, detail, trees, reeds, plantType: 0, index: null, wanted: null }
+    return { root, ground, water, detail, trees, reeds, smoke, hasChimney: false, plantType: 0, index: null, wanted: null }
   })
   const slot = (index) => tiles[((index % tiles.length) + tiles.length) % tiles.length]
   const order = [0, -1, 1, 2, 3, 4, 5]
@@ -103,6 +105,8 @@ export function createTerrain(scene) {
     tile.reeds.count = reedCount
     tile.reeds.computeBoundingSphere()
     tile.reeds.boundingSphere.radius += .65
+    tile.hasChimney = Boolean(packet.chimney)
+    if (packet.chimney) tile.smoke.position.fromArray(packet.chimney)
     tile.index = packet.index
   }
 
@@ -159,6 +163,7 @@ export function createTerrain(scene) {
       center = Math.floor(distance / segmentLength)
       const offset = centerAt(distance)
       updateMarshWater(time, offset, distance, weather, detail)
+      updateChimneySmoke(time, weather.wind)
       windClock.value = time
       windStrength.value = weather.wind
       field.fieldWet.value = weather.wet
@@ -173,6 +178,8 @@ export function createTerrain(scene) {
         tile.root.position.set(centerAt(i * segmentLength) - offset, 0, distance - i * segmentLength)
         const near = i - center < (detail === 0 ? 2 : 3)
         tile.detail.visible = near
+        const chimneyZ = tile.root.position.z + tile.smoke.position.z
+        tile.smoke.visible = tile.hasChimney && detail > 0 && chimneyZ > -65 && chimneyZ < -6
         tile.trees.visible = !near && tile.trees.count > 0
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
         tile.reeds.geometry = vegetation[tile.plantType][richPlants]

@@ -4,23 +4,29 @@ const board = new T.BoxGeometry()
 const round = new T.SphereGeometry(1, 7, 4)
 const roof = new T.CylinderGeometry(1, 1, 1, 3, 1)
 roof.rotateX(Math.PI / 2)
-const hull = skiffHull()
+const canoe = boatHull(false)
+const jonBoat = boatHull(true)
 
-function skiffHull() {
+function boatHull(flatBow) {
   const vertices = [], uv = [], indices = []
   const ring = [[-1, .13], [-.88, -.12], [-.45, -.33], [.45, -.33], [.88, -.12], [1, .13]]
   const stations = [-1, -.83, -.45, 0, .53, .84, 1]
-  for (const z of stations) {
-    const taper = Math.max(.035, Math.pow(1 - Math.abs(z), .40))
-    for (const [x, y] of ring) {
-      vertices.push(x * taper, y * (.72 + taper * .28) + .21 * z * z, z)
-      uv.push(.5 + x * .5, z + .5)
+  for (const inside of [false, true]) {
+    const offset = vertices.length / 3
+    for (const z of stations) {
+      const taper = flatBow ? 1 - .26 * Math.max(0, z) ** 4 : Math.max(.035, (1 - Math.abs(z)) ** .40)
+      for (const [x, y] of ring) {
+        vertices.push(x * taper * (inside ? .94 : 1),
+          y * (.72 + taper * .28) + (flatBow ? .08 * Math.max(0, z) ** 2 : .21 * z * z) + (inside ? .026 : 0), z)
+        uv.push(.5 + x * .5, z + .5)
+      }
     }
-  }
-  for (let r = 0; r < stations.length - 1; r++) {
-    for (let u = 0; u < ring.length - 1; u++) {
-      const a = r * ring.length + u, b = a + ring.length
-      indices.push(a, b, a + 1, a + 1, b, b + 1, a + 1, b, a, b + 1, b, a + 1)
+    for (let r = 0; r < stations.length - 1; r++) {
+      for (let u = 0; u < ring.length - 1; u++) {
+        const a = offset + r * ring.length + u, b = a + ring.length
+        if (inside) indices.push(a, b, a + 1, a + 1, b, b + 1)
+        else indices.push(a + 1, b, a, b + 1, b, a + 1)
+      }
     }
   }
   const shape = new T.BufferGeometry()
@@ -33,6 +39,7 @@ function skiffHull() {
 
 export function dressNorthernBank({ add, region, index, earth, waterline, random }) {
   const put = (color, x, y, z, w, h, d, yaw = 0) => add(board, color, x, y, z, w, h, d, 0, yaw, 0, false, 2)
+  let chimney = null
 
   if (region.key === 'prairie' && index % 7 === 2) {
     const x = -20, z = -20, y = earth(-z, x)
@@ -51,6 +58,10 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
   if ((region.key === 'river' || region.key === 'snow') && index % 10 === 0) {
     const x = 9.8, z = -17.8, y = Math.max(-.32, earth(-z, x))
     const winter = region.key === 'snow'
+    for (const dx of [-1.84, 1.84]) for (const dz of [-1.23, 1.23]) {
+      const height = y - earth(-z - dz, x + dx) + .2
+      if (height > .19) put(0x50473d, x + dx, y - height * .5 + .06, z + dz, .25, height, .26)
+    }
     put(0x655349, x, y + .92, z, 4.5, 1.84, 3)
     for (let course = 0; course < 7; course++) {
       put(course % 2 ? 0x594a3e : 0x745d4c, x, y + .17 + course * .25, z + 1.53, 4.55, .23, .19)
@@ -61,6 +72,7 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
     put(0xe1b16c, x + 1.36, y + 1.15, z + 1.72, .52, .41, .04)
     put(0x766353, x + 1.52, y + 2.65, z - .42, .51, 1.25, .60)
     put(0x564c42, x + 1.52, y + 3.25, z - .42, .67, .13, .72)
+    chimney = [x + 1.52, y + 3.31, z - .42]
     put(0x5b4b37, x - 2.80, y + .24, z + 1.94, .66, .48, .59, -.12)
     put(0x8d7250, x - 3.06, y + .12, z + .95, .44, .27, .60, .23)
     put(0xb18451, x - 2.66, y + .56, z + 1.97, .15, .22, .16)
@@ -73,9 +85,15 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
     }
     if (!winter) {
       const boatX = 9.1, boatZ = -6.25
-      add(hull, 0x5b6957, boatX, waterline + .15, boatZ, .58, .86, 1.80, 0, -.18)
+      add(canoe, 0x5b6957, boatX, waterline + .15, boatZ, .58, .86, 1.80, 0, -.18)
       for (const seat of [-.74, .05, .77]) put(0xb1926a, boatX + seat * -.18,
         waterline + .26, boatZ + seat, .87, .075, .20, -.18)
+      const jonX = 7.8, jonZ = -11.3
+      add(jonBoat, 0x645e4b, jonX, waterline + .19, jonZ, .74, .87, 1.65)
+      add(board, 0x77715a, jonX, waterline + .10, jonZ - 1.64, 1.36, .43, .065)
+      add(board, 0x77715a, jonX, waterline + .16, jonZ + 1.64, 1.04, .43, .065)
+      for (const seat of [-.91, .12, .92]) add(board, 0x807b64, jonX, waterline + .27, jonZ + seat, 1.25, .10, .38)
+      add(board, 0x464a3d, jonX, waterline + .39, jonZ - 1.69, .30, .24, .33)
     }
   }
 
@@ -89,4 +107,5 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
       add(round, 0xc4d8df, x - .02, y + size * .29, -at + .02, size * .83, size * .29, size * .58, 0, n)
     }
   }
+  return chimney
 }

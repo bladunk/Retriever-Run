@@ -11,8 +11,11 @@ const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css
   '.glb': 'model/gltf-binary', '.mp3': 'audio/mpeg' }
 const scenes = [
   ['timber', 0, 24], ['prairie', 254, 262], ['blind', 278, 289], ['river', 589, 597], ['snow', 970, 980],
-  ['snow-transition', 888, 920],
+  ['river-camp', 588, 595], ['snow-transition', 888, 920],
 ]
+const selectedScenes = scenes.filter(([region]) => process.argv.includes(region))
+const captureScenes = selectedScenes.length ? selectedScenes : scenes
+  .filter(([region]) => !process.argv.includes('quick') || ['snow', 'snow-transition'].includes(region))
 
 const server = createServer(async (request, response) => {
   const prefix = '/Retriever-Run/'
@@ -35,9 +38,9 @@ try {
   const quality = process.argv.includes('low') ? 'low' : 'balanced'
   const context = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 390, height: 844 },
     deviceScaleFactor: .75, serviceWorkers: 'block' })
-  for (const [region, at, stop] of scenes.filter(([name]) => !process.argv.includes('quick') || ['snow', 'snow-transition'].includes(name))) {
+  for (const [region, at, stop] of captureScenes) {
     const page = await context.newPage()
-    if (region === 'blind') await page.setViewportSize({ width: 844, height: 480 })
+    if (region === 'blind' || region === 'river-camp') await page.setViewportSize({ width: 844, height: 480 })
     const errors = []
     page.on('pageerror', error => errors.push(error.message))
     page.on('console', message => { if (message.type() === 'error') errors.push(message.text()) })
