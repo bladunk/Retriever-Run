@@ -1,4 +1,4 @@
-import { fieldHonors } from './honors.js'
+import { careerFieldHonors as fieldHonors } from './honors.js'
 
 const obstacleHonors = ['timber-jumper', 'low-rider', 'goose-whisperer']
 

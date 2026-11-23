@@ -1,6 +1,6 @@
 import * as T from 'three'
 import { seededRandom } from './trail.js'
-import { blendProperty, expeditionBlend, northLevel, snowLevel } from './expedition.js'
+import { atmosphereBlend, blendProperty, expeditionRegions, northLevel, snowLevel } from './expedition.js'
 import { createNorthernHorizon } from './northern-horizon.js'
 
 export const dawnDirection = new T.Vector3(-.58, .22, -.82).normalize()
@@ -28,11 +28,31 @@ export function weatherAt(time) {
   return { from: states[(Math.max(0, index - 1)) % states.length], to: states[index % states.length], blend }
 }
 
+const mountainWeather = [
+  { ...states[6], name: 'High-country snow', snow: .65 },
+  { ...states[0], name: 'Alpine sunbreak', cloud: .24, wind: .21, light: 1.56 },
+  { ...states[5], name: 'Drifting snow', cloud: .62, snow: .38, wind: .78 },
+  { ...states[2], name: 'Cold river mist', fog: .020, cloud: .57, snow: .08 },
+]
+const mountainArrival = expeditionRegions.at(-1).seconds
+
+export function routeWeatherAt(time) {
+  if (time < mountainArrival) return weatherAt(time)
+  const elapsed = time - mountainArrival
+  const phaseLength = 37
+  const index = Math.floor(elapsed / phaseLength)
+  return {
+    from: index ? mountainWeather[(index - 1) % mountainWeather.length] : weatherAt(mountainArrival).to,
+    to: mountainWeather[index % mountainWeather.length],
+    blend: T.MathUtils.smoothstep(elapsed % phaseLength, 0, transition),
+  }
+}
+
 const skyVertex = `
   varying vec3 ray;
   void main() {
     ray = position;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+    gl_Position = projectionMatrix * vec4(mat3(viewMatrix) * position, 1.);
   }`
 
 const skyFragment = `
@@ -137,13 +157,13 @@ export function createAtmosphere(scene) {
   const result = { name: '', wind: 0, wet: 0, rain: 0, frost: 0, sky: new T.Color(), zenith: new T.Color(), light: new T.Color() }
   return {
     update(elapsed, time, budget, distance = 0) {
-      const { from, to, blend } = weatherAt(elapsed)
+      const { from, to, blend } = routeWeatherAt(elapsed)
       const lerp = (key) => T.MathUtils.lerp(from[key], to[key], blend)
       const uniforms = sky.material.uniforms
       uniforms.zenith.value.copy(from.sky).lerp(to.sky, blend)
       uniforms.horizon.value.copy(from.horizon).lerp(to.horizon, blend)
       uniforms.sunColor.value.copy(from.sun).lerp(to.sun, blend)
-      const region = expeditionBlend(distance)
+      const region = atmosphereBlend(elapsed)
       const tint = (target, key, influence) => target.lerp(tone.setHex(region.from[key])
         .lerp(accent.setHex(region.to[key]), region.blend), influence)
       tint(uniforms.zenith.value, 'sky', .76)
@@ -165,9 +185,9 @@ export function createAtmosphere(scene) {
       result.rain = lerp('rain') * (1 - result.frost)
       result.wind = lerp('wind')
       result.wet = Math.min(1, result.rain + lerp('snow') * .24)
-      result.name = result.frost > .55 ? 'Light snow' : blend > .5 ? to.name : from.name
+      result.name = blend > .5 ? to.name : from.name
       rain(result.rain, time, result.wind, budget)
-      snow(Math.max(lerp('snow') * .56, result.frost * .38), time, result.wind, budget)
+      snow(Math.max(lerp('snow') * .56, result.frost * .10), time, result.wind, budget)
       return result
     },
   }

@@ -1,6 +1,7 @@
 import { laneWidth, traceContact } from './collision.js'
 import { diveWarningLead } from './dive.js'
 import { score } from './runner.js'
+import { regionAt } from './expedition.js'
 
 export const counters = ['treats', 'logs', 'slidesCleared', 'geese', 'ducks', 'pheasants', 'jumps', 'slides']
 export const causes = ['water', 'logs', 'geese', 'other']
@@ -90,7 +91,8 @@ export function createRunStatistics(runId) {
       return true
     },
     preview(run) {
-      return { ...stats, jumpClears, distance: run.distance, duration: run.elapsed, score: score(run), retrieves: run.retrieves }
+      return { ...stats, jumpClears, distance: run.distance, duration: run.elapsed, score: score(run),
+        retrieves: run.retrieves, territory: regionAt(run.elapsed).index + 1 }
     },
     finish(run, hazard) {
       if (finalized) return null

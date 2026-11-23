@@ -7,12 +7,44 @@ import { marshWater, updateMarshWater } from './marsh-water.js'
 import { centerAt, segmentLength } from './trail.js'
 
 const vegetation = Array.from({ length: 3 }, (_, type) => [createBankPlant(type, true), createBankPlant(type)])
-const distantTrees = Array.from({ length: 4 }, (_, style) => createDistantTree(style))
+const distantTrees = Array.from({ length: 5 }, (_, style) => createDistantTree(style))
 const treeMaterial = new T.MeshLambertMaterial({ vertexColors: true })
 const treeTints = [0x9c8a74, 0xb49968, 0x87936c]
 const dummy = new T.Object3D()
 
 const { material: terrainMaterial, uniforms: field } = fieldMaterials
+const detailMaterial = terrainMaterial.clone()
+const lodRanges = [[43, 57, 71, 87], [69, 86, 99, 117], [69, 86, 126, 145]]
+const lodRange = { value: new T.Vector4() }
+
+function softenLOD(material, distant, baseShader) {
+  material.customProgramCacheKey = () => distant ? 'field-tree-lod' : 'field-detail-lod'
+  material.onBeforeCompile = shader => {
+    baseShader?.(shader)
+    shader.uniforms.lodRange = lodRange
+    shader.vertexShader = 'varying float vTrailDepth;\n' + shader.vertexShader.replace('#include <fog_vertex>', `
+      #include <fog_vertex>
+      vec4 lodPosition = vec4(transformed, 1.);
+      #ifdef USE_INSTANCING
+        lodPosition = instanceMatrix * lodPosition;
+      #endif
+      vTrailDepth = -(modelMatrix * lodPosition).z;
+    `)
+    shader.fragmentShader = 'uniform vec4 lodRange; varying float vTrailDepth;\n' +
+      shader.fragmentShader.replace('#include <clipping_planes_fragment>', `
+      #include <clipping_planes_fragment>
+      float handoff = smoothstep(lodRange.x, lodRange.y, vTrailDepth);
+      float keep = ${distant ? 'handoff * (1. - smoothstep(lodRange.z, lodRange.w, vTrailDepth))' : '1. - handoff'};
+      if (keep < 1.) {
+        float screen = fract(52.9829189 * fract(dot(floor(gl_FragCoord.xy), vec2(.06711056,.00583715))));
+        if (${distant ? '1. - screen' : 'screen'} >= keep) discard;
+      }
+    `)
+  }
+}
+softenLOD(detailMaterial, false, terrainMaterial.onBeforeCompile)
+softenLOD(treeMaterial, true)
+
 const reedMaterial = new T.MeshLambertMaterial({ color: 0xffffff, side: T.DoubleSide, vertexColors: true })
 const windClock = { value: 0 }
 const windStrength = { value: 0 }
@@ -44,7 +76,7 @@ export function createTerrain(scene) {
     const root = new T.Group()
     const ground = new T.Mesh(new T.BufferGeometry(), terrainMaterial)
     const water = new T.Mesh(new T.BufferGeometry(), marshWater)
-    const detail = new T.Mesh(new T.BufferGeometry(), terrainMaterial)
+    const detail = new T.Mesh(new T.BufferGeometry(), detailMaterial)
     const trees = new T.InstancedMesh(distantTrees[0], treeMaterial, treeCount)
     trees.count = 0
     const reeds = new T.InstancedMesh(vegetation[0][0], reedMaterial, reedCount)
@@ -169,6 +201,8 @@ export function createTerrain(scene) {
       field.fieldWet.value = weather.wet
       field.fieldFrost.value = weather.frost ?? 0
       field.fieldDetail.value = detail
+      const range = lodRanges[detail]
+      lodRange.value.fromArray(range)
       for (let i = center - 1; i < center + 6; i++) {
         const tile = slot(i)
         tile.wanted = i
@@ -176,11 +210,13 @@ export function createTerrain(scene) {
         tile.root.visible = tile.index === i && insideDrawDistance
         if (!tile.root.visible) continue
         tile.root.position.set(centerAt(i * segmentLength) - offset, 0, distance - i * segmentLength)
-        const near = i - center < (detail === 0 ? 2 : 3)
-        tile.detail.visible = near
+        const tileStart = i * segmentLength - distance
+        // Include a margin for outer tree crowns that reach across tile edges.
+        tile.detail.visible = tileStart < range[1] + 8
         const chimneyZ = tile.root.position.z + tile.smoke.position.z
         tile.smoke.visible = tile.hasChimney && detail > 0 && chimneyZ > -65 && chimneyZ < -6
-        tile.trees.visible = !near && tile.trees.count > 0
+        tile.trees.visible = tile.trees.count > 0 &&
+          tileStart + segmentLength + 8 > range[0] && tileStart < range[3] + 8
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
         tile.reeds.geometry = vegetation[tile.plantType][richPlants]
         tile.reeds.count = i - center < 2 ? nearCount[detail] : farCount[detail]

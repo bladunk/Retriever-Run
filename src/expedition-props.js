@@ -3,6 +3,7 @@ import * as T from 'three'
 const board = new T.BoxGeometry()
 const round = new T.SphereGeometry(1, 7, 4)
 const roof = new T.CylinderGeometry(1, 1, 1, 3, 1)
+const silo = new T.CylinderGeometry(.98, .98, 1, 9)
 roof.rotateX(Math.PI / 2)
 const canoe = boatHull(false)
 const jonBoat = boatHull(true)
@@ -40,13 +41,17 @@ function boatHull(flatBow) {
 export function dressNorthernBank({ add, region, index, earth, waterline, random }) {
   const put = (color, x, y, z, w, h, d, yaw = 0) => add(board, color, x, y, z, w, h, d, 0, yaw, 0, false, 2)
   let chimney = null
+  const feature = region.landmark
 
-  if (region.key === 'prairie' && index % 7 === 2) {
+  if (feature === 'farm' && index % 5 === 2) {
     const x = -20, z = -20, y = earth(-z, x)
     put(0x694638, x, y + 1.55, z, 5.6, 3.1, 4)
     add(roof, 0x706859, x, y + 3.35, z, 3.72, 1.28, 2.23)
     put(0x43382c, x, y + .87, z + 2.02, 1.55, 1.74, .11)
     put(0xbba57a, x - 1.97, y + 1.88, z + 2.07, .68, .71, .08)
+    const siloBase = earth(-z, x - 5)
+    add(silo, 0xb4aea0, x - 5, siloBase + 2.55, z, 1, 5.1, 1)
+    add(round, 0xa6a196, x - 5, siloBase + 5.04, z, 1.02, .73, 1.02)
     for (let fence = 0; fence < 7; fence++) {
       const fx = -8 - fence * 2.05
       const fy = earth(13, fx)
@@ -55,9 +60,56 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
     }
   }
 
-  if ((region.key === 'river' || region.key === 'snow') && index % 10 === 0) {
+  if (feature === 'farm') {
+    for (let row = 0; row < 14; row++) {
+      const x = 7.5 + row * 1.20, z = -15.1
+      add(round, row % 2 ? 0xa5864d : 0xb6a05f, x, earth(-z, x) + .14, z, .38, .20, 10.2, 0, -.31)
+    }
+  }
+
+  if (feature === 'piling' && index % 4 === 0) {
+    for (let pile = 0; pile < 6; pile++) {
+      const x = 7.7 + pile * .79, z = -16 - pile * .36
+      put(0x77634c, x, waterline + .24, z, .19, 1.36 - pile * .09, .20)
+      if (pile < 4) put(0x9d8766, x + .20, waterline + .50, z, .51, .09, .88, -.43)
+    }
+    put(0xa49b7e, 7.7, waterline + .99, -16, .27, .12, .28)
+  }
+
+  if (feature === 'sandbar' && index % 3 !== 1) {
+    const side = index % 2 ? -1 : 1
+    for (let strip = 0; strip < 6; strip++) {
+      const x = side * (9.4 + strip * 1.33), z = -10 - strip * 1.82
+      add(round, strip % 2 ? 0xaf9569 : 0xbea67e, x, Math.max(waterline - .06, earth(-z, x)), z,
+        2.7, .18, 2.4 - strip * .18, 0, .55)
+    }
+    put(0x605140, side * 11, waterline + .19, -15.2, .26, .24, 3.1, -.76)
+  }
+
+  if (feature === 'slough' && index % 3 === 0) {
+    const x = index % 2 ? 9.5 : -9.5
+    for (let mound = 0; mound < 4; mound++) {
+      const z = -7 - mound * 4.7
+      add(round, mound % 2 ? 0x70613d : 0x827650, x + Math.sin(mound) * .65, waterline, z,
+        .75 + mound * .14, .35 + mound * .045, .65 + mound * .17, .14, mound)
+    }
+  }
+
+  if (feature === 'snag' && index % 4 === 0) {
+    const x = -9.8, z = -17, y = earth(-z, x)
+    put(0x938f76, x, y + .28, z, .31, .42, 4.4, .72)
+    for (let stem = 0; stem < 7; stem++) {
+      const dx = x - 2 + stem * .63, dz = z + Math.sin(stem) * 2.7, ground = earth(-dz, dx)
+      const h = 2.3 + stem % 3
+      put(0xb8b4a0, dx, ground + h * .5, dz, .085, h, .095, stem)
+      for (let knot = 0; knot < 3; knot++)
+        put(0x625b4d, dx, ground + .64 + knot * .61, dz + .047, .087, .069, .016, stem)
+    }
+  }
+
+  if ((feature === 'camp' || feature === 'cairn') && index % 10 === 0) {
     const x = 9.8, z = -17.8, y = Math.max(-.32, earth(-z, x))
-    const winter = region.key === 'snow'
+    const winter = feature === 'cairn'
     for (const dx of [-1.84, 1.84]) for (const dz of [-1.23, 1.23]) {
       const height = y - earth(-z - dz, x + dx) + .2
       if (height > .19) put(0x50473d, x + dx, y - height * .5 + .06, z + dz, .25, height, .26)
@@ -97,14 +149,24 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
     }
   }
 
-  if (region.key === 'snow' && index % 3 === 0) {
-    for (let n = 0; n < 9; n++) {
+  if (feature === 'cairn' && index % 3 === 0) {
+    // Rotate exposed channel rocks and compact cairns throughout the endgame.
+    const exposed = Math.floor(index / 9) % 3
+    for (let n = 0; n < 7 + exposed; n++) {
       const x = (n % 2 ? 1 : -1) * (4.3 + random() * 6.7)
       const at = 2 + random() * 25, y = earth(at, x)
       if (y < waterline + .12) continue
       const size = .34 + random() * .62
       add(round, 0x68777d, x, y, -at, size, size * .54, size * .68, 0, n)
       add(round, 0xc4d8df, x - .02, y + size * .29, -at + .02, size * .83, size * .29, size * .58, 0, n)
+    }
+    if (exposed === 1) {
+      const x = 5.8, z = -11, base = earth(-z, x)
+      for (let level = 0; level < 4; level++) {
+        const size = .44 - level * .078
+        add(round, level % 2 ? 0x819294 : 0x9cafb4, x, base + .12 + level * .17, z,
+          size, .14, size * .71, 0, level)
+      }
     }
   }
   return chimney

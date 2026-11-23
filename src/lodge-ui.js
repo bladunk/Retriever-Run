@@ -1,5 +1,6 @@
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, medals, patches } from './honors.js'
+import { expeditionRegions } from './expedition.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
 import { campSwitch, worldwideBoard } from './camp-ui.js'
 import { node, number, meters, date } from './lodge-elements.js'
@@ -119,6 +120,8 @@ function journal(player) {
     ['Lifetime distance', meters(s.distance)], ['Completed runs', number(s.runs)],
     ['Playtime', duration(s.playtime)], ['Lifetime points', number(s.points)],
     ['Highest score', number(player.profile.best)], ['Longest run', meters(player.profile.farthest)],
+    ['Longest active run', player.records.duration ? duration(player.records.duration) : '—'],
+    ['Farthest territory', expeditionRegions[player.migration?.farthest - 1]?.name ?? '—'],
     ['Treats collected', number(s.treats)], ['Logs jumped', number(s.logs)],
     ['Branches cleared', number(s.slidesCleared)], ['Geese dodged', number(s.geese)],
     ['Total retrieves', number(player.profile.retrieves)], ['Deaths', number(s.deaths)],
@@ -132,9 +135,13 @@ function journal(player) {
     ['Consecutive losses', number(s.failureStreak)],
     ['Same hazard streak', number(s.sameHazardStreak)], ['Under 20 s streak', number(s.earlyStreak)],
   ]))
+  const migration = node('dl', null, 'field-list')
+  migration.append(...rows(expeditionRegions.map(region =>
+    [region.name, duration(player.migration?.seconds[region.index] ?? 0)])))
   return [node('h3', 'Lifetime Field Journal', 'section-title'),
-    node('p', 'Lifetime totals start with this update. Earlier saved records and total retrieves carry over.', 'room-note'),
-    grid, node('h3', 'Field breakdown', 'section-title section-break'), breakdown, ...personalRecords(player)]
+    node('p', 'Territory tracking starts in 5.2. Earlier saved records are included below.', 'room-note'),
+    grid, node('h3', 'Territory time since 5.2', 'section-title section-break'), migration,
+    node('h3', 'Field breakdown', 'section-title section-break'), breakdown, ...personalRecords(player)]
 }
 
 function leaderboard(lodge, metric, selectMetric) {
@@ -185,14 +192,15 @@ export function fillReport(ui, report) {
     ['Score', number(report.score)], ['Distance', meters(report.distance)], ['Time', duration(report.duration)],
   ]))
   ui['report-tallies'].replaceChildren(...rows([
-    ['Cause of death', hazardName(report.hazard)], ['Treats collected', number(report.treats)],
+    ['Cause of death', hazardName(report.hazard)], ['Territory reached', expeditionRegions[report.territory - 1]?.name ?? '—'],
+    ['Treats collected', number(report.treats)],
     ['Logs jumped', number(report.logs)], ['Branches cleared', number(report.slidesCleared)],
     ['Geese dodged', number(report.geese)], ['Retrieves', number(report.retrieves)],
   ]))
   const highlights = [
     ['Personal records', report.improved.map(key => personalRecordLabels[key])],
     ['New patches', report.earned.map(({ patch, level }) => patchName(patch, level))],
-    ['Camp placement', placement.length ? placement : ['Outside the local top 20']],
+    ['Camp placement', report.preview ? [] : placement.length ? placement : ['Outside the local top 20']],
   ]
   ui['report-highlights'].replaceChildren(...highlights.filter(([, items]) => items.length).map(([title, items]) => {
     const group = node('div', null, 'report-highlight')

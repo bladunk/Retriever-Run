@@ -1,5 +1,16 @@
 import * as T from 'three'
+import { expeditionRegions } from './expedition.js'
 import { centerAt, seededRandom } from './trail.js'
+
+const farRadii = [510, 345]
+const borderDistance = expeditionRegions[7].marker
+
+export function horizonPosition(distance, layer) {
+  return {
+    x: -centerAt(distance) + (layer === 0 ? -22 : 16),
+    z: 32 * Math.tanh((distance - borderDistance) / 1550),
+  }
+}
 
 function mountainMesh(layer) {
   const random = seededRandom(47509 + layer * 491)
@@ -16,7 +27,9 @@ function mountainMesh(layer) {
     for (let row = 0; row < 5; row++) {
       const t = row / 4
       const y = T.MathUtils.lerp(-7, peak, t) + Math.sin(x * .27 + row * 1.7) * t * 1.44
-      points.push(x + Math.cos(row * 2.7 + i * .44) * (3.6 * (1 - t)), y, -(11 + layer * 18) * t)
+      const azimuth = (x + Math.cos(row * 2.7 + i * .44) * (3.6 * (1 - t))) / 155
+      const radius = farRadii[layer] + (16 + layer * 9) * t
+      points.push(Math.sin(azimuth) * radius, y * (layer === 0 ? 2.25 : 2.05), -Math.cos(azimuth) * radius)
       heights.push(t, random())
       if (i && row) {
         const a = i * 5 + row
@@ -40,6 +53,8 @@ export function createNorthernHorizon(scene) {
     const material = new T.ShaderMaterial({
       uniforms: { haze, frost, amount, layer: { value: layer } },
       side: T.DoubleSide,
+      transparent: true,
+      depthWrite: false,
       vertexShader: `
         attribute vec2 ridge;
         varying vec2 face;
@@ -47,7 +62,10 @@ export function createNorthernHorizon(scene) {
         void main() {
           face = ridge;
           ridgePoint = position;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+          vec4 clip = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+          // The trail keeps its short far plane and depth precision. This pass
+          // sits behind it while retaining the arc's actual projected parallax.
+          gl_Position = vec4(clip.xy, clip.w * .99996, clip.w);
         }
       `,
       fragmentShader: `
@@ -64,15 +82,15 @@ export function createNorthernHorizon(scene) {
           vec3 rock = mix(vec3(.101,.168,.205), vec3(.143,.242,.235), layer*.44);
           vec3 cap = mix(vec3(.55,.62,.69),vec3(.84,.89,.93),facets*.80);
           vec3 color = mix(rock * (.77+facets*.32+face.y*.08), cap, blanket);
-          float separation = (.36 + layer * .20) * smoothstep(.04,.54,face.x) * amount;
-          gl_FragColor = vec4(mix(haze,color,separation), 1.);
+          float separation = (.54 + layer * .21) * smoothstep(.04,.48,face.x) * amount;
+          gl_FragColor = vec4(mix(haze, color, .70 + layer * .20), separation);
           #include <tonemapping_fragment>
           #include <colorspace_fragment>
         }
       `,
     })
     const mountain = new T.Mesh(mountainMesh(layer), material)
-    mountain.position.set(0, -5, layer === 0 ? -155 : -116)
+    mountain.position.y = -9
     mountain.renderOrder = -40 + layer
     mountain.frustumCulled = false
     scene.add(mountain)
@@ -83,8 +101,10 @@ export function createNorthernHorizon(scene) {
     frost.value = snow
     amount.value = northern
     for (const [index, ridge] of mountains.entries()) {
-      ridge.visible = northern > .006
-      ridge.position.x = -centerAt(distance) * (.34 + index * .32) + index * 13
+      ridge.visible = northern > 0
+      const origin = horizonPosition(distance, index)
+      ridge.position.x = origin.x
+      ridge.position.z = origin.z
     }
   }
 }
