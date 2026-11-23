@@ -26,9 +26,7 @@ import './style.css'
 import './lodge.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
-const sound = createSound(() => {
-  if (mode === 'running') setMode('paused', { immediate: true })
-})
+const sound = createSound(background)
 const volumeKeys = Object.keys(audioDefaults)
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 const format = new Intl.NumberFormat()
@@ -126,6 +124,7 @@ const lodgeUI = createLodgeUI(ui, lodge, {
 })
 ui['open-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
 ui['report-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
+ui.lodge.addEventListener('click', () => { if (ui.lodge.open && !audioGesture) engageMusic() })
 sound.settings(profile)
 updateMusicButton()
 setTimeout(sound.preload, 250)
@@ -539,6 +538,13 @@ function engageMusic() {
   sound.selectScene(ui.lodge.open ? 'lodge' : mode, { gesture: true })
 }
 
+function background() {
+  audioGesture = false
+  updateMusicButton()
+  if (mode === 'running') setMode('paused', { immediate: true })
+  else sound.suspend()
+}
+
 function setMode(value, options = {}) {
   needsRedraw = true
   const oldMode = mode
@@ -767,10 +773,6 @@ function bindInput() {
     ui.game.addEventListener(name, (event) => {
       if (gesture?.id === event.pointerId) gesture = undefined
     })
-  }
-  const background = () => {
-    if (mode === 'running') setMode('paused', { immediate: true })
-    else sound.suspend()
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) background() })
   window.addEventListener('pagehide', background)
