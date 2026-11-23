@@ -1,0 +1,157 @@
+.title-career {
+  color: #f2d3a0;
+  max-width: 250px;
+  margin: 0 0 .8rem;
+  display: grid;
+  gap: 5px;
+  font-size: .82rem;
+  font-weight: 710;
+}
+.title-career progress { max-width: 150px; }
+
+#onboarding {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  color: #f6e9d3;
+  background: linear-gradient(0deg, #101b15 0%, #162219 34%, #17251baa 62%, #15201818 93%);
+  overscroll-behavior: contain;
+}
+#onboarding::backdrop { background: #15221824; }
+#game:has(#onboarding[open]) :is(#menu, header) { visibility: hidden; }
+.onboarding-dock {
+  display: grid;
+  align-items: end;
+  justify-items: center;
+  min-height: 100%;
+  padding: max(16px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+}
+.onboarding-sheet {
+  padding: clamp(15px, 4vw, 29px);
+  width: min(100%, 430px);
+  border: 1px solid #b38e59;
+  border-radius: 9px;
+  background: repeating-linear-gradient(3deg, #8f795209 0 1px, transparent 1px 5px),
+    linear-gradient(150deg, #302a20f2, #1e2c22 61%, #19261d);
+  box-shadow: 0 8px 40px #09100cbc;
+}
+.onboarding-sheet h2, #camp-greeting, #promotion h2 {
+  font: 700 clamp(2.05rem, 8.4vw, 3.4rem)/.97 Georgia, serif;
+  letter-spacing: -.035em;
+  margin: 0 0 13px;
+}
+.onboarding-sheet h2 em { color: #e3b77d; display: block; font-weight: 400; }
+.onboarding-sheet h2:focus { outline: none; }
+#onboarding-form, #camp-welcome { display: grid; gap: 8px; }
+#onboarding-form p, #camp-welcome p { margin: 0 0 3px; }
+#onboarding-form label { font-size: .9rem; font-weight: 720; }
+#camp-name {
+  min-width: 0;
+  min-height: 46px;
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid #a98558;
+  border-radius: 4px;
+  color: inherit;
+  background: #172018;
+  font: 1rem system-ui, sans-serif;
+}
+#onboarding-status { color: #f4d09e; font-size: .85rem; line-height: 1.3; }
+#onboarding-status:empty { display: none; }
+#onboarding button, #promotion button { min-height: 46px; width: 100%; justify-content: center; font-weight: 740; }
+#onboarding button:disabled { opacity: .58; }
+#camp-privacy { margin: 12px 0 0; font-size: .8rem; line-height: 1.42; color: #ded2bc; }
+#camp-welcome p { color: #f1d6ae; }
+#camp-greeting { font-size: clamp(1.6rem, 6vw, 2.35rem); color: #edc58b; overflow-wrap: anywhere; }
+@media (orientation: landscape) {
+  .onboarding-dock { justify-items: start; align-items: center; padding-inline: max(24px, 6vw); }
+}
+@media (orientation: portrait) and (min-height: 660px) {
+  .onboarding-dock { padding-top: min(41vh, 330px); }
+}
+
+.lodge-tabs { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+@media (max-width: 590px) {
+  .lodge-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lodge-tabs button { font-size: .75rem; }
+}
+.career-ledger, .report-career, .rival-card {
+  padding: 13px;
+  border: 1px solid #ac89596e;
+  border-radius: 6px;
+  background: radial-gradient(ellipse at 90% 0%, #78604344, transparent 70%), #2b3a30;
+  color: #f2dfc0;
+}
+.career-ledger h3 { margin: 0 0 8px; }
+.career-ledger > strong, .rival-card > strong { display: block; color: #ffe0ad; }
+.career-ledger progress, .report-career progress, .rival-card progress { margin: 8px 0; height: 6px; }
+.career-ledger p, .report-career p, .rival-card p { margin: 5px 0; font-size: .86rem; line-height: 1.38; }
+.career-ledger .lodge-kicker, .rival-card .lodge-kicker { color: #edc58b; font-size: .72rem; }
+.career-patches { display: grid; grid-template-columns: repeat(auto-fit, minmax(95px, 1fr)); gap: 7px; margin-top: 11px; }
+.career-patch { display: grid; justify-items: center; text-align: center; align-content: start; gap: 5px; padding: 9px 4px; border: 1px solid #a9925b69; border-radius: 6px; background: #252f26; font-size: .86rem; }
+.career-patch[data-earned="false"] .patch-badge { filter: saturate(.2); }
+.career-patch .patch-badge { --thread: #dcba7c; width: 43px; height: 43px; }
+.career-patch small, .career-patch span { color: #e0cda9; }
+.career-rewards { margin: 9px 0; padding-left: 1.23em; line-height: 1.55; overflow-wrap: anywhere; }
+.report-career { margin: 8px 0 4px; padding: 8px 11px; }
+.report-career h3, .rival-card h4 { margin: 0; color: #f3c987; font: 700 1.09rem Georgia, serif; }
+.report-career button, .rival-card button { min-height: 44px; padding-inline: 15px; margin-top: 5px; }
+.rival-card { margin-top: 10px; overflow-wrap: anywhere; }
+.rival-card h4 { font-size: 1.29rem; }
+.rival-card button { width: 100%; }
+#promotion {
+  margin: auto;
+  width: min(350px, calc(100% - 26px));
+  padding: 24px;
+  border: 1px solid #c5a16c;
+  border-radius: 9px;
+  color: #f7e4c4;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 16%, #7d6242, #382e22 58%, #25261e);
+}
+#promotion .patch-badge { --thread: #f0d098; width: 80px; height: 80px; margin: 14px auto; }
+#promotion::backdrop { background: #111710d9; }
+#promotion h2 { font-size: 2.08rem; }
+#promotion[open], #camp-welcome:not([hidden]) { animation: brass-arrival 340ms ease-out; }
+@keyframes brass-arrival { from { opacity: .28; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  #promotion[open], #camp-welcome:not([hidden]) { animation: none; }
+}
+
+.kennel-heading .section-title { margin-bottom: 9px; }
+.kennel-stage {
+  height: clamp(160px, 29vh, 235px);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #a0986675;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: #2c3327;
+}
+.kennel-stage #trail { position: absolute; }
+.kennel-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; margin-block: 8px; }
+.gear-option {
+  display: grid;
+  align-items: center;
+  gap: 2px 6px;
+  grid-template-columns: 14px minmax(0, 1fr);
+  min-height: 48px;
+  padding: 6px 7px;
+  text-align: left;
+  font-size: .87rem;
+  overflow-wrap: anywhere;
+}
+.gear-option small { grid-column: 2; color: #e0c8a5; }
+.gear-option[aria-pressed="true"] { border-color: #ceae78; background: #493f31; }
+.gear-swatch { border-radius: 50%; height: 12px; width: 12px; border: 1px solid #ba9b6a; background: var(--gear-color); }
+.kennel-selection { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.kennel-selection p { flex-basis: 100%; margin: 2px 0; }
+.kennel-selection button { min-height: 44px; padding: 0 10px; }

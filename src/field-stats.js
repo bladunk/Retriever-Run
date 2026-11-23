@@ -5,6 +5,7 @@ import { score } from './runner.js'
 export const counters = ['treats', 'logs', 'slidesCleared', 'geese', 'ducks', 'pheasants', 'jumps', 'slides']
 export const causes = ['water', 'logs', 'geese', 'other']
 const logTypes = ['log', 'drift']
+const jumpTypes = new Set([...logTypes, 'stream', 'puddle', 'root', 'fence'])
 
 export const causeNames = { water: 'Water', logs: 'Timber', geese: 'Diving geese', other: 'Other hazards' }
 const hazardNames = {
@@ -21,12 +22,13 @@ export function deathCause(hazard) {
 
 export const hazardName = hazard => hazardNames[hazard] ?? 'Trail hazard'
 
-export function createRunStatistics() {
+export function createRunStatistics(runId) {
   const stats = Object.fromEntries(counters.map(key => [key, 0]))
   const hazards = new WeakMap()
   const standingBefore = {}
   const standingAfter = {}
   let finalized = false
+  let jumpClears = 0
 
   function wouldHit(before, after, entity, originalLane) {
     Object.assign(standingBefore, before, { jump: 0, slide: 0 })
@@ -39,6 +41,7 @@ export function createRunStatistics() {
   }
 
   return {
+    runId,
     stats,
     action(move) {
       if (!finalized && move === 'jump') stats.jumps++
@@ -54,7 +57,8 @@ export function createRunStatistics() {
       if (finalized) return false
       const { type, distance } = entity
       const goose = type === 'goose'
-      const key = goose ? 'geese' : type === 'branch' ? 'slidesCleared' : logTypes.includes(type) ? 'logs' : null
+      const jumping = jumpTypes.has(type)
+      const key = goose ? 'geese' : type === 'branch' ? 'slidesCleared' : jumping ? 'jumpClears' : null
       if (!key || !entity.hazard) return false
       let state = hazards.get(entity)
       if (!state && goose && distance - after.distance <= entity.flightSpeed * diveWarningLead &&
@@ -65,7 +69,7 @@ export function createRunStatistics() {
       if (state?.cleared || after.distance < distance - 3 || before.distance > distance + 3) return false
       if (!state?.avoided) {
         const action = goose ? before.jump || after.jump || before.slide || after.slide
-          : key === 'logs' ? before.jump || after.jump : before.slide || after.slide
+          : jumping ? before.jump || after.jump : before.slide || after.slide
         // Compare the accepted pose to the existing solver in the absence of the
         // action. For a goose, also check the lane held when the flock approached.
         const avoided = Boolean(action && wouldHit(before, after, entity)) ||
@@ -79,11 +83,14 @@ export function createRunStatistics() {
       }
       if (!state?.avoided || after.distance <= distance + 3) return false
       state.cleared = true
-      stats[key]++
+      if (jumping) {
+        jumpClears++
+        if (logTypes.includes(type)) stats.logs++
+      } else stats[key]++
       return true
     },
     preview(run) {
-      return { ...stats, distance: run.distance, duration: run.elapsed, score: score(run), retrieves: run.retrieves }
+      return { ...stats, jumpClears, distance: run.distance, duration: run.elapsed, score: score(run), retrieves: run.retrieves }
     },
     finish(run, hazard) {
       if (finalized) return null

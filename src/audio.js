@@ -19,6 +19,7 @@ const rewards = {
   retrieve: [54, 62, 69],
   power: [50, 57, 62, 66],
   milestone: [57, 62, 66],
+  promotion: [50, 57, 66, 69, 74],
 }
 
 export function createSound(onInterruption) {
@@ -383,7 +384,8 @@ export function createSound(onInterruption) {
       const notes = rewards[effect]
       if (notes) {
         if (!buffers.has('instruments')) rustle(bus, 'bandpass', 780, .039, .090)
-        notes.forEach((pitch, index) => instrument('guitar', pitch, context.currentTime + .007 + index * .048,
+        notes.forEach((pitch, index) => instrument('guitar', pitch,
+          context.currentTime + .007 + index * (effect === 'promotion' ? .102 : .048),
           .32, (effect === 'treat' ? .093 : .13) / (1 + index * .18), index * .06, bus))
       }
     },

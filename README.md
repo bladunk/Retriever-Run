@@ -1,4 +1,4 @@
-# Retriever Run | The Outfitter’s Lodge
+# Retriever Run | Operation Top Dog
 
 An endless runner through North American wetlands with an athletic yellow Labrador. Follow the treat trail through sweeping bends, run muddy levees, jump shallow creeks, and watch for wildlife as the weather and pace change.
 
@@ -19,7 +19,7 @@ Comfort mode starts enabled. Open **Settings** to adjust camera tracking, choose
 
 Jump streams and low ground hazards, slide under branches, and steer around drifting debris. When geese descend, use the marked clear lane or duck at the second cue. Treat streaks increase your multiplier every five treats, up to 4×. Rare mallard and pheasant retrieves, duck calls, and decoys award bonus points and fill the Good Boy Meter faster. A full meter gives you six seconds of double pickup points.
 
-Open the Lodge to see earned patches, the Field Journal, personal records, and the Local and Worldwide Camp leaderboards. Local player profiles track their own progress and settings. Each completed run opens a detailed Field Report. Worldwide participation is optional and uses an anonymous Supabase identity when enabled. [Worldwide Camp setup](GLOBAL-CAMP.md) The Outfitter in Settings lets you equip unlocked coats, collars, and bandanas. Master volume, music, wildlife and ambience, gameplay effects, and render quality are stored on the same device.
+Choose a nickname in Retriever Camp on your first visit. Join Worldwide with an anonymous browser identity or play in Guest Camp. The Lodge has the Working Dog Career, the Kennel, earned patches, the Field Journal, personal records, and both Camp boards. Equip earned collars, hunting vests, and coats in the Kennel. Your Field Report records XP and local results. Worldwide members can see their next ranked rival when standings are available. The browser also saves your audio and render settings. [Operation Top Dog](TOP-DOG.md)
 
 ## Local development
 
@@ -33,7 +33,7 @@ npm run dev
 
 Test the static production build with `npm run build` and `npm run preview`. The [4.0 Lodge notes](OUTFITTER.md) cover progression, local profiles, and save migration. The [audio notes](AUDIO.md) include the original score and recording licenses. The [3.2 update notes](DIVING-GEESE.md) document the pace curve and flight warnings. The [3.1 repair notes](REPAIR.md) cover fixed-step contact, diagnostics, and terrain streaming. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
 
-The [4.2 QA report](FIELD-READY.md) includes stress-test results, browser test commands, and the [physical iPhone release checklist](FIELD-READY.md#g-iphone-release-checklist).
+The [4.3 release notes](TOP-DOG.md) cover the career, save migration, database rollout, and iPhone checklist. The [4.2 QA report](FIELD-READY.md) includes stress-test results, browser test commands, and the [physical iPhone release checklist](FIELD-READY.md#g-iphone-release-checklist).
 
 ## GitHub Pages
 

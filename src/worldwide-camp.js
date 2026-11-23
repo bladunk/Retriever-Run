@@ -1,14 +1,12 @@
-import { boardCap, boardPageSize, campMetrics, campNickname, canPostRun, runIdPattern } from './camp-rules.js'
+import { boardCap, boardPageSize, campMetrics, campNickname, canPostRun, runIdPattern, validCampRank } from './camp-rules.js'
+import { createCampRivals } from './camp-rivals.js'
 
 const cacheMs = 60_000
 const metrics = value => Object.fromEntries(campMetrics.map(key => [key,
   Number.isSafeInteger(value?.[key]) && value[key] >= 0 ? value[key] : 0]))
 const improves = (result, best) => campMetrics.some(key => result[key] > best[key])
 const belongsTo = (item, profile, member) => item.profile === profile && item.owner === member.identity
-const validRanking = row => Boolean(row && Number.isSafeInteger(row.rank) && row.rank > 0 &&
-  typeof row.nickname === 'string' && campNickname(row.nickname) === row.nickname && typeof row.recorded_at === 'string' &&
-  Number.isFinite(Date.parse(row.recorded_at)) &&
-  campMetrics.every(metric => Number.isSafeInteger(row[metric]) && row[metric] >= 0))
+const validIdentity = value => typeof value === 'string' && Boolean(value.trim()) && value.length <= 128
 
 export function createWorldwideCamp(transport, {
   storage = () => globalThis.localStorage,
@@ -32,7 +30,7 @@ export function createWorldwideCamp(transport, {
       const saved = JSON.parse(storage().getItem(key))
       for (const [profile, raw] of Object.entries(saved?.members ?? {})) {
         const nickname = campNickname(raw?.nickname)
-        if (!nickname || !/^\d+$/.test(profile) || typeof raw.identity !== 'string') continue
+        if (!nickname || !/^\d+$/.test(profile) || !validIdentity(raw.identity)) continue
         members.set(Number(profile), {
           nickname, identity: raw.identity, best: raw.best ? metrics(raw.best) : null,
           lastRun: Number.isSafeInteger(raw.lastRun) ? raw.lastRun : 0,
@@ -45,6 +43,8 @@ export function createWorldwideCamp(transport, {
     } catch { /* Local gameplay has its own save and stays available. */ }
   }
 
+  const rivals = createCampRivals(transport, { storage, online, now, member: profile => members.get(profile) })
+
   function persist() {
     try { storage().setItem(key, JSON.stringify({ members: Object.fromEntries(members), queue })) }
     catch { /* An in-session sync is still possible. */ }
@@ -53,6 +53,7 @@ export function createWorldwideCamp(transport, {
   function expireBoard() {
     cache.clear()
     cacheVersion++
+    rivals.invalidate()
   }
 
   function candidates(profile) {
@@ -119,6 +120,8 @@ export function createWorldwideCamp(transport, {
     try {
       const result = await transport.nickname(profile, nickname)
       if (result.status !== 'ok') return { status: result.status }
+      const claimed = campNickname(result.nickname)
+      if (!claimed || claimed !== result.nickname || !validIdentity(result.identity)) return { status: 'unavailable' }
       const previous = members.get(profile)
       const replaced = previous && previous.identity !== result.identity
       if (!previous || replaced) {
@@ -138,6 +141,8 @@ export function createWorldwideCamp(transport, {
     online,
     member: profile => members.get(profile),
     pending: profile => candidates(profile).length,
+    rival: rivals.read,
+    peekRival: rivals.peek,
     sync,
     syncPending() {
       draining ??= drainQueue().finally(() => { draining = undefined })
@@ -188,8 +193,8 @@ export function createWorldwideCamp(transport, {
           if (result.status !== 'ok' || !Array.isArray(result.rows)) return { status: 'unavailable' }
           const page = {
             ...result,
-            rows: result.rows.filter(validRanking).slice(0, boardPageSize),
-            mine: validRanking(result.mine) ? result.mine : null,
+            rows: result.rows.filter(validCampRank).slice(0, boardPageSize),
+            mine: validCampRank(result.mine) ? result.mine : null,
           }
           if (version === cacheVersion) cache.set(cacheKey, { at: now(), result: page })
           return page

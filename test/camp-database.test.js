@@ -5,6 +5,7 @@ import test from 'node:test'
 import { PGlite } from '@electric-sql/pglite'
 
 const migration = await readFile(new URL('../supabase/migrations/202611220001_worldwide_camp.sql', import.meta.url), 'utf8')
+const rivalsMigration = await readFile(new URL('../supabase/migrations/202611220002_camp_rivals.sql', import.meta.url), 'utf8')
 const one = '10000000-0000-4000-8000-000000000001'
 const two = '10000000-0000-4000-8000-000000000002'
 const three = '10000000-0000-4000-8000-000000000003'
@@ -26,6 +27,7 @@ test('the camp migration enforces anonymous ownership, validates results and exp
       insert into auth.users values ('${one}'), ('${two}'), ('${three}');
     `)
     await db.exec(migration)
+    await db.exec(rivalsMigration)
     const as = async (role, user, anonymous = true) => {
       await db.exec('reset role')
       await db.query("select set_config('request.jwt.claims', $1, false)", [JSON.stringify({ sub: user, is_anonymous: anonymous })])
@@ -34,9 +36,21 @@ test('the camp migration enforces anonymous ownership, validates results and exp
     const value = async (query, args) => (await db.query(query, args)).rows[0].result
     const board = (metric = 'score', offset = 0, limit = 25) => value('select public.rr_camp_board($1, $2, $3) as result', [metric, offset, limit])
     const nickname = name => value('select public.rr_camp_nickname($1) as result', [name])
+    const rival = (metric = 'score', name = null, at = null) =>
+      value('select public.rr_camp_rival($1, $2, $3) as result', [metric, name, at])
     const post = (runId, score = 335, distance = 45, retrieves = 1, durationMs = 4000) =>
       value('select public.rr_camp_submit($1, $2, $3, $4, $5) as result', [runId, score, distance, retrieves, durationMs])
     const recorded = randomUUID()
+
+    await t.test('rival lookup is gated to an anonymous member and handles empty standings', async () => {
+      await as('anon')
+      await assert.rejects(rival(), /permission denied/)
+      await as('authenticated', one, false)
+      assert.equal((await rival()).status, 'auth_required')
+      await as('authenticated', one)
+      assert.deepEqual(await rival(), { status: 'ok', mine: null, rival: null, passed: null })
+      assert.equal((await rival('score;drop table')).status, 'invalid_metric')
+    })
 
     await t.test('public readers see a genuinely empty board and cannot access tables or write functions', async () => {
       await as('anon')
@@ -144,6 +158,40 @@ test('the camp migration enforces anonymous ownership, validates results and exp
       }
       await as('authenticated', one)
       assert.ok((await board()).mine.rank > 100)
+    })
+
+    await t.test('rivals match the real predecessor across page limits and exact ties in each category', async () => {
+      const id = n => '20000000-0000-4000-8000-' + String(n).padStart(12, '0')
+      await as('authenticated', id(104))
+      for (const metric of ['score', 'distance', 'retrieves']) {
+        const lookup = await rival(metric)
+        assert.deepEqual(lookup.mine, (await board(metric)).mine)
+        assert.equal(lookup.mine.rank, 104)
+        assert.equal(lookup.rival.rank, 103)
+        assert.equal(lookup.rival.nickname, 'Field 103')
+        assert.deepEqual(Object.keys(lookup.rival).sort(), ['distance', 'nickname', 'rank', 'recorded_at', 'retrieves', 'score'])
+      }
+      await as('authenticated', id(4))
+      assert.deepEqual(await rival(), { status: 'ok', mine: (await board()).mine, rival: null, passed: null })
+      await as('authenticated', id(2))
+      assert.equal((await rival()).rival.nickname, 'Field 001')
+      await as('authenticated', one)
+      const before = await rival()
+      assert.equal(before.mine.nickname, 'Moss Runner')
+      assert.equal(before.rival.nickname, 'Pond Scout')
+      assert.equal((await rival('score', before.rival.nickname, before.rival.recorded_at)).passed, false)
+      await as(null)
+      await db.exec(`update retriever_camp.players set score = 445, score_at = now() where player_id = '${one}'`)
+      await as('authenticated', one)
+      const after = await rival('score', before.rival.nickname, before.rival.recorded_at)
+      assert.equal(after.passed, true)
+      assert.ok(after.mine.rank < before.mine.rank)
+      assert.equal(after.rival.nickname, 'Field 104')
+      assert.equal((await rival('score', before.rival.nickname, '2025-01-01T00:00:00Z')).passed, null)
+      await as(null)
+      await db.exec("update retriever_camp.players set nickname = 'Renamed Scout' where nickname = 'Pond Scout'")
+      await as('authenticated', one)
+      assert.equal((await rival('score', before.rival.nickname, before.rival.recorded_at)).passed, null)
     })
   } finally { await db.close() }
 })

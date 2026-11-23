@@ -18,6 +18,11 @@ export function campNickname(raw) {
   return blocked.test(folded) || reserved.has(folded) ? null : name
 }
 
+export const validCampRank = row => Boolean(row && Number.isSafeInteger(row.rank) && row.rank > 0 &&
+  typeof row.nickname === 'string' && campNickname(row.nickname) === row.nickname && typeof row.recorded_at === 'string' &&
+  Number.isFinite(Date.parse(row.recorded_at)) &&
+  campMetrics.every(metric => Number.isSafeInteger(row[metric]) && row[metric] >= 0))
+
 export function canPostRun({ score, distance, retrieves, durationMs }) {
   // The server makes the same checks with its own inputs. These only avoid
   // queueing submissions already known to be outside the worldwide beta limits.
