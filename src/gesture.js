@@ -1,5 +1,5 @@
 export function swipeDirection(dx, dy, width, finished = false) {
-  const threshold = Math.max(13, Math.min(21, width * .043))
+  const threshold = Math.max(12, Math.min(19, width * .039))
   const x = Math.abs(dx)
   const y = Math.abs(dy)
   if (Math.max(x, y) < threshold) return null

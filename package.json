@@ -1,6 +1,6 @@
 {
   "name": "retriever-run",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,7 +13,9 @@
     "test:top-dog": "node scripts/top-dog-browser.mjs",
     "test:frontier": "node scripts/frontier-browser.mjs",
     "test:expedition": "node scripts/expedition-browser.mjs",
-    "test:migration": "node scripts/migration-browser.mjs"
+    "test:migration": "node scripts/migration-browser.mjs",
+    "test:master": "node scripts/master-browser.mjs",
+    "stress:master": "node scripts/master-stress.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.2",

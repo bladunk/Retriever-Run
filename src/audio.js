@@ -15,6 +15,7 @@ const footsteps = {
 
 const rewards = {
   treat: [62, 69],
+  combo: [62, 66, 74],
   bonus: [57, 62, 66],
   retrieve: [54, 62, 69],
   power: [50, 57, 62, 66],
@@ -229,7 +230,7 @@ export function createSound(onInterruption) {
     const chord = record ? [[62, 0], [66, .067], [69, .12], [74, .21]]
       : [[57, 0], [64, .041], [62, .18], [50, .22]]
     for (const [note, delay] of chord) {
-      instrument('guitar', note, context.currentTime + delay + .009, .62,
+      instrument('guitar', note, context.currentTime + delay + .065, .62,
         record ? .117 : .091, .05, buses.musicVolume)
     }
   }
@@ -378,12 +379,13 @@ export function createSound(onInterruption) {
         rustle(bus, 'lowpass', 360, .024, .39, .08, -.04, .12, .036)
       }
       if (effect === 'hit') {
-        instrument('drum', 0, context.currentTime + .005, .22, .14, 0, bus)
-        rustle(bus, 'lowpass', 300, .074, .18)
+        instrument('drum', 0, context.currentTime + .005, .18, .105, 0, bus)
+        if (surface === 'splash') rustle(bus, 'bandpass', 1090, .061, .22, .006)
+        else rustle(bus, 'lowpass', 365, .062, .15)
       }
       const notes = rewards[effect]
       if (notes) {
-        if (!buffers.has('instruments')) rustle(bus, 'bandpass', 780, .039, .090)
+        if (!buffers.has('instruments')) rustle(bus, 'bandpass', effect === 'combo' ? 950 : 780, .039, .090)
         notes.forEach((pitch, index) => instrument('guitar', pitch,
           context.currentTime + .007 + index * (effect === 'promotion' ? .102 : .048),
           .32, (effect === 'treat' ? .093 : .13) / (1 + index * .18), index * .06, bus))

@@ -19,6 +19,7 @@ const wetShapes = [pondSheet(), depthGeometry(crossingSurface.clone(), true)]
 const bankMaterial = new T.MeshLambertMaterial({ color: 0x645847 })
 const barkCylinder = new T.CylinderGeometry(1, 1, 1, 11, 3)
 const wheel = new T.CylinderGeometry(1, 1, 1, 12).rotateZ(Math.PI / 2)
+const upright = new T.Vector3(0, 1, 0)
 const timberPoints = barkCylinder.attributes.position
 for (let i = 0; i < timberPoints.count; i++) {
   const x = timberPoints.getX(i), y = timberPoints.getY(i), z = timberPoints.getZ(i)
@@ -135,6 +136,13 @@ function mesh(parent, shape, tint, x, y, z, sx, sy, sz) {
   return part
 }
 
+function timberLink(parent, color, from, to, radius) {
+  const direction = new T.Vector3(...to).sub(new T.Vector3(...from))
+  const part = mesh(parent, barkCylinder, color,
+    (from[0] + to[0]) * .5, (from[1] + to[1]) * .5, (from[2] + to[2]) * .5, radius, direction.length(), radius * .81)
+  part.quaternion.setFromUnitVectors(upright, direction.normalize())
+}
+
 function group(parent, x = 0, y = 0, z = 0) {
   const object = new T.Group()
   object.position.set(x, y, z)
@@ -172,14 +180,25 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
     mesh(object, leaf, 0x776f46, -.79, 1.94, -.14, .41, .20, .24)
     mesh(object, leaf, 0x6a6544, -.38, 1.57, -.15, .32, .14, .18)
   } else if (type === 'fallen') {
-    mesh(object, barkCylinder, bark, .27, .69, .16, .47, 1.33, .45).rotation.z = Math.PI / 2
-    mesh(object, leaf, 0x6c5242, -.16, 1.13, 0, .76, 1.23, .50)
-    mesh(object, leaf, 0x857052, -.18, 1.21, .18, .61, .99, .38)
-    for (let root = 0; root < 5; root++) {
-      mesh(object, barkCylinder, 0x665032, -.19 + Math.sin(root * 2.1) * .32, .58 + root * .33,
-        .16 - .06 * root, .076, .51, .086).rotation.z = .44 * (root - 2)
+    const hub = [-.18, .72, .07]
+    timberLink(object, 0x8c7b58, hub, [.95, .55, .25], .41)
+    timberLink(object, 0xb18354, [.88, .56, .24], [.96, .55, .25], .36)
+    mesh(object, sphere, 0x73614c, -.22, .74, -.05, .68, .64, .42)
+    mesh(object, barkCylinder, 0x8c7b58, -.14, 1.04, .11, .34, 1.25, .26).rotation.z = .08
+    const roots = [
+      [-.73, .16, .28], [.53, .12, .34], [-.84, 1.36, .19], [.45, 1.38, -.14],
+      [-.52, 1.88, .22], [.31, 1.86, .15], [-.39, 2.27, -.07], [.09, 2.36, .08],
+    ]
+    for (let index = 0; index < roots.length; index++) {
+      const root = roots[index]
+      const base = [hub[0] + (index % 2 ? .13 : -.07), index < 4 ? .76 : 1.32, .14]
+      const knuckle = [(root[0] + base[0]) * .5, (root[1] + base[1]) * .5, .34 + index % 3 * .045]
+      timberLink(object, 0x8c7b58, base, knuckle, .13 - index * .007)
+      timberLink(object, 0x9e7955, knuckle, root, .083 - index * .006)
+      const broken = [root[0] * .98, root[1] + .08, root[2] + .02]
+      timberLink(object, 0xb18354, root, broken, .037)
     }
-    mesh(object, cylinder, cut, .949, .69, .16, .41, .034, .39).rotation.z = Math.PI / 2
+    timberLink(object, 0x8c7b58, [.52, .62, .20], [.66, .98, -.08], .092)
   } else if (type === 'tractor') {
     mesh(object, box, 0x665b47, 0, .69, -.03, 1.26, .32, 1.90)
     mesh(object, box, 0x8b4534, 0, 1.02, -.47, 1.06, .62, 1.03)

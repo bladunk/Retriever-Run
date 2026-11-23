@@ -39,6 +39,11 @@ const portraits = expeditionRegions.map(region => ({
   key: region.key, start: checkpoint(region.seconds + 9), region: region.index,
 }))
 const floodedRow = courseRows.find(row => row.entities.some(item => item.type === 'washout'))
+const canopySequences = [1, 3, 8].map(region => {
+  const start = checkpoint(expeditionRegions[region].seconds + 8)
+  return { key: 'canopy-' + expeditionRegions[region].key, start, stop: start + 3.45, region,
+    frames: [['distant', start + .48], ['approach', start + 1.95], ['passing', start + 3.45]] }
+})
 const captures = [...portraits,
   { key: 'farmstead', start: checkpoint(127.9), region: 4, wide: true },
   ...(floodedRow ? [{ key: 'flooded-lane', start: floodedRow.time - .66, region: Math.floor(floodedRow.time / 30), wide: true }] : []),
@@ -46,6 +51,7 @@ const captures = [...portraits,
   { key: 'endgame', start: checkpoint(321), region: 9 },
   { key: 'visibility', start: checkpoint(28.2), stop: 29.85, region: 0 },
   { key: 'preview-loss', start: 0, stop: 4.8, region: 0 },
+  ...canopySequences,
 ]
 const selected = captures.filter(({ key }) => argv.includes(key))
 const scenes = selected.length ? selected : captures
@@ -154,7 +160,7 @@ try {
             wall, cpu: performance.now() - start, tiles: state.tiles, geometries: state.geometries })
         }
       })
-    }, { quality, stop, rows, moving: ['alpine-entry', 'visibility', 'preview-loss'].includes(key) })
+    }, { quality, stop, rows, moving: Boolean(scene.frames) || ['alpine-entry', 'visibility', 'preview-loss'].includes(key) })
     const offset = (start - region * 30).toFixed(6)
     await page.goto(origin + prefix + '?preview=' + (region + 1) + '&offset=' + offset + '&debug=collision&volumes=off&seed=7')
     await page.waitForFunction(() => migrationQA.ready && window.retrieverDebug, null, { timeout: 65_000 })
@@ -167,8 +173,8 @@ try {
       assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running', JSON.stringify(await page.evaluate(() => retrieverDebug)))
     }
 
-    if (key === 'alpine-entry') {
-      for (const [part, at] of [['before', 269.15], ['entry', 270.36], ['after', stop]]) {
+    if (key === 'alpine-entry' || scene.frames) {
+      for (const [part, at] of scene.frames ?? [['before', 269.15], ['entry', 270.36], ['after', stop]]) {
         await page.evaluate(value => { migrationQA.stop = value }, at)
         await checkAt(at)
         await page.screenshot({ path: resolve(output, quality + '-' + key + '-' + part + '.png'), scale: 'css', timeout: 90_000 })
@@ -222,6 +228,10 @@ try {
       practice: localStorage.getItem('retriever-run.record.practice'),
       assets: performance.getEntriesByType('resource').filter(entry => entry.name.includes('assets/landscape-'))
         .map(({ name, encodedBodySize }) => ({ file: name.split('/').at(-1), bytes: encodedBodySize })),
+      bytesBeforeReady: [...performance.getEntriesByType('navigation'), ...performance.getEntriesByType('resource')]
+        .filter(entry => entry.responseEnd <= migrationQA.ready)
+        .reduce((bytes, entry) => bytes + entry.encodedBodySize, 0),
+      weather: document.querySelector('#weather').textContent,
     }))
     assert.ok(observed.genuine && observed.practice === null)
     assert.deepEqual(errors, [])

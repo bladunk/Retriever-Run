@@ -17,17 +17,17 @@ export function createRunControls() {
     },
     apply(run, onAction) {
       for (const move of queue) {
+        const vertical = move === 'jump' || move === 'slide'
         if (act(run, move)) {
           onAction(move)
-          buffered = undefined
-        } else if ((move === 'jump' || move === 'slide') &&
-          (run.jump > 0 && run.jump < .13 || run.slide > 0 && run.slide < .13)) {
+          if (vertical) buffered = undefined
+        } else if (vertical && Math.max(run.jump, run.slide) < .16) {
           buffered = move
-          expires = run.elapsed + .14
+          expires = run.elapsed + .18
         }
       }
       queue.length = 0
-      if (buffered && run.elapsed >= expires) buffered = undefined
+      if (buffered && run.elapsed > expires) buffered = undefined
       if (buffered && act(run, buffered)) {
         onAction(buffered)
         buffered = undefined

@@ -3,7 +3,8 @@ import { createHazard, createPickup, prepareWashout } from './art.js'
 import { createAtmosphere } from './atmosphere.js'
 import { createSound } from './audio.js'
 import { cameraLayout, newCameraState, updateFollow } from './camera.js'
-import { firstContact, hazardFrame, playerFrame } from './collision.js'
+import { firstContact, hazardFrame, isWaterHazard, playerFrame } from './collision.js'
+import { createCampfire } from './campfire.js'
 import { createFixedClock, samplePose } from './timing.js'
 import { swipeDirection } from './gesture.js'
 import { createRunControls } from './run-controls.js'
@@ -65,6 +66,8 @@ const flightWarnings = {
   approach: clearLanes.map(lane => 'Low geese ahead · ' + lane),
   duck: clearLanes.map(lane => '↓  Duck · ' + lane),
 }
+const advancedFlight = { approach: 'Low geese ahead', duck: '↓  Duck or move' }
+const introduced = new Set()
 let ticks = 0
 let debug
 let viewWidth = 390
@@ -79,6 +82,7 @@ const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
   Math.min(previewRegion.index === 9 ? 180 : 29.95, Number(flags.get('offset')) || 0)) : 0
 const diagnosticsRequested = Boolean(previewRegion) || flags.get('debug') === 'collision'
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
+const campfire = createCampfire(diagnosticsRequested ? () => undefined : undefined)
 const camp = createWorldwideCamp(diagnosticsRequested ? null : createCampTransport())
 ui.game.toggleAttribute('data-practice', diagnosticsRequested)
 if (previewRegion) document.querySelector('.practice-status').textContent = 'Territory preview · progress disabled'
@@ -99,6 +103,8 @@ let runStatistics
 let runPermit
 let runRival
 let runMetric
+let coaching = false
+let lastShift = -Infinity
 let audioGesture = false
 let nextPatchCheck = 0
 let toastUntil = 0
@@ -429,6 +435,10 @@ function runningSurface() {
 }
 
 function onAction(move) {
+  if (move === 'left' || move === 'right') {
+    lastShift = run.elapsed
+    return
+  }
   runStatistics.action(move)
   sound.play(move, runningSurface())
 }
@@ -449,7 +459,7 @@ function step(dt) {
     }
     debug?.hit(contact)
     frozen = true
-    sound.play('hit')
+    sound.play('hit', isWaterHazard(impacted.type) ? 'splash' : runningSurface())
     setMode('over')
     return false
   }
@@ -470,15 +480,19 @@ function step(dt) {
 
   let warningLabel = ''
   let warningPhase
-  for (let index = entities.length - 1; index >= 0; index--) {
+  // Rows emit their pickups in course order. Expire earlier treats before
+  // collecting a later pickup on the same fixed step.
+  for (let index = 0; index < entities.length; index++) {
     const entity = entities[index]
     const ahead = entity.distance - run.distance
     if (entity.hazard) runStatistics.passed(previous, run, entity)
     if (entity.type === 'goose') {
       const warning = diveWarning(entity, run.distance)
       if (warning) {
-        warningPhase = warning
-        warningLabel = flightWarnings[warning][entity.safeLane + 1]
+        if (!warningPhase) {
+          warningPhase = warning
+          warningLabel = coaching && run.elapsed < 80 ? flightWarnings[warning][entity.safeLane + 1] : advancedFlight[warning]
+        }
         if (entity.audioCue !== warning) {
           entity.audioCue = warning
           const source = hazardFrame(cuePosition, entity, run.distance, run.distance)
@@ -493,7 +507,7 @@ function step(dt) {
           })
         }
       }
-      if (diveAge(entity, run.distance) > diveExit) entities.splice(index, 1)
+      if (diveAge(entity, run.distance) > diveExit) entities.splice(index--, 1)
       continue
     }
     if (entity.hazard) {
@@ -502,7 +516,10 @@ function step(dt) {
         entity.cued = true
       }
       if (entity.wide && !entity.cued && ahead > 0 && ahead < run.speed * 1.05) {
-        announce(entity.type === 'stream' ? '↑  Jump the crossing' : '↓  Slide under the branch', 4)
+        if (coaching && !introduced.has(entity.type)) {
+          announce(entity.type === 'stream' ? '↑  Jump the crossing' : '↓  Slide under the timber', 4)
+          introduced.add(entity.type)
+        }
         entity.cued = true
       }
       if (entity.type === 'stream' && previous.distance < entity.distance && run.distance >= entity.distance) {
@@ -516,18 +533,19 @@ function step(dt) {
       const retrieve = entity.type === 'mallard' || entity.type === 'pheasant'
       entity.duration = retrieve ? .72 : .30
       entity.remaining = entity.duration
-      sound.play(retrieve ? 'retrieve' : result.activated ? 'power' : treat ? 'treat' : 'bonus')
+      const combo = treat && run.streak <= 15 && run.streak % 5 === 0
+      sound.play(retrieve ? 'retrieve' : result.activated ? 'power' : combo ? 'combo' : treat ? 'treat' : 'bonus')
       if (retrieve && result.activated) announce(pickupNames[entity.type] + '  +' + result.points + ' · Good Boy bonus', 3)
       else if (retrieve && run.retrieves + profile.retrieves === 3) announce(pickupNames[entity.type] + ' · Marsh bandana unlocked', 3)
       else if (result.activated) announce('Good Boy!  ·  Double pickup points', 3)
       else if (!treat) announce(pickupNames[entity.type] + '  +' + result.points, 3)
       else announce('+' + result.points + (multiplier(run.streak) > 1 ? '  ·  ' + multiplier(run.streak) + '× streak' : ''), 1)
       effects.push(entity)
-      entities.splice(index, 1)
+      entities.splice(index--, 1)
     } else if (ahead < (entity.type === 'treat' ? -1 : -8 - (entity.span ?? 0) * .5)) {
       if (entity.type === 'treat') run.streak = 0
       release(entity)
-      entities.splice(index, 1)
+      entities.splice(index--, 1)
     }
   }
   sound.flight(warningPhase)
@@ -648,6 +666,13 @@ function background() {
   else sound.suspend()
 }
 
+function fitReport() {
+  const viewport = window.visualViewport
+  if (mode !== 'over' || !viewport || viewport.scale !== 1) return
+  ui['field-report'].style.setProperty('--report-viewport', viewport.height + 'px')
+  ui['field-report'].style.setProperty('--report-offset', viewport.offsetTop + 'px')
+}
+
 function setMode(value, options = {}) {
   needsRedraw = true
   const oldMode = mode
@@ -665,13 +690,24 @@ function setMode(value, options = {}) {
   const paused = value === 'paused'
   let newRecord = false
   if (over && oldMode !== 'over') {
+    const runner = lodge.current()
+    const previousBest = runner.profile.best
+    const priorRuns = runner.stats.runs
     const report = previewRegion
       ? { ...runStatistics.preview(run), cause: deathCause(contact.type), hazard: contact.type, nickname: 'Territory preview',
         improved: [], earned: [], placements: {}, gear: [], preview: true }
       : lodge.finalize(runPlayer, runStatistics, run, contact.type)
     if (report) {
       profile = lodge.current().profile
-      fillReport(ui, report)
+      const target = runRival?.rival?.[runMetric]
+      const measured = runMetric === 'distance' ? Math.floor(report.distance) : report[runMetric]
+      const { line } = campfire.choose({
+        hazard: report.hazard, duration: report.duration, score: report.score, previousBest, priorRuns,
+        jump: run.jump > 0, slide: run.slide > 0, changingLane: run.elapsed - lastShift < .45,
+        rivalGap: target > 0 ? (target + 1 - measured) / (target + 1) : 0,
+        bestStreak: run.bestStreak,
+      })
+      fillReport(ui, report, { heckle: line, previousBest, player: previewRegion ? undefined : runner })
       fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
       const posting = diagnosticsRequested ? null : camp.record(runPlayer, report, runPermit)
       const worldwide = ui['report-worldwide']
@@ -691,11 +727,11 @@ function setMode(value, options = {}) {
         queueMicrotask(() => { if (mode === 'over') promotion.show() })
       }
       newRecord = report.improved.includes('score') || report.improved.includes('distance')
-      ui['field-report'].scrollTop = 0
     }
   }
   ui.menu.hidden = running || over
   ui['field-report'].hidden = !over
+  ui.game.inert = over
   ui.hud.hidden = !running
   ui.controls.hidden = !running
   ui.conditions.hidden = !running
@@ -724,7 +760,13 @@ function setMode(value, options = {}) {
     updateMusicButton()
   }
   sound.selectScene(value, { ...options, record: newRecord })
-  if (over) ui['run-again'].focus({ preventScroll: true })
+  if (over) {
+    fitReport()
+    if (oldMode !== 'over') {
+      ui['report-scroll'].scrollTop = 0
+      ui['report-title'].focus({ preventScroll: true })
+    }
+  }
   if (paused) ui.primary.focus({ preventScroll: true })
   if (running) {
     ui.primary.blur()
@@ -747,7 +789,7 @@ function resetTrail(seed) {
     run.distance = distanceAtTime(run.elapsed)
     run.speed = speedAtTime(run.elapsed)
   } else debug?.depart(run)
-  while (row.at < run.distance - 2) row = nextRow()
+  while ((row.end ?? row.at) < run.distance - 2) row = nextRow()
   stride = previousStride = 0
   ticks = 0
   samplePose(previous, run, run, 1)
@@ -756,6 +798,9 @@ function resetTrail(seed) {
   landing = 0
   splashUntil = 0
   cueUntil = 0
+  cuePriority = 0
+  lastShift = -Infinity
+  introduced.clear()
   follow.heading = null
   follow.offset = 0
   visualTime = 0
@@ -765,10 +810,11 @@ function resetTrail(seed) {
 }
 
 function start() {
-  if (!trailReady || !contextReady || ui.onboarding.open || ui.promotion.open ||
+  if (mode === 'running' || !trailReady || !contextReady || ui.onboarding.open || ui.promotion.open ||
       (!lodge.current().enrollment && !diagnosticsRequested)) return
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
+  coaching = lodge.current().stats.runs < 3
   runStatistics = previewRegion ? createRunStatistics() : lodge.beginRun()
   runPermit = camp.beginRun(runPlayer)
   runMetric = lodgeUI.rivalMetric()
@@ -805,6 +851,8 @@ function openSettings() {
 }
 
 function bindInput() {
+  window.visualViewport?.addEventListener('resize', fitReport)
+  window.visualViewport?.addEventListener('scroll', fitReport)
   ui.primary.addEventListener('click', () => mode === 'paused' ? pause() : start())
   ui['run-again'].addEventListener('click', start)
   ui['main-menu'].addEventListener('click', mainMenu)
@@ -857,6 +905,7 @@ function bindInput() {
     if (event.altKey || event.metaKey || event.ctrlKey || ui.preferences.open || ui.lodge.open ||
         ui.onboarding.open || ui.promotion.open) return
     const key = event.key.toLowerCase()
+    if (mode === 'over' && key === ' ' && event.target === ui['report-scroll']) return
     if (key in keys && mode === 'running' && !(key === ' ' && event.target instanceof HTMLButtonElement)) {
       event.preventDefault()
       if (!event.repeat) move(keys[key])

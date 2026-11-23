@@ -9,6 +9,7 @@ import { hazardName } from '../src/field-stats.js'
 const safari = process.argv.includes('webkit')
 const engine = safari ? webkit : chromium
 const soak = process.argv.includes('soak')
+const soakDpr = Number(process.env.FIELD_SOAK_DPR ?? .58)
 const replays = process.argv.includes('replays')
 const slow = process.argv.includes('slow')
 const root = resolve(process.env.FIELD_BUILD ?? 'dist')
@@ -61,7 +62,7 @@ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve))
 try {
   const context = await browser.newContext({
     ...devices['iPhone 13'], viewport: { width: 390, height: 844 }, locale: 'en-US',
-    deviceScaleFactor: soak || replays || slow ? .58 : 1,
+    deviceScaleFactor: soak ? soakDpr : replays || slow ? .58 : 1,
   })
   const page = await context.newPage()
   const errors = new Set()
@@ -180,6 +181,12 @@ try {
     !document.querySelector('#primary').disabled && fieldQA.rig, null, { timeout: 50_000 })
   const state = () => page.evaluate(() => window.retrieverDebug)
   const title = () => page.locator('#game').getAttribute('data-mode')
+  const finishRun = async () => {
+    await page.evaluate(() => { fieldQA.frameStep = undefined; fieldQA.scale = 4 })
+    await page.locator('#field-report').waitFor({ timeout: 90_000 }).catch(async cause => {
+      throw new Error('Smoke run did not finish at ' + JSON.stringify(await state()), { cause })
+    })
+  }
   const layout = () => page.evaluate(() => {
     const panel = document.querySelector('#lodge')
     return document.documentElement.scrollWidth === innerWidth && (!panel.open || panel.scrollWidth <= panel.clientWidth + 1)
@@ -284,9 +291,8 @@ try {
     assert.equal(await title(), 'paused')
     await page.waitForFunction(() => fieldQA.audio.state === 'suspended')
     await page.evaluate(() => dispatchEvent(new Event('pageshow')))
-    await page.evaluate(() => { fieldQA.frameStep = undefined; fieldQA.scale = 1 })
     await page.locator('#primary').tap()
-    await page.locator('#field-report').waitFor({ timeout: 30_000 })
+    await finishRun()
     const contact = (await state()).contact
     assert.ok(['stream', 'fence'].includes(contact?.type), JSON.stringify(contact))
     assert.equal(await page.locator('#report-tallies dd').first().textContent(), hazardName(contact.type))
@@ -320,8 +326,7 @@ try {
     }
     await page.locator('#controls button[data-move="right"]').tap()
     await page.waitForFunction(() => retrieverDebug.lane === 1)
-    await page.evaluate(() => { fieldQA.frameStep = undefined; fieldQA.scale = 1 })
-    await page.locator('#field-report').waitFor({ timeout: 30_000 })
+    await finishRun()
     assert.equal((await state()).contact?.type, 'stream')
     await page.locator('#main-menu').tap()
     assert.equal(await title(), 'title')
