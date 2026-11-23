@@ -1,4 +1,5 @@
 import * as T from 'three'
+import { distanceAtTime, speedAtTime } from './difficulty.js'
 import { diveAge, diveWarning } from './dive.js'
 import { hazardFrame, obstacleVolumes, playerFrame, playerVolumes, volumeY } from './collision.js'
 
@@ -6,6 +7,8 @@ export function collisionDebug(scene) {
   const flags = new URLSearchParams(location.search)
   if (flags.get('debug') !== 'collision') return null
   const seed = Number(flags.get('seed'))
+  const requested = Number(flags.get('at'))
+  const at = flags.has('at') && Number.isFinite(requested) ? Math.min(1320, Math.max(0, requested)) : 0
   const showVolumes = flags.get('volumes') !== 'off'
   const panel = document.createElement('pre')
   panel.id = 'collision-debug'
@@ -46,6 +49,18 @@ export function collisionDebug(scene) {
   return {
     seed: flags.has('seed') && Number.isSafeInteger(seed) ? seed >>> 0 : null,
     reset() { death = undefined },
+    depart(run) {
+      if (!at) return
+      let low = 0, high = at / 10
+      for (let i = 0; i < 24; i++) {
+        const mid = (low + high) * .5
+        if (distanceAtTime(mid) < at) low = mid
+        else high = mid
+      }
+      run.distance = at
+      run.elapsed = high
+      run.speed = speedAtTime(high)
+    },
     hit(details) {
       death = { ...details }
       console.info('Retriever Run impact', death)

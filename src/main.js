@@ -27,6 +27,7 @@ import {
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
 import { journalIssues } from './career-integrity.js'
+import { regionAt } from './expedition.js'
 import { habitatAt, placeOnTrail, surfaceAt, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
@@ -315,7 +316,7 @@ function initialize() {
       glow.position.set(body.x, ground + .045, body.z)
       const pulse = 1.05 + Math.sin(visualTime * 11) * .13
       glow.scale.set(pulse, pulse, 1)
-      const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather)
+      const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather, distance)
       terrain.update(distance, visualTime, weather, preset.detail)
       wildlife(visualTime, distance, preset.detail === 0, mode === 'running')
       if (!idle && !frozen) {
@@ -551,7 +552,7 @@ function announce(message, priority) {
 }
 
 function updateConditions(weather) {
-  const habitat = habitatAt(run.distance)
+  const habitat = regionAt(run.distance).name
   const condition = habitat + weather
   if (lastCondition === condition) return
   lastCondition = condition
@@ -684,7 +685,7 @@ function setMode(value, options = {}) {
   ui['open-lodge'].hidden = !title
   if (title) showTitleRecord()
   else ui.record.hidden = true
-  ui.eyebrow.textContent = title ? 'THE WETLANDS TRAIL' : habitatAt(run.distance).toUpperCase()
+  ui.eyebrow.textContent = title ? 'THE NORTHERN EXPEDITION' : regionAt(run.distance).name.toUpperCase()
   ui['menu-title'].innerHTML = title ? 'Retriever<br><em>Run</em>' : '<em>Paused</em>'
   ui['menu-copy'].textContent = title ? 'Follow a yellow Lab through the cattails, creek beds, and flooded timber.'
     : 'Your run is held at ' + Math.floor(run.distance) + ' m.'
@@ -719,6 +720,8 @@ function resetTrail(seed) {
   run = newRun()
   nextRow = createCourse(seed)
   row = nextRow()
+  debug?.depart(run)
+  while (row.at < run.distance - 2) row = nextRow()
   stride = previousStride = 0
   ticks = 0
   samplePose(previous, run, run, 1)

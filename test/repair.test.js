@@ -128,7 +128,7 @@ test('clock discards suspended-frame backlog and clears interpolation state on p
 
 test('natural surface tiles align at boardwalk-free boundaries and pack transferable geometry', () => {
   for (let n = 0; n < 600; n++) assert.ok(['dirt', 'mud'].includes(surfaceAt(n)))
-  for (const i of [0, 5, 11, 17, 23]) {
+  for (const i of [0, 7, 8, 17, 18, 29, 30, 35]) {
     const current = buildTile(i)
     const next = buildTile(i + 1)
     const columns = 29
@@ -150,9 +150,10 @@ test('natural surface tiles align at boardwalk-free boundaries and pack transfer
 test('the same streamed habitat reproduces shore planting, water depths and tree locations', () => {
   const marsh = buildTile(3)
   assert.deepEqual(buildTile(3), marsh)
-  assert.deepEqual([3, 8, 14, 20, 26].map(index => buildTile(index).plantType), [0, 1, 2, 2, 0])
+  assert.deepEqual([3, 12, 22, 32].map(index => buildTile(index).plantType), [0, 2, 1, 2])
   assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth > .35))
   assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth === 0))
   assert.notDeepEqual(buildTile(4).reeds, marsh.reeds)
-  assert.equal(buildTile(20).water, null)
+  assert.deepEqual([3, 12, 22, 32].map(index => buildTile(index).treeStyle), [1, 0, 2, 3])
+  assert.notDeepEqual(buildTile(32).ground.buffers.color.values, buildTile(3).ground.buffers.color.values)
 })

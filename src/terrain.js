@@ -6,7 +6,7 @@ import { marshWater, updateMarshWater } from './marsh-water.js'
 import { centerAt, segmentLength } from './trail.js'
 
 const vegetation = Array.from({ length: 3 }, (_, type) => [createBankPlant(type, true), createBankPlant(type)])
-const distantTrees = [createDistantTree(false), createDistantTree(true)]
+const distantTrees = Array.from({ length: 4 }, (_, style) => createDistantTree(style))
 const treeMaterial = new T.MeshLambertMaterial({ vertexColors: true })
 const treeTints = [0x9c8a74, 0xb49968, 0x87936c]
 const dummy = new T.Object3D()
@@ -72,7 +72,7 @@ export function createTerrain(scene) {
     tile.water.geometry = packet.water ? unpack(packet.water) : new T.BufferGeometry()
     tile.detail.geometry = unpack(packet.detail)
     tile.water.visible = Boolean(packet.water)
-    tile.trees.geometry = distantTrees[Number(packet.flooded)]
+    tile.trees.geometry = distantTrees[packet.treeStyle]
     tile.trees.count = packet.trees.length / 6
     for (let n = 0; n < tile.trees.count; n++) {
       const at = n * 6
@@ -162,6 +162,7 @@ export function createTerrain(scene) {
       windClock.value = time
       windStrength.value = weather.wind
       field.fieldWet.value = weather.wet
+      field.fieldFrost.value = weather.frost ?? 0
       field.fieldDetail.value = detail
       for (let i = center - 1; i < center + 6; i++) {
         const tile = slot(i)

@@ -3,7 +3,7 @@ import { dawnDirection } from './atmosphere.js'
 
 const uniforms = T.UniformsUtils.clone(T.UniformsLib.fog)
 Object.assign(uniforms, {
-  waterClock: { value: 0 }, waterDetail: { value: 1 }, waterWeather: { value: 0 },
+  waterClock: { value: 0 }, waterDetail: { value: 1 }, waterWeather: { value: 0 }, waterFrost: { value: 0 },
   worldOrigin: { value: new T.Vector2() }, waterSky: { value: new T.Color(0xb4c3ba) },
   waterHorizon: { value: new T.Color(0xe3b994) }, waterLight: { value: new T.Color(0xffdaaa) },
   waterSun: { value: dawnDirection },
@@ -25,7 +25,7 @@ export const marshWater = new T.ShaderMaterial({
     }
   `,
   fragmentShader: `
-    uniform float waterClock, waterDetail, waterWeather;
+    uniform float waterClock, waterDetail, waterWeather, waterFrost;
     uniform vec2 worldOrigin;
     uniform vec3 waterSky, waterHorizon, waterSun, waterLight;
     varying float bedDepth;
@@ -58,7 +58,7 @@ export const marshWater = new T.ShaderMaterial({
       float rim = smoothstep(.015,.04,depth) * (1. - smoothstep(.073,.115,depth));
       lake += rim * (.5 + crossWave * .5) * vec3(.032,.031,.015);
       float skyGradient = smoothstep(-.02, .55, reflected.y);
-      vec3 mirrored = mix(waterHorizon, waterSky, skyGradient) * mix(.40, .68, skyGradient);
+      vec3 mirrored = mix(waterHorizon, waterSky, skyGradient) * mix(.36, .60, skyGradient) * vec3(.73,.88,.99);
       float facingSun = max(0., dot(reflected, waterSun));
       float shine = pow(facingSun, 26.) * (.18 + .45 * smoothstep(-.2,.84, crossWave + .32 * ripple));
       float shimmer = pow(facingSun, 115.) * .36;
@@ -66,6 +66,15 @@ export const marshWater = new T.ShaderMaterial({
       float reflectivity = fresnel * mix(.80, 1., deep) * mix(1., .64, crossing);
       vec3 color = mix(lake, reflectedLight, reflectivity);
       color += crossing * rim * vec3(.025,.036,.036);
+      if (waterFrost > .01 && crossing < .5) {
+        float channel = deep + .16 * sin(p.y * .37 + p.x * .22) + .07 * sin(p.x * 2.18 + p.y * .42);
+        float edge = smoothstep(.48, .62, channel);
+        float crystals = sin(p.x * 11.0 + p.y * 3.88) * sin(p.y * 17.0 - p.x * 9.6);
+        float crack = pow(abs(sin(p.x * .92 + p.y * 1.49 + .72 * sin(p.y * .96))), 39.0);
+        vec3 ice = mix(vec3(.34,.48,.56), vec3(.53,.66,.71), (1.-deep)*.74 + crystals*.08);
+        ice += vec3(.05,.081,.100) * (1. - edge) - crack * .061;
+        color = mix(color, ice, (1. - edge) * waterFrost);
+      }
       gl_FragColor = vec4(color, 1.);
       #include <fog_fragment>
       #include <tonemapping_fragment>
@@ -78,6 +87,7 @@ export function updateMarshWater(time, center, distance, weather, detail) {
   uniforms.waterClock.value = time
   uniforms.waterDetail.value = detail
   uniforms.waterWeather.value = weather.wet
+  uniforms.waterFrost.value = weather.frost ?? 0
   uniforms.worldOrigin.value.set(center, -distance)
   uniforms.waterHorizon.value.copy(weather.sky)
   if (weather.zenith) uniforms.waterSky.value.copy(weather.zenith)

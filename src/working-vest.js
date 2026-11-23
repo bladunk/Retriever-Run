@@ -154,7 +154,10 @@ export function createWorkingVest(body) {
         cloth = mix(cloth, vestBinding, max(hem,max(seam*.49,webbing*.84)));
         cloth = mix(cloth, vestBinding*1.56 + vec3(.024,.018,.010), max(rail*.61,keeper*.81));
         float teeth = smoothstep(-.3,.65,sin(z*183.)) * zipper * grainFade;
-        cloth += (.023*teeth + .035*stitch + boundStitch*.026);
+        float bartack = max(1. - smoothstep(.011,.024,abs(z + .43)),1. - smoothstep(.011,.024,abs(z - .49))) *
+          (1. - smoothstep(.03,.055,side)) * dorsal;
+        float tabThread = grainFade * smoothstep(-.12,.51,sin(side*410.)) * bartack;
+        cloth += (.023*teeth + .035*stitch + boundStitch*.029 + tabThread*.036);
         float fastener = max(slider,loop*.85);
         cloth = mix(cloth,vec3(.34,.24,.129),fastener);
         diffuseColor.rgb = cloth * (1. + (.12 - vestWeave*.033)*weave);
@@ -162,6 +165,14 @@ export function createWorkingVest(body) {
         roughnessFactor = mix(roughnessFactor + weave*.043,.39,fastener);
       `).replace('#include <metalnessmap_fragment>', `#include <metalnessmap_fragment>
         metalnessFactor = max(metalnessFactor, fastener * .54);
+      `).replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+        if (grainFade > .12) {
+          vec3 dx = dFdx(-vViewPosition), dy = dFdy(-vViewPosition);
+          vec3 tangent = cross(dy,normal), bitangent = cross(normal,dx);
+          float scale = inversesqrt(max(1.e-8,max(dot(tangent,tangent),dot(bitangent,bitangent))));
+          float stitchRelief = grainFade * (.024*weave + stitch*.014 + boundStitch*.017);
+          normal = normalize(normal - (tangent*dFdx(stitchRelief)+bitangent*dFdy(stitchRelief))*scale);
+        }
       `)
   }
   const mesh = new T.SkinnedMesh(geometry, material)

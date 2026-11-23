@@ -34,7 +34,12 @@ export function tintLabradorCoat(material) {
         float shortFur = sin(p.x*309. + p.y*111. + direction) * sin(p.z*112. - p.y*165.);
         float smallFur = sin(p.z*49. + p.x*118. - direction) * sin(p.y*141. + p.x*136.);
         vec3 coatShading = mix(vec3(1.10,1.09,1.03), vec3(.75,.72,.64), max(.58*ears,.46*saddle));
+        float earFold = ears * smoothstep(.12,.37,abs(p.x - .057 * sin(p.y*9.)));
+        float shoulder = smoothstep(.63,1.25,p.z) * (1. - smoothstep(1.45,1.80,p.z)) *
+          smoothstep(1.09,1.74,p.y) * (1. - smoothstep(1.92,2.24,p.y));
         coatShading += muzzle*vec3(.06,.11,.14) + cheek*vec3(.075,.043,.018) + .045*ankles;
+        coatShading *= mix(vec3(1.),vec3(.79,.72,.64),earFold*.40);
+        coatShading += vec3(.041,.032,.015)*shoulder;
         fur *= coatShading * (1. + (.071*shortFur + .037*smallFur) * grainFade);
         diffuseColor.rgb = mix(preserveDark, fur, warmFur);
         float dark = 1. - smoothstep(.046,.22,naturalCoat.r);
@@ -43,7 +48,16 @@ export function tintLabradorCoat(material) {
           * smoothstep(.21,.34,abs(p.x)) * smoothstep(2.18,2.37,p.y);
       `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         float gloss = dark * max(nose * .85, eye * .61);
-        roughnessFactor = mix(mix(.71,roughnessFactor,warmFur), .34 + .08*shortFur*grainFade, gloss);
+        float noseGrain = sin(p.x*205. + shortFur*.48)*sin(p.y*192. + p.z*140.);
+        roughnessFactor = mix(mix(.71,roughnessFactor,warmFur), .29 + .12*noseGrain*grainFade, gloss);
+      `).replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+        if (grainFade > .10) {
+          vec3 dx = dFdx(-vViewPosition), dy = dFdy(-vViewPosition);
+          vec3 tangent = cross(dy,normal), bitangent = cross(normal,dx);
+          float scale = inversesqrt(max(1.e-8,max(dot(tangent,tangent),dot(bitangent,bitangent))));
+          float grain = grainFade * (warmFur * shortFur * .034 + gloss * noseGrain * .018);
+          normal = normalize(normal - (tangent*dFdx(grain) + bitangent*dFdy(grain))*scale);
+        }
       `)
 
   }

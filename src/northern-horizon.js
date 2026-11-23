@@ -1,0 +1,90 @@
+import * as T from 'three'
+import { centerAt, seededRandom } from './trail.js'
+
+function mountainMesh(layer) {
+  const random = seededRandom(47509 + layer * 491)
+  const points = [], heights = [], faces = []
+  const columns = 88
+  const ranges = [[-152, 31, 45], [-92, 25, 31], [-41, 43, 36], [8, 29, 28], [66, 41, 33], [119, 30, 32]]
+  for (let i = 0; i <= columns; i++) {
+    const x = (i - columns * .5) * 5.3
+    let peak = 4 + 4 * random()
+    for (const [center, height, span] of ranges) {
+      peak = Math.max(peak, 8 + height * Math.max(0, 1 - Math.abs(x - center - layer * 19) / span))
+    }
+    peak = peak * (.84 + random() * .26) * (layer === 0 ? 1 : .68)
+    for (let row = 0; row < 5; row++) {
+      const t = row / 4
+      const y = T.MathUtils.lerp(-7, peak, t) + Math.sin(x * .27 + row * 1.7) * t * 1.44
+      points.push(x + Math.cos(row * 2.7 + i * .44) * (3.6 * (1 - t)), y, -(11 + layer * 18) * t)
+      heights.push(t, random())
+      if (i && row) {
+        const a = i * 5 + row
+        if (i % 2) faces.push(a, a - 5, a - 1, a - 1, a - 5, a - 6)
+        else faces.push(a, a - 5, a - 6, a, a - 6, a - 1)
+      }
+    }
+  }
+  const geometry = new T.BufferGeometry()
+  geometry.setAttribute('position', new T.Float32BufferAttribute(points, 3))
+  geometry.setAttribute('ridge', new T.Float32BufferAttribute(heights, 2))
+  geometry.setIndex(faces)
+  return geometry
+}
+
+export function createNorthernHorizon(scene) {
+  const haze = { value: new T.Color() }
+  const frost = { value: 0 }
+  const amount = { value: 0 }
+  const mountains = [0, 1].map(layer => {
+    const material = new T.ShaderMaterial({
+      uniforms: { haze, frost, amount, layer: { value: layer } },
+      side: T.DoubleSide,
+      vertexShader: `
+        attribute vec2 ridge;
+        varying vec2 face;
+        varying vec3 ridgePoint;
+        void main() {
+          face = ridge;
+          ridgePoint = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 haze;
+        uniform float frost, amount, layer;
+        varying vec2 face;
+        varying vec3 ridgePoint;
+        void main() {
+          vec3 normal = normalize(cross(dFdx(ridgePoint), dFdy(ridgePoint)));
+          float facets = abs(dot(normal, normalize(vec3(.6,.15,-.78))));
+          float runnel = sin(ridgePoint.x * .78 + ridgePoint.y * .64 + face.y * 1.3) * .095;
+          float snowLine = mix(.84,.47,frost);
+          float blanket = smoothstep(snowLine-.09,snowLine+.13,face.x+runnel-facets*.14);
+          vec3 rock = mix(vec3(.101,.168,.205), vec3(.143,.242,.235), layer*.44);
+          vec3 cap = mix(vec3(.55,.62,.69),vec3(.84,.89,.93),facets*.80);
+          vec3 color = mix(rock * (.77+facets*.32+face.y*.08), cap, blanket);
+          float separation = (.36 + layer * .20) * smoothstep(.04,.54,face.x) * amount;
+          gl_FragColor = vec4(mix(haze,color,separation), 1.);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
+      `,
+    })
+    const mountain = new T.Mesh(mountainMesh(layer), material)
+    mountain.position.set(0, -5, layer === 0 ? -155 : -116)
+    mountain.renderOrder = -40 + layer
+    mountain.frustumCulled = false
+    scene.add(mountain)
+    return mountain
+  })
+  return (distance, northern, snow, color) => {
+    haze.value.copy(color)
+    frost.value = snow
+    amount.value = northern
+    for (const [index, ridge] of mountains.entries()) {
+      ridge.visible = northern > .006
+      ridge.position.x = -centerAt(distance) * (.34 + index * .32) + index * 13
+    }
+  }
+}
