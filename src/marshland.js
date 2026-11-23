@@ -65,7 +65,8 @@ export function composeBar(index) {
   // A thumb keeps time while softer offbeat strokes fill the spaces in the hook.
   for (const [beat, string, level] of [[0, 0, .12], [.52, 2, .065], [1.54, 3, .064],
     [2, 1, .105], [2.53, 2, .074], [3.54, 4, .061]]) {
-    add(0, 'guitar', Math.max(40, chord[string]), beat, .78, level, -.32)
+    const pitch = chord[string]
+    add(0, 'guitar', pitch < 40 ? pitch + 12 : pitch, beat, .78, level, -.32)
   }
   for (const beat of [1, 3]) {
     for (let string = 2; string < 6; string++) {
