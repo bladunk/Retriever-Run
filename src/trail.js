@@ -27,9 +27,8 @@ export function habitatAt(distance) {
 }
 
 export function surfaceAt(distance) {
-  const segment = Math.floor(distance / segmentLength)
-  if (segment % 6 === 3 || segment % 6 === 4) return 'wood'
-  if (habitatAt(distance) === 'Muddy Creek') return 'mud'
+  const habitat = habitatAt(distance)
+  if (habitat === 'Cattail Marsh' || habitat === 'Flooded Timber' || habitat === 'Muddy Creek') return 'mud'
   return 'dirt'
 }
 
@@ -38,4 +37,8 @@ export function seededRandom(seed) {
     seed = (Math.imul(1664525, seed) + 1013904223) >>> 0
     return seed / 4294967296
   }
+}
+
+export function trailHeight(distance, lateral) {
+  return .042 * Math.sin(distance * .089) + .027 * Math.sin(distance * .245 + lateral * .42)
 }

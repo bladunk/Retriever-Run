@@ -1,5 +1,5 @@
 import * as T from 'three'
-import { placeOnTrail } from './trail.js'
+import { placeOnTrail, trailHeight } from './trail.js'
 
 export function createFootSpray(scene) {
   const particles = Array.from({ length: 32 }, () => ({ distance: 0, lane: 0, start: -1, phase: 0, water: false }))
@@ -42,9 +42,11 @@ export function createFootSpray(scene) {
           continue
         }
         const spread = age * .98 * Math.sin(particle.phase)
-        placeOnTrail(dummy.position, particle.distance - age * 1.4, particle.lane + spread, distance)
+        const at = particle.distance - age * 1.4
+        const lateral = particle.lane + spread
+        placeOnTrail(dummy.position, at, lateral, distance)
         const h = (.20 + .09 * Math.cos(particle.phase)) * Math.sin(Math.PI * age / .40)
-        dummy.position.y = .04 + h
+        dummy.position.y = trailHeight(at, lateral) + .024 + h
         dummy.scale.setScalar((particle.water ? .047 : .032) * (1 - age / .44))
         dummy.updateMatrix()
         spots.setMatrixAt(count, dummy.matrix)

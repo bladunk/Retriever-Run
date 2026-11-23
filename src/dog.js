@@ -138,13 +138,12 @@ export function createDog(scene) {
       earCoat.color.setHex(outfit === 'copper' ? 0x73452b : 0x9b6738)
       bandana.visible = outfit === 'marsh'
     },
-    pose({ x, z, height, sliding, stride, time, heading = 0, turn = 0, dt, idle = false }) {
-      const smooth = 1 - Math.exp(-18 * dt)
+    pose({ x, z, height, ground, sliding, stride, time, heading = 0, turn = 0, dt, idle = false }) {
       if (oldHeight > .02 && height <= .02) landing = 1
       oldHeight = height
       landing *= Math.exp(-11 * dt)
-      crouch += ((sliding ? 1 : 0) - crouch) * smooth
-      root.position.set(x, height, z)
+      crouch = sliding
+      root.position.set(x, ground + height, z)
       root.rotation.y = heading
       body.position.y = -crouch * .37 - landing * .072
         + (idle ? Math.sin(time * 2.4) * .012 : height > .03 ? 0 : Math.sin(stride * 2) * .038)

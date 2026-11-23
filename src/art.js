@@ -68,7 +68,6 @@ function group(parent, x = 0, y = 0, z = 0) {
 export function createHazard(parent, type, x = 0, z = 0, wide = false) {
   const object = group(parent, x, 0, z)
   const key = 'hazard-' + type + (wide ? '-wide' : '')
-  if (type === 'branch' && wide) object.scale.x = 3.72
   if (type === 'root') object.scale.y = .7
   if (baked.has(key)) {
     object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
@@ -84,10 +83,13 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
     for (const y of [.38, .81]) mesh(object, box, 0xb67c45, 0, y, 0, 2, .18, .17)
     mesh(object, box, cut, 0, .62, .1, .81, .17, .06).rotation.z = -.32
   } else if (type === 'branch') {
-    mesh(object, cylinder, bark, .94, .78, .15, .13, 1.62, .14).rotation.z = -.18
-    mesh(object, cylinder, bark, -.08, 1.22, 0, .13, 2.16, .15).rotation.z = Math.PI / 2
-    mesh(object, leaf, 0x789049, -.78, 1.45, -.04, .51, .34, .44)
-    mesh(object, leaf, 0x8d9d53, -.37, 1.54, -.11, .41, .39, .43)
+    const width = wide ? 7.28 : 2.14
+    for (const x of wide ? [-3.56, 3.56] : [1.01]) {
+      mesh(object, cylinder, bark, x, .58, 0, .096, 1.17, .105)
+    }
+    mesh(object, cylinder, bark, 0, 1.17, 0, .110, width, .110).rotation.z = Math.PI / 2
+    mesh(object, leaf, 0x776f46, -.79, 1.31, -.04, .41, .20, .35)
+    mesh(object, leaf, 0x6a6544, -.38, 1.34, -.10, .32, .20, .32)
   } else if (type === 'log' || type === 'root' || type === 'drift') {
     mesh(object, cylinder, bark, 0, .33, 0, .34, 1.97, .34).rotation.z = Math.PI / 2
     for (const side of [-1, 1]) {

@@ -78,12 +78,11 @@ progress::-moz-progress-bar { background: var(--brass); }
 }
 #weather { color: #ead2a9; }
 .callout {
+  opacity: 0;
   position: absolute; z-index: 1; top: 27%; left: 50%; width: max-content; max-width: 78vw;
   translate: -50% 0; pointer-events: none; font-weight: 810; color: #fff1c7; font-size: .96rem;
   text-shadow: 0 2px 8px #17190f, 0 1px 3px #17190f; text-align: center;
 }
-.callout.pop { animation: pop 1s ease-out both; }
-@keyframes pop { 0% { opacity: 0; transform: translateY(6px); } 12%, 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-11px); } }
 #controls {
   position: absolute; z-index: 1; pointer-events: none; display: flex; justify-content: space-between;
   bottom: max(13px, env(safe-area-inset-bottom)); left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right));
@@ -158,4 +157,3 @@ legend { color: var(--brass); font: 700 .82rem Georgia, serif; padding: 0 4px; }
   .control-hint { margin-top: 7px; }
   #controls button { width: 44px; height: 44px; }
 }
-@media (prefers-reduced-motion: reduce) { .callout.pop { animation-timing-function: steps(1, end); } }

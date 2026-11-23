@@ -44,7 +44,7 @@ export function createPlayer(scene) {
     },
     pose(pose) {
       const height = pose.height
-      shadow.position.set(pose.x, .049, pose.z)
+      shadow.position.set(pose.x, pose.ground + .039, pose.z)
       shadow.rotation.set(-Math.PI / 2, pose.heading, 0)
       shadow.scale.set(1.52 + height * .31, 2.83 + height * .28, 1)
       shadow.material.opacity = .68 / (1 + height * 1.8)
@@ -54,7 +54,7 @@ export function createPlayer(scene) {
       }
       fallback.root.visible = false
       rig.root.visible = true
-      root.position.set(pose.x, height, pose.z)
+      root.position.set(pose.x, pose.ground + height, pose.z)
       root.rotation.y = pose.heading
       root.updateWorldMatrix(true, false)
       rig.pose(pose)
