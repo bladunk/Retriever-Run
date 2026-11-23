@@ -1,7 +1,7 @@
 export const audioDefaults = { masterVolume: .9, musicVolume: .55, wildlifeVolume: .8, effectsVolume: .85 }
 
 const defaults = { score: 0, distance: 0, best: 0, farthest: 0, retrieves: 0, streak: 0,
-  outfit: 'field', quality: 'auto', comfort: true, ...audioDefaults }
+  outfit: 'field', quality: 'auto', comfort: true, musicRestore: audioDefaults.musicVolume, ...audioDefaults }
 
 export const outfits = [
   { id: 'field', name: 'Field collar', hint: 'Standard issue', available: () => true },
@@ -24,6 +24,8 @@ export function normalizeProfile(raw) {
   for (const key of Object.keys(audioDefaults)) {
     if (Number.isFinite(raw[key])) profile[key] = Math.min(1, Math.max(0, raw[key]))
   }
+  profile.musicRestore = Number.isFinite(raw.musicRestore) && raw.musicRestore > 0
+    ? Math.min(1, raw.musicRestore) : profile.musicVolume || audioDefaults.musicVolume
   if (['auto', 'low', 'balanced', 'high'].includes(raw.quality)) profile.quality = raw.quality
   if (outfits.some((outfit) => outfit.id === raw.outfit && outfit.available(profile))) profile.outfit = raw.outfit
   return profile

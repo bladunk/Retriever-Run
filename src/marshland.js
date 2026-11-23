@@ -1,5 +1,5 @@
 // Marshland Run: 32 bars of 4/4 with a guitar hook and adaptive rhythm layers.
-export const beatSeconds = 60 / 112
+export const beatSeconds = 60 / 120
 export const loopBeats = 128
 
 const progression = [
@@ -37,16 +37,27 @@ const bridge = [
   [[0, 69, .93], [1.5, 64, .63], [2.5, 61, .82], [3.5, 57, .42]],
 ]
 
-const layers = [
-  // Guitar, upright bass, percussion, banjo, extra rhythm
-  [1, .33, .19, .08, 0],
-  [1, .59, .46, .27, .20],
-  [1, .80, .72, .58, .57],
-  [1, 1, .93, .87, .91],
+const stages = [
+  // Guitar, bass, percussion, banjo, offbeat rhythm, harmonica, driving rhythm, fingerpicking
+  [1, .62, .40, 0, 0, 0, 0, 0],
+  [1, .77, .57, .37, .34, 0, 0, 0],
+  [1, .88, .69, .62, .63, .55, 0, 0],
+  [1, .97, .82, .78, .80, .64, .53, 0],
+  [1, 1, .91, .90, .93, .74, 1, 0],
 ]
 
+const indoors = {
+  title: [.38, .31, 0, .13, 0, .17, 0, .79],
+  lodge: [.14, .22, 0, 0, 0, .24, 0, .92],
+  over: [.12, .18, 0, 0, 0, 0, 0, .65],
+}
+
 export function musicIntensity(seconds) {
-  return layers[Math.min(3, Math.floor(Math.max(0, seconds) / 30))]
+  return stages[Math.min(stages.length - 1, Math.floor(Math.max(0, seconds) / 30))]
+}
+
+export function musicMix(mode, seconds) {
+  return indoors[mode] ?? musicIntensity(seconds)
 }
 
 export function composeBar(index) {
@@ -101,5 +112,24 @@ export function composeBar(index) {
     add(3, 'banjo', chord[4], 1.55, .66, .065, .35)
     add(3, 'banjo', chord[5], 3.55, .55, .073, .35)
   }
+  // A quiet half-time guitar part stays in time with the trail arrangement.
+  add(7, 'guitar', chord[2], .056, 1.5, .115, -.16)
+  add(7, 'guitar', chord[3], 1.08, 1.25, .075, -.14)
+  add(7, 'guitar', chord[4], 2.07, 1.60, .096, .11)
+  add(7, 'guitar', melody.at(-1)[1], 3.06, 1.22, .105, .13)
+
+  const harmonica = {
+    7: [[2.06, 66], [3.03, 64]], 15: [[2.1, 62], [3.14, 57]],
+    19: [[.24, 69], [2.13, 64]], 23: [[1.12, 62], [2.4, 64]],
+    27: [[2.08, 66], [3.16, 69]], 31: [[1.99, 64], [3.03, 62]],
+  }[bar] ?? []
+  for (const [beat, pitch] of harmonica) add(5, 'harmonica', pitch, beat, .94, .086, .30)
+
+  // Extra picked notes and a bass pickup change the pattern at the fastest pace.
+  add(6, 'bass', chord[0] + 12, 3.285, .36, .069)
+  add(6, 'guitar', chord[3], .785, .39, .071, -.22)
+  add(6, 'guitar', chord[4], 2.79, .32, .059, -.24)
+  add(6, 'shake', 0, 3.81, .31, .034, .24)
+
   return events.sort((a, b) => a.beat - b.beat)
 }

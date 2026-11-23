@@ -1,5 +1,6 @@
 import { instrumentSample, sampleUrls } from './audio-samples.js'
-import { beatSeconds, composeBar, loopBeats, musicIntensity } from './marshland.js'
+import { beatSeconds, musicMix } from './marshland.js'
+import { createMusicTransport } from './music-transport.js'
 import { audioDefaults } from './profile.js'
 
 const clamp = (value, low, high) => Math.min(high, Math.max(low, value))
@@ -20,14 +21,12 @@ const rewards = {
   milestone: [57, 62, 66],
 }
 
-const score = Array.from({ length: loopBeats / 4 }, (_, bar) =>
-  composeBar(bar).map(note => ({ ...note, at: (bar * 4 + note.beat) * beatSeconds }))).flat()
-const loopLength = loopBeats * beatSeconds
-
 export function createSound(onInterruption) {
   let context
   let buses
   let trail
+  let musicBed
+  let flightGate
   let layers
   let noise
   let wind
@@ -36,17 +35,18 @@ export function createSound(onInterruption) {
   let levels = { ...audioDefaults }
   let playing = false
   let scheduler
-  let finishTimer
+  let transitionTimer
+  let scene = 'title'
+  let flight
   let elapsed = 0
   let intensity
-  let origin
-  let cycle = 0
-  let event = 0
+  const transport = createMusicTransport()
   let lastEnvironment = -Infinity
   let nextDistant
   let nextBreath
   const buffers = new Map()
   const pending = new Set()
+  const downloads = new Map()
   const voices = new Set()
 
   function gain(value, destination) {
@@ -76,6 +76,8 @@ export function createSound(onInterruption) {
   }
 
   function initialize(Audio) {
+    // Safari can honor the hardware silent switch for ambient audio.
+    try { if (navigator.audioSession) navigator.audioSession.type = 'ambient' } catch { /* Optional. */ }
     context = new Audio()
     const master = gain(levels.masterVolume, context.destination)
     const limit = context.createDynamicsCompressor()
@@ -87,12 +89,14 @@ export function createSound(onInterruption) {
     limit.connect(master)
     buses = {
       masterVolume: master,
-      musicVolume: gain(levels.musicVolume * .65, limit),
+      musicVolume: gain(levels.musicVolume * .78, limit),
       wildlifeVolume: gain(levels.wildlifeVolume, limit),
       effectsVolume: gain(levels.effectsVolume, limit),
     }
     trail = gain(.001, buses.wildlifeVolume)
-    layers = musicIntensity(elapsed).map(level => gain(level, buses.musicVolume))
+    flightGate = gain(1, buses.musicVolume)
+    musicBed = gain(0, flightGate)
+    layers = musicMix(scene, elapsed).map(level => gain(level, musicBed))
     noise = context.createBuffer(1, context.sampleRate * 2, context.sampleRate)
     const data = noise.getChannelData(0)
     for (let i = 0; i < data.length; i++) data[i] = vary(-1, 1)
@@ -102,7 +106,7 @@ export function createSound(onInterruption) {
     context.addEventListener('statechange', () => {
       if (!playing) return
       if (context.state === 'running') {
-        if (document.hidden) pause()
+        if (document.hidden) suspend()
         else beginScheduling()
       } else {
         clearInterval(scheduler)
@@ -112,13 +116,20 @@ export function createSound(onInterruption) {
     })
   }
 
+  function download(name) {
+    if (!downloads.has(name)) {
+      downloads.set(name, fetch(sampleUrls[name]).then(response => response.ok ? response.arrayBuffer() : null)
+        .catch(() => null))
+    }
+    return downloads.get(name)
+  }
+
   async function load(name) {
     if (buffers.has(name) || pending.has(name)) return
     pending.add(name)
     try {
-      const response = await fetch(sampleUrls[name])
-      if (!response.ok) return
-      const buffer = await response.arrayBuffer()
+      const buffer = await download(name)
+      if (!buffer) return
       // The callback form also works in Safari versions with a prefixed context.
       const decoded = await new Promise((resolve, reject) => context.decodeAudioData(buffer, resolve, reject))
       buffers.set(name, decoded)
@@ -126,6 +137,7 @@ export function createSound(onInterruption) {
       // The game and procedural foley can still run if an audio download fails.
     } finally {
       pending.delete(name)
+      downloads.delete(name)
     }
   }
 
@@ -183,95 +195,98 @@ export function createSound(onInterruption) {
 
   function pump() {
     if (!playing || context?.state !== 'running' || !buffers.has('instruments')) return
-    const now = context.currentTime
-    origin ??= now + .063
     const audible = canPlay('musicVolume')
-    const mix = intensity ?? musicIntensity(elapsed)
-    const current = score[event]
-    let scheduled = origin + cycle * loopLength + current.at
-    if (scheduled < now - .25) {
-      cycle = Math.max(0, Math.floor((now - origin) / loopLength))
-      event = 0
-      scheduled = origin + cycle * loopLength + score[event].at
-    }
-    while (scheduled < now + .23) {
-      const note = score[event]
-      if (audible && mix[note.layer] > 0 && scheduled >= now - .018) {
-        instrument(note.instrument, note.pitch, Math.max(scheduled, now + .002), note.length * beatSeconds,
-          note.volume, note.pan, layers[note.layer], true)
-      }
-      if (++event === score.length) {
-        event = 0
-        cycle++
-      }
-      scheduled = origin + cycle * loopLength + score[event].at
-    }
+    const mix = intensity ?? musicMix(scene, elapsed)
+    transport(context.currentTime, (note, at) => {
+      if (audible && mix[note.layer] > 0) instrument(note.instrument, note.pitch, at,
+        note.length * beatSeconds, note.volume, note.pan, layers[note.layer], true)
+    })
   }
 
   function beginScheduling() {
-    if (scheduler === undefined) scheduler = setInterval(pump, 75)
+    if (scheduler === undefined) scheduler = setInterval(pump, 65)
     pump()
   }
 
-  function stopVoices() {
-    for (const source of voices) {
-      try { source.stop() } catch { /* The sample may have already ended. */ }
-    }
+  function updateMix() {
+    const mix = musicMix(scene, elapsed)
+    if (!layers || mix === intensity) return
+    intensity = mix
+    layers.forEach((layer, index) => ramp(layer.gain, mix[index], .58))
   }
 
-  function unlock(restart = false) {
-    clearTimeout(finishTimer)
-    if (restart) {
-      elapsed = 0
-      origin = undefined
-      cycle = event = 0
-      lastEnvironment = -Infinity
-      nextDistant = vary(10, 17)
-      nextBreath = vary(9, 14)
-      intensity = undefined
-      stopVoices()
-    }
-    const Audio = window.AudioContext ?? window.webkitAudioContext
-    if (!Audio || document.hidden) return
-    try {
-      if (!context) initialize(Audio)
-      playing = true
-      ramp(trail.gain, 1)
-      // Call resume directly on the Start/Resume gesture, before any promises.
-      if (context.state !== 'running') {
-        context.resume().then(() => {
-          if (!playing || document.hidden) pause()
-          else beginScheduling()
-        }).catch(() => {})
-      } else {
-        beginScheduling()
-      }
-      void load('instruments')
-      void load('goose')
-      void load('mallard')
-    } catch {
-      // Audio availability is independent of play.
-    }
-  }
-
-  function stopScheduling() {
+  function suspend() {
     playing = false
-    clearTimeout(finishTimer)
+    clearTimeout(transitionTimer)
     clearInterval(scheduler)
     scheduler = undefined
-  }
-
-  function pause() {
-    stopScheduling()
     if (context && context.state !== 'suspended') context.suspend().catch(() => {})
   }
 
-  function finish() {
-    stopScheduling()
-    if (context?.state !== 'running') return
-    ramp(trail.gain, .001, .055)
-    for (const layer of layers) ramp(layer.gain, .001, .07)
-    finishTimer = setTimeout(() => { stopVoices(); pause() }, 360)
+  function accent(record) {
+    if (!canPlay('musicVolume')) return
+    const chord = record ? [[62, 0], [66, .067], [69, .12], [74, .21]]
+      : [[57, 0], [64, .041], [62, .18], [50, .22]]
+    for (const [note, delay] of chord) {
+      instrument('guitar', note, context.currentTime + delay + .009, .62,
+        record ? .117 : .091, .05, buses.musicVolume)
+    }
+  }
+
+  function selectScene(value, { gesture = false, restart = false, record = false, immediate = false } = {}) {
+    const previousScene = scene
+    scene = value
+    clearTimeout(transitionTimer)
+    if (restart) {
+      elapsed = 0
+      lastEnvironment = -Infinity
+      nextDistant = vary(10, 17)
+      nextBreath = vary(9, 14)
+    }
+    if (immediate || document.hidden) {
+      suspend()
+      return
+    }
+    if (scene === 'paused') {
+      if (context?.state === 'running') {
+        ramp(musicBed.gain, 0, .062)
+        ramp(trail.gain, 0, .065)
+        transitionTimer = setTimeout(suspend, 245)
+      } else suspend()
+      return
+    }
+    const Audio = window.AudioContext ?? window.webkitAudioContext
+    if (!Audio || (!gesture && !playing)) return
+    try {
+      if (!context) initialize(Audio)
+      playing = true
+      updateMix()
+      ramp(flightGate.gain, 1, .21)
+      flight = undefined
+      ramp(trail.gain, scene === 'running' ? 1 : 0, .15)
+      const arrivingAtReport = scene === 'over' && previousScene === 'running'
+      const bed = scene === 'running' ? 1 : scene === 'title' ? .69 : scene === 'lodge' ? .54 : .46
+      ramp(musicBed.gain, arrivingAtReport ? .15 : bed, scene === 'running' ? .16 : .21)
+      if (arrivingAtReport) {
+        accent(record)
+        transitionTimer = setTimeout(() => ramp(musicBed.gain, bed, .42), 420)
+      }
+      if (context.state === 'running') beginScheduling()
+      else if (gesture) {
+        // Resume on the gesture before asynchronous work so iPhone Safari can play.
+        context.resume().then(() => {
+          if (!playing || document.hidden) suspend()
+          else beginScheduling()
+        }).catch(() => {})
+      }
+      void load('instruments')
+      if (scene === 'running') {
+        void load('goose')
+        void load('mallard')
+      }
+    } catch {
+      // Audio availability is independent of play.
+    }
   }
 
   function rustle(destination, filter, frequency, volume, duration, delay = 0, pan = 0, panTo = pan, attack = .015) {
@@ -302,24 +317,30 @@ export function createSound(onInterruption) {
   }
 
   return {
-    unlock,
-    pause,
-    finish,
+    selectScene,
+    suspend,
+    preload() {
+      if (!buffers.has('instruments')) void download('instruments').then(bytes => {
+        if (!bytes && !pending.has('instruments')) downloads.delete('instruments')
+      })
+    },
+    flight(phase) {
+      if (flight === phase) return
+      flight = phase
+      if (flightGate) ramp(flightGate.gain, phase === 'duck' ? .69 : phase === 'approach' ? .76 : 1,
+        phase ? .085 : .34)
+    },
     bird,
     settings(profile) {
       for (const key of Object.keys(levels)) {
         levels[key] = profile[key]
-        if (buses) ramp(buses[key].gain, levels[key] * (key === 'musicVolume' ? .65 : 1), .025)
+        if (buses) ramp(buses[key].gain, levels[key] * (key === 'musicVolume' ? .78 : 1), .025)
       }
     },
     ambience(weather, seconds, wetland, runningOnGround) {
       elapsed = seconds
       if (!playing || context?.state !== 'running') return
-      const nextIntensity = musicIntensity(elapsed)
-      if (intensity !== nextIntensity) {
-        intensity = nextIntensity
-        layers.forEach((layer, index) => ramp(layer.gain, intensity[index], .74))
-      }
+      updateMix()
       if (elapsed - lastEnvironment < .15) return
       lastEnvironment = elapsed
       const breeze = .77 + .23 * Math.sin(elapsed * .66)

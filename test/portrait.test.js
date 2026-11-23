@@ -87,7 +87,7 @@ test('prior profiles retain records, cosmetics and settings with comfort enabled
     outfit: 'copper', quality: 'high', sfx: false, soundtrack: true }
   const { sfx, soundtrack, ...progress } = old
   assert.deepEqual(normalizeProfile(old), {
-    ...progress, comfort: true, masterVolume: .9, musicVolume: .55, wildlifeVolume: 0, effectsVolume: 0,
+    ...progress, comfort: true, masterVolume: .9, musicVolume: .55, musicRestore: .55, wildlifeVolume: 0, effectsVolume: 0,
   })
   assert.equal(normalizeProfile({ ...old, comfort: false, quality: 'balanced' }).comfort, false)
   assert.equal(normalizeProfile({ quality: 'balanced' }).quality, 'balanced')

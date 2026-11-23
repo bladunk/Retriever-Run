@@ -17,6 +17,7 @@ const instruments = {
   drum: [[0, 26.4809, .48]],
   wood: [[0, 27.0359, .48]],
   shake: [[0, 27.5909, .48]],
+  harmonica: [[60, 28.1459, .95], [64, 29.1709, .95], [67, 30.1959, .95], [72, 31.2209, .95]],
 }
 
 export function instrumentSample(instrument, note) {

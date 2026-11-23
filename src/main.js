@@ -9,7 +9,11 @@ import { swipeDirection } from './gesture.js'
 import { adaptiveQuality, graphics, pixelRatio } from './quality.js'
 import { createPlayer } from './player.js'
 import { createFootSpray } from './spray.js'
-import { audioDefaults, completeRun, normalizeProfile, outfits } from './profile.js'
+import { audioDefaults, outfits } from './profile.js'
+import { createRunStatistics } from './field-stats.js'
+import { pendingPatches } from './honors.js'
+import { openLodge } from './lodge-save.js'
+import { createLodgeUI, fillReport, patchName } from './lodge-ui.js'
 import {
   act, advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun,
   jumpDuration, pickupNames, powerDuration, score,
@@ -19,11 +23,11 @@ import { createTerrain } from './terrain.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
+import './lodge.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
-const recordKey = 'retriever-run.record'
 const sound = createSound(() => {
-  if (mode === 'running') setMode('paused')
+  if (mode === 'running') setMode('paused', { immediate: true })
 })
 const volumeKeys = Object.keys(audioDefaults)
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
@@ -60,16 +64,17 @@ let calloutAnimation
 let actionBuffer = null
 let bufferUntil = 0
 
-function loadProfile() {
-  try { return normalizeProfile(JSON.parse(localStorage.getItem(recordKey))) }
-  catch { return normalizeProfile(null) }
-}
+const lodge = openLodge()
+const saveProfile = lodge.commit
+let profile = lodge.current().profile
+let runPlayer
+let runStatistics
+let audioGesture = false
+let nextPatchCheck = 0
+let toastUntil = 0
+const seenPatches = new Map()
+const patchNotices = []
 
-function saveProfile() {
-  try { localStorage.setItem(recordKey, JSON.stringify(profile)) } catch { /* storage may be unavailable */ }
-}
-
-let profile = loadProfile()
 let mode = 'title'
 let run = newRun()
 samplePose(previous, run, run, 1)
@@ -106,6 +111,24 @@ function makeRenderer() {
     ui.settings.hidden = true
   }
 }
+
+const lodgeUI = createLodgeUI(ui, lodge, {
+  onPlayer() {
+    profile = lodge.current().profile
+    dog?.appearance(profile.outfit)
+    resize?.()
+    sound.settings(profile)
+    updateMusicButton()
+    if (mode === 'title') showTitleRecord()
+  },
+  onOpen() { engageMusic() },
+  onClose() { sound.selectScene(mode) },
+})
+ui['open-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
+ui['report-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
+sound.settings(profile)
+updateMusicButton()
+setTimeout(sound.preload, 250)
 
 const renderer = makeRenderer()
 if (renderer) initialize()
@@ -149,6 +172,7 @@ function initialize() {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     const dt = Math.min(.10, Math.max(0, wall))
     previousTime = ms
+    if (ui.lodge.open) return
     if (mode === 'running' && profile.quality === 'auto') {
       const selected = adapt(wall)
       if (selected !== autoPreset) {
@@ -223,10 +247,12 @@ function initialize() {
     event.preventDefault()
     if (mode === 'running') setMode('paused')
     ui.primary.disabled = true
+    ui['run-again'].disabled = true
     ui['menu-copy'].textContent = 'Graphics were interrupted. Waiting for the connection to recover.'
   })
   ui.trail.addEventListener('webglcontextrestored', () => {
     ui.primary.disabled = false
+    ui['run-again'].disabled = false
     setMode(mode)
   })
   resize()
@@ -295,6 +321,7 @@ function runningSurface() {
 function step(dt) {
   for (const direction of controls) {
     if (act(run, direction)) {
+      runStatistics.action(direction)
       sound.play(direction, runningSurface())
       actionBuffer = null
     } else if ((direction === 'jump' || direction === 'slide') &&
@@ -306,6 +333,7 @@ function step(dt) {
   controls.length = 0
   if (actionBuffer && run.elapsed >= bufferUntil) actionBuffer = null
   if (actionBuffer && act(run, actionBuffer)) {
+    runStatistics.action(actionBuffer)
     sound.play(actionBuffer, runningSurface())
     actionBuffer = null
   }
@@ -316,15 +344,20 @@ function step(dt) {
   ticks++
 
   let fraction = Infinity
+  let impacted
   for (const entity of entities) {
     if (!entity.hazard || !traceContact(previous, run, entity, candidate)) continue
     if (candidate.fraction < fraction) {
       fraction = candidate.fraction
+      impacted = entity
       Object.assign(contact, candidate)
     }
   }
   if (Number.isFinite(fraction)) {
     samplePose(run, previous, run, fraction)
+    for (const entity of entities) {
+      if (entity.hazard && entity !== impacted) runStatistics.passed(previous, run, entity)
+    }
     debug?.hit(contact)
     frozen = true
     sound.play('hit')
@@ -348,12 +381,15 @@ function step(dt) {
   }
 
   let warningLabel = ''
+  let warningPhase
   for (let index = entities.length - 1; index >= 0; index--) {
     const entity = entities[index]
     const ahead = entity.distance - run.distance
+    if (entity.hazard) runStatistics.passed(previous, run, entity)
     if (entity.type === 'goose') {
       const warning = diveWarning(entity, run.distance)
       if (warning) {
+        warningPhase = warning
         warningLabel = flightWarnings[warning][entity.safeLane + 1]
         if (entity.audioCue !== warning) {
           entity.audioCue = warning
@@ -383,6 +419,7 @@ function step(dt) {
     }
     if (!entity.hazard && Math.abs(ahead) < 1 && Math.abs(run.x - entity.lane * laneWidth) < .88 && getHeight(run) < 1.45) {
       const result = collect(run, entity.type)
+      runStatistics.pickup(entity.type)
       const treat = entity.type === 'treat'
       const retrieve = entity.type === 'mallard' || entity.type === 'pheasant'
       entity.duration = retrieve ? .72 : .30
@@ -401,6 +438,7 @@ function step(dt) {
       entities.splice(index, 1)
     }
   }
+  sound.flight(warningPhase)
   if (warningLabel !== flightLabel) {
     flightLabel = warningLabel
     ui['flight-warning'].hidden = !flightLabel
@@ -414,6 +452,8 @@ function step(dt) {
       effects.splice(index, 1)
     }
   }
+  checkPatches()
+
 }
 
 function announce(message, priority) {
@@ -468,7 +508,38 @@ function updateHud() {
   hudCache.powered = powered
 }
 
-function setMode(value) {
+function checkPatches() {
+  if (run.elapsed >= nextPatchCheck) {
+    nextPatchCheck = run.elapsed + .30
+    patchNotices.push(...pendingPatches(lodge.current(), runStatistics.preview(run), seenPatches))
+  }
+  if (run.elapsed < toastUntil) return
+  const notice = patchNotices.shift()
+  const toast = ui['patch-toast']
+  toast.hidden = !notice
+  if (!notice) return
+  toastUntil = run.elapsed + 2.35
+  toast.textContent = patchName(notice.patch, notice.level) + ' · Patch earned'
+}
+
+function showTitleRecord() {
+  ui['current-runner'].textContent = 'Playing as ' + lodge.current().nickname
+  ui.record.hidden = !profile.best && !profile.farthest
+  ui.record.textContent = 'Best ' + format.format(profile.best) + '  ·  Longest run ' + format.format(profile.farthest) + ' m'
+}
+
+function updateMusicButton() {
+  const button = ui['music-toggle']
+  button.textContent = profile.musicVolume ? audioGesture ? 'Mute music' : 'Play music' : 'Unmute music'
+}
+
+function engageMusic() {
+  audioGesture = true
+  updateMusicButton()
+  sound.selectScene(ui.lodge.open ? 'lodge' : mode, { gesture: true })
+}
+
+function setMode(value, options = {}) {
   needsRedraw = true
   const oldMode = mode
   mode = value
@@ -484,56 +555,65 @@ function setMode(value) {
   const title = value === 'title'
   const over = value === 'over'
   const paused = value === 'paused'
-  const newBest = over && score(run) > profile.best
-  const unlocks = []
+  let newRecord = false
   if (over && oldMode !== 'over') {
-    const completed = completeRun(profile, run, score(run))
-    for (const outfit of outfits) {
-      if (outfit.available(completed) && !outfit.available(profile)) unlocks.push(outfit.name)
+    const priorProfile = profile
+    const report = lodge.finalize(runPlayer, runStatistics, run, contact.type)
+    if (report) {
+      profile = lodge.current().profile
+      const unlocks = outfits.filter(outfit => outfit.available(profile) && !outfit.available(priorProfile))
+        .map(outfit => outfit.name)
+      fillReport(ui, report, unlocks)
+      newRecord = report.improved.includes('score') || report.improved.includes('distance')
+      ui['field-report'].scrollTop = 0
     }
-    profile = completed
-    saveProfile()
   }
-  ui.menu.hidden = running
+  ui.menu.hidden = running || over
+  ui['field-report'].hidden = !over
   ui.hud.hidden = !running
   ui.controls.hidden = !running
   ui.conditions.hidden = !running
   ui.pause.hidden = !(running || paused)
   ui.pause.textContent = paused ? 'Resume' : 'Pause'
   ui.hint.hidden = !title
-  ui.record.hidden = !(over || (title && profile.best))
-  ui.record.textContent = over
-    ? (newBest ? 'New best · ' : '') + format.format(profile.score) + ' points  ·  ' + profile.distance + ' m  ·  Best ' + format.format(profile.best)
-    : 'Best ' + format.format(profile.best) + '  ·  Longest run ' + format.format(profile.farthest) + ' m'
-  ui.eyebrow.textContent = title ? 'THE WETLANDS TRAIL' : over ? 'FIELD REPORT' : habitatAt(run.distance).toUpperCase()
-  ui['menu-title'].innerHTML = title ? 'Retriever<br><em>Run</em>' : over ? 'Trail<br><em>end</em>' : '<em>Paused</em>'
+  ui['current-runner'].hidden = !title
+  ui['open-lodge'].hidden = !title
+  if (title) showTitleRecord()
+  else ui.record.hidden = true
+  ui.eyebrow.textContent = title ? 'THE WETLANDS TRAIL' : habitatAt(run.distance).toUpperCase()
+  ui['menu-title'].innerHTML = title ? 'Retriever<br><em>Run</em>' : '<em>Paused</em>'
   ui['menu-copy'].textContent = title ? 'Follow a yellow Lab through the cattails, creek beds, and flooded timber.'
-    : over ? (unlocks.length ? 'Outfitter unlocked · ' + unlocks.join(', ') : run.retrieves + ' retrieved · ' + run.bestStreak + ' best treat streak')
-      : 'Your run is held at ' + Math.floor(run.distance) + ' m.'
-  ui.primary.firstChild.textContent = title ? 'Start run ' : over ? 'Run again ' : 'Resume run '
+    : 'Your run is held at ' + Math.floor(run.distance) + ' m.'
+  ui.primary.textContent = title ? 'Start run' : 'Resume run'
   if (!running) {
     flightLabel = ''
     ui['flight-warning'].hidden = true
-    if (over) sound.finish()
-    else sound.pause()
+    ui['patch-toast'].hidden = true
     calloutAnimation?.cancel()
     ui.callout.textContent = ''
   }
-  if (!title && !running) ui.primary.focus({ preventScroll: true })
+  if (options.gesture) {
+    audioGesture = true
+    updateMusicButton()
+  }
+  sound.selectScene(value, { ...options, record: newRecord })
+  if (over) ui['run-again'].focus({ preventScroll: true })
+  if (paused) ui.primary.focus({ preventScroll: true })
   if (running) {
     ui.primary.blur()
     ui.pause.blur()
+    ui['run-again'].blur()
     updateHud()
   }
 }
 
-function start() {
+function resetTrail(seed) {
   for (const entity of entities) release(entity)
   for (const effect of effects) release(effect)
   entities.length = 0
   effects.length = 0
   run = newRun()
-  nextRow = createCourse(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
+  nextRow = createCourse(seed)
   row = nextRow()
   stride = previousStride = 0
   ticks = 0
@@ -546,11 +626,26 @@ function start() {
   follow.heading = null
   follow.offset = 0
   visualTime = 0
+  frozen = false
   dog.reset()
   spray.reset()
-  setMode('running')
-  sound.unlock(true)
+}
+
+function start() {
+  resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
+  runPlayer = lodge.current().id
+  runStatistics = createRunStatistics()
+  nextPatchCheck = toastUntil = 0
+  seenPatches.clear()
+  patchNotices.length = 0
+  setMode('running', { gesture: true, restart: true })
   populate()
+}
+
+function mainMenu() {
+  resetTrail(2026)
+  setMode('title', { gesture: true })
+  ui.primary.focus({ preventScroll: true })
 }
 
 function move(direction) {
@@ -559,14 +654,12 @@ function move(direction) {
 
 function pause() {
   if (mode === 'running') setMode('paused')
-  else if (mode === 'paused') {
-    setMode('running')
-    sound.unlock()
-  }
+  else if (mode === 'paused') setMode('running', { gesture: true })
 }
 
 function openSettings() {
   if (mode === 'running') pause()
+  else if (mode !== 'paused') engageMusic()
   for (const key of volumeKeys) ui[key].value = Math.round(profile[key] * 100)
   ui.quality.value = profile.quality
   ui.comfort.checked = profile.comfort
@@ -593,6 +686,23 @@ function openSettings() {
 
 function bindInput() {
   ui.primary.addEventListener('click', () => mode === 'paused' ? pause() : start())
+  ui['run-again'].addEventListener('click', start)
+  ui['main-menu'].addEventListener('click', mainMenu)
+  ui['music-toggle'].addEventListener('click', () => {
+    if (!audioGesture && profile.musicVolume) {
+      engageMusic()
+      return
+    }
+    if (profile.musicVolume) {
+      profile.musicRestore = profile.musicVolume
+      profile.musicVolume = 0
+    } else {
+      profile.musicVolume = profile.musicRestore
+    }
+    sound.settings(profile)
+    saveProfile()
+    engageMusic()
+  })
   ui.pause.addEventListener('click', pause)
   ui.settings.addEventListener('click', openSettings)
   ui['close-settings'].addEventListener('click', () => ui.preferences.close())
@@ -600,6 +710,10 @@ function bindInput() {
   for (const key of volumeKeys) {
     ui[key].addEventListener('input', () => {
       profile[key] = ui[key].valueAsNumber / 100
+      if (key === 'musicVolume') {
+        if (profile.musicVolume) profile.musicRestore = profile.musicVolume
+        updateMusicButton()
+      }
       sound.settings(profile)
       saveProfile()
     })
@@ -620,7 +734,7 @@ function bindInput() {
   const keys = { arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right', arrowup: 'jump', w: 'jump',
     ' ': 'jump', arrowdown: 'slide', s: 'slide' }
   window.addEventListener('keydown', (event) => {
-    if (event.altKey || event.metaKey || event.ctrlKey || ui.preferences.open) return
+    if (event.altKey || event.metaKey || event.ctrlKey || ui.preferences.open || ui.lodge.open) return
     const key = event.key.toLowerCase()
     if (key in keys && mode === 'running' && !(key === ' ' && event.target instanceof HTMLButtonElement)) {
       event.preventDefault()
@@ -630,7 +744,8 @@ function bindInput() {
       pause()
     } else if (!event.repeat && ['enter', ' '].includes(key) && mode !== 'running' && !(event.target instanceof HTMLButtonElement)) {
       event.preventDefault()
-      ui.primary.click()
+      if (mode === 'over') ui['run-again'].click()
+      else ui.primary.click()
     }
   })
   ui.game.addEventListener('pointerdown', (event) => {
@@ -654,8 +769,8 @@ function bindInput() {
     })
   }
   const background = () => {
-    if (mode === 'running') setMode('paused')
-    else sound.pause()
+    if (mode === 'running') setMode('paused', { immediate: true })
+    else sound.suspend()
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) background() })
   window.addEventListener('pagehide', background)
