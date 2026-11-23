@@ -3,9 +3,10 @@ import { createHazard, createPickup } from './art.js'
 import { createAtmosphere } from './atmosphere.js'
 import { createSound } from './audio.js'
 import { cameraLayout, newCameraState, updateFollow } from './camera.js'
-import { hazardFrame, playerFrame, traceContact } from './collision.js'
+import { firstContact, hazardFrame, playerFrame } from './collision.js'
 import { createFixedClock, samplePose } from './timing.js'
 import { swipeDirection } from './gesture.js'
+import { createRunControls } from './run-controls.js'
 import { adaptiveQuality, graphics, pixelRatio } from './quality.js'
 import { createPlayer } from './player.js'
 import { createFootSpray } from './spray.js'
@@ -18,7 +19,7 @@ import { createWorldwideCamp } from './worldwide-camp.js'
 import { submissionMessages } from './camp-ui.js'
 import { createLodgeUI, fillReport, patchName } from './lodge-ui.js'
 import {
-  act, advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun,
+  advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun, touchesPickup,
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
 import { habitatAt, placeOnTrail, surfaceAt, trailHeight } from './trail.js'
@@ -47,9 +48,8 @@ const cueRunner = {}
 const clock = createFixedClock()
 const previous = {}
 const display = {}
-const candidate = {}
 const contact = {}
-const controls = []
+const controls = createRunControls()
 const hudCache = {}
 const clearLanes = ['Left lane clear', 'Center lane clear', 'Right lane clear']
 const flightWarnings = {
@@ -62,11 +62,10 @@ let viewWidth = 390
 let previousStride = 0
 let frozen = false
 let calloutAnimation
-let actionBuffer = null
-let bufferUntil = 0
 
 const lodge = openLodge()
 const camp = createWorldwideCamp(createCampTransport())
+const diagnosticsRequested = new URLSearchParams(location.search).get('debug') === 'collision'
 window.addEventListener('online', () => camp.syncPending())
 window.addEventListener('load', () => {
   camp.syncPending()
@@ -109,6 +108,8 @@ let dog
 let spray
 let resize
 let needsRedraw = true
+let trailReady = false
+let contextReady = true
 
 function makeRenderer() {
   try {
@@ -151,7 +152,7 @@ function initialize() {
   const terrain = createTerrain(scene)
   const wildlife = createWildlife(scene, sound.bird)
   const diving = createDivingFlocks(scene)
-  if (new URLSearchParams(location.search).get('debug') === 'collision') {
+  if (diagnosticsRequested) {
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
   }
   dog = createPlayer(scene)
@@ -179,11 +180,18 @@ function initialize() {
     renderer.setSize(width, height, false)
   }
 
+  const stepOnTerrain = dt => terrain.readyAt(run.distance) && step(dt)
+
   function render(ms) {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     const dt = Math.min(.10, Math.max(0, wall))
     previousTime = ms
     if (ui.lodge.open) return
+    if (!trailReady && terrain.readyAt(0) && terrain.readyAt(-1)) {
+      trailReady = true
+      ui.primary.disabled = !contextReady
+      if (mode === 'title') ui.primary.textContent = 'Start run'
+    }
     if (mode === 'running' && profile.quality === 'auto') {
       const selected = adapt(wall)
       if (selected !== autoPreset) {
@@ -192,8 +200,8 @@ function initialize() {
       }
     }
     let alpha = 1
-    if (mode === 'running') {
-      alpha = clock.advance(wall, step)
+    if (mode === 'running' && terrain.readyAt(run.distance)) {
+      alpha = clock.advance(wall, stepOnTerrain)
       updateHud()
     }
     const animate = mode === 'title' || mode === 'running' || frozen
@@ -256,13 +264,15 @@ function initialize() {
   window.addEventListener('resize', resize)
   ui.trail.addEventListener('webglcontextlost', (event) => {
     event.preventDefault()
+    contextReady = false
     if (mode === 'running') setMode('paused')
     ui.primary.disabled = true
     ui['run-again'].disabled = true
     ui['menu-copy'].textContent = 'Graphics were interrupted. Waiting for the connection to recover.'
   })
   ui.trail.addEventListener('webglcontextrestored', () => {
-    ui.primary.disabled = false
+    contextReady = true
+    ui.primary.disabled = !trailReady
     ui['run-again'].disabled = false
     setMode(mode)
   })
@@ -329,43 +339,22 @@ function runningSurface() {
   return habitatAt(run.distance) === 'Prairie Potholes' ? 'grass' : surfaceAt(run.distance)
 }
 
+function onAction(move) {
+  runStatistics.action(move)
+  sound.play(move, runningSurface())
+}
+
 function step(dt) {
-  for (const direction of controls) {
-    if (act(run, direction)) {
-      runStatistics.action(direction)
-      sound.play(direction, runningSurface())
-      actionBuffer = null
-    } else if ((direction === 'jump' || direction === 'slide') &&
-      (run.jump > 0 && run.jump < .13 || run.slide > 0 && run.slide < .13)) {
-      actionBuffer = direction
-      bufferUntil = run.elapsed + .14
-    }
-  }
-  controls.length = 0
-  if (actionBuffer && run.elapsed >= bufferUntil) actionBuffer = null
-  if (actionBuffer && act(run, actionBuffer)) {
-    runStatistics.action(actionBuffer)
-    sound.play(actionBuffer, runningSurface())
-    actionBuffer = null
-  }
+  controls.apply(run, onAction)
   const wasAirborne = run.jump > 0
   samplePose(previous, run, run, 1)
   previousStride = stride
   advance(run, dt)
   ticks++
 
-  let fraction = Infinity
-  let impacted
-  for (const entity of entities) {
-    if (!entity.hazard || !traceContact(previous, run, entity, candidate)) continue
-    if (candidate.fraction < fraction) {
-      fraction = candidate.fraction
-      impacted = entity
-      Object.assign(contact, candidate)
-    }
-  }
-  if (Number.isFinite(fraction)) {
-    samplePose(run, previous, run, fraction)
+  const impacted = firstContact(previous, run, entities, contact)
+  if (impacted) {
+    samplePose(run, previous, run, contact.fraction)
     for (const entity of entities) {
       if (entity.hazard && entity !== impacted) runStatistics.passed(previous, run, entity)
     }
@@ -428,7 +417,7 @@ function step(dt) {
         splashUntil = entity.distance + 2.4
       }
     }
-    if (!entity.hazard && Math.abs(ahead) < 1 && Math.abs(run.x - entity.lane * laneWidth) < .88 && getHeight(run) < 1.45) {
+    if (touchesPickup(run, entity)) {
       const result = collect(run, entity.type)
       runStatistics.pickup(entity.type)
       const treat = entity.type === 'treat'
@@ -564,9 +553,8 @@ function setMode(value, options = {}) {
   if (oldMode !== value) {
     clock.reset()
     previousTime = undefined
-    controls.length = 0
+    controls.reset()
     gesture = undefined
-    actionBuffer = null
   }
   ui.game.dataset.mode = value
   const running = value === 'running'
@@ -582,7 +570,7 @@ function setMode(value, options = {}) {
       const unlocks = outfits.filter(outfit => outfit.available(profile) && !outfit.available(priorProfile))
         .map(outfit => outfit.name)
       fillReport(ui, report, unlocks)
-      const posting = camp.record(runPlayer, report)
+      const posting = diagnosticsRequested ? null : camp.record(runPlayer, report)
       const worldwide = ui['report-worldwide']
       worldwide.dataset.run = String(report.id)
       worldwide.hidden = !posting
@@ -614,7 +602,7 @@ function setMode(value, options = {}) {
   ui['menu-title'].innerHTML = title ? 'Retriever<br><em>Run</em>' : '<em>Paused</em>'
   ui['menu-copy'].textContent = title ? 'Follow a yellow Lab through the cattails, creek beds, and flooded timber.'
     : 'Your run is held at ' + Math.floor(run.distance) + ' m.'
-  ui.primary.textContent = title ? 'Start run' : 'Resume run'
+  ui.primary.textContent = title ? trailReady ? 'Start run' : 'Preparing trail…' : 'Resume run'
   if (!running) {
     flightLabel = ''
     ui['flight-warning'].hidden = true
@@ -679,7 +667,7 @@ function mainMenu() {
 }
 
 function move(direction) {
-  if (mode === 'running' && controls.length < 16) controls.push(direction)
+  if (mode === 'running') controls.enqueue(direction)
 }
 
 function pause() {
@@ -799,5 +787,6 @@ function bindInput() {
     })
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) background() })
+  window.addEventListener('blur', () => { if (mode === 'running') background() })
   window.addEventListener('pagehide', background)
 }

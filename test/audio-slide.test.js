@@ -6,10 +6,11 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
 import { obstacleVolumes, playerFrame, playerVolumes, traceContact, volumeY } from '../src/collision.js'
 import { createLabradorRig } from '../src/lab-rig.js'
+import { createRunControls } from '../src/run-controls.js'
 import { beatSeconds, composeBar, loopBeats, musicIntensity, musicMix } from '../src/marshland.js'
 import { createMusicTransport, loopSeconds } from '../src/music-transport.js'
 import { audioDefaults, normalizeProfile } from '../src/profile.js'
-import { act, advance, newRun, speedAtTime } from '../src/runner.js'
+import { act, advance, jumpDuration, newRun, speedAtTime } from '../src/runner.js'
 import { centerAt, headingAt, laneWidth, trailHeight } from '../src/trail.js'
 
 test('Marshland Run repeats after 32 bars and increases mix intensity without changing the score', () => {
@@ -154,4 +155,45 @@ test('at full speed a swept crouch clears overhead timber and still hits ground 
   for (const type of ['log', 'root', 'tree', 'fence', 'puddle', 'stream']) {
     assert.ok(traceContact(sliding, slidingEnd, { ...obstacle, type }), type)
   }
+})
+
+test('rapid jump and slide transitions retain skinned ground clearance after a long run', async () => {
+  const rig = await loadRig()
+  const player = new Group()
+  player.add(rig.root)
+  let skin
+  rig.root.traverse(node => { if (node.isSkinnedMesh) skin = node })
+  const point = new Vector3()
+  const frame = {}
+  const run = { ...newRun(), distance: 38_260, elapsed: 1380, speed: speedAtTime(1380) }
+  const controls = createRunControls()
+  let animation = 'jump'
+  let changes = 0
+  let landing = 0
+  controls.enqueue(animation)
+  for (let index = 0; index < 240; index++) {
+    if (run[animation] > .07 && run[animation] < .11) controls.enqueue(animation === 'jump' ? 'slide' : 'jump')
+    controls.apply(run, move => { animation = move; changes++ })
+    const wasAirborne = run.jump > 0
+    advance(run, 1 / 60)
+    const ground = trailHeight(run.distance, run.x)
+    landing = wasAirborne && !run.jump ? 1 : landing * .81
+    playerFrame(frame, run, run.distance)
+    player.position.set(frame.x, frame.y, frame.z)
+    player.rotation.y = frame.angle
+    player.updateMatrixWorld(true)
+    rig.pose({ time: run.elapsed, dt: 1 / 60, stride: index * .24, airborne: run.jump > 0,
+      jumpPhase: run.jump ? 1 - run.jump / jumpDuration : 1, sliding: frame.depth, idle: false,
+      turn: 0, landing, ground })
+    player.updateMatrixWorld(true)
+    let clearance = Infinity
+    for (let vertex = 0; vertex < skin.geometry.attributes.position.count; vertex++) {
+      skin.getVertexPosition(vertex, point).applyMatrix4(skin.matrixWorld)
+      const at = run.distance - point.z
+      const lateral = (point.x - centerAt(at) + centerAt(run.distance)) / Math.cos(headingAt(at))
+      clearance = Math.min(clearance, point.y - (trailHeight(at, lateral) - .008))
+    }
+    assert.ok(clearance >= -.008, `frame ${index}, depth ${frame.depth}, clearance ${clearance}`)
+  }
+  assert.ok(changes >= 4)
 })

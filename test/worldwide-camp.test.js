@@ -230,3 +230,74 @@ test('requests time out and unavailable storage leaves both the game and online 
   assert.ok(lodge.finalize(1, createRunStatistics(), { ...newRun(), duration: 4 }, 'stream'))
   assert.equal((await createWorldwideCamp(null).board(1, 'score')).status, 'unavailable')
 })
+
+test('reopening the nickname form during an anonymous signup does not create a second session', async () => {
+  let release
+  const gate = new Promise(resolve => { release = resolve })
+  const { requests, transport } = fakeWorld()
+  const original = transport.nickname
+  transport.nickname = async (profile, name) => {
+    await gate
+    return original(profile, name)
+  }
+  const camp = createWorldwideCamp(transport)
+  const first = camp.join(1, 'Moss Pup')
+  const duplicate = camp.join(1, 'Moss Pup')
+  const competing = camp.join(1, 'Pond Scout')
+  release()
+  assert.equal((await first).status, 'ok')
+  assert.equal((await duplicate).status, 'ok')
+  assert.equal((await competing).status, 'busy')
+  assert.deepEqual(requests.names, [[1, 'Moss Pup']])
+  assert.equal(camp.member(1).nickname, 'Moss Pup')
+})
+
+test('repeated online events drain pending local profiles without concurrent background requests', async () => {
+  let connected = true
+  let peak = 0
+  let inFlight = 0
+  const { requests, transport } = fakeWorld()
+  const submit = transport.submit
+  transport.submit = async (...args) => {
+    inFlight++
+    peak = Math.max(peak, inFlight)
+    await new Promise(resolve => setImmediate(resolve))
+    try { return await submit(...args) }
+    finally { inFlight-- }
+  }
+  const camp = createWorldwideCamp(transport, { online: () => connected })
+  for (let profile = 1; profile <= 10; profile++) await camp.join(profile, 'Runner ' + profile)
+  connected = false
+  for (let profile = 1; profile <= 10; profile++) await camp.record(profile, fixture).done
+  connected = true
+  const a = camp.syncPending()
+  const b = camp.syncPending()
+  assert.equal(a, b)
+  await Promise.all([a, b])
+  assert.equal(peak, 1)
+  assert.equal(requests.submissions.length, 10)
+  assert.equal(camp.pending(10), 0)
+})
+
+test('an existing 4.1 offline receipt retries with its saved identity and UUID after the update', async () => {
+  const disk = memory()
+  const { requests, flags, transport } = fakeWorld()
+  const id = randomUUID()
+  disk.setItem('retriever-run.worldwide.v1.test', JSON.stringify({
+    members: { 1: { identity: 'test-identity-1', nickname: 'Moss Pup',
+      best: { score: 165, distance: 40, retrieves: 0 }, lastRun: 7 } },
+    queue: [{ profile: 1, owner: 'test-identity-1', id, score: 335, distance: 45, retrieves: 1, durationMs: 4000 }],
+  }))
+  const camp = createWorldwideCamp(transport, { storage: () => disk })
+  assert.equal(camp.member(1).lastRun, 7)
+  assert.equal(camp.pending(1), 1)
+  flags.offline = true
+  assert.equal(await camp.sync(1), 'pending')
+  assert.equal(camp.pending(1), 1)
+  flags.offline = false
+  await camp.syncPending()
+  assert.equal(camp.pending(1), 0)
+  assert.equal(requests.names.length, 0)
+  assert.ok(requests.submissions.every(item => item.id === id && item.identity === 'test-identity-1'))
+  assert.equal(camp.record(1, fixture), null)
+})

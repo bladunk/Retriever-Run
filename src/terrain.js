@@ -61,13 +61,14 @@ export function createTerrain(scene) {
     return { root, ground, water, reeds, reedData: null, index: null, wanted: null, dirty: true }
   })
   const slot = (index) => tiles[((index % tiles.length) + tiles.length) % tiles.length]
-  const order = [0, 1, 2, -1, 3, 4, 5]
+  const order = [0, -1, 1, 2, 3, 4, 5]
   const nearCount = [23, 43, 63]
   const farCount = [9, 17, 25]
   let lastWindFrame = -1
   let lastDetail = -1
   let building = false
   let worker
+  let workerDeadline
   let center = 0
 
   function load(packet) {
@@ -92,29 +93,48 @@ export function createTerrain(scene) {
       const tile = slot(index)
       if (tile.wanted !== index || tile.index === index) continue
       building = true
-      if (worker) worker.postMessage(index)
-      else setTimeout(() => { load(buildTile(index)); building = false; pump() }, 0)
+      if (worker) {
+        workerDeadline = setTimeout(useFallback, 4500)
+        try { worker.postMessage(index) } catch { useFallback() }
+      }
+      else setTimeout(() => {
+        if (tile.wanted === index) load(buildTile(index))
+        building = false
+        pump()
+      }, 0)
       break
     }
   }
+  function useFallback() {
+    if (!worker) return
+    clearTimeout(workerDeadline)
+    worker.terminate()
+    worker = undefined
+    building = false
+    pump()
+  }
+
   try {
     worker = new Worker(new URL('./terrain-worker.js', import.meta.url), { type: 'module' })
-    worker.onmessage = ({ data }) => { load(data); building = false; pump() }
-    worker.onerror = () => {
-      worker.terminate()
-      worker = undefined
+    worker.onmessage = ({ data }) => {
+      if (!worker) return
+      clearTimeout(workerDeadline)
+      load(data)
       building = false
       pump()
     }
+    worker.onerror = worker.onmessageerror = useFallback
   } catch { /* The fallback builds one pending tile at a time. */ }
-  // Both sides of the spawn seam must exist before the title camera looks across it.
-  for (const index of [-1, 0]) {
-    slot(index).wanted = index
-    load(buildTile(index))
-  }
+  // Warm the spawn seam on the worker before enabling Start.
+  for (const index of order) slot(index).wanted = index
+  pump()
 
   return {
     count() { return tiles.reduce((count, tile) => count + Number(tile.index !== null), 0) },
+    readyAt(distance) {
+      const index = Math.floor(distance / segmentLength)
+      return slot(index).index === index
+    },
     update(distance, time, weather, detail) {
       center = Math.floor(distance / segmentLength)
       const offset = centerAt(distance)

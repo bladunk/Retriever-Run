@@ -201,3 +201,19 @@ export function traceContact(previous, current, entity, witness) {
   }
   return true
 }
+
+const candidate = {}
+
+export function firstContact(previous, current, entities, witness) {
+  let fraction = Infinity
+  let impacted
+  for (const entity of entities) {
+    if (!entity.hazard || entity.distance < previous.distance - 3 || entity.distance > current.distance + 3) continue
+    if (traceContact(previous, current, entity, candidate) && candidate.fraction < fraction) {
+      fraction = candidate.fraction
+      impacted = entity
+      Object.assign(witness, candidate)
+    }
+  }
+  return impacted
+}
