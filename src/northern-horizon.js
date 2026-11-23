@@ -42,6 +42,7 @@ function mountainMesh(layer) {
   geometry.setAttribute('position', new T.Float32BufferAttribute(points, 3))
   geometry.setAttribute('ridge', new T.Float32BufferAttribute(heights, 2))
   geometry.setIndex(faces)
+  geometry.computeVertexNormals()
   return geometry
 }
 
@@ -58,10 +59,11 @@ export function createNorthernHorizon(scene) {
       vertexShader: `
         attribute vec2 ridge;
         varying vec2 face;
-        varying vec3 ridgePoint;
+        varying vec3 ridgePoint, ridgeNormal;
         void main() {
           face = ridge;
           ridgePoint = position;
+          ridgeNormal = normal;
           vec4 clip = projectionMatrix * modelViewMatrix * vec4(position, 1.);
           // The trail keeps its short far plane and depth precision. This pass
           // sits behind it while retaining the arc's actual projected parallax.
@@ -72,16 +74,18 @@ export function createNorthernHorizon(scene) {
         uniform vec3 haze;
         uniform float frost, amount, layer;
         varying vec2 face;
-        varying vec3 ridgePoint;
+        varying vec3 ridgePoint, ridgeNormal;
         void main() {
-          vec3 normal = normalize(cross(dFdx(ridgePoint), dFdy(ridgePoint)));
-          float facets = abs(dot(normal, normalize(vec3(.6,.15,-.78))));
-          float runnel = sin(ridgePoint.x * .78 + ridgePoint.y * .64 + face.y * 1.3) * .095;
+          float facets = abs(dot(normalize(ridgeNormal), normalize(vec3(.6,.15,-.78))));
+          vec2 stone = ridgePoint.xy;
+          float relief = sin(dot(stone, vec2(.037,.060))) * cos(dot(stone, vec2(.046,-.028)));
+          relief += .30 * sin(dot(stone, vec2(.083,-.091)) + ridgePoint.z * .051);
+          float runnel = relief * .075;
           float snowLine = mix(.84,.47,frost);
           float blanket = smoothstep(snowLine-.09,snowLine+.13,face.x+runnel-facets*.14);
           vec3 rock = mix(vec3(.101,.168,.205), vec3(.143,.242,.235), layer*.44);
           vec3 cap = mix(vec3(.55,.62,.69),vec3(.84,.89,.93),facets*.80);
-          vec3 color = mix(rock * (.77+facets*.32+face.y*.08), cap, blanket);
+          vec3 color = mix(rock * (.78+facets*.26+relief*.095+face.y*.04), cap, blanket);
           float separation = (.54 + layer * .21) * smoothstep(.04,.48,face.x) * amount;
           gl_FragColor = vec4(mix(haze, color, .70 + layer * .20), separation);
           #include <tonemapping_fragment>

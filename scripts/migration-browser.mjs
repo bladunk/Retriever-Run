@@ -41,7 +41,7 @@ const portraits = expeditionRegions.map(region => ({
 const captures = [...portraits,
   { key: 'alpine-entry', start: 268.55, stop: 271.74, region: 8 },
   { key: 'endgame', start: checkpoint(321), region: 9 },
-  { key: 'visibility', start: checkpoint(28.2), stop: 29.92, region: 0 },
+  { key: 'visibility', start: checkpoint(28.2), stop: 29.85, region: 0 },
   { key: 'preview-loss', start: 0, stop: 4.8, region: 0 },
 ]
 const selected = captures.filter(({ key }) => argv.includes(key))
@@ -74,7 +74,7 @@ try {
     page.on('request', request => { if (!localAsset(request.url())) offsite.push(request.url()) })
     const rows = courseRows.filter(row => key !== 'preview-loss' && row.time >= start - .35 && row.time < stop + 3)
       .map(({ at, time, lane, end, gate, entities }) => ({ at, time, lane, end, gate, action: entities[0]?.type === 'branch' ? 'slide' : 'jump' }))
-    await page.addInitScript(({ quality, stop, rows }) => {
+    await page.addInitScript(({ quality, stop, rows, moving }) => {
       const original = JSON.stringify({ quality, masterVolume: 0, best: 987, farthest: 654 })
       localStorage.setItem('retriever-run.record', original)
       localStorage.removeItem('retriever-run.record.practice')
@@ -138,7 +138,7 @@ try {
               sent = true
             }
           }
-          virtual += 1000 / 24
+          virtual += 1000 / (moving ? 24 : 12)
         }
         draws = triangles = uploaded = 0
         const start = performance.now()
@@ -150,7 +150,7 @@ try {
             wall, cpu: performance.now() - start, tiles: state.tiles, geometries: state.geometries })
         }
       })
-    }, { quality, stop, rows })
+    }, { quality, stop, rows, moving: ['alpine-entry', 'visibility', 'preview-loss'].includes(key) })
     const offset = (start - region * 30).toFixed(6)
     await page.goto(origin + prefix + '?preview=' + (region + 1) + '&offset=' + offset + '&debug=collision&volumes=off&seed=7')
     await page.waitForFunction(() => migrationQA.ready && window.retrieverDebug, null, { timeout: 65_000 })
@@ -167,7 +167,7 @@ try {
       for (const [part, at] of [['before', 269.15], ['entry', 270.36], ['after', stop]]) {
         await page.evaluate(value => { migrationQA.stop = value }, at)
         await checkAt(at)
-        await page.screenshot({ path: resolve(output, quality + '-' + key + '-' + part + '.png'), scale: 'css' })
+        await page.screenshot({ path: resolve(output, quality + '-' + key + '-' + part + '.png'), scale: 'css', timeout: 90_000 })
       }
     } else if (key === 'preview-loss') {
       await page.locator('#field-report').waitFor({ timeout: 130_000 })
@@ -176,21 +176,34 @@ try {
       assert.equal(await page.locator('#report-highlights').textContent(), '')
     } else {
       await checkAt(stop)
-      await page.screenshot({ path: resolve(output, quality + '-' + key + '.png'), scale: 'css' })
+      if (key !== 'visibility') {
+        await page.screenshot({ path: resolve(output, quality + '-' + key + '.png'), scale: 'css', timeout: 90_000 })
+      }
     }
 
     if (key === 'visibility') {
       assert.equal(await page.locator('#habitat').textContent(), 'Gulf Coast Marsh')
-      const held = await page.evaluate(() => retrieverDebug.elapsed)
+      const readClock = () => page.evaluate(() => ({ elapsed: retrieverDebug.elapsed, ticks: retrieverDebug.ticks }))
+      async function checkHold(held) {
+        const stopped = await readClock()
+        assert.equal(stopped.ticks, held.ticks)
+        assert.ok(Math.abs(stopped.elapsed - held.elapsed) < 1e-8)
+      }
+      const paused = () => page.waitForFunction(() => retrieverDebug.mode === 'paused')
       await page.locator('#pause').tap()
       assert.equal(await page.locator('#game').getAttribute('data-mode'), 'paused')
+      await paused()
+      const manual = await readClock()
       await page.waitForTimeout(240)
-      assert.equal(await page.evaluate(() => retrieverDebug.elapsed), held)
+      await checkHold(manual)
       await page.locator('#primary').tap()
+      await page.waitForFunction(() => retrieverDebug.mode === 'running')
       await page.evaluate(() => migrationQA.suspend())
       assert.equal(await page.locator('#game').getAttribute('data-mode'), 'paused')
+      await paused()
+      const suspended = await readClock()
       await page.waitForTimeout(260)
-      assert.equal(await page.evaluate(() => retrieverDebug.elapsed), held)
+      await checkHold(suspended)
       await page.evaluate(() => { migrationQA.hidden = false; migrationQA.stop = 30.22 })
       await page.locator('#primary').tap()
       await checkAt(30.22)
