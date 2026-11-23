@@ -1,6 +1,6 @@
 # Retriever Run | Wildlands
 
-An endless runner through North American wetlands with an athletic yellow Labrador. Follow the treat trail through sweeping bends, cross shallow creeks and weathered footbridges, and watch for wildlife as the weather and pace change.
+An endless runner through North American wetlands with an athletic yellow Labrador. Follow the treat trail through sweeping bends, run muddy levees, jump shallow creeks, and watch for wildlife as the weather and pace change.
 
 [Play Retriever Run](https://bladunk.github.io/Retriever-Run/)
 
@@ -31,7 +31,7 @@ npm test
 npm run dev
 ```
 
-Test the static production build with `npm run build` and `npm run preview`. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
+Test the static production build with `npm run build` and `npm run preview`. The [3.1 repair notes](REPAIR.md) cover fixed-step contact, diagnostics, and terrain streaming. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
 
 ## GitHub Pages
 

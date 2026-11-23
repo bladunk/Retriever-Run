@@ -3,16 +3,18 @@ import { createHazard, createPickup } from './art.js'
 import { createAtmosphere } from './atmosphere.js'
 import { createSound } from './audio.js'
 import { cameraLayout, newCameraState, updateFollow } from './camera.js'
+import { hazardFrame, playerFrame, traceContact } from './collision.js'
+import { createFixedClock, samplePose } from './timing.js'
 import { swipeDirection } from './gesture.js'
 import { adaptiveQuality, graphics, pixelRatio } from './quality.js'
 import { createPlayer } from './player.js'
 import { createFootSpray } from './spray.js'
 import { completeRun, normalizeProfile, outfits } from './profile.js'
 import {
-  act, advance, collides, collect, createCourse, crossing, getHeight, laneWidth, multiplier, newRun,
-  jumpDuration, obstacleOffset, pickupNames, powerDuration, score,
+  act, advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun,
+  jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
-import { habitatAt, placeOnTrail, surfaceAt } from './trail.js'
+import { habitatAt, placeOnTrail, surfaceAt, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createWildlife } from './wildlife.js'
 import './style.css'
@@ -29,7 +31,23 @@ scene.add(scenery)
 const entities = []
 const effects = []
 const pool = new Map()
-const dogPosition = new T.Vector3()
+const dogPosition = {}
+const obstaclePosition = {}
+const clock = createFixedClock()
+const previous = {}
+const display = {}
+const candidate = {}
+const contact = {}
+const controls = []
+const hudCache = {}
+let ticks = 0
+let debug
+let viewWidth = 390
+let previousStride = 0
+let frozen = false
+let calloutAnimation
+let actionBuffer = null
+let bufferUntil = 0
 
 function loadProfile() {
   try { return normalizeProfile(JSON.parse(localStorage.getItem(recordKey))) }
@@ -43,6 +61,7 @@ function saveProfile() {
 let profile = loadProfile()
 let mode = 'title'
 let run = newRun()
+samplePose(previous, run, run, 1)
 let nextRow = createCourse(2026)
 let row = nextRow()
 let stride = 0
@@ -54,7 +73,6 @@ const follow = newCameraState()
 const adapt = adaptiveQuality()
 let previousTime
 let gesture
-let lastStats = ''
 let lastCondition = ''
 let cuePriority = 0
 let cueUntil = 0
@@ -86,6 +104,9 @@ function initialize() {
   const atmosphere = createAtmosphere(scene)
   const terrain = createTerrain(scene)
   const wildlife = createWildlife(scene, sound.bird)
+  if (new URLSearchParams(location.search).get('debug') === 'collision') {
+    import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
+  }
   dog = createPlayer(scene)
   spray = createFootSpray(scene)
   dog.appearance(profile.outfit)
@@ -100,6 +121,7 @@ function initialize() {
   resize = () => {
     needsRedraw = true
     const width = ui.game.clientWidth
+    viewWidth = width
     const height = ui.game.clientHeight
     preset = graphics[profile.quality === 'auto' ? autoPreset : profile.quality]
     layout = cameraLayout(width / Math.max(1, height))
@@ -112,7 +134,7 @@ function initialize() {
 
   function render(ms) {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
-    const dt = Math.min(.075, wall)
+    const dt = Math.min(.10, Math.max(0, wall))
     previousTime = ms
     if (mode === 'running' && profile.quality === 'auto') {
       const selected = adapt(wall)
@@ -121,17 +143,21 @@ function initialize() {
         resize()
       }
     }
+    let alpha = 1
     if (mode === 'running') {
-      const steps = Math.max(1, Math.ceil(dt / .025))
-      for (let i = 0; i < steps && mode === 'running'; i++) step(dt / steps)
+      alpha = clock.advance(wall, step)
       updateHud()
     }
-    if (mode !== 'paused' && mode !== 'over') {
+    const animate = mode === 'title' || mode === 'running' || frozen
+    if (animate) {
       const idle = mode === 'title'
-      visualTime += dt
-      const distance = run.distance
-      const turn = run.lane * laneWidth - run.x
-      const heading = placeOnTrail(dogPosition, distance, run.x, distance)
+      if (idle) visualTime += dt
+      samplePose(display, previous, run, frozen || idle ? 1 : alpha)
+      if (!idle) visualTime = display.elapsed
+      const distance = display.distance
+      const turn = display.lane * laneWidth - display.x
+      const ground = trailHeight(distance, display.x)
+      const body = playerFrame(dogPosition, display, distance)
       const comfort = profile.comfort || reducedMotion.matches
       if (idle) {
         if (layout.portrait) {
@@ -142,33 +168,37 @@ function initialize() {
           camera.lookAt(-3.92, 1.08, -3.4)
         }
       } else {
-        updateFollow(follow, layout, distance, run.x, dt, comfort)
+        updateFollow(follow, layout, distance, display.x, dt, comfort)
         camera.position.set(follow.x, follow.y, follow.z)
         camera.lookAt(follow.tx, follow.ty, follow.tz)
       }
       landing *= Math.exp(-12 * dt)
-      const height = getHeight(run)
+      const height = getHeight(display)
       dog.pose({
-        x: dogPosition.x, z: dogPosition.z, height, sliding: run.slide > 0, stride, time: visualTime,
-        heading: idle ? -2.38 : heading - turn * .080, turn, dt, idle, landing,
-        airborne: run.jump > 0, jumpPhase: run.jump > 0 ? 1 - run.jump / jumpDuration : 1,
+        x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
+        time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing,
+        airborne: display.jump > 0, jumpPhase: display.jump > 0 ? 1 - display.jump / jumpDuration : 1,
       })
-      glow.visible = run.power > 0
-      glow.position.set(dogPosition.x, .045, dogPosition.z)
+      glow.visible = display.power > 0
+      glow.position.set(body.x, ground + .045, body.z)
       const pulse = 1.05 + Math.sin(visualTime * 11) * .13
       glow.scale.set(pulse, pulse, 1)
-      const weather = atmosphere.update(run.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather)
+      const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather)
       terrain.update(distance, visualTime, weather, preset.detail)
       wildlife(visualTime, distance, preset.detail === 0, !idle && !ui.preferences.open)
-      if (!idle) {
+      if (!idle && !frozen) {
         updateConditions(weather.name)
         sound.ambience(weather, true)
       }
       spray.update(distance, visualTime)
       populate()
-      positionEntities(visualTime)
+      positionEntities(visualTime, distance)
+      frozen = false
     }
     if (mode === 'title' || mode === 'running' || needsRedraw) {
+      debug?.draw(mode === 'title' ? run : display, entities, mode, {
+        ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(),
+      })
       renderer.render(scene, camera)
       needsRedraw = false
     }
@@ -220,17 +250,19 @@ function populate() {
   }
 }
 
-function positionEntities(time) {
+function positionEntities(time, distance) {
   for (const entity of entities) {
-    const angle = placeOnTrail(entity.model.position, entity.distance, obstacleOffset(entity, run.distance), run.distance)
-    entity.model.rotation.y = entity.hazard ? angle : angle + time * 1.45 + entity.distance
+    const pose = hazardFrame(obstaclePosition, entity, distance, distance)
+    entity.model.position.set(pose.x, pose.y, pose.z)
+    entity.model.rotation.y = pose.angle
     if (!entity.hazard) {
-      entity.model.position.y = .58 + Math.sin(time * 5 + entity.distance * .27) * .11
+      entity.model.rotation.y += time * 1.45 + entity.distance
+      entity.model.position.y += .58 + Math.sin(time * 5 + entity.distance * .27) * .11
       if (entity.type !== 'treat') entity.model.scale.setScalar(1.18)
     }
   }
   for (const effect of effects) {
-    placeOnTrail(effect.model.position, effect.distance, effect.lane * laneWidth, run.distance)
+    placeOnTrail(effect.model.position, effect.distance, effect.lane * laneWidth, distance)
     effect.model.position.y = .70 + (1 - effect.remaining / effect.duration) * 1.24
     effect.model.rotation.y += .09
     effect.model.scale.setScalar(Math.max(.01, effect.remaining / effect.duration))
@@ -238,18 +270,54 @@ function positionEntities(time) {
 }
 
 function step(dt) {
+  for (const direction of controls) {
+    if (act(run, direction)) {
+      sound.play(direction)
+      actionBuffer = null
+    } else if ((direction === 'jump' || direction === 'slide') &&
+      (run.jump > 0 && run.jump < .13 || run.slide > 0 && run.slide < .13)) {
+      actionBuffer = direction
+      bufferUntil = run.elapsed + .14
+    }
+  }
+  controls.length = 0
+  if (actionBuffer && run.elapsed >= bufferUntil) actionBuffer = null
+  if (actionBuffer && act(run, actionBuffer)) {
+    sound.play(actionBuffer)
+    actionBuffer = null
+  }
   const wasAirborne = run.jump > 0
-  const previous = advance(run, dt)
+  samplePose(previous, run, run, 1)
+  previousStride = stride
+  advance(run, dt)
+  ticks++
+
+  let fraction = Infinity
+  for (const entity of entities) {
+    if (!entity.hazard || !traceContact(previous, run, entity, candidate)) continue
+    if (candidate.fraction < fraction) {
+      fraction = candidate.fraction
+      Object.assign(contact, candidate)
+    }
+  }
+  if (Number.isFinite(fraction)) {
+    samplePose(run, previous, run, fraction)
+    debug?.hit(contact)
+    frozen = true
+    sound.play('hit')
+    setMode('over')
+    return false
+  }
   stride += dt * Math.PI * 2 * Math.min(2.86, 1.84 + (run.speed - 11) * .061)
   const nextFoot = Math.floor(stride / Math.PI)
   if (!run.jump && (nextFoot !== foot || wasAirborne) && !run.slide) {
     const surface = splashUntil > run.distance ? 'splash' : surfaceAt(run.distance)
     sound.footstep(surface, wasAirborne)
-    if (surface === 'mud' || surface === 'splash') spray.step(run.distance, run.x, visualTime, surface === 'splash', preset.detail)
+    if (surface === 'mud' || surface === 'splash') spray.step(run.distance, run.x, run.elapsed, surface === 'splash', preset.detail)
     if (wasAirborne) landing = 1
   }
   foot = nextFoot
-  if (Math.floor(previous / 150) < Math.floor(run.distance / 150)) {
+  if (Math.floor(previous.distance / 150) < Math.floor(run.distance / 150)) {
     const distance = Math.floor(run.distance / 150) * 150
     announce(distance + ' m · ' + (distance === 150 && profile.farthest < 150 ? 'Blaze collar unlocked'
       : distance === 600 && profile.farthest < 600 ? 'Fox red coat unlocked' : 'Distance milestone'), 2)
@@ -264,13 +332,8 @@ function step(dt) {
         announce(entity.type === 'stream' ? '↑  Jump the crossing' : '↓  Slide under the branch', 4)
         entity.cued = true
       }
-      if (crossing(previous, run.distance, entity)) {
-        if (collides(run, entity)) {
-          sound.play('hit')
-          setMode('over')
-          return
-        }
-        if (entity.type === 'stream') splashUntil = entity.distance + 8
+      if (entity.type === 'stream' && previous.distance < entity.distance && run.distance >= entity.distance) {
+        splashUntil = entity.distance + 2.4
       }
     }
     if (!entity.hazard && Math.abs(ahead) < 1 && Math.abs(run.x - entity.lane * laneWidth) < .88 && getHeight(run) < 1.45) {
@@ -308,9 +371,17 @@ function announce(message, priority) {
   cuePriority = priority
   cueUntil = visualTime + (priority >= 3 ? .94 : .48)
   ui.callout.textContent = message
-  ui.callout.classList.remove('pop')
-  void ui.callout.offsetWidth
-  ui.callout.classList.add('pop')
+  calloutAnimation?.cancel()
+  if (reducedMotion.matches) {
+    calloutAnimation = ui.callout.animate([{ opacity: 1 }, { opacity: 1, offset: .75 }, { opacity: 0 }], 1000)
+  } else {
+    calloutAnimation = ui.callout.animate([
+      { opacity: 0, transform: 'translateY(6px)' },
+      { opacity: 1, transform: 'translateY(0)', offset: .12 },
+      { opacity: 1, offset: .8 },
+      { opacity: 0, transform: 'translateY(-11px)' },
+    ], 1000)
+  }
 }
 
 function updateConditions(weather) {
@@ -326,23 +397,38 @@ function updateHud() {
   const points = score(run)
   const distance = Math.floor(run.distance)
   const charge = run.power ? Math.ceil(run.power / powerDuration * 100) : run.meter
-  const stats = [points, distance, profile.best, charge, Boolean(run.power), run.streak].join(',')
-  if (stats === lastStats) return
-  lastStats = stats
-  ui.score.textContent = format.format(points)
-  ui.distance.textContent = format.format(distance) + ' m'
-  ui.best.textContent = format.format(profile.best)
-  ui.charge.value = charge
-  ui.combo.hidden = run.streak < 5
-  if (!ui.combo.hidden) ui.combo.textContent = run.streak + ' treats · ' + multiplier(run.streak) + '× combo'
-  ui.hud.classList.toggle('power', Boolean(run.power))
-  ui['meter-label'].textContent = run.power ? 'Good Boy · Shield + 2× pickups' : 'Good Boy Meter'
+  if (hudCache.points !== points) ui.score.textContent = format.format(points)
+  if (hudCache.distance !== distance) ui.distance.textContent = format.format(distance) + ' m'
+  if (hudCache.best !== profile.best) ui.best.textContent = format.format(profile.best)
+  if (hudCache.charge !== charge) ui.charge.value = charge
+  if (hudCache.streak !== run.streak) {
+    ui.combo.hidden = run.streak < 5
+    if (!ui.combo.hidden) ui.combo.textContent = run.streak + ' treats · ' + multiplier(run.streak) + '× combo'
+  }
+  const powered = run.power > 0
+  if (hudCache.powered !== powered) {
+    ui.hud.classList.toggle('power', powered)
+    ui['meter-label'].textContent = powered ? 'Good Boy · Shield + 2× pickups' : 'Good Boy Meter'
+  }
+  hudCache.points = points
+  hudCache.distance = distance
+  hudCache.best = profile.best
+  hudCache.charge = charge
+  hudCache.streak = run.streak
+  hudCache.powered = powered
 }
 
 function setMode(value) {
   needsRedraw = true
   const oldMode = mode
   mode = value
+  if (oldMode !== value) {
+    clock.reset()
+    previousTime = undefined
+    controls.length = 0
+    gesture = undefined
+    actionBuffer = null
+  }
   ui.game.dataset.mode = value
   const running = value === 'running'
   const title = value === 'title'
@@ -377,7 +463,7 @@ function setMode(value) {
   ui.primary.firstChild.textContent = title ? 'Start run ' : over ? 'Run again ' : 'Resume run '
   if (!running) {
     sound.ambience({ wind: 0, rain: 0 }, false)
-    ui.callout.classList.remove('pop')
+    calloutAnimation?.cancel()
     ui.callout.textContent = ''
   }
   if (!title && !running) ui.primary.focus({ preventScroll: true })
@@ -396,9 +482,12 @@ function start() {
   entities.length = 0
   effects.length = 0
   run = newRun()
-  nextRow = createCourse(Math.floor(Math.random() * 0x100000000))
+  nextRow = createCourse(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   row = nextRow()
-  stride = 0
+  stride = previousStride = 0
+  ticks = 0
+  samplePose(previous, run, run, 1)
+  debug?.reset()
   foot = 0
   landing = 0
   splashUntil = 0
@@ -413,7 +502,7 @@ function start() {
 }
 
 function move(direction) {
-  if (mode === 'running' && act(run, direction)) sound.play(direction)
+  if (mode === 'running' && controls.length < 16) controls.push(direction)
 }
 
 function pause() {
@@ -497,7 +586,7 @@ function bindInput() {
   })
   function sendSwipe(event, finished) {
     if (gesture?.id !== event.pointerId || gesture.moved) return
-    const direction = swipeDirection(event.clientX - gesture.x, event.clientY - gesture.y, ui.game.clientWidth, finished)
+    const direction = swipeDirection(event.clientX - gesture.x, event.clientY - gesture.y, viewWidth, finished)
     if (direction) {
       gesture.moved = true
       move(direction)

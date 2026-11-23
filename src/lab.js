@@ -80,8 +80,9 @@ export async function loadLabrador() {
     pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing }) {
       const blend = -Math.expm1(-15 * dt)
       idle += (Number(resting) - idle) * blend
-      air += (Number(airborne) - air) * -Math.expm1(-25 * dt)
-      low += (Number(sliding) - low) * -Math.expm1(-21 * dt)
+      air += (Number(airborne) - air) * -Math.expm1(-34 * dt)
+      low = sliding
+      root.scale.y = scale * (1 - .32 * low)
       compression = Math.max(landing, compression * Math.exp(-18 * dt))
       const grounded = (1 - idle) * (1 - air)
       weights[0] = idle

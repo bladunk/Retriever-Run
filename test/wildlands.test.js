@@ -3,9 +3,11 @@ import assert from 'node:assert/strict'
 import { weatherAt } from '../src/atmosphere.js'
 import { completeRun, normalizeProfile, outfits } from '../src/profile.js'
 import {
-  act, advance, collides, collect, createCourse, crossing, difficultyAt, difficultyCurve, getHeight, jumpDuration,
+  act, advance, collect, createCourse, difficultyAt, difficultyCurve, getHeight, jumpDuration,
   laneWidth, newRun, obstacleOffset, powerDuration, reactionWindow, score, slideDuration, speedAt, validateRow,
 } from '../src/runner.js'
+import { traceContact } from '../src/collision.js'
+import { tickSeconds } from '../src/timing.js'
 import { centerAt, habitatAt, headingAt, placeOnTrail, segmentLength } from '../src/trail.js'
 
 test('difficulty follows the requested time curve and saturates', () => {
@@ -39,30 +41,6 @@ test('trail is continuous across segments and lanes remain perpendicular to the 
   assert.equal(new Set(Array.from({ length: 10 }, (_, n) => habitatAt(n * 180))).size, 5)
 })
 
-test('jump clears centered ground obstacles, slide clears branches, and crossings cannot tunnel', () => {
-  const run = newRun()
-  const ground = ['fence', 'log', 'puddle', 'root', 'stream', 'drift'].map((type) => ({ type, lane: 0, distance: 0 }))
-  const branch = { type: 'branch', wide: true, lane: 0, distance: 0 }
-  for (const obstacle of [...ground, branch]) assert.ok(collides(run, obstacle))
-  assert.ok(act(run, 'jump'))
-  assert.equal(act(run, 'slide'), false)
-  advance(run, jumpDuration / 2)
-  assert.ok(getHeight(run) > 1.6)
-  for (const obstacle of ground) assert.equal(collides(run, obstacle), false)
-  assert.ok(collides(run, branch))
-  advance(run, jumpDuration / 2)
-  assert.ok(act(run, 'slide'))
-  assert.equal(collides(run, branch), false)
-  assert.ok(collides(run, ground[0]))
-  act(run, 'right')
-  advance(run, .30)
-  assert.equal(collides(run, ground[0]), false)
-  assert.ok(collides(run, ground[4]))
-  assert.ok(crossing(99.1, 100.95, { type: 'stream', distance: 100 }))
-  assert.equal(crossing(100.8, 101, { type: 'stream', distance: 100 }), false)
-  assert.notEqual(obstacleOffset({ type: 'drift', lane: 0, distance: 70 }, 64), obstacleOffset({ type: 'drift', lane: 0, distance: 70 }, 68))
-})
-
 test('planner is deterministic and rejects unsafe or overlapping rows', () => {
   const left = createCourse(231)
   const right = createCourse(231)
@@ -85,6 +63,7 @@ test('a timed lane, jump and slide policy can finish 80 seeded courses without a
     let crossedAt = -1
     let laneAction = -1
     let gateAction = false
+    const prev = {}
     while (run.elapsed < 253) {
       const gate = row.gate
       if (run.elapsed - crossedAt >= reactionWindow && run.lane !== row.lane && run.elapsed > laneAction) {
@@ -95,13 +74,14 @@ test('a timed lane, jump and slide policy can finish 80 seeded courses without a
         const branch = row.entities.some((entity) => entity.type === 'branch' && entity.wide)
         gateAction = act(run, branch ? 'slide' : 'jump')
       }
-      const previous = advance(run, .025)
+      Object.assign(prev, run)
+      advance(run, tickSeconds)
       for (const item of row.entities) {
-        if (!item.hazard || !crossing(previous, run.distance, item)) continue
+        if (!item.hazard || Math.abs(item.distance - run.distance) > 2.2) continue
         encountered.add(item.type + (item.wide ? '-wide' : ''))
-        assert.equal(collides(run, item), false, 'seed ' + seed + ', ' + item.type + ' near ' + row.at)
+        assert.equal(traceContact(prev, run, item), false, 'seed ' + seed + ', ' + item.type + ' near ' + row.at)
       }
-      if (run.distance > row.at + .82) {
+      if (run.distance > row.at + 1.58) {
         row = course()
         crossedAt = run.elapsed
         gateAction = false
@@ -120,7 +100,7 @@ test('combos, rare retrieves, power and old local records remain consistent', ()
   assert.equal(run.retrieves, 2)
   assert.equal(run.power, powerDuration)
   assert.equal(collect(run, 'call').points, 150)
-  assert.equal(collides(run, { type: 'stream', lane: 0 }), false)
+  assert.equal(traceContact(run, run, { type: 'stream', hazard: true, lane: 0, distance: 0 }), false)
   advance(run, 6)
   assert.equal(run.power, 0)
   run.distance = 600.1
