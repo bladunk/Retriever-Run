@@ -3,10 +3,12 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { centerAt, habitatAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
 
 const box = new T.BoxGeometry()
-const stone = new T.IcosahedronGeometry(1, 1)
+const stone = new T.IcosahedronGeometry(1, 0)
 const canopy = leafCrown()
+const leafTips = createLeafTips()
 const oval = new T.SphereGeometry(1, 7, 4)
-const twig = new T.CylinderGeometry(.47, 1, 1, 6)
+const twig = new T.CylinderGeometry(.47, 1, 1, 5, 1, true)
+const seedHead = new T.CylinderGeometry(.87, .93, 1, 5, 1, false)
 const strip = new T.ConeGeometry(1, 1, 3)
 const bankPatch = weatheredBank()
 const worldUp = new T.Vector3(0, 1, 0)
@@ -14,6 +16,7 @@ const branchVector = new T.Vector3()
 const branchRotation = new T.Quaternion()
 
 export const reedCount = 70
+export const treeCount = 20
 
 export function createReedClump() {
   const random = seededRandom(77913)
@@ -55,8 +58,32 @@ function leafCrown() {
   return geom
 }
 
+function createLeafTips() {
+  const random = seededRandom(18863)
+  const positions = [], uv = []
+  for (let i = 0; i < 12; i++) {
+    const azimuth = i * 2.39996
+    const x = Math.cos(azimuth) * (.25 + random() * .62)
+    const y = (random() - .53) * .96
+    const z = Math.sin(azimuth) * (.25 + random() * .62)
+    const dx = Math.sin(azimuth) * .095
+    const dz = -Math.cos(azimuth) * .095
+    const a = [x - dx, y - .027, z - dz]
+    const b = [x + dx, y - .027, z + dz]
+    const c = [x * 1.28, y - .16, z * 1.28]
+    const d = [x * .80, y + .08, z * .80]
+    positions.push(...a, ...c, ...b, ...a, ...b, ...d, ...a, ...b, ...c, ...a, ...d, ...b)
+    for (let j = 0; j < 12; j++) uv.push(0, 0)
+  }
+  const geometry = new T.BufferGeometry()
+  geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3))
+  geometry.setAttribute('uv', new T.Float32BufferAttribute(uv, 2))
+  geometry.computeVertexNormals()
+  return geometry
+}
+
 function weatheredBank() {
-  const geom = new T.IcosahedronGeometry(1, 2)
+  const geom = new T.IcosahedronGeometry(1, 1)
   const position = geom.attributes.position
   for (let i = 0; i < position.count; i++) {
     const x = position.getX(i)
@@ -84,6 +111,7 @@ export function buildTile(index) {
   const between = (min, max) => min + random() * (max - min)
   const tint = new T.Color()
   const list = []
+  const trees = []
   const banks = 3.3
   const base = centerAt(start)
 
@@ -110,7 +138,8 @@ export function buildTile(index) {
   }
 
   function add(shape, color, x, y, z, sx, sy, sz, rx = 0, ry = 0, rz = 0, conform = false, layer = 0, rotation = null) {
-    const geometry = shape.index ? shape.toNonIndexed() : shape.clone()
+    const geometry = shape.clone()
+    if (!geometry.index) geometry.setIndex(Array.from({ length: geometry.attributes.position.count }, (_, i) => i))
     geometry.scale(sx, sy, sz)
     geometry.rotateX(rx)
     geometry.rotateY(ry)
@@ -135,7 +164,7 @@ export function buildTile(index) {
     const vertex = geometry.attributes.position
     for (let i = 0; i < data.length; i += 3) {
       tint.toArray(data, i)
-      if (shape === canopy) {
+      if (shape === canopy || shape === leafTips) {
         const n = i / 3
         const flake = .77 + .13 * Math.sin(vertex.getX(n) * 9 + vertex.getZ(n) * 6) + .19 * (vertex.getY(n) - y) / sy
         for (let k = 0; k < 3; k++) data[i + k] *= flake
@@ -209,20 +238,21 @@ export function buildTile(index) {
   land.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(positions.length / 3).fill(1), 1))
   land.setIndex(indices)
   land.computeVertexNormals()
-  const landTriangles = land.toNonIndexed()
-  list.push(landTriangles)
-  land.dispose()
 
   let water = null
   if (colors.water) {
-    const plane = new T.PlaneGeometry(99, segmentLength, 14, 30)
+    const plane = new T.PlaneGeometry(99, segmentLength, 28, 30)
     plane.rotateX(-Math.PI / 2)
     plane.translate(0, -.55, -segmentLength / 2)
     const points = plane.attributes.position
+    const depth = new Float32Array(points.count)
+    for (let i = 0; i < depth.length; i++) {
+      const x = offsets[i % offsets.length]
+      points.setX(i, x)
+      depth[i] = Math.max(0, -.55 - earth(start - points.getZ(i), x))
+    }
     warp(points.array)
-    const data = new Float32Array(points.count * 3)
-    for (let i = 0; i < data.length; i += 3) tint.setHex(0xa8bab7).multiplyScalar(between(.93, 1.06)).toArray(data, i)
-    plane.setAttribute('color', new T.BufferAttribute(data, 3))
+    plane.setAttribute('marshDepth', new T.BufferAttribute(depth, 1))
     water = plane
   }
 
@@ -251,7 +281,9 @@ export function buildTile(index) {
           const h = between(.83, 1.68)
           const ground = earth(start - z, x + offset)
           add(twig, 0x77704a, x + offset, ground + h * .5, z - n * .27, .013, h, .014, .06, 0, offset * .10)
-          add(oval, 0x4c3525, x + offset - offset * .045, ground + h - .067, z - n * .27 + h * .03, .046, .156, .047)
+          add(seedHead, 0x523b29, x + offset - offset * .045, ground + h - .086, z - n * .27 + h * .03,
+            .040, .22, .040, .06, 0, offset * .10)
+          add(strip, 0x777849, x + offset - .06, ground + h * .37, z - n * .27, .050, h * .65, .035, .10, n, .25)
         }
       }
     }
@@ -264,11 +296,17 @@ export function buildTile(index) {
     for (let i = 0; i < totalTrees; i++) {
       const x = side * between(6.8, 40)
       const z = between(-29.6, -.4)
-      const h = between(2.9, 7.5)
+      const h = between(3.5, 8.3)
       const ground = earth(start - z, x)
       const willow = i % 4 === 1
       const dead = habitat === 'Flooded Timber' || (colors.water && random() < .20)
       const bark = dead ? 0x5b5348 : 0x594437
+      const at = start - z
+      const heading = headingAt(at)
+      if (!dead || habitat === 'Flooded Timber') {
+        trees.push(centerAt(at) - base + Math.cos(heading) * x, ground, z - Math.sin(heading) * x, h,
+          i * 2.4 + side, i % 3)
+      }
       const bend = between(-h * .12, h * .12)
       const rake = between(-h * .17, h * .17)
       if (habitat === 'Flooded Timber' && i % 2 === 0) {
@@ -280,7 +318,7 @@ export function buildTile(index) {
       branch(bark, x, ground - .045, z, x + bend * .42, h * .53, z + rake * .45, h * .046)
       branch(bark, x + bend * .42, h * .53, z + rake * .45, x + bend, h * .94, z + rake, h * .022)
       const orientation = between(0, Math.PI * 2)
-      for (let j = 0; j < (dead ? 6 : 5); j++) {
+      for (let j = 0; j < (dead ? 5 : 4); j++) {
         const angle = orientation + j * 2.4
         const reach = h * between(.18, .36)
         const baseY = h * (.40 + j * .068)
@@ -294,9 +332,11 @@ export function buildTile(index) {
         if (!dead) {
           const fall = habitat === 'Autumn Woodland' || i % 4 === 0
           const leaves = fall ? [0x82482c, 0x967038, 0x93582f, 0x756236, 0x6a5530][j] : colors.trees
-          add(canopy, leaves, tipX, top - (willow ? h * .071 : 0), tipZ, h * (willow ? .30 : .23), h * (willow ? .11 : .19), h * .24, .36, angle, .23)
-          add(canopy, leaves, (tipX + midX) * .50, top + h * .093, (tipZ + midZ) * .50,
-            h * .178, h * .14, h * .19, -.3, angle, .11)
+          add(canopy, leaves, tipX, top - (willow ? h * .071 : 0), tipZ,
+            h * (willow ? .26 : .20), h * (willow ? .075 : .118), h * .215, .35, angle, .17)
+          if (j > 0) add(canopy, leaves, (tipX + midX) * .50, top + h * .067, (tipZ + midZ) * .50,
+            h * .127, h * .118, h * .142, -.25, angle, .13)
+          add(leafTips, leaves, tipX, top - h * .055, tipZ, h * .24, h * .12, h * .24, .32, angle, .19)
         }
       }
     }
@@ -369,7 +409,8 @@ export function buildTile(index) {
     reeds[n + 2] = start - at - Math.sin(heading) * x
     tint.setHex(colors.grass).multiplyScalar(between(.72, 1.12)).toArray(reeds, n + 3)
   }
-  return { index, ground: pack(merged), water: water ? pack(water) : null, reeds }
+  return { index, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds,
+    trees: new Float32Array(trees), flooded: habitat === 'Flooded Timber' }
 }
 
 function pack(geometry) {
@@ -394,4 +435,33 @@ function pack(geometry) {
   const packet = { buffers, index: geometry.index?.array ?? null }
   geometry.dispose()
   return packet
+}
+
+// Shared distant silhouettes use solid color and a few shaped branches. No alpha
+// overdraw or tile-specific buffers are needed for their mesh data.
+export function createDistantTree(flooded) {
+  const pieces = []
+  function piece(shape, color, x, y, z, sx, sy, sz, lean = 0) {
+    const geometry = shape.index ? shape.toNonIndexed() : shape.clone()
+    geometry.scale(sx, sy, sz)
+    geometry.rotateZ(lean)
+    geometry.translate(x, y, z)
+    const colors = new Float32Array(geometry.attributes.position.count * 3)
+    const tint = new T.Color(color)
+    for (let i = 0; i < colors.length; i += 3) tint.toArray(colors, i)
+    geometry.setAttribute('color', new T.BufferAttribute(colors, 3))
+    pieces.push(geometry)
+  }
+  const bark = flooded ? 0x756254 : 0x5c4b36
+  piece(twig, bark, 0, .44, 0, .052, .89, .043, .05)
+  piece(twig, bark, .118, .66, .028, .027, .49, .025, -.53)
+  piece(twig, bark, -.119, .72, -.041, .025, .47, .026, .47)
+  if (!flooded) {
+    piece(stone, 0xb3a17c, -.12, .81, -.04, .22, .16, .21, .21)
+    piece(stone, 0xa8936f, .15, .77, .052, .23, .14, .20, -.17)
+    piece(stone, 0xc4b791, .015, .93, 0, .20, .15, .17, .09)
+  }
+  const result = mergeGeometries(pieces)
+  for (const geometry of pieces) geometry.dispose()
+  return result
 }

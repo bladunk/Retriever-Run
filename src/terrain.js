@@ -1,14 +1,17 @@
 import * as T from 'three'
 import { fieldMaterials } from './materials.js'
-import { buildTile, createReedClump, reedCount } from './terrain-geometry.js'
+import { buildTile, createDistantTree, createReedClump, reedCount, treeCount } from './terrain-geometry.js'
 import { centerAt, segmentLength } from './trail.js'
 
 const blades = createReedClump()
+const distantTrees = [createDistantTree(false), createDistantTree(true)]
+const treeMaterial = new T.MeshLambertMaterial({ vertexColors: true })
+const treeTints = [0x9c8a74, 0xb49968, 0x87936c]
 const dummy = new T.Object3D()
 
 const { material: terrainMaterial, uniforms: field } = fieldMaterials
 const reedMaterial = new T.MeshLambertMaterial({ color: 0xffffff, side: T.DoubleSide, vertexColors: true })
-const waterMaterial = new T.MeshStandardMaterial({ color: 0x47645f, roughness: .38, metalness: .18, vertexColors: true })
+const waterMaterial = new T.MeshStandardMaterial({ color: 0xffffff, roughness: .61, metalness: .026 })
 const waterClock = { value: 0 }
 const waterWeather = { value: 0 }
 const waterSky = { value: new T.Color(0xd5b082) }
@@ -17,9 +20,9 @@ waterMaterial.onBeforeCompile = (shader) => {
   shader.uniforms.marshTime = waterClock
   shader.uniforms.marshWeather = waterWeather
   shader.uniforms.marshSky = waterSky
-  shader.vertexShader = 'varying vec3 vMarsh;\n' + shader.vertexShader.replace('#include <begin_vertex>',
-    '#include <begin_vertex>\nvMarsh = (modelMatrix * vec4(position, 1.)).xyz;')
-  shader.fragmentShader = 'uniform float marshTime, marshWeather; uniform vec3 marshSky; varying vec3 vMarsh;\n' + shader.fragmentShader.replace('#include <color_fragment>',
+  shader.vertexShader = 'attribute float marshDepth; varying vec3 vMarsh; varying float vDepth;\n' + shader.vertexShader.replace('#include <begin_vertex>',
+    '#include <begin_vertex>\nvMarsh = (modelMatrix * vec4(position, 1.)).xyz; vDepth = marshDepth;')
+  shader.fragmentShader = 'uniform float marshTime, marshWeather; uniform vec3 marshSky; varying vec3 vMarsh; varying float vDepth;\n' + shader.fragmentShader.replace('#include <color_fragment>',
     `#include <color_fragment>
     vec3 eye = normalize(cameraPosition - vMarsh);
     vec2 Q = vMarsh.xz;
@@ -29,9 +32,14 @@ waterMaterial.onBeforeCompile = (shader) => {
     vec3 waterNormal = normalize(vec3((r1 + r3) * .036, 1., (r2 - r3) * (.063 + marshWeather * .034)));
     float fresnel = pow(1. - clamp(dot(eye, waterNormal), 0., 1.), 4.);
     float skyGlint = max(0., dot(reflect(-eye, waterNormal), normalize(vec3(-.37,.23,-1.))));
-    diffuseColor.rgb = mix(diffuseColor.rgb * (.78 + r1 * .06 + r3 * .07),
-      diffuseColor.rgb * .52 + marshSky * (vec3(.19,.21,.23) + pow(skyGlint, 22.) * .19), fresnel * .85);
-    diffuseColor.rgb += marshSky * pow(skyGlint, 45.) * .024;`)
+    float deep = smoothstep(.02, .55, vDepth + .018 * r3);
+    vec3 bed = mix(vec3(.154,.122,.066), vec3(.038,.083,.076), deep);
+    bed *= .91 + .047 * r1 + .035 * r3;
+    float stripe = smoothstep(.018, .054, vDepth) * (1. - smoothstep(.058, .10, vDepth));
+    bed += vec3(.035,.037,.019) * stripe * (.75 + .25 * r2);
+    vec3 skyReflection = marshSky * (vec3(.34,.39,.45) + pow(skyGlint, 18.) * .49);
+    diffuseColor.rgb = mix(bed, skyReflection, fresnel * .84);
+    diffuseColor.rgb += marshSky * pow(skyGlint, 34.) * (.115 - .068 * marshWeather);`)
 }
 
 
@@ -51,14 +59,17 @@ export function createTerrain(scene) {
     const root = new T.Group()
     const ground = new T.Mesh(new T.BufferGeometry(), terrainMaterial)
     const water = new T.Mesh(new T.BufferGeometry(), waterMaterial)
+    const detail = new T.Mesh(new T.BufferGeometry(), terrainMaterial)
+    const trees = new T.InstancedMesh(distantTrees[0], treeMaterial, treeCount)
+    trees.count = 0
     const reeds = new T.InstancedMesh(blades, reedMaterial, reedCount)
     reeds.instanceMatrix.setUsage(T.DynamicDrawUsage)
     reeds.frustumCulled = false
     reeds.count = 0
     root.visible = false
-    root.add(ground, water, reeds)
+    root.add(ground, water, reeds, detail, trees)
     scene.add(root)
-    return { root, ground, water, reeds, reedData: null, index: null, wanted: null, dirty: true }
+    return { root, ground, water, detail, trees, reeds, reedData: null, index: null, wanted: null, dirty: true }
   })
   const slot = (index) => tiles[((index % tiles.length) + tiles.length) % tiles.length]
   const order = [0, -1, 1, 2, 3, 4, 5]
@@ -76,9 +87,26 @@ export function createTerrain(scene) {
     if (tile.wanted !== packet.index) return
     tile.ground.geometry.dispose()
     tile.water.geometry.dispose()
+    tile.detail.geometry.dispose()
     tile.ground.geometry = unpack(packet.ground)
     tile.water.geometry = packet.water ? unpack(packet.water) : new T.BufferGeometry()
+    tile.detail.geometry = unpack(packet.detail)
     tile.water.visible = Boolean(packet.water)
+    tile.trees.geometry = distantTrees[Number(packet.flooded)]
+    tile.trees.count = packet.trees.length / 6
+    for (let n = 0; n < tile.trees.count; n++) {
+      const at = n * 6
+      dummy.position.fromArray(packet.trees, at)
+      dummy.rotation.set(0, packet.trees[at + 4], 0)
+      const height = packet.trees[at + 3]
+      dummy.scale.set(height, height, height)
+      dummy.updateMatrix()
+      tile.trees.setMatrixAt(n, dummy.matrix)
+      tile.trees.setColorAt(n, tint.setHex(treeTints[packet.trees[at + 5]]))
+    }
+    tile.trees.instanceMatrix.needsUpdate = true
+    if (tile.trees.instanceColor) tile.trees.instanceColor.needsUpdate = true
+    tile.trees.computeBoundingSphere()
     tile.reedData = packet.reeds
     for (let n = 0; n < reedCount; n++) tile.reeds.setColorAt(n, tint.fromArray(packet.reeds, n * 6 + 3))
     tile.reeds.instanceColor.needsUpdate = true
@@ -151,9 +179,11 @@ export function createTerrain(scene) {
         tile.root.visible = tile.index === i
         if (!tile.root.visible) continue
         tile.root.position.set(centerAt(i * segmentLength) - offset, 0, distance - i * segmentLength)
+        const near = i - center < (detail === 0 ? 2 : 3)
+        tile.detail.visible = near
+        tile.trees.visible = !near && tile.trees.count > 0
         if (tile.dirty || windFrame !== lastWindFrame || detail !== lastDetail) {
-          const near = i - center < 2
-          const count = near ? nearCount[detail] : farCount[detail]
+          const count = i - center < 2 ? nearCount[detail] : farCount[detail]
           tile.reeds.count = count
           for (let n = 0; n < count; n++) {
             dummy.position.fromArray(tile.reedData, n * 6)

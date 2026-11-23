@@ -139,7 +139,7 @@ try {
   const read = tab => tab.evaluate(key => JSON.parse(localStorage.getItem(key)), saveKey)
   const mode = tab => tab.locator('#game').getAttribute('data-mode')
   const screenshot = name => page.screenshot({ animations: 'disabled',
-    path: join(output, '4.3-' + browserKind.name() + '-' + viewport.width + '-' + name + '.png') })
+    path: join(output, '4.5-' + browserKind.name() + '-' + viewport.width + '-' + name + '.png') })
   const open = async room => {
     if (!await page.locator('#lodge').evaluate(dialog => dialog.open)) await page.locator('#open-lodge').tap()
     await page.locator('#tab-' + room).tap()
@@ -149,7 +149,7 @@ try {
     const visible = [...document.querySelectorAll('dialog[open], #lodge-panel')].filter(element => element.clientWidth)
     return document.documentElement.scrollWidth === innerWidth && visible.every(element => element.scrollWidth <= element.clientWidth + 1)
   })
-  const report = () => page.locator('#field-report').waitFor({ timeout: 35_000 })
+  const report = () => page.locator('#field-report').waitFor({ timeout: 95_000 })
 
   await page.goto(url)
   await page.locator('#onboarding').waitFor()
@@ -205,11 +205,16 @@ try {
   assert.ok((await read(page)).players[0].career.xp >= 100)
   await screenshot('field-report')
 
-  await page.evaluate(({ key, xp }) => {
+  await page.evaluate(({ key, xp, date }) => {
     const save = JSON.parse(localStorage.getItem(key))
-    save.players[0].career.xp = xp
+    const player = save.players[0]
+    player.career.xp = xp
+    player.patches.marathon = [date]
+    player.patches['clean-paws'] = [date]
+    player.stats.distance = 10_100
+    player.records.duration = 120
     localStorage.setItem(key, JSON.stringify(save))
-  }, { key: saveKey, xp: xpAt(6) - 15 })
+  }, { key: saveKey, xp: xpAt(10) - 15, date: fixedDate })
   await page.reload()
   await ready()
   await page.locator('#primary').tap()
@@ -227,13 +232,14 @@ try {
   await page.getByRole('button', { name: 'Equip', exact: true }).tap()
   await page.locator('[data-category="coat"]').tap()
   await page.locator('[data-gear="chocolate"]').tap()
-  assert.equal(await page.getByRole('button', { name: 'Unlocks at level 35' }).isDisabled(), true)
+  assert.equal(await page.getByRole('button', { name: 'Level 60', exact: true }).isDisabled(), true)
   await screenshot('kennel-preview')
   assert.equal(await noOverflow(), true)
   await page.locator('#tab-career').tap()
   assert.equal(await page.locator('.kennel-stage canvas').count(), 0)
   assert.match(await page.locator('.career-ledger').textContent(), /Junior Retriever/)
   assert.equal(await page.locator('.career-patch').count(), 5)
+  assert.match(await page.locator('.career-requirements').textContent(), /Different Field Honors.*3 \/ 6.*Clean Paws.*Complete/s)
   await screenshot('career')
   await page.reload()
   await ready()
@@ -275,7 +281,7 @@ try {
   await guestPage.locator('#camp-name').fill('Guest Reed')
   await guestPage.locator('#camp-guest').tap()
   await guestPage.locator('#camp-run').tap()
-  await guestPage.locator('#field-report').waitFor({ timeout: 35_000 })
+  await guestPage.locator('#field-report').waitFor({ timeout: 95_000 })
   const guestSaved = (await read(guestPage)).players[0]
   assert.equal(guestSaved.enrollment, 'guest')
   const xp = guestSaved.career.xp

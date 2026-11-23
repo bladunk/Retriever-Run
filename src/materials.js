@@ -46,7 +46,13 @@ export function createFieldMaterial() {
           diffuseColor.rgb *= mix(vec3(.70), grain * (onWood ? 2.75 : 2.40), onWood ? .66 : .88);
           if (fieldDetail > .0) {
             fieldPbr = onWood ? texture2D(fieldWoodPbr, vFieldUv) : texture2D(fieldEarthPbr, vFieldUv);
-            diffuseColor.rgb *= mix(.69, 1., fieldPbr.a);
+            diffuseColor.rgb *= mix(.73, 1., fieldPbr.a);
+          }
+          if (!onWood) {
+            float silt = sin(vFieldUv.y * 1.07 + sin(vFieldUv.x * 3.17)) *
+              sin(vFieldUv.x * 4.71 + vFieldUv.y * .38);
+            diffuseColor.rgb *= mix(vec3(.83,.88,.89), vec3(1.19,1.14,1.10), smoothstep(-.72,.72,silt));
+            fieldPbr.b -= .13 * max(0., -silt);
           }
           diffuseColor.rgb *= 1. - fieldWet * (onWood ? .16 : .23);
         }`)

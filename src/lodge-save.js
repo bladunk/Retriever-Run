@@ -1,11 +1,11 @@
 import { completeRun, normalizeProfile } from './profile.js'
 import { causes, counters, createRunStatistics } from './field-stats.js'
 import { awardPatches, patches } from './honors.js'
-import { applyRunXP, careerStanding, normalizeCareer, serviceCredit } from './career.js'
+import { applyRunXP, careerStanding, legacyLevel, normalizeCareer, serviceCredit } from './career.js'
 import { classicGear, kennelCatalog, legacyGear, newGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 
 export const saveKey = 'retriever-run.record'
-export const saveVersion = 2
+export const saveVersion = 3
 export const practiceSaveKey = saveKey + '.practice'
 export const boardLimit = 20
 export const categories = { score: 'Highest Score', distance: 'Longest Distance', retrieves: 'Most Retrieves' }
@@ -20,7 +20,8 @@ const validDate = value => typeof value === 'string' && Number.isFinite(Date.par
 const nickname = (value, fallback) => (typeof value === 'string' ? value.trim().slice(0, 24) : '') || fallback
 const emptyCounts = keys => Object.fromEntries(keys.map(key => [key, 0]))
 
-function normalizePlayer(raw, id, legacy = false) {
+function normalizePlayer(raw, id, schema) {
+  const legacy = schema === 1
   const base = raw?.stats ?? {}
   const player = {
     id,
@@ -44,8 +45,10 @@ function normalizePlayer(raw, id, legacy = false) {
   }
   player.enrollment = ['guest', 'worldwide', 'returning'].includes(raw?.enrollment)
     ? raw.enrollment : legacy ? 'returning' : null
-  player.career = normalizeCareer(raw?.career, legacy ? serviceCredit(player.stats) : 0)
-  player.kennel = normalizeKennel(raw?.kennel, careerStanding(player.career.xp).level, legacy ? legacyGear(player.profile) : null)
+  const priorLevel = schema === 2 ? legacyLevel(raw?.career?.xp) : undefined
+  player.career = normalizeCareer(raw?.career, legacy ? serviceCredit(player.stats) : 0, priorLevel)
+  player.kennel = normalizeKennel(legacy ? raw?.kennel ?? legacyGear(player.profile) : raw?.kennel,
+    careerStanding(player.career), priorLevel)
   return player
 }
 
@@ -68,12 +71,11 @@ function retainedEntries(entries) {
 }
 
 function normalizeSave(raw) {
-  const legacy = raw?.version === 1
   const players = Array.isArray(raw?.players) ? raw.players
-    .filter(player => count(player?.id) > 0).map(player => normalizePlayer(player, player.id, legacy)) : []
+    .filter(player => count(player?.id) > 0).map(player => normalizePlayer(player, player.id, raw.version)) : []
   const unique = [...new Map(players.map(player => [player.id, player])).values()]
   if (!unique.length) unique.push(normalizePlayer({ profile: raw?.version == null ? raw : null }, 1,
-    Boolean(raw && raw.version == null && typeof raw === 'object')))
+    raw && raw.version == null && typeof raw === 'object' ? 1 : undefined))
   const known = new Set(unique.map(player => player.id))
   const active = known.has(raw?.active) ? raw.active : unique[0].id
   const entries = new Map()
@@ -125,7 +127,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
     equip(category, itemId) {
       const player = current()
       const item = kennelCatalog[category]?.find(entry => entry.id === itemId)
-      if (!unlocked(item, careerStanding(player.career.xp).level, player.kennel.inherited)) return false
+      if (!unlocked(item, careerStanding(player.career), player.kennel.inherited)) return false
       player.kennel.equipment[category] = itemId
       commit()
       return true
@@ -192,8 +194,8 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       }
       player.profile = completeRun(player.profile, { ...result, elapsed: result.duration }, result.score)
       const earned = awardPatches(player, date)
-      const career = practice ? null : applyRunXP(player.career, runId, result, improved, earned)
-      const gear = career ? newGear(career.before.level, career.after.level, player.kennel.inherited) : []
+      const career = practice ? null : applyRunXP(player.career, runId, result, improved, earned, player)
+      const gear = career ? newGear(career.before, career.after, player.kennel.inherited) : []
       const entry = { ...result, id: runId, player: id, date }
       save.entries = retainedEntries([...save.entries, entry])
       const placements = emptyCounts(metrics)

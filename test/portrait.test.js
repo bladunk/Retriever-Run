@@ -5,7 +5,7 @@ import { Matrix4, PerspectiveCamera, Scene, Vector3 } from 'three'
 import { cameraLayout, newCameraState, updateFollow } from '../src/camera.js'
 import { swipeDirection } from '../src/gesture.js'
 import { normalizeProfile } from '../src/profile.js'
-import { adaptiveQuality, graphics, pixelRatio } from '../src/quality.js'
+import { adaptivePresentation, adaptiveQuality, graphics, pixelRatio } from '../src/quality.js'
 import { laneWidth } from '../src/runner.js'
 import { headingAt, placeOnTrail } from '../src/trail.js'
 import { createWildlife } from '../src/wildlife.js'
@@ -131,4 +131,23 @@ test('wildlife continues to recycle moving geese with independently flapping win
   assert.equal(calls[2].wings, true)
   assert.equal(calls[2].vocal, false)
   assert.ok(calls[2].distance < calls[1].distance)
+})
+
+test('sustained slow Auto Low caps presentation at 30 Hz independently of simulation', () => {
+  const draw = adaptivePresentation()
+  let timestamp = 0
+  for (let i = 0; i < 65; i++) {
+    timestamp += 34
+    draw(timestamp, .034, true)
+  }
+  let presented = 0
+  for (let i = 0; i < 60; i++) {
+    timestamp += 1000 / 60
+    presented += Number(draw(timestamp, 1 / 60, true))
+  }
+  assert.ok(presented >= 29 && presented <= 31)
+  for (let i = 0; i < 60; i++) {
+    timestamp += 1000 / 60
+    assert.equal(draw(timestamp, 1 / 60, false), true)
+  }
 })

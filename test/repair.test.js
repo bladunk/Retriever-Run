@@ -132,14 +132,16 @@ test('natural surface tiles align at boardwalk-free boundaries and pack transfer
     const current = buildTile(i)
     const next = buildTile(i + 1)
     const columns = 29
-    const trianglesPerRow = (columns - 1) * 6
     const data = current.ground.buffers.position.values
     const nextData = next.ground.buffers.position.values
-    const offset = trianglesPerRow * (segmentLength * 2 - 1) * 3
+    const offset = columns * segmentLength * 2 * 3
     const delta = centerAt((i + 1) * segmentLength) - centerAt(i * segmentLength)
-    const a = [data[offset] - delta, data[offset + 1], data[offset + 2] + segmentLength]
-    const b = [nextData[6], nextData[7], nextData[8]]
-    for (let coord = 0; coord < 3; coord++) assert.ok(Math.abs(a[coord] - b[coord]) < .001, 'tile seam ' + i)
-    assert.ok(current.reeds.buffer instanceof ArrayBuffer && data.length > 0)
+    for (let j = 0; j < columns * 3; j += 3) {
+      const a = [data[offset + j] - delta, data[offset + j + 1], data[offset + j + 2] + segmentLength]
+      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs(a[axis] - nextData[j + axis]) < .001, 'tile seam ' + i)
+    }
+    assert.equal(current.ground.index.length, (columns - 1) * segmentLength * 2 * 6)
+    assert.ok(current.reeds.buffer instanceof ArrayBuffer && current.trees.length <= 120)
+    assert.ok(current.detail.index.length > 0)
   }
 })

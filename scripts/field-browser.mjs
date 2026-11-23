@@ -73,6 +73,8 @@ try {
     const qa = window.fieldQA = {
       contexts: 0, sources: 0, peakSources: 0, notes: 0, foley: 0, wildlife: 0, goose: 0, mallard: 0,
       rig: false, rows: [], frames: [], pointers: [], scale: replays ? 16 : soak ? 6 : .07,
+      // Give each trusted gesture the same virtual input window on slow software WebGL.
+      frameStep: soak || replays ? undefined : 22,
     }
     if (!soak && !replays) {
       for (const type of ['pointerdown', 'pointerup', 'pointercancel']) {
@@ -138,7 +140,7 @@ try {
         if (window.retrieverDebug?.mode === 'running' && qa.frames.length < 18_000) {
           qa.frames.push(timestamp - last)
         }
-        visual += Math.min(230, (timestamp - last) * qa.scale)
+        visual += Math.min(230, qa.frameStep ?? (timestamp - last) * qa.scale)
       }
       last = timestamp
       callback(visual)
@@ -272,15 +274,17 @@ try {
     const before = await state()
     await page.waitForTimeout(230)
     assert.equal((await state()).ticks, before.ticks)
+    await page.evaluate(() => { fieldQA.frameStep = 60 })
     await page.locator('#primary').tap()
     await page.waitForFunction(() => retrieverDebug.mode === 'running' && retrieverDebug.height === 0)
+    await page.evaluate(() => { fieldQA.frameStep = 22 })
     await swipe(0, 65)
     await page.waitForFunction(() => document.querySelector('#collision-debug').textContent.includes('· slide ·'))
     await page.evaluate(() => dispatchEvent(new Event('pagehide')))
     assert.equal(await title(), 'paused')
     await page.waitForFunction(() => fieldQA.audio.state === 'suspended')
     await page.evaluate(() => dispatchEvent(new Event('pageshow')))
-    await page.evaluate(() => { fieldQA.scale = 1 })
+    await page.evaluate(() => { fieldQA.frameStep = undefined; fieldQA.scale = 1 })
     await page.locator('#primary').tap()
     await page.locator('#field-report').waitFor({ timeout: 30_000 })
     const contact = (await state()).contact
@@ -296,7 +300,7 @@ try {
     await page.getByRole('tab', { name: 'Camp Leaderboard', exact: true }).tap()
     assert.equal(await page.locator('.camp-board li').count(), 1)
     await page.locator('#close-lodge').tap()
-    await page.evaluate(() => { fieldQA.scale = .13 })
+    await page.evaluate(() => { fieldQA.frameStep = 22 })
     await page.locator('#run-again').tap()
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running')
     if (cdp) {
@@ -316,7 +320,7 @@ try {
     }
     await page.locator('#controls button[data-move="right"]').tap()
     await page.waitForFunction(() => retrieverDebug.lane === 1)
-    await page.evaluate(() => { fieldQA.scale = 1 })
+    await page.evaluate(() => { fieldQA.frameStep = undefined; fieldQA.scale = 1 })
     await page.locator('#field-report').waitFor({ timeout: 30_000 })
     assert.equal((await state()).contact?.type, 'stream')
     await page.locator('#main-menu').tap()

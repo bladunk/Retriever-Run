@@ -30,3 +30,28 @@ export function adaptiveQuality() {
     return levels[level]
   }
 }
+
+// Release cadence is separate from the fixed-step clock. After a sustained
+// drop at Low, skip presentation work when the display is ready before 30 Hz.
+export function adaptivePresentation() {
+  let slowFor = 0
+  let fallback = false
+  let deadline
+  return (ms, wall, autoLow) => {
+    if (!autoLow) {
+      slowFor = 0
+      fallback = false
+      deadline = undefined
+      return true
+    }
+    if (!fallback && wall > 0 && wall < .15) {
+      slowFor = wall > .021 ? slowFor + wall : Math.max(0, slowFor - wall * 2)
+      fallback = slowFor > 2
+    }
+    if (!fallback) return true
+    if (deadline !== undefined && ms < deadline - 1) return false
+    const interval = 1000 / 30
+    deadline = deadline === undefined || ms - deadline >= interval ? ms + interval : deadline + interval
+    return true
+  }
+}
