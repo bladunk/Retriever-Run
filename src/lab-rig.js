@@ -20,8 +20,6 @@ export function createLabradorRig(gltf) {
   root.traverse((node) => {
     if (!node.isSkinnedMesh) return
     node.frustumCulled = false
-    node.material.roughness = .9
-    node.material.metalness = 0
     meshes.push(node)
     dressMesh.push(tintLabradorCoat(node.material))
   })
@@ -39,6 +37,10 @@ export function createLabradorRig(gltf) {
   }
   const head = root.getObjectByName('Head')
   const neck = root.getObjectByName('Neck1')
+  const secondaryMotion = ['Ear2L', 'Ear2R', 'Tail4'].map(name => {
+    const bone = root.getObjectByName(name)
+    return { bone, base: bone.quaternion.clone() }
+  })
   const collarMaterial = new T.MeshStandardMaterial({ color: 0x61442d, roughness: .70 })
   const collar = new T.Mesh(new T.TorusGeometry(.399, .025, 7, 32), collarMaterial)
   collar.position.set(0, .20, .002)
@@ -108,7 +110,9 @@ export function createLabradorRig(gltf) {
       head.quaternion.copy(headPose)
       body.quaternion.copy(bodyPose)
       body.position.copy(bodyPosition)
+      for (const { bone, base } of secondaryMotion) bone.quaternion.copy(base)
       mixer.update(0)
+      for (const { bone, base } of secondaryMotion) base.copy(bone.quaternion)
       planting.remember()
       headPose.copy(head.quaternion)
       bodyPose.copy(body.quaternion)
@@ -119,6 +123,12 @@ export function createLabradorRig(gltf) {
       body.position.y -= low * .88 + compression * .065
       body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105))
       head.quaternion.multiply(lean.setFromAxisAngle(up, -turn * .08 + (resting ? .07 * Math.sin(time * .8) : 0)))
+      const activeEars = (1 - idle) * (1 - .82 * low)
+      const earRoll = activeEars * (.082 * Math.sin(stride * 2 - .72) + .041 * air + compression * .035)
+      secondaryMotion[0].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earRoll + idle * .021 * Math.sin(time * 2.1)))
+      secondaryMotion[1].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earRoll - idle * .022 * Math.sin(time * 1.6)))
+      const tailSway = idle * .045 * Math.sin(time * 2.6) + grounded * (1 - low) * .032 * Math.sin(stride - .7)
+      secondaryMotion[2].bone.quaternion.multiply(lean.setFromAxisAngle(up, tailSway))
       root.position.y = restingFloor
       root.updateMatrixWorld(true)
       if (low > .001) planting.solve(low, ground)

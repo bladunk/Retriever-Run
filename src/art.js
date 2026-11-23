@@ -1,6 +1,7 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { fieldMaterials } from './materials.js'
+import { marshWater } from './marsh-water.js'
 
 const sphere = new T.SphereGeometry(1, 12, 8)
 const box = new T.BoxGeometry(1, 1, 1)
@@ -12,6 +13,51 @@ const pickupMaterial = new T.MeshLambertMaterial({ vertexColors: true })
 const baked = new Map()
 const hardwood = new Set([0x514033, 0xb18354, 0xb67c45, 0x8c7b58])
 const crossingSurface = streamRibbon()
+const soakedGround = new T.CircleGeometry(1, 22).rotateX(-Math.PI / 2)
+const wetShapes = [pondSheet(), depthGeometry(crossingSurface.clone(), true)]
+const bankMaterial = new T.MeshLambertMaterial({ color: 0x645847 })
+const barkCylinder = new T.CylinderGeometry(1, 1, 1, 11, 3)
+const timberPoints = barkCylinder.attributes.position
+for (let i = 0; i < timberPoints.count; i++) {
+  const x = timberPoints.getX(i), y = timberPoints.getY(i), z = timberPoints.getZ(i)
+  const rough = .98 + .047 * Math.sin(Math.atan2(z, x) * 7) + .042 * Math.sin(y * 10 + x * 5)
+  timberPoints.setXYZ(i, x * rough, y, z * rough)
+}
+barkCylinder.computeVertexNormals()
+
+function depthGeometry(geometry, ribbon) {
+  const uv = geometry.attributes.uv
+  const depths = new Float32Array(uv.count)
+  for (let n = 0; n < depths.length; n++) {
+    const x = uv.getX(n) * 2 - 1, y = uv.getY(n) * 2 - 1
+    depths[n] = 1 + Math.max(0, 1 - (ribbon ? Math.abs(y) : Math.hypot(x, y))) * .74
+  }
+  geometry.setAttribute('marshDepth', new T.BufferAttribute(depths, 1))
+  return geometry
+}
+
+function pondSheet() {
+  const patch = soakedGround.clone()
+  const pos = patch.attributes.position
+  for (let n = 1; n < pos.count; n++) {
+    const angle = Math.atan2(pos.getZ(n), pos.getX(n))
+    const irregular = .93 + .11 * Math.cos(angle * 3) + .045 * Math.sin(angle * 5)
+    pos.setX(n, pos.getX(n) * irregular)
+    pos.setZ(n, pos.getZ(n) * irregular)
+  }
+  return depthGeometry(patch, false)
+}
+
+function fitWaterHazard(object, stream) {
+  const bed = new T.Mesh(stream ? crossingSurface : soakedGround, bankMaterial)
+  bed.scale.set(stream ? 7.41 : 1.0, 1, stream ? 2.23 : .90)
+  bed.position.y = .022
+  const mesh = new T.Mesh(wetShapes[Number(stream)], marshWater)
+  mesh.scale.set(stream ? 7.24 : .92, 1, stream ? 2.12 : .82)
+  mesh.position.y = .060
+  object.add(bed, mesh)
+  return object
+}
 
 function streamRibbon() {
   const width = 22
@@ -36,9 +82,10 @@ function compact(object, key, hazard) {
     const color = part.material.color
     const colors = new Float32Array(n * 3)
     const timber = hazard && hardwood.has(color.getHex())
+    const endGrain = color.getHex() === 0xb18354 && part.geometry === cylinder
     for (let i = 0; i < colors.length; i += 3) color.toArray(colors, i)
     geo.setAttribute('color', new T.BufferAttribute(colors, 3))
-    geo.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(n).fill(timber ? 2 : 0), 1))
+    geo.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(n).fill(endGrain ? 3 : timber ? 2 : 0), 1))
     return geo
   })
   const geometry = mergeGeometries(parts)
@@ -68,6 +115,7 @@ function group(parent, x = 0, y = 0, z = 0) {
 export function createHazard(parent, type, x = 0, z = 0, wide = false) {
   const object = group(parent, x, 0, z)
   const key = 'hazard-' + type + (wide ? '-wide' : '')
+  if (type === 'puddle' || type === 'stream') return fitWaterHazard(object, type === 'stream')
   if (type === 'root') object.scale.y = .7
   if (baked.has(key)) {
     object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
@@ -92,32 +140,24 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
     mesh(object, leaf, 0x6a6544, -.38, 1.34, -.10, .32, .20, .32)
   } else if (type === 'tree') {
     // A standing snag in a playable lane. Habitat trees remain decorative.
-    mesh(object, cylinder, bark, 0, .625, 0, .292, 1.25, .292)
+    mesh(object, barkCylinder, bark, 0, .625, 0, .292, 1.25, .292)
     mesh(object, cylinder, cut, 0, 1.254, 0, .276, .036, .274)
     mesh(object, cylinder, bark, .14, 1.226, .075, .068, .34, .062).rotation.z = -.27
     mesh(object, sphere, bark, -.16, .09, .077, .28, .11, .186).rotation.y = -.63
   } else if (type === 'log' || type === 'root' || type === 'drift') {
-    mesh(object, cylinder, bark, 0, .33, 0, .34, 1.97, .34).rotation.z = Math.PI / 2
+    mesh(object, barkCylinder, bark, 0, .33, 0, .34, 1.97, .34).rotation.z = Math.PI / 2
     for (const side of [-1, 1]) {
       mesh(object, cylinder, cut, side * .994, .33, 0, .27, .025, .27).rotation.z = Math.PI / 2
     }
     mesh(object, cylinder, bark, .42, .58, -.04, .09, .34, .09).rotation.z = -.39
+    mesh(object, leaf, 0x59603a, -.37, .606, .105, .36, .044, .103).rotation.y = .11
+    mesh(object, leaf, 0x737046, -.76, .569, .173, .17, .038, .118).rotation.y = -.34
     if (type === 'root') {
       mesh(object, cylinder, bark, -.40, .18, -.27, .07, .92, .07).rotation.set(.63, 0, -.99)
     }
     if (type === 'drift') {
       mesh(object, sphere, 0x504842, 0, .036, 0, 1.13, .022, .50)
       mesh(object, box, 0x8c7b58, -.31, .39, .064, .57, .12, .54).rotation.y = .21
-    }
-  } else {
-    const stream = type === 'stream'
-    const width = stream ? 3.66 : .92
-    const depth = stream ? 1.06 : .82
-    const shape = stream ? crossingSurface : sphere
-    mesh(object, shape, 0x6b6453, 0, .018, 0, stream ? 7.4 : width + .12, .046, stream ? 2.25 : depth + .12)
-    mesh(object, shape, 0x596e6e, 0, .041, 0, stream ? 7.24 : width, .046, stream ? depth * 2 : depth)
-    for (const i of [-1, 0, 1]) {
-      mesh(object, sphere, 0x99a8a3, i * width * .57, .062, i * .26, width * .15, .004, .024)
     }
   }
   return compact(object, key, true)

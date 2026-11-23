@@ -6,9 +6,12 @@ const size = 64
 const opacity = new Uint8Array(size * size * 4)
 for (let y = 0; y < size; y++) {
   for (let x = 0; x < size; x++) {
-    const r = Math.hypot((x + .5) * 2 / size - 1, (y + .5) * 2 / size - 1)
+    const dx = (x + .5) * 2 / size - 1
+    const dy = (y + .5) * 2 / size - 1
+    const contact = Math.max(0, 1 - (dx * 1.12) ** 2 - (dy * .96) ** 2) ** 3.2
+    const penumbra = Math.max(0, 1 - ((dx - .20) * 1.35) ** 2 - (dy * 1.13) ** 2) ** 2.5
     const i = (y * size + x) * 4
-    opacity.set([14, 18, 14, Math.round(Math.max(0, 1 - r * r) ** 2.8 * 220)], i)
+    opacity.set([16, 20, 14, Math.round(contact * 172 + penumbra * 61)], i)
   }
 }
 const shadowMap = new T.DataTexture(opacity, size, size)
@@ -48,7 +51,7 @@ export function createPlayer(scene) {
       const height = pose.height
       shadow.position.set(pose.x, pose.ground + .039, pose.z)
       shadow.rotation.set(-Math.PI / 2, pose.heading, 0)
-      shadow.scale.set(1.52 + height * .31, 2.83 + height * .28, 1)
+      shadow.scale.set(1.63 + height * .32, 2.86 + height * .29, 1)
       shadow.material.opacity = .68 / (1 + height * 1.8)
       if (!rig) {
         fallback.pose(pose)

@@ -1,4 +1,5 @@
 import * as T from 'three'
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { centerAt } from './trail.js'
 import { diveAge, diveApproach, diveExit, diveFrame, diveScale } from './dive.js'
 
@@ -9,17 +10,90 @@ const species = [
   { name: 'pheasant', body: 0x904d31, crown: 0x474c36, wing: 0x9d7149, cheek: 0x9e4730, size: .58, span: 1.0, length: 1.0, count: 3 },
 ]
 
-const round = new T.SphereGeometry(1, 8, 5)
-const wingGeo = new T.BufferGeometry()
-wingGeo.setAttribute('position', new T.Float32BufferAttribute([
-  0, 0, -.18, .46, .09, -.33, 1, 0, -.13, .86, -.045, .02, .50, -.065, .28, 0, 0, .22,
-], 3))
-wingGeo.setIndex([0, 1, 2, 0, 2, 5, 2, 3, 4, 2, 4, 5])
-wingGeo.computeVertexNormals()
+const ellipsoid = new T.SphereGeometry(1, 9, 6)
+const billShape = new T.SphereGeometry(1, 6, 3)
+const plumage = new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide })
+const flockGeometry = new Map()
+
+function buildBird(info) {
+  const goose = info.name === 'goose'
+  const mallard = info.name === 'mallard'
+  const pheasant = info.name === 'pheasant'
+  const body = []
+  const paint = new T.Color()
+  function part(geometry, color, x, y, z, sx, sy, sz, tilt = 0) {
+    const mesh = geometry.toNonIndexed()
+    mesh.scale(sx, sy, sz).rotateX(tilt).translate(x, y, z)
+    const colors = new Float32Array(mesh.attributes.position.count * 3)
+    paint.setHex(color)
+    for (let i = 0; i < colors.length; i += 3) paint.toArray(colors, i)
+    mesh.setAttribute('color', new T.BufferAttribute(colors, 3))
+    body.push(mesh)
+  }
+
+  part(ellipsoid, info.body, 0, 0, .03, .223, .185, info.length * .54)
+  part(ellipsoid, goose ? 0xaea89b : mallard ? 0x865444 : info.body, 0, -.050, -.098, .193, .141, .19)
+  part(ellipsoid, info.crown, 0, goose ? .103 : .087, goose ? -.323 : -.204,
+    goose ? .072 : .093, goose ? .246 : .151, .085, goose ? -1.14 : -.62)
+  part(ellipsoid, info.crown, 0, goose ? .193 : .137, goose ? -.528 : -.323,
+    .083, goose ? .097 : .090, .125)
+  if (mallard) part(ellipsoid, 0xd7d0ba, 0, .081, -.246, .103, .033, .081, -.59)
+  for (const side of [-1, 1]) {
+    if (goose) part(ellipsoid, info.cheek, side * .067, .165, -.494, .024, .036, .072, -.14)
+    else if (!mallard) part(billShape, info.cheek, side * .070, .151, -.327, .021, .043, .064)
+    part(billShape, 0x201d17, side * .073, goose ? .22 : .170, goose ? -.571 : -.367, .022, .018, .021)
+  }
+  part(billShape, goose ? 0x262b28 : 0xb19442, 0, goose ? .177 : .115, goose ? -.657 : -.448,
+    .051, .032, goose ? .077 : .096)
+  part(billShape, info.wing, 0, .026, info.length * .48, pheasant ? .095 : .128, .033,
+    pheasant ? .42 : .177, .17)
+  if (goose) part(billShape, 0xd2c6a9, 0, -.053, .273, .141, .054, .137)
+  const mesh = mergeGeometries(body)
+  for (const piece of body) piece.dispose()
+  return mesh
+}
+
+function featherPanel(base, outer) {
+  const positions = [], colors = []
+  const shade = new T.Color(base)
+  const baseTone = shade.clone()
+  function vertex(point, tone) {
+    positions.push(...point)
+    shade.copy(baseTone).multiplyScalar(tone).toArray(colors, colors.length)
+  }
+  function tri(a, b, c, tone) {
+    vertex(a, tone)
+    vertex(b, tone * 1.04)
+    vertex(c, tone * .93)
+  }
+  const count = outer ? 7 : 6
+  for (let i = 0; i < count; i++) {
+    const start = i / count
+    const end = (i + 1) / count
+    const step = outer ? .35 : .60
+    const reach = outer ? .22 : .11
+    const root = [start * step, Math.sin(start * 1.7) * .042, outer ? -.16 + .10 * start : -.143 - .07 * start]
+    const next = [end * step, Math.sin(end * 1.7) * .042, outer ? -.16 + .10 * end : -.143 - .07 * end]
+    const outline = [start * step + reach, outer ? -.032 : -.018, (outer ? .218 : .25) - start * start * .20]
+    const shoulder = [(start + .36) * step, root[1] + .037, .040]
+    tri(root, next, shoulder, 1.10 - start * .20)
+    tri(next, outline, shoulder, .92 - start * .11)
+    tri(root, shoulder, outline, .77 - start * .10)
+  }
+  const mesh = new T.BufferGeometry()
+  mesh.setAttribute('position', new T.Float32BufferAttribute(positions, 3))
+  mesh.setAttribute('color', new T.Float32BufferAttribute(colors, 3))
+  mesh.computeVertexNormals()
+  return mesh
+}
 
 function flockBatch(scene, info, capacity = info.count) {
-  function instances(geometry, color, count) {
-    const batch = new T.InstancedMesh(geometry, new T.MeshLambertMaterial({ color, side: T.DoubleSide }), count)
+  if (!flockGeometry.has(info.name)) flockGeometry.set(info.name, {
+    body: buildBird(info), inner: featherPanel(info.wing, false), outer: featherPanel(info.wing, true),
+  })
+  const geometry = flockGeometry.get(info.name)
+  function instances(mesh, count) {
+    const batch = new T.InstancedMesh(mesh, plumage, count)
     batch.frustumCulled = false
     batch.instanceMatrix.setUsage(T.DynamicDrawUsage)
     batch.visible = false
@@ -27,52 +101,49 @@ function flockBatch(scene, info, capacity = info.count) {
     return batch
   }
   return {
-    info, bodies: instances(round, info.body, capacity), heads: instances(round, info.crown, capacity),
-    wings: instances(wingGeo, info.wing, capacity * 2), marks: instances(round, info.cheek, capacity),
-    tails: instances(wingGeo, info.wing, capacity), bills: instances(round, info.name === 'goose' ? 0x211f1b : 0xa6874b, capacity),
+    info, bodies: instances(geometry.body, capacity), wings: instances(geometry.inner, capacity * 2),
+    tips: instances(geometry.outer, capacity * 2),
   }
 }
 
-function showFlock(flock, count) {
-  const { bodies, heads, wings, marks, tails, bills } = flock
-  bodies.visible = heads.visible = wings.visible = marks.visible = tails.visible = bills.visible = count > 0
+function showFlock({ bodies, wings, tips }, count) {
+  bodies.visible = wings.visible = tips.visible = count > 0
   if (!count) return
-  bodies.count = heads.count = marks.count = tails.count = bills.count = count
-  wings.count = count * 2
-  for (const batch of [bodies, heads, wings, marks, tails, bills]) batch.instanceMatrix.needsUpdate = true
+  bodies.count = count
+  wings.count = tips.count = count * 2
+  for (const batch of [bodies, wings, tips]) batch.instanceMatrix.needsUpdate = true
 }
 
 function animateBird() {
   const body = new T.Object3D()
-  const part = new T.Object3D()
-  const matrix = new T.Matrix4()
-
-  function detail(batch, index, x, y, z, sx, sy, sz, rx = 0, rz = 0, ry = 0) {
-    part.position.set(x, y, z)
-    part.scale.set(sx, sy, sz)
-    part.rotation.set(rx, ry, rz)
-    part.updateMatrix()
-    matrix.multiplyMatrices(body.matrix, part.matrix)
-    batch.setMatrixAt(index, matrix)
-  }
-
+  const wing = new T.Object3D()
+  const tip = new T.Object3D()
+  const wingMatrix = new T.Matrix4()
+  const tipMatrix = new T.Matrix4()
   return function write(flock, n, x, y, z, pitch, angle, roll, scale, time, wingCycle = n) {
-    const { info, bodies, heads, wings, marks, tails, bills } = flock
+    const { info, bodies, wings, tips } = flock
     const goose = info.name === 'goose'
-    const pheasant = info.name === 'pheasant'
     body.position.set(x, y, z)
     body.rotation.set(pitch, angle, roll)
     body.scale.setScalar(scale)
     body.updateMatrix()
-    detail(bodies, n, 0, 0, 0, .23, .18, info.length * .44)
-    detail(heads, n, 0, goose ? .22 : .125, goose ? -.46 : -.30, .096, goose ? .115 : .093, .143)
-    detail(marks, n, 0, goose ? .16 : .061, goose ? -.33 : -.253,
-      .080, goose ? .21 : .093, goose ? .18 : .089, -.76)
-    detail(bills, n, 0, goose ? .21 : .117, goose ? -.605 : -.428, .062, .037, .087)
-    detail(tails, n, 0, .015, info.length * .29, pheasant ? .77 : .28, .6, .37, .22, 0, Math.PI * -.5)
-    const flap = Math.sin(time * (goose ? 14 : 25) + wingCycle * .71) * (goose ? .66 : .87)
-    for (const sign of [-1, 1]) {
-      detail(wings, n * 2 + Number(sign === 1), sign * .105, .04, .02, info.span, 1, 1.08, -.08, sign * flap + (sign < 0 ? Math.PI : 0))
+    bodies.setMatrixAt(n, body.matrix)
+    const phase = time * (goose ? 13.5 : 23.0) + wingCycle * .71
+    const inGlide = goose ? T.MathUtils.smoothstep(Math.sin(time * .74 + wingCycle * .06), .58, .89) * .83 : .06
+    const flap = Math.sin(phase) * (1 - inGlide) * (goose ? .60 : .83)
+    for (const side of [-1, 1]) {
+      const index = n * 2 + Number(side > 0)
+      wing.position.set(.12 * side, .051, .009)
+      wing.rotation.set(-.08, side * .042 * Math.cos(phase), side * (flap + .071) + (side < 0 ? Math.PI : 0))
+      wing.scale.set(info.span, 1, 1.09)
+      wing.updateMatrix()
+      wingMatrix.multiplyMatrices(body.matrix, wing.matrix)
+      wings.setMatrixAt(index, wingMatrix)
+      tip.position.set(.49, .018, -.043)
+      tip.rotation.set(0, -.12, side * (.24 * Math.sin(phase - .94) * (1 - inGlide) - .053))
+      tip.updateMatrix()
+      tipMatrix.multiplyMatrices(wingMatrix, tip.matrix)
+      tips.setMatrixAt(index, tipMatrix)
     }
   }
 }

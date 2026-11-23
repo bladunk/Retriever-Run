@@ -21,19 +21,27 @@
 #lodge {
   width: min(700px, calc(100% - 26px));
   max-width: none;
-  max-height: min(830px, calc(100% - 24px));
-  margin: auto;
+  --lodge-top: max(10px, env(safe-area-inset-top));
+  --lodge-bottom: max(10px, env(safe-area-inset-bottom));
+  max-block-size: min(830px, calc(100vh - var(--lodge-top) - var(--lodge-bottom)));
+  max-block-size: min(830px, calc(var(--lodge-viewport, 100dvh) - var(--lodge-top) - var(--lodge-bottom)));
+  position: fixed;
+  inset: calc(var(--lodge-offset, 0px) + var(--lodge-top)) 0 auto;
+  margin: 0 auto;
   padding: 0;
   border: 1px solid #a88353;
   border-radius: 11px;
   color: var(--parchment);
   background: #1a241f;
   box-shadow: 0 20px 80px #0a0e0bbd;
-  overflow: hidden;
+  overflow: auto;
   overscroll-behavior: contain;
+  touch-action: pan-y;
+  scroll-padding-block: 12px max(12px, env(safe-area-inset-bottom));
 }
-#lodge[open] { display: flex; flex-direction: column; }
-#lodge > :not(.lodge-panel) { flex-shrink: 0; }
+@media (min-width: 760px) {
+  #lodge { inset: 0; margin: auto; }
+}
 #lodge::backdrop { background: #101611b8; }
 .lodge-heading, .report-intro {
   position: relative;
@@ -86,9 +94,6 @@
 .profile-actions button { min-height: 44px; padding-inline: 11px; }
 
 .lodge-tabs {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   background: var(--oak-dark);
   border-bottom: 1px solid var(--line);
   display: grid;
@@ -112,10 +117,7 @@
   box-shadow: inset 0 -2px 0 #d9ad70;
 }
 .lodge-panel {
-  min-height: 0;
   padding: 20px 24px max(24px, env(safe-area-inset-bottom));
-  overflow: auto;
-  overscroll-behavior: contain;
 }
 .section-title, .room-heading h3 {
   margin: 0;
@@ -263,7 +265,7 @@
 
 @media (orientation: portrait) {
   .lodge-entry { width: 100%; margin: 7px 0 0; }
-  #lodge { width: min(600px, calc(100% - 16px)); max-height: calc(100% - max(20px, env(safe-area-inset-top) + env(safe-area-inset-bottom))); }
+  #lodge { width: min(600px, calc(100% - 16px)); }
   .lodge-heading, .camp-profile { padding-inline: 14px; }
   .lodge-panel { padding-inline: 12px; }
   .lodge-heading h2 { font-size: clamp(1.85rem, 7.6vw, 2.65rem); }
@@ -276,8 +278,6 @@
   .brand { letter-spacing: .08em; }
 }
 @media (max-height: 540px) {
-  #lodge[open] { display: block; overflow: auto; }
-  .lodge-panel { overflow: visible; }
   .report { padding-top: 54px; }
   .report-intro { padding-block: 6px; }
   .report-actions { position: relative; }

@@ -110,20 +110,29 @@ test('wildlife continues to recycle moving geese with independently flapping win
   const calls = []
   const update = createWildlife(scene, (bird, cue) => calls.push({ bird, ...cue }))
   update(1, 12, false, true)
-  const wings = scene.children[2]
+  const wings = scene.children[1]
+  const tips = scene.children[2]
   const initial = new Matrix4()
   const later = new Matrix4()
   assert.equal(wings.count, 14)
   wings.getMatrixAt(0, initial)
+  const tipInitial = new Matrix4()
+  const tipLater = new Matrix4()
+  tips.getMatrixAt(0, tipInitial)
+  tipInitial.premultiply(initial.clone().invert())
   update(1.14, 12, false, true)
   wings.getMatrixAt(0, later)
   assert.notDeepEqual(later.elements, initial.elements)
-  assert.equal(scene.children[2], wings)
+  tips.getMatrixAt(0, tipLater)
+  tipLater.premultiply(later.clone().invert())
+  assert.notDeepEqual(tipInitial.elements, tipLater.elements)
+  assert.equal(scene.children[1], wings)
+  assert.equal(scene.children.filter(batch => batch.visible).length, 3)
   assert.deepEqual(calls.map(cue => cue.bird), ['goose'])
   assert.ok(calls[0].distance > 20)
   update(14, 12, false, false)
   assert.equal(wings.visible, false)
-  assert.equal(scene.children[8].visible, true)
+  assert.equal(scene.children[3].visible, true)
   update(14.1, 12, false, true)
   update(16.4, 12, false, true)
   update(16.6, 13, false, true)
@@ -150,4 +159,14 @@ test('sustained slow Auto Low caps presentation at 30 Hz independently of simula
     timestamp += 1000 / 60
     assert.equal(draw(timestamp, 1 / 60, false), true)
   }
+})
+
+
+test('the explicit Battery Saver preset uses a 30 Hz presentation budget immediately', () => {
+  const present = adaptivePresentation()
+  let renders = 0
+  for (let i = 0; i < 120; i++) renders += Number(present(i * (1000 / 60), 1 / 60, false, true))
+  assert.equal(renders, 60)
+  assert.equal(present(2010, 1 / 60, false, false), true)
+  assert.ok(graphics.low.pixels < graphics.balanced.pixels)
 })

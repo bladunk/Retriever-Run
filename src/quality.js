@@ -1,5 +1,5 @@
 export const graphics = {
-  low: { dpr: .92, pixels: 590000, detail: 0, weather: .40 },
+  low: { dpr: .86, pixels: 515000, detail: 0, weather: .36 },
   balanced: { dpr: 1.22, pixels: 960000, detail: 1, weather: .68 },
   high: { dpr: 1.57, pixels: 1550000, detail: 2, weather: .95 },
 }
@@ -37,13 +37,14 @@ export function adaptivePresentation() {
   let slowFor = 0
   let fallback = false
   let deadline
-  return (ms, wall, autoLow) => {
-    if (!autoLow) {
+  return (ms, wall, autoLow, batterySaver = false) => {
+    if (!autoLow && !batterySaver) {
       slowFor = 0
       fallback = false
       deadline = undefined
       return true
     }
+    if (batterySaver) fallback = true
     if (!fallback && wall > 0 && wall < .15) {
       slowFor = wall > .021 ? slowFor + wall : Math.max(0, slowFor - wall * 2)
       fallback = slowFor > 2

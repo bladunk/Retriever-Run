@@ -1,6 +1,5 @@
 import * as T from 'three'
 
-const clamp = T.MathUtils.clamp
 const smooth = T.MathUtils.smoothstep
 
 function pattern({ x, y, z }) {
@@ -20,7 +19,16 @@ function blendInfluences(a, b, t) {
 }
 
 function clipEdge(a, b) {
-  const t = a.edge / (a.edge - b.edge)
+  // Locate the curved pattern's intersection on the original mesh edge.
+  const probe = new T.Vector3()
+  let low = 0, high = 1
+  for (let sample = 0; sample < 7; sample++) {
+    const middle = (low + high) * .5
+    probe.copy(a.rest).lerp(b.rest, middle)
+    if ((a.edge >= 0) === (pattern(probe) >= 0)) low = middle
+    else high = middle
+  }
+  const t = (low + high) * .5
   return {
     position: a.position.clone().lerp(b.position, t),
     normal: a.normal.clone().lerp(b.normal, t).normalize(),
@@ -57,7 +65,9 @@ export function createWorkingVest(body) {
     const index = locations.length / 3
     if (!inner) exterior.set(vertex, index)
     const dorsalClosure = Math.exp(-Math.abs(rest.x) * 60) * smooth(rest.y, 1.85, 2.15)
-    const thickness = inner ? .003 : .012 + .004 * smooth(edge, 0, .10) + .007 * dorsalClosure
+    const rolledEdge = .005 * (1 - smooth(edge, 0, .052))
+    const pad = .005 * smooth(rest.y, 1.20, 1.65) * (1 - smooth(rest.y, 1.93, 2.18))
+    const thickness = inner ? .003 : .013 + rolledEdge + pad + .007 * dorsalClosure
     locations.push(point.x + n.x * thickness, point.y + n.y * thickness, point.z + n.z * thickness)
     normals.push(n.x, n.y, n.z)
     fit.push(rest.x, rest.y, rest.z, inner ? -.014 : edge)
@@ -109,13 +119,14 @@ export function createWorkingVest(body) {
   geometry.setIndex(indices)
 
   const material = new T.MeshStandardMaterial({ roughness: .88 })
+  const coarseWeave = { value: .6 }
   const panel = { value: new T.Color() }
   const binding = { value: new T.Color() }
   material.onBeforeCompile = shader => {
-    Object.assign(shader.uniforms, { vestPanel: panel, vestBinding: binding })
+    Object.assign(shader.uniforms, { vestPanel: panel, vestBinding: binding, vestWeave: coarseWeave })
     shader.vertexShader = 'attribute vec4 fitRest; varying vec4 vestCut;\n' + shader.vertexShader
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvestCut = fitRest;')
-    shader.fragmentShader = 'varying vec4 vestCut; uniform vec3 vestPanel, vestBinding;\n' + shader.fragmentShader
+    shader.fragmentShader = 'varying vec4 vestCut; uniform vec3 vestPanel, vestBinding; uniform float vestWeave;\n' + shader.fragmentShader
       .replace('#include <color_fragment>', `#include <color_fragment>
         float side = abs(vestCut.x);
         float y = vestCut.y;
@@ -125,15 +136,32 @@ export function createWorkingVest(body) {
         float seam = 1.0 - smoothstep(.008, .025, abs(panelLine));
         float stitch = smoothstep(-.18, .20, sin(z * 156.0)) *
           (1.0 - smoothstep(.003, .009, abs(panelLine + .030)));
-        float webbing = smoothstep(1.79, 2.11, y) * (1.0 - smoothstep(.022, .040, side));
-        float keeper = max(1.0 - smoothstep(.024, .042, abs(z + .38)),
-          1.0 - smoothstep(.024, .042, abs(z - .44))) * (1.0 - smoothstep(.065, .086, side)) * smoothstep(1.92, 2.10, y);
-        float weave = sin(z * 137.0 + side * 84.0) * sin(y * 172.0 - side * 105.0);
-        weave *= 1.0 - smoothstep(.018, .055, length(fwidth(vestCut.xyz)));
-        vec3 cloth = mix(vestPanel, diffuseColor.rgb, smoothstep(-.012, .012, panelLine));
-        cloth = mix(cloth, vestBinding, max(hem, max(seam * .40, webbing * .80)));
-        cloth = mix(cloth, vestBinding * 1.48, keeper * .8);
-        diffuseColor.rgb = (cloth + stitch * .036) * (1.0 + .07 * weave);
+        float dorsal = smoothstep(1.91,2.15,y) * smoothstep(.044,.085,vestCut.w);
+        float webbing = dorsal * (1.0 - smoothstep(.026,.044,side));
+        float rail = dorsal * (1. - smoothstep(.004,.011,abs(side - .027)));
+        float keeper = max(1.0 - smoothstep(.024,.042,abs(z + .38)),
+          1.0 - smoothstep(.024,.042,abs(z - .44))) * (1.0 - smoothstep(.069,.094,side)) * dorsal;
+        float zipper = (1. - smoothstep(.016,.032,side)) * dorsal;
+        float slider = (1. - smoothstep(.038,.057,abs(z - .27))) * zipper;
+        float loop = (1. - smoothstep(.009,.017,abs(length(vec2(z - .18,vestCut.x * 1.46)) - .032))) * dorsal;
+        float grainFade = 1. - smoothstep(.017,.052,length(fwidth(vestCut.xyz)));
+        float warp = sin(z*172. + side*91.);
+        float weft = sin(y*150. - side*141.);
+        float weave = mix(warp*weft,sign(warp)*weft,vestWeave) * grainFade;
+        float phase = sin(z * 136. + y * 103. + side * 88.);
+        float boundStitch = (1. - smoothstep(.004,.013,abs(vestCut.w - .045))) * smoothstep(.1,.61,phase) * grainFade;
+        vec3 cloth = mix(vestPanel, diffuseColor.rgb, smoothstep(-.012,.012,panelLine));
+        cloth = mix(cloth, vestBinding, max(hem,max(seam*.49,webbing*.84)));
+        cloth = mix(cloth, vestBinding*1.56 + vec3(.024,.018,.010), max(rail*.61,keeper*.81));
+        float teeth = smoothstep(-.3,.65,sin(z*183.)) * zipper * grainFade;
+        cloth += (.023*teeth + .035*stitch + boundStitch*.026);
+        float fastener = max(slider,loop*.85);
+        cloth = mix(cloth,vec3(.34,.24,.129),fastener);
+        diffuseColor.rgb = cloth * (1. + (.12 - vestWeave*.033)*weave);
+      `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+        roughnessFactor = mix(roughnessFactor + weave*.043,.39,fastener);
+      `).replace('#include <metalnessmap_fragment>', `#include <metalnessmap_fragment>
+        metalnessFactor = max(metalnessFactor, fastener * .54);
       `)
   }
   const mesh = new T.SkinnedMesh(geometry, material)
@@ -149,6 +177,7 @@ export function createWorkingVest(body) {
     if (!mesh.visible) return
     material.color.setHex(style.color)
     material.roughness = style.rough
+    coarseWeave.value = T.MathUtils.clamp((style.rough - .68) * 4, 0, 1)
     panel.value.setHex(style.panel)
     binding.value.setHex(style.binding)
   }

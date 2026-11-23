@@ -214,7 +214,6 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     onKennel(null)
     const player = lodge.current()
     panel.setAttribute('aria-labelledby', 'tab-' + room)
-    panel.dataset.room = room
     for (const tab of tabs) {
       const active = tab.dataset.room === room
       tab.setAttribute('aria-selected', String(active))
@@ -245,7 +244,6 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     else content = room === 'trophies' ? trophies(player) : room === 'journal' ? journal(player) : personalRecords(player)
     panel.replaceChildren(...content)
     if (stage) onKennel(stage)
-    panel.scrollTop = 0
   }
 
   function renderPlayers() {
@@ -282,6 +280,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     tab.addEventListener('click', () => {
       room = tab.dataset.room
       renderRoom()
+      dialog.scrollTop = 0
     })
     tab.addEventListener('keydown', event => {
       const index = tabs.indexOf(tab)
@@ -299,6 +298,15 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   }
   window.addEventListener('online', onConnectivity)
   window.addEventListener('offline', onConnectivity)
+  function fitViewport() {
+    if (!dialog.open || !window.visualViewport) return
+    const viewport = window.visualViewport
+    if (viewport.scale !== 1) return
+    dialog.style.setProperty('--lodge-viewport', viewport.height + 'px')
+    dialog.style.setProperty('--lodge-offset', viewport.offsetTop + 'px')
+  }
+  window.visualViewport?.addEventListener('resize', fitViewport)
+  window.visualViewport?.addEventListener('scroll', fitViewport)
   ui['close-lodge'].addEventListener('click', () => dialog.close())
   dialog.addEventListener('close', () => {
     onKennel(null)
@@ -311,6 +319,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
       trigger = button
       if (targetRoom) room = targetRoom
       dialog.showModal()
+      fitViewport()
       renderPlayers()
       ui['camp-profile'].open = false
       dialog.scrollTop = 0
