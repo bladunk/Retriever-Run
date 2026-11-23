@@ -6,6 +6,7 @@ export function collisionDebug(scene) {
   const flags = new URLSearchParams(location.search)
   if (flags.get('debug') !== 'collision') return null
   const seed = Number(flags.get('seed'))
+  const showVolumes = flags.get('volumes') !== 'off'
   const panel = document.createElement('pre')
   panel.id = 'collision-debug'
   panel.setAttribute('aria-label', 'Collision diagnostics')
@@ -24,6 +25,7 @@ export function collisionDebug(scene) {
   let death
   let last = ''
   function draw(part, frame, kind, crouch = 0) {
+    if (!showVolumes) return
     let line = lines[count]
     if (!line) {
       line = new T.LineSegments(geometry, materials[kind])

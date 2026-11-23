@@ -186,10 +186,10 @@ function initialize() {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     const dt = Math.min(.10, Math.max(0, wall))
     previousTime = ms
-    if (ui.lodge.open) return
+    if (!contextReady || ui.lodge.open) return
     if (!trailReady && terrain.readyAt(0) && terrain.readyAt(-1)) {
       trailReady = true
-      ui.primary.disabled = !contextReady
+      ui.primary.disabled = false
       if (mode === 'title') ui.primary.textContent = 'Start run'
     }
     if (mode === 'running' && profile.quality === 'auto') {
@@ -265,14 +265,16 @@ function initialize() {
   ui.trail.addEventListener('webglcontextlost', (event) => {
     event.preventDefault()
     contextReady = false
-    if (mode === 'running') setMode('paused')
+    background()
     ui.primary.disabled = true
+    ui.pause.disabled = true
     ui['run-again'].disabled = true
     ui['menu-copy'].textContent = 'Graphics were interrupted. Waiting for the connection to recover.'
   })
   ui.trail.addEventListener('webglcontextrestored', () => {
     contextReady = true
     ui.primary.disabled = !trailReady
+    ui.pause.disabled = false
     ui['run-again'].disabled = false
     setMode(mode)
   })
@@ -672,7 +674,7 @@ function move(direction) {
 
 function pause() {
   if (mode === 'running') setMode('paused')
-  else if (mode === 'paused') setMode('running', { gesture: true })
+  else if (mode === 'paused' && contextReady) setMode('running', { gesture: true })
 }
 
 function openSettings() {

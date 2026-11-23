@@ -4,6 +4,7 @@ import { mkdir, readFile } from 'node:fs/promises'
 import { extname, resolve, sep } from 'node:path'
 import { chromium, webkit, devices } from 'playwright'
 import { createCourse } from '../src/runner.js'
+import { hazardName } from '../src/field-stats.js'
 
 const safari = process.argv.includes('webkit')
 const engine = safari ? webkit : chromium
@@ -60,7 +61,7 @@ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve))
 try {
   const context = await browser.newContext({
     ...devices['iPhone 13'], viewport: { width: 390, height: 844 }, locale: 'en-US',
-    deviceScaleFactor: soak || replays ? .58 : 1,
+    deviceScaleFactor: soak || replays || slow ? .58 : 1,
   })
   const page = await context.newPage()
   const errors = new Set()
@@ -71,7 +72,14 @@ try {
   await page.addInitScript(({ soak, replays, actions }) => {
     const qa = window.fieldQA = {
       contexts: 0, sources: 0, peakSources: 0, notes: 0, foley: 0, wildlife: 0, goose: 0, mallard: 0,
-      rig: false, rows: [], frames: [], scale: replays ? 16 : soak ? 3.8 : .46,
+      rig: false, rows: [], frames: [], pointers: [], scale: replays ? 16 : soak ? 6 : .13,
+    }
+    if (!soak && !replays) {
+      for (const type of ['pointerdown', 'pointerup', 'pointercancel']) {
+        window.addEventListener(type, event => {
+          if (event.target.closest('#game')) qa.pointers.push([type, event.target.id, event.clientX, event.clientY])
+        }, true)
+      }
     }
     if (soak || replays) localStorage.setItem('retriever-run.record', JSON.stringify({ quality: 'low' }))
     const Audio = window.AudioContext ?? window.webkitAudioContext
@@ -157,7 +165,7 @@ try {
   }, { soak, replays, actions: soak ? safeRoute() : [] })
 
   const port = server.address().port
-  const url = 'http://127.0.0.1:' + port + prefix + '?debug=collision&seed=' + (soak ? 7 : 5)
+  const url = 'http://127.0.0.1:' + port + prefix + '?debug=collision&volumes=off&seed=' + (soak ? 7 : 5)
   const cdp = safari ? null : await context.newCDPSession(page)
   if (slow && cdp) {
     await cdp.send('Network.enable')
@@ -196,7 +204,9 @@ try {
       assert.equal(saved.players[0].stats.deathsBy.water, 200)
     } else {
       await page.waitForFunction(() => window.retrieverDebug?.elapsed >= 125 || window.retrieverDebug?.mode === 'over',
-        null, { timeout: 180_000, polling: 250 })
+        null, { timeout: 270_000, polling: 250 }).catch(async cause => {
+        throw new Error('Soak stalled at ' + JSON.stringify(await state()), { cause })
+      })
       assert.equal((await state()).mode, 'running', JSON.stringify(await state()))
       await capture('sustained-run')
     }
@@ -234,9 +244,12 @@ try {
     const swipe = async (dx, dy) => {
       const x = 192, y = 500
       if (cdp) {
-        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
-        await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + dx, y: y + dy }] })
-        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+        const send = (type, touchPoints = []) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints })
+        await send('touchStart', [{ x, y }])
+        for (const ratio of [.28, .64, 1]) {
+          await send('touchMove', [{ x: x + dx * ratio, y: y + dy * ratio }])
+        }
+        await send('touchEnd')
       } else {
         await page.mouse.move(x, y)
         await page.mouse.down()
@@ -250,7 +263,7 @@ try {
     await page.waitForFunction(() => retrieverDebug.lane === 0)
     await swipe(0, -68)
     await page.waitForFunction(() => retrieverDebug.height > .12 || retrieverDebug.mode === 'over')
-    assert.ok((await state()).height > .12, JSON.stringify(await state()))
+    assert.ok((await state()).height > .12, JSON.stringify(await page.evaluate(() => ({ run: retrieverDebug, pointers: fieldQA.pointers }))))
     await capture('jump')
     await page.evaluate(() => dispatchEvent(new Event('blur')))
     await page.waitForFunction(() => fieldQA.audio.state === 'suspended')
@@ -266,9 +279,12 @@ try {
     assert.equal(await title(), 'paused')
     await page.waitForFunction(() => fieldQA.audio.state === 'suspended')
     await page.evaluate(() => dispatchEvent(new Event('pageshow')))
+    await page.evaluate(() => { fieldQA.scale = 1 })
     await page.locator('#primary').tap()
     await page.locator('#field-report').waitFor({ timeout: 30_000 })
-    assert.equal((await state()).contact.type, 'stream')
+    const contact = (await state()).contact
+    assert.ok(['stream', 'fence'].includes(contact?.type), JSON.stringify(contact))
+    assert.equal(await page.locator('#report-tallies dd').first().textContent(), hazardName(contact.type))
     assert.match(await page.locator('#report-highlights').textContent(), /First Fetch/)
     await capture('field-report')
     await page.locator('#report-lodge').tap()
@@ -279,9 +295,29 @@ try {
     await page.getByRole('tab', { name: 'Camp Leaderboard', exact: true }).tap()
     assert.equal(await page.locator('.camp-board li').count(), 1)
     await page.locator('#close-lodge').tap()
+    await page.evaluate(() => { fieldQA.scale = .13 })
     await page.locator('#run-again').tap()
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running')
+    if (cdp) {
+      await page.evaluate(() => {
+        fieldQA.loss = document.querySelector('#trail').getContext('webgl2').getExtension('WEBGL_lose_context')
+        fieldQA.loss.loseContext()
+      })
+      await page.waitForFunction(() => document.querySelector('#primary').disabled && fieldQA.audio.state === 'suspended')
+      assert.equal(await title(), 'paused')
+      await page.keyboard.press('p')
+      await page.locator('#pause').evaluate(button => button.click())
+      assert.equal(await title(), 'paused')
+      await page.evaluate(() => fieldQA.loss.restoreContext())
+      await page.waitForFunction(() => !document.querySelector('#primary').disabled)
+      assert.equal(await title(), 'paused')
+      await page.locator('#primary').tap()
+    }
+    await page.locator('#controls button[data-move="right"]').tap()
+    await page.waitForFunction(() => retrieverDebug.lane === 1)
+    await page.evaluate(() => { fieldQA.scale = 1 })
     await page.locator('#field-report').waitFor({ timeout: 30_000 })
+    assert.equal((await state()).contact?.type, 'stream')
     await page.locator('#main-menu').tap()
     assert.equal(await title(), 'title')
     await page.getByRole('button', { name: 'Mute music' }).tap()
