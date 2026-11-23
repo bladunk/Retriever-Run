@@ -19,7 +19,7 @@ Comfort mode starts enabled. Open **Settings** to adjust camera tracking, choose
 
 Jump streams and low ground hazards, slide under branches, and steer around drifting debris. When geese descend, use the marked clear lane or duck at the second cue. Treat streaks increase your multiplier every five treats, up to 4×. Rare mallard and pheasant retrieves, duck calls, and decoys award bonus points and fill the Good Boy Meter faster. A full meter gives you six seconds of double pickup points.
 
-Open the Lodge to see earned patches, the device-only Camp Leaderboard, the Field Journal, and personal records. Local player profiles track their own progress and settings. Each completed run opens a detailed Field Report. The Outfitter in Settings lets you equip unlocked coats, collars, and bandanas. Master volume, music, wildlife and ambience, gameplay effects, and render quality are stored on the same device.
+Open the Lodge to see earned patches, the Field Journal, personal records, and the Local and Worldwide Camp leaderboards. Local player profiles track their own progress and settings. Each completed run opens a detailed Field Report. Worldwide participation is optional and uses an anonymous Supabase identity when enabled. [Worldwide Camp setup](GLOBAL-CAMP.md) The Outfitter in Settings lets you equip unlocked coats, collars, and bandanas. Master volume, music, wildlife and ambience, gameplay effects, and render quality are stored on the same device.
 
 ## Local development
 
@@ -39,4 +39,4 @@ Test the static production build with `npm run build` and `npm run preview`. The
 2. Merge the change into `main`. For an existing main revision, use **Actions → GitHub Pages → Run workflow**.
 3. Use the URL in the deployment job. The default project URL is <https://bladunk.github.io/Retriever-Run/>.
 
-The workflow runs the simulation tests, builds the static output, and publishes `dist/` from `main`. The build uses relative asset URLs and has no server or external asset requests.
+The workflow runs the simulation tests, builds the static output, and publishes `dist/` from `main`. The build uses relative asset URLs on GitHub Pages. When the optional Supabase variables are configured, Worldwide Camp sends Auth and leaderboard requests to that project.

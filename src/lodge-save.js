@@ -149,7 +149,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const placements = emptyCounts(metrics)
       for (const metric of metrics) placements[metric] = rankRuns(save.entries, metric).findIndex(run => run.id === entry.id) + 1
       commit()
-      return { ...result, nickname: player.nickname, date, improved, earned, placements }
+      return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements }
     },
   }
 }

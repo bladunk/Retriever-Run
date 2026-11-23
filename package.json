@@ -1,6 +1,6 @@
 {
   "name": "retriever-run",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,12 +10,14 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.119.2",
     "three": "0.180.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.17",
     "vite": "^7.2.2"
   },
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=22.12.0"
   }
 }

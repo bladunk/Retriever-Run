@@ -13,6 +13,9 @@ import { audioDefaults, outfits } from './profile.js'
 import { createRunStatistics } from './field-stats.js'
 import { pendingPatches } from './honors.js'
 import { openLodge } from './lodge-save.js'
+import { createCampTransport } from './camp-transport.js'
+import { createWorldwideCamp } from './worldwide-camp.js'
+import { submissionMessages } from './camp-ui.js'
 import { createLodgeUI, fillReport, patchName } from './lodge-ui.js'
 import {
   act, advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun,
@@ -63,6 +66,14 @@ let actionBuffer = null
 let bufferUntil = 0
 
 const lodge = openLodge()
+const camp = createWorldwideCamp(createCampTransport())
+window.addEventListener('online', () => camp.syncPending())
+window.addEventListener('load', () => {
+  camp.syncPending()
+  if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register(new URL('offline-sw.js', document.baseURI)).catch(() => {})
+  }
+}, { once: true })
 const saveProfile = lodge.commit
 let profile = lodge.current().profile
 let runPlayer
@@ -111,6 +122,7 @@ function makeRenderer() {
 }
 
 const lodgeUI = createLodgeUI(ui, lodge, {
+  camp,
   onPlayer() {
     profile = lodge.current().profile
     dog?.appearance(profile.outfit)
@@ -570,6 +582,18 @@ function setMode(value, options = {}) {
       const unlocks = outfits.filter(outfit => outfit.available(profile) && !outfit.available(priorProfile))
         .map(outfit => outfit.name)
       fillReport(ui, report, unlocks)
+      const posting = camp.record(runPlayer, report)
+      const worldwide = ui['report-worldwide']
+      worldwide.dataset.run = String(report.id)
+      worldwide.hidden = !posting
+      if (posting) {
+        worldwide.textContent = submissionMessages[posting.status]
+        posting.done?.then(status => {
+          if (worldwide.dataset.run === String(report.id)) {
+            worldwide.textContent = submissionMessages[status] ?? submissionMessages.pending
+          }
+        })
+      }
       newRecord = report.improved.includes('score') || report.improved.includes('distance')
       ui['field-report'].scrollTop = 0
     }

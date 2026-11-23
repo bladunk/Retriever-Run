@@ -59,6 +59,7 @@
         <div class="report-notes">
           <dl class="field-list" id="report-tallies"></dl>
           <section id="report-highlights" aria-label="Run highlights"></section>
+          <p id="report-worldwide" class="room-note" role="status" hidden></p>
         </div>
         <div class="report-actions">
           <button id="run-again" class="primary" type="button">Run Again</button>
@@ -94,7 +95,8 @@
       </details>
       <nav class="lodge-tabs" aria-label="Lodge rooms" role="tablist">
         <button type="button" role="tab" id="tab-trophies" aria-selected="true" aria-controls="lodge-panel" data-room="trophies">Trophy Room</button>
-        <button type="button" role="tab" id="tab-board" aria-selected="false" aria-controls="lodge-panel" data-room="board" tabindex="-1">Camp Leaderboard</button>
+        <button type="button" role="tab" id="tab-board" aria-label="Camp Leaderboard" aria-selected="false" aria-controls="lodge-panel" data-room="board" tabindex="-1">Local Camp</button>
+        <button type="button" role="tab" id="tab-worldwide" aria-label="Global Camp Leaderboard" aria-selected="false" aria-controls="lodge-panel" data-room="worldwide" tabindex="-1">Worldwide Camp</button>
         <button type="button" role="tab" id="tab-journal" aria-selected="false" aria-controls="lodge-panel" data-room="journal" tabindex="-1">Field Journal</button>
         <button type="button" role="tab" id="tab-records" aria-selected="false" aria-controls="lodge-panel" data-room="records" tabindex="-1">Personal Records</button>
       </nav>
