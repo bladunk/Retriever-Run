@@ -77,6 +77,25 @@ The full-chain estimate includes all four channel bytes per texel even for RGB i
 
 The opening course held roughly 18.8–19.1 MiB in tracked WebGL buffers. Parts of the long route ranged roughly 15–23 MiB in the sampled windows. Adding the framebuffer illustration to these budgets demonstrates why raising DPR or adding another pass is expensive, but the figures should remain separate when making device claims. Apple tile memory and software renderer allocation follow different rules.
 
+## Supplied FeralMotion Labrador
+
+Parsed both owner-supplied web exports. The standalone GLB was also loaded and rendered with the project’s Three.js version in a private loopback scene. The comparison held camera, light, and bind-height normalization constant and displayed front idle, side idle, and gallop samples from each model. The FeralMotion version shows clearer eyes, individual paw shapes, and a more defined mouth. Its shorter outline also differs from the current dog’s. The export, textures, and comparison captures stayed outside the repository.
+
+| Runtime comparison | Current GLB | Supplied standalone GLB | Supplied split glTF export |
+| --- | ---: | ---: | ---: |
+| Asset bodies, excluding packaging | 292,936 B | 14,534,804 B | 12,419,082 B |
+| Triangles | 9,967 | 72,163 | 72,160 |
+| Indexed vertices (sum of primitive counts) | 6,427 | 49,584 | 49,580 |
+| Material primitives | 1 | 2 | 2 |
+| Texture maps | One 768px albedo | Four 2,048px maps | Four 2,048px maps |
+| Estimated decoded texture allocation with RGBA8 and full mips | 3.00 MiB | 85.33 MiB | 85.33 MiB |
+
+The standalone GLB alone is **7.24×** the current model's triangles and **49.62×** its bytes. Its mouth primitive accounts for **22,554 triangles**, or about 31% of the total. The four images take 9,885,399 B inside that file. The split export uses smaller image payloads, while its identical dimensions leave the decoded texture estimate unchanged. These are file and allocation estimates. No candidate FPS or device memory was measured.
+
+- **Motion and fit.** The standalone GLB has 47 joints, 19 motion clips, and two pose clips called `Look` and `Turn`. The exported `Jump` and `Jump_Running` clips are 2.4 s. Their root translation tracks advance about **2.83** and **10.26** model units, respectively. Retriever Run already drives jump movement and timing. A replacement needs in-place retargeting and an authored low slide. Required lookups for the current `Head`, `Neck1`, `Body`, and paw marker names were absent. Fitting the collar, vest and low-pose paw support therefore needs an adapter and new pose regression.
+- **Feasibility gate.** To reach the audit's 15k-triangle and 400 kB ceiling, the standalone file needs about **79% fewer triangles** and **97% fewer transfer bytes**. That means retopology or major decimation, a smaller shared atlas, clip trimming and compression. The improved close-up gives the art pass a useful reference, while the shipped model already meets the runtime envelope.
+- **Terms and scope.** The README in the supplied GLB package allows personal and commercial project use and restricts redistribution of the asset files themselves. The publisher explicitly offers a web export. Confirm the allowed browser delivery and repository distribution before any release. The FBX, Unity, and Blender packages exceeded the workspace’s 32 MiB per-file transfer limit. Neither those packages nor any vendor engine helpers were needed for this comparison. [Publisher listing and terms](https://feralmotion.itch.io/labrador)
+
 ## Captures
 
 - [Current Labrador from two angles, locomotion poses, and confirmed vest spill](rig-study.webp).
