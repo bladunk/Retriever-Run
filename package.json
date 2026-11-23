@@ -1,13 +1,15 @@
 {
   "name": "retriever-run",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test"
+    "test": "node --test",
+    "stress": "node scripts/field-stress.mjs",
+    "test:browser": "node scripts/field-browser.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.2",
@@ -15,6 +17,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.17",
+    "playwright": "1.65.1",
     "vite": "^7.2.2"
   },
   "engines": {

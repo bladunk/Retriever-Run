@@ -21,9 +21,11 @@ export function createWorldwideCamp(transport, {
   const cache = new Map()
   const reading = new Map()
   const sending = new Map()
+  const joining = new Map()
   const retryAt = new Map()
   let queue = []
   let cacheVersion = 0
+  let draining
 
   if (transport) {
     try {
@@ -106,6 +108,31 @@ export function createWorldwideCamp(transport, {
     return sending.get(profile)
   }
 
+  async function drainQueue() {
+    for (const profile of new Set(queue.map(run => run.profile))) {
+      if (!online()) break
+      await sync(profile)
+    }
+  }
+
+  async function claim(profile, nickname) {
+    try {
+      const result = await transport.nickname(profile, nickname)
+      if (result.status !== 'ok') return { status: result.status }
+      const previous = members.get(profile)
+      const replaced = previous && previous.identity !== result.identity
+      if (!previous || replaced) {
+        members.set(profile, { identity: result.identity, nickname: result.nickname, best: null, lastRun: 0 })
+        queue = queue.filter(item => item.profile !== profile)
+        retryAt.delete(profile)
+      } else previous.nickname = result.nickname
+      persist()
+      expireBoard()
+      if (!replaced) void sync(profile)
+      return { status: 'ok', replaced: Boolean(replaced) }
+    } catch { return { status: 'unavailable' } }
+  }
+
   return {
     available: Boolean(transport),
     online,
@@ -113,28 +140,19 @@ export function createWorldwideCamp(transport, {
     pending: profile => candidates(profile).length,
     sync,
     syncPending() {
-      for (const profile of new Set(queue.map(run => run.profile))) void sync(profile)
+      draining ??= drainQueue().finally(() => { draining = undefined })
+      return draining
     },
     async join(profile, name) {
       const nickname = campNickname(name)
       if (!nickname) return { status: 'invalid_name' }
       if (!transport) return { status: 'unavailable' }
       if (!online()) return { status: 'offline' }
-      try {
-        const result = await transport.nickname(profile, nickname)
-        if (result.status !== 'ok') return { status: result.status }
-        const previous = members.get(profile)
-        const replaced = previous && previous.identity !== result.identity
-        if (!previous || replaced) {
-          members.set(profile, { identity: result.identity, nickname: result.nickname, best: null, lastRun: 0 })
-          queue = queue.filter(item => item.profile !== profile)
-          retryAt.delete(profile)
-        } else previous.nickname = result.nickname
-        persist()
-        expireBoard()
-        if (!replaced) void sync(profile)
-        return { status: 'ok', replaced: Boolean(replaced) }
-      } catch { return { status: 'unavailable' } }
+      const outstanding = joining.get(profile)
+      if (outstanding) return outstanding.nickname === nickname ? outstanding.promise : { status: 'busy' }
+      const promise = claim(profile, nickname).finally(() => { joining.delete(profile) })
+      joining.set(profile, { nickname, promise })
+      return promise
     },
     record(profile, report) {
       const member = members.get(profile)

@@ -6,6 +6,7 @@ const nameMessages = {
   invalid_name: 'Choose 3–20 characters using A–Z letters, numbers, spaces, hyphens, or underscores. Some names are reserved.',
   name_taken: 'That nickname is already taken. Try a different one.',
   rename_wait: 'You can change your worldwide nickname once an hour.',
+  busy: 'A nickname is already being saved for this profile. Try again when it finishes.',
   auth_failed: 'Anonymous sign-in is unavailable right now. You can keep playing in Local Camp.',
   offline: 'You’re offline. Joining Worldwide Camp needs a connection.',
   unavailable: 'Worldwide Camp could not save your nickname. Try again in a moment.',

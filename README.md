@@ -33,6 +33,8 @@ npm run dev
 
 Test the static production build with `npm run build` and `npm run preview`. The [4.0 Lodge notes](OUTFITTER.md) cover progression, local profiles, and save migration. The [audio notes](AUDIO.md) include the original score and recording licenses. The [3.2 update notes](DIVING-GEESE.md) document the pace curve and flight warnings. The [3.1 repair notes](REPAIR.md) cover fixed-step contact, diagnostics, and terrain streaming. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
 
+The [4.2 QA report](FIELD-READY.md) includes stress-test results, browser test commands, and the [physical iPhone release checklist](FIELD-READY.md#g-iphone-release-checklist).
+
 ## GitHub Pages
 
 1. Set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.

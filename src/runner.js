@@ -51,6 +51,11 @@ export function advance(run, dt, rules = director) {
   return previous
 }
 
+export function touchesPickup(run, entity) {
+  return !entity.hazard && Math.abs(entity.distance - run.distance) < 1 &&
+    Math.abs(run.x - entity.lane * laneWidth) < .88 && getHeight(run) < 1.45
+}
+
 export function multiplier(streak) {
   return Math.min(4, 1 + Math.floor(streak / 5))
 }
