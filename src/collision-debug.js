@@ -1,4 +1,5 @@
 import * as T from 'three'
+import { diveAge, diveWarning } from './dive.js'
 import { hazardFrame, obstacleVolumes, playerFrame, playerVolumes, volumeY } from './collision.js'
 
 export function collisionDebug(scene) {
@@ -43,14 +44,22 @@ export function collisionDebug(scene) {
   return {
     seed: flags.has('seed') && Number.isSafeInteger(seed) ? seed >>> 0 : null,
     reset() { death = undefined },
-    hit(details) { death = { ...details } },
+    hit(details) {
+      death = { ...details }
+      console.info('Retriever Run impact', death)
+    },
     draw(run, entities, mode, timings) {
       count = 0
       playerFrame(transform, run, run.distance)
       for (const part of playerVolumes()) draw(part, transform, death?.part === part.name ? 'hit' : 'dog', transform.depth)
       for (const part of playerVolumes(true)) draw(part, transform, death?.part === part.name ? 'hit' : 'water', transform.depth)
       let closest = null
+      let flight = null
       for (const entity of entities) {
+        if (entity.type === 'goose' && entity.lead && entity.distance >= run.distance - 2 && !flight) {
+          flight = { lane: entity.lane, distance: entity.distance, safeLane: entity.safeLane,
+            age: diveAge(entity, run.distance), warning: diveWarning(entity, run.distance) }
+        }
         if (!entity.hazard || entity.distance < run.distance - 2 || entity.distance > run.distance + 24) continue
         const parts = obstacleVolumes(entity)
         if (!parts) continue
@@ -61,18 +70,19 @@ export function collisionDebug(scene) {
         for (const part of parts) draw(part, transform, hit && death.solid === part.name ? 'hit' : wet ? 'water' : 'solid')
       }
       for (let i = count; i < lines.length; i++) lines[i].visible = false
-      const status = run.power > 0 ? 'shield' : run.jump > 0 ? 'jump' : run.slide > 0 ? 'slide' : 'run'
+      const status = run.jump > 0 ? 'jump' : run.slide > 0 ? 'slide' : 'run'
       const text = [
         'Collision debug · ' + mode + ' · ' + status + ' · lane ' + (run.lane + 2),
         's ' + run.distance.toFixed(2) + ' m · x ' + run.x.toFixed(2) + ' m · ' + timings.drawCalls + ' draws',
         death ? 'Impact at ' + death.distance.toFixed(3) + ' m · ' + death.part + ' → ' + death.type + ' ' + death.solid
           : closest ? closest.type + ' · ' + (closest.distance - run.distance).toFixed(2) + ' m ahead (center)' : 'No nearby hazard',
+        flight ? 'Swoop in ' + (-flight.age).toFixed(2) + ' s · ' + (flight.warning ?? 'watch flock') : '',
         'Tiles ' + timings.tiles + ' · geometries ' + timings.geometries,
       ].join('\n')
       if (text !== last) { panel.textContent = text; last = text }
       // Exposed only when the diagnostics query is enabled.
-      window.retrieverDebug = { mode, distance: run.distance, lateral: run.x, lane: run.lane,
-        height: run.jump > 0 ? transformPlayerHeight(run) : 0, ticks: timings.ticks, contact: death, tiles: timings.tiles,
+      window.retrieverDebug = { mode, elapsed: run.elapsed, distance: run.distance, lateral: run.x, lane: run.lane,
+        height: run.jump > 0 ? transformPlayerHeight(run) : 0, ticks: timings.ticks, contact: death, power: run.power, flight, speed: run.speed, tiles: timings.tiles,
         drawCalls: timings.drawCalls, geometries: timings.geometries, entities: entities.length }
     },
   }

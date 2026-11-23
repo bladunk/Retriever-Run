@@ -90,6 +90,12 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false) {
     mesh(object, cylinder, bark, 0, 1.17, 0, .110, width, .110).rotation.z = Math.PI / 2
     mesh(object, leaf, 0x776f46, -.79, 1.31, -.04, .41, .20, .35)
     mesh(object, leaf, 0x6a6544, -.38, 1.34, -.10, .32, .20, .32)
+  } else if (type === 'tree') {
+    // A standing snag in a playable lane. Habitat trees remain decorative.
+    mesh(object, cylinder, bark, 0, .625, 0, .292, 1.25, .292)
+    mesh(object, cylinder, cut, 0, 1.254, 0, .276, .036, .274)
+    mesh(object, cylinder, bark, .14, 1.226, .075, .068, .34, .062).rotation.z = -.27
+    mesh(object, sphere, bark, -.16, .09, .077, .28, .11, .186).rotation.y = -.63
   } else if (type === 'log' || type === 'root' || type === 'drift') {
     mesh(object, cylinder, bark, 0, .33, 0, .34, 1.97, .34).rotation.z = Math.PI / 2
     for (const side of [-1, 1]) {

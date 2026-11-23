@@ -83,6 +83,15 @@ progress::-moz-progress-bar { background: var(--brass); }
   translate: -50% 0; pointer-events: none; font-weight: 810; color: #fff1c7; font-size: .96rem;
   text-shadow: 0 2px 8px #17190f, 0 1px 3px #17190f; text-align: center;
 }
+#flight-warning {
+  opacity: 1; top: max(calc(env(safe-area-inset-top) + 57px), 22%);
+  padding: 6px 10px; border-radius: 5px; background: #202820e8; color: #f1c782;
+  border: 1px solid #d5ae7570; font-size: .78rem;
+}
+@media (orientation: portrait) {
+  #flight-warning { top: max(calc(env(safe-area-inset-top) + 150px), 24%); }
+}
+
 #controls {
   position: absolute; z-index: 1; pointer-events: none; display: flex; justify-content: space-between;
   bottom: max(13px, env(safe-area-inset-bottom)); left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right));
