@@ -1,5 +1,6 @@
 import * as T from 'three'
 import { createDog } from './dog.js'
+import { gearAppearance } from './kennel-material.js'
 
 const size = 64
 const opacity = new Uint8Array(size * size * 4)
@@ -25,11 +26,11 @@ export function createPlayer(scene) {
   const root = new T.Group()
   scene.add(root)
   let rig
-  let outfit = 'field'
+  let gear = gearAppearance()
   import('./lab.js').then(({ loadLabrador }) => loadLabrador()).then((loaded) => {
     rig = loaded
     rig.root.visible = false
-    rig.appearance(outfit)
+    rig.appearance(gear)
     root.add(rig.root)
   }).catch(() => {
     // The original model is available if the static asset cannot be loaded.
@@ -37,10 +38,11 @@ export function createPlayer(scene) {
 
   return {
     reset() { fallback.reset(); rig?.reset() },
+    moveTo(target) { target.add(root, shadow, fallback.root) },
     appearance(value) {
-      outfit = value
-      fallback.appearance(value)
-      rig?.appearance(value)
+      gear = gearAppearance(value)
+      fallback.appearance(gear)
+      rig?.appearance(gear)
     },
     pose(pose) {
       const height = pose.height

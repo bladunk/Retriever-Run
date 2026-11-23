@@ -107,6 +107,13 @@ export function createCampTransport(settings = config, {
       const result = await rpc(api, 'rr_camp_board', { p_metric: metric, p_offset: offset, p_limit: limit })
       return { ...result, reconnect }
     },
+    async rival(profile, owner, metric, target) {
+      const api = await client(profile)
+      if ((await session(api))?.user.id !== owner) return { status: 'reconnect' }
+      return rpc(api, 'rr_camp_rival', {
+        p_metric: metric, p_compare_name: target?.nickname ?? null, p_compare_at: target?.recorded_at ?? null,
+      })
+    },
     async submit(profile, owner, run) {
       const api = await client(profile)
       if ((await session(api))?.user.id !== owner) return { status: 'reconnect' }

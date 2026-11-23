@@ -10,14 +10,18 @@ import { createRunControls } from './run-controls.js'
 import { adaptiveQuality, graphics, pixelRatio } from './quality.js'
 import { createPlayer } from './player.js'
 import { createFootSpray } from './spray.js'
-import { audioDefaults, outfits } from './profile.js'
-import { createRunStatistics } from './field-stats.js'
+import { audioDefaults } from './profile.js'
 import { pendingPatches } from './honors.js'
 import { openLodge } from './lodge-save.js'
 import { createCampTransport } from './camp-transport.js'
 import { createWorldwideCamp } from './worldwide-camp.js'
 import { submissionMessages } from './camp-ui.js'
-import { createLodgeUI, fillReport, patchName } from './lodge-ui.js'
+import { createLodgeUI, fillReport, insignia, patchName } from './lodge-ui.js'
+import { careerStanding } from './career.js'
+import { careerLine, createPromotion, fillCareerReport } from './career-ui.js'
+import { createOnboarding, restoreEnrollment } from './camp-onboarding.js'
+import { createReportRival } from './rival-ui.js'
+import { createKennelView } from './kennel-view.js'
 import {
   advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun, touchesPickup,
   jumpDuration, pickupNames, powerDuration, score,
@@ -28,6 +32,7 @@ import { createDivingFlocks, createWildlife } from './wildlife.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
 import './lodge.css'
+import './top-dog.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
 const sound = createSound(background)
@@ -63,12 +68,15 @@ let previousStride = 0
 let frozen = false
 let calloutAnimation
 
-const lodge = openLodge()
-const camp = createWorldwideCamp(createCampTransport())
 const diagnosticsRequested = new URLSearchParams(location.search).get('debug') === 'collision'
-window.addEventListener('online', () => camp.syncPending())
+const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
+const camp = createWorldwideCamp(createCampTransport())
+if (!diagnosticsRequested) {
+  restoreEnrollment(lodge, camp)
+  window.addEventListener('online', () => camp.syncPending())
+}
 window.addEventListener('load', () => {
-  camp.syncPending()
+  if (!diagnosticsRequested) camp.syncPending()
   if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     navigator.serviceWorker.register(new URL('offline-sw.js', document.baseURI)).catch(() => {})
   }
@@ -77,6 +85,8 @@ const saveProfile = lodge.commit
 let profile = lodge.current().profile
 let runPlayer
 let runStatistics
+let runRival
+let runMetric
 let audioGesture = false
 let nextPatchCheck = 0
 let toastUntil = 0
@@ -107,6 +117,7 @@ let preset = graphics.balanced
 let dog
 let spray
 let resize
+let showKennel
 let needsRedraw = true
 let trailReady = false
 let contextReady = true
@@ -126,7 +137,7 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   camp,
   onPlayer() {
     profile = lodge.current().profile
-    dog?.appearance(profile.outfit)
+    dog?.appearance(lodge.current().kennel.equipment)
     resize?.()
     sound.settings(profile)
     updateMusicButton()
@@ -134,7 +145,23 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   },
   onOpen() { engageMusic() },
   onClose() { sound.selectScene(mode) },
+  onKennel(stage) { showKennel?.(stage) },
+  onAppearance(equipment) { dog?.appearance(equipment) },
+  onStart() {
+    if (!contextReady || !trailReady) return
+    ui.lodge.close()
+    start()
+  },
+  onJoin(player, member) {
+    if (player.enrollment === 'guest' || !player.enrollment) {
+      lodge.enroll(player.id, member.nickname, 'worldwide')
+      if (mode === 'title') showTitleRecord()
+    }
+  },
 })
+const onboarding = createOnboarding(ui, lodge, camp, showTitleRecord, start)
+const promotion = createPromotion(ui, lodge, insignia, () => sound.play('promotion'))
+const renderReportRival = createReportRival(ui['report-rival'], camp)
 ui['open-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
 ui['report-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
 ui.lodge.addEventListener('click', () => { if (ui.lodge.open && !audioGesture) engageMusic() })
@@ -157,7 +184,7 @@ function initialize() {
   }
   dog = createPlayer(scene)
   spray = createFootSpray(scene)
-  dog.appearance(profile.outfit)
+  dog.appearance(lodge.current().kennel.equipment)
   sound.settings(profile)
   const glow = new T.Mesh(
     new T.RingGeometry(.49, .63, 32),
@@ -166,8 +193,15 @@ function initialize() {
   glow.rotation.x = -Math.PI / 2
   scene.add(glow)
 
+  let kennel
+  let kennelStage
+  let trailPose
   resize = () => {
     needsRedraw = true
+    if (kennelStage) {
+      kennel.resize(renderer, kennelStage.clientWidth, kennelStage.clientHeight)
+      return
+    }
     const width = ui.game.clientWidth
     viewWidth = width
     const height = ui.game.clientHeight
@@ -179,6 +213,23 @@ function initialize() {
     renderer.setPixelRatio(pixelRatio(width, height, devicePixelRatio, preset))
     renderer.setSize(width, height, false)
   }
+  showKennel = stage => {
+    if (stage === kennelStage || (!stage && !kennelStage)) return
+    kennelStage = stage
+    if (stage) {
+      kennel ??= createKennelView()
+      stage.append(ui.trail)
+      ui.trail.setAttribute('aria-label', '3D Labrador equipment preview')
+      dog.moveTo(kennel.room)
+    } else {
+      ui.game.prepend(ui.trail)
+      ui.trail.setAttribute('aria-label', '3D wetlands trail')
+      dog.moveTo(scene)
+      dog.appearance(lodge.current().kennel.equipment)
+      if (trailPose && mode !== 'title') dog.pose({ ...trailPose, dt: .25 })
+    }
+    resize()
+  }
 
   const stepOnTerrain = dt => terrain.readyAt(run.distance) && step(dt)
 
@@ -186,11 +237,19 @@ function initialize() {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     const dt = Math.min(.10, Math.max(0, wall))
     previousTime = ms
-    if (!contextReady || ui.lodge.open) return
+    if (!contextReady) return
+    if (ui.lodge.open) {
+      if (kennelStage) kennel.render(renderer, dog, ms, reducedMotion.matches)
+      return
+    }
     if (!trailReady && terrain.readyAt(0) && terrain.readyAt(-1)) {
       trailReady = true
       ui.primary.disabled = false
       if (mode === 'title') ui.primary.textContent = 'Start run'
+      if (!diagnosticsRequested && mode === 'title') {
+        if (lodge.current().enrollment) promotion.show()
+        else onboarding.open()
+      }
     }
     if (mode === 'running' && profile.quality === 'auto') {
       const selected = adapt(wall)
@@ -230,11 +289,12 @@ function initialize() {
       }
       landing *= Math.exp(-12 * dt)
       const height = getHeight(display)
-      dog.pose({
+      trailPose = {
         x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
         time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing,
         airborne: display.jump > 0, jumpPhase: display.jump > 0 ? 1 - display.jump / jumpDuration : 1,
-      })
+      }
+      dog.pose(trailPose)
       glow.visible = display.power > 0
       glow.position.set(body.x, ground + .045, body.z)
       const pulse = 1.05 + Math.sin(visualTime * 11) * .13
@@ -377,8 +437,7 @@ function step(dt) {
   foot = nextFoot
   if (Math.floor(previous.distance / 150) < Math.floor(run.distance / 150)) {
     const distance = Math.floor(run.distance / 150) * 150
-    announce(distance + ' m · ' + (distance === 150 && profile.farthest < 150 ? 'Blaze collar unlocked'
-      : distance === 600 && profile.farthest < 600 ? 'Fox red coat unlocked' : 'Distance milestone'), 2)
+    announce(distance + ' m · Distance milestone', 2)
     sound.play('milestone')
   }
 
@@ -525,7 +584,12 @@ function checkPatches() {
 }
 
 function showTitleRecord() {
-  ui['current-runner'].textContent = 'Playing as ' + lodge.current().nickname
+  const player = lodge.current()
+  const career = careerStanding(player.career.xp)
+  ui['current-runner'].textContent = 'Playing as ' + player.nickname + (player.enrollment === 'guest' ? ' · Guest Camp' : '')
+  ui['title-rank'].textContent = careerLine(player)
+  ui['title-xp'].max = career.span
+  ui['title-xp'].value = career.within
   ui.record.hidden = !profile.best && !profile.farthest
   ui.record.textContent = 'Best ' + format.format(profile.best) + '  ·  Longest run ' + format.format(profile.farthest) + ' m'
 }
@@ -565,13 +629,11 @@ function setMode(value, options = {}) {
   const paused = value === 'paused'
   let newRecord = false
   if (over && oldMode !== 'over') {
-    const priorProfile = profile
     const report = lodge.finalize(runPlayer, runStatistics, run, contact.type)
     if (report) {
       profile = lodge.current().profile
-      const unlocks = outfits.filter(outfit => outfit.available(profile) && !outfit.available(priorProfile))
-        .map(outfit => outfit.name)
-      fillReport(ui, report, unlocks)
+      fillReport(ui, report)
+      fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
       const posting = diagnosticsRequested ? null : camp.record(runPlayer, report)
       const worldwide = ui['report-worldwide']
       worldwide.dataset.run = String(report.id)
@@ -583,6 +645,10 @@ function setMode(value, options = {}) {
             worldwide.textContent = submissionMessages[status] ?? submissionMessages.pending
           }
         })
+      }
+      if (!diagnosticsRequested) {
+        renderReportRival(runPlayer, runMetric, report, runRival, posting)
+        queueMicrotask(() => { if (mode === 'over') promotion.show() })
       }
       newRecord = report.improved.includes('score') || report.improved.includes('distance')
       ui['field-report'].scrollTop = 0
@@ -597,6 +663,7 @@ function setMode(value, options = {}) {
   ui.pause.textContent = paused ? 'Resume' : 'Pause'
   ui.hint.hidden = !title
   ui['current-runner'].hidden = !title
+  ui['title-career'].hidden = !title
   ui['open-lodge'].hidden = !title
   if (title) showTitleRecord()
   else ui.record.hidden = true
@@ -652,9 +719,13 @@ function resetTrail(seed) {
 }
 
 function start() {
+  if (!trailReady || !contextReady || ui.onboarding.open || ui.promotion.open ||
+      (!lodge.current().enrollment && !diagnosticsRequested)) return
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
-  runStatistics = createRunStatistics()
+  runStatistics = lodge.beginRun()
+  runMetric = lodgeUI.rivalMetric()
+  runRival = diagnosticsRequested ? null : camp.peekRival(runPlayer, runMetric)
   nextPatchCheck = toastUntil = 0
   seenPatches.clear()
   patchNotices.length = 0
@@ -683,24 +754,6 @@ function openSettings() {
   for (const key of volumeKeys) ui[key].value = Math.round(profile[key] * 100)
   ui.quality.value = profile.quality
   ui.comfort.checked = profile.comfort
-  function drawOutfits() {
-    ui.outfits.replaceChildren(...outfits.map((outfit) => {
-      const button = document.createElement('button')
-      button.type = 'button'
-      button.disabled = !outfit.available(profile)
-      button.setAttribute('aria-pressed', String(profile.outfit === outfit.id))
-      button.textContent = outfit.name + (button.disabled ? ' · ' + outfit.hint : '')
-      button.addEventListener('click', () => {
-        profile.outfit = outfit.id
-        dog.appearance(outfit.id)
-        needsRedraw = true
-        saveProfile()
-        for (const option of ui.outfits.children) option.setAttribute('aria-pressed', String(option === button))
-      })
-      return button
-    }))
-  }
-  drawOutfits()
   ui.preferences.showModal()
 }
 
@@ -754,7 +807,8 @@ function bindInput() {
   const keys = { arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right', arrowup: 'jump', w: 'jump',
     ' ': 'jump', arrowdown: 'slide', s: 'slide' }
   window.addEventListener('keydown', (event) => {
-    if (event.altKey || event.metaKey || event.ctrlKey || ui.preferences.open || ui.lodge.open) return
+    if (event.altKey || event.metaKey || event.ctrlKey || ui.preferences.open || ui.lodge.open ||
+        ui.onboarding.open || ui.promotion.open) return
     const key = event.key.toLowerCase()
     if (key in keys && mode === 'running' && !(key === ' ' && event.target instanceof HTMLButtonElement)) {
       event.preventDefault()

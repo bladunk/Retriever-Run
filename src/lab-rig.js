@@ -1,5 +1,6 @@
 import * as T from 'three'
 import { createPawPlanting } from './paw-planting.js'
+import { collarBuckle, fitKennelMaterial } from './kennel-material.js'
 
 const oneTurn = Math.PI * 2
 const up = new T.Vector3(0, 1, 0)
@@ -14,12 +15,14 @@ export function createLabradorRig(gltf) {
   const scale = 1.51 / (bounds.max.y - floor)
 
   const meshes = []
+  const dressMesh = []
   root.traverse((node) => {
     if (!node.isSkinnedMesh) return
     node.frustumCulled = false
     node.material.roughness = .9
     node.material.metalness = 0
     meshes.push(node)
+    dressMesh.push(fitKennelMaterial(node.material))
   })
   const planting = createPawPlanting(root, meshes)
   const mixer = new T.AnimationMixer(root)
@@ -40,11 +43,13 @@ export function createLabradorRig(gltf) {
   collar.scale.y = 1.065
   collar.rotation.x = Math.PI / 2
   neck.add(collar)
-  const tag = new T.Mesh(new T.CylinderGeometry(.097, .097, .027, 10),
-    new T.MeshStandardMaterial({ color: 0xbb9755, roughness: .48, metalness: .45 }))
+  const brass = new T.MeshStandardMaterial({ color: 0xbb9755, roughness: .48, metalness: .45 })
+  const tag = new T.Mesh(new T.CylinderGeometry(.097, .097, .027, 10), brass)
   tag.rotation.x = Math.PI / 2
   tag.position.set(.34, .13, .252)
   neck.add(tag)
+  const buckle = collarBuckle(brass)
+  neck.add(buckle)
   const bandana = new T.Mesh(new T.ConeGeometry(.40, .51, 3), collarMaterial)
   bandana.rotation.z = Math.PI
   bandana.position.set(0, .04, .36)
@@ -68,11 +73,12 @@ export function createLabradorRig(gltf) {
 
   return {
     root,
-    appearance(outfit) {
-      const palette = { field: 0x594333, blaze: 0xdd792d, marsh: 0x616946, copper: 0x75452d }
-      collarMaterial.color.setHex(palette[outfit] ?? palette.field)
-      bandana.visible = outfit === 'marsh'
-      for (const mesh of meshes) mesh.material.color.setHex(outfit === 'copper' ? 0xbb8053 : 0xffffff)
+    appearance(gear) {
+      collarMaterial.color.setHex(gear.collar.color)
+      bandana.visible = Boolean(gear.collar.bandana)
+      buckle.visible = Boolean(gear.collar.buckle)
+      tag.visible = !buckle.visible
+      for (const dress of dressMesh) dress(gear)
     },
     reset() {
       air = groundCorrection = compression = 0

@@ -131,12 +131,12 @@ export function createDog(scene) {
   return {
     root,
     reset() { crouch = 0; landing = 0; oldHeight = 0 },
-    appearance(outfit) {
-      collarMat.color.setHex({ field: 0x553829, blaze: 0xc05828, marsh: 0x494f36, copper: 0x793f2a }[outfit] ?? 0x553829)
-      coat.color.setHex(outfit === 'copper' ? 0x93592f : 0xb98541)
-      cream.color.setHex(outfit === 'copper' ? 0xbb8755 : 0xcba26a)
-      earCoat.color.setHex(outfit === 'copper' ? 0x73452b : 0x9b6738)
-      bandana.visible = outfit === 'marsh'
+    appearance({ collar, coat: palette }) {
+      collarMat.color.setHex(collar.color)
+      coat.color.setHex(0xb98541).multiply(new T.Color(palette.color))
+      cream.color.setHex(0xcba26a).multiply(new T.Color(palette.color))
+      earCoat.color.setHex(0x9b6738).multiply(new T.Color(palette.color))
+      bandana.visible = Boolean(collar.bandana)
     },
     pose({ x, z, height, ground, sliding, stride, time, heading = 0, turn = 0, dt, idle = false }) {
       if (oldHeight > .02 && height <= .02) landing = 1

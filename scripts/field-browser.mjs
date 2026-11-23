@@ -72,12 +72,13 @@ try {
   await page.addInitScript(({ soak, replays, actions }) => {
     const qa = window.fieldQA = {
       contexts: 0, sources: 0, peakSources: 0, notes: 0, foley: 0, wildlife: 0, goose: 0, mallard: 0,
-      rig: false, rows: [], frames: [], pointers: [], scale: replays ? 16 : soak ? 6 : .13,
+      rig: false, rows: [], frames: [], pointers: [], scale: replays ? 16 : soak ? 6 : .07,
     }
     if (!soak && !replays) {
       for (const type of ['pointerdown', 'pointerup', 'pointercancel']) {
         window.addEventListener(type, event => {
-          if (event.target.closest('#game')) qa.pointers.push([type, event.target.id, event.clientX, event.clientY])
+          if (event.target.closest('#game')) qa.pointers.push([type, event.target.id || event.target.className,
+            event.clientX, event.clientY, document.querySelector('#game').dataset.mode])
         }, true)
       }
     }
@@ -199,7 +200,7 @@ try {
     await page.locator('#primary').tap()
     if (replays) {
       await page.waitForFunction(() => fieldQA.rows.length === 200, null, { timeout: 240_000, polling: 250 })
-      const saved = JSON.parse(await page.evaluate(() => localStorage.getItem('retriever-run.record')))
+      const saved = JSON.parse(await page.evaluate(() => localStorage.getItem('retriever-run.record.practice')))
       assert.equal(saved.players[0].stats.runs, 200)
       assert.equal(saved.players[0].stats.deathsBy.water, 200)
     } else {
@@ -335,7 +336,7 @@ try {
     await page.reload()
     await ready()
     assert.equal(await title(), 'title')
-    const saved = JSON.parse(await page.evaluate(() => localStorage.getItem('retriever-run.record')))
+    const saved = JSON.parse(await page.evaluate(() => localStorage.getItem('retriever-run.record.practice')))
     assert.equal(saved.players[0].stats.runs, 2)
     assert.equal(saved.players[0].profile.musicVolume, .33)
     assert.deepEqual([...errors], [])

@@ -1,5 +1,7 @@
 # Retriever Run 4.1 · Global Camp Leaderboards
 
+In 4.3, first-time players can join from the welcome screen. Guest profiles can still join from the Lodge. The required Rivals migration and rollout order are in [Operation Top Dog](TOP-DOG.md#deployment-order).
+
 Open the Lodge and select **Worldwide Camp**. Read the board without signing in, or open **Join Worldwide Camp** to reserve a nickname and publish future personal bests. Each local profile has its own online identity. The Local Camp board, Field Journal, achievements, and Field Reports still work offline. On a device that has cached the 4.1 site after an online visit, the production build can also reload offline.
 
 ## Supabase setup

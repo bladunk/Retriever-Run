@@ -6,6 +6,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
 import { obstacleVolumes, playerFrame, playerVolumes, traceContact, volumeY } from '../src/collision.js'
 import { createLabradorRig } from '../src/lab-rig.js'
+import { gearAppearance } from '../src/kennel-material.js'
 import { createRunControls } from '../src/run-controls.js'
 import { beatSeconds, composeBar, loopBeats, musicIntensity, musicMix } from '../src/marshland.js'
 import { createMusicTransport, loopSeconds } from '../src/music-transport.js'
@@ -159,6 +160,10 @@ test('at full speed a swept crouch clears overhead timber and still hits ground 
 
 test('rapid jump and slide transitions retain skinned ground clearance after a long run', async () => {
   const rig = await loadRig()
+  rig.appearance(gearAppearance({ coat: 'fox-red', collar: 'brass-collar', vest: 'marsh-vest' }))
+  const buckle = rig.root.getObjectByName('KennelBuckle')
+  assert.equal(buckle.parent.name, 'Neck1')
+  assert.equal(buckle.visible, true)
   const player = new Group()
   player.add(rig.root)
   let skin

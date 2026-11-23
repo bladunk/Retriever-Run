@@ -3,6 +3,8 @@ import { fieldHonors, hallOfShame, medals, patches } from './honors.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
 import { campSwitch, worldwideBoard } from './camp-ui.js'
 import { node, number, meters, date } from './lodge-elements.js'
+import { careerRoom } from './career-ui.js'
+import { kennelRoom } from './kennel-ui.js'
 
 function duration(seconds) {
   const total = Math.floor(seconds)
@@ -38,7 +40,7 @@ const emblems = {
   water: 'M3 13c3-3 5 3 9 0s6 2 9 0M3 18c3-3 5 3 9 0s6 2 9 0m-9-15c-2 3-4 4-4 6 0 1 1 2 4 2s4-1 4-2c0-2-2-3-4-6Z',
 }
 
-function insignia(name) {
+export function insignia(name) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
   const path = document.createElementNS(svg.namespaceURI, 'path')
   svg.setAttribute('viewBox', '0 0 24 24')
@@ -173,7 +175,7 @@ const messages = {
   other: 'The trail had the last word.',
 }
 
-export function fillReport(ui, report, outfitUnlocks) {
+export function fillReport(ui, report) {
   ui['report-nickname'].textContent = report.nickname
   const record = report.improved.includes('score') || report.improved.includes('distance')
   const placement = Object.entries(report.placements).filter(([, rank]) => rank)
@@ -191,7 +193,6 @@ export function fillReport(ui, report, outfitUnlocks) {
     ['Personal records', report.improved.map(key => personalRecordLabels[key])],
     ['New patches', report.earned.map(({ patch, level }) => patchName(patch, level))],
     ['Camp placement', placement.length ? placement : ['Outside the local top 20']],
-    ['Outfitter unlocked', outfitUnlocks],
   ]
   ui['report-highlights'].replaceChildren(...highlights.filter(([, items]) => items.length).map(([title, items]) => {
     const group = node('div', null, 'report-highlight')
@@ -200,15 +201,17 @@ export function fillReport(ui, report, outfitUnlocks) {
   }))
 }
 
-export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose }) {
+export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKennel, onAppearance, onStart, onJoin }) {
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
   const tabs = [...dialog.querySelectorAll('[role=tab]')]
   let room = 'trophies'
   let metric = 'score'
+  let rivalMetric = 'score'
   let trigger
 
   function renderRoom() {
+    onKennel(null)
     const player = lodge.current()
     panel.setAttribute('aria-labelledby', 'tab-' + room)
     for (const tab of tabs) {
@@ -218,6 +221,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose }) {
     }
     function selectMetric(value) {
       metric = value
+      if (room === 'worldwide') rivalMetric = value
       renderRoom()
       panel.querySelector('[data-metric=' + value + ']')?.focus({ preventScroll: true })
     }
@@ -227,13 +231,19 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose }) {
       if (focus) tabs.find(tab => tab.dataset.room === value).focus({ preventScroll: true })
     }
     let content
+    let stage
     if (room === 'board' || room === 'worldwide') {
       const isWorldwide = room === 'worldwide'
       const switcher = campSwitch(isWorldwide, () => selectRoom('board', true), () => selectRoom('worldwide', true))
-      content = isWorldwide ? [switcher, worldwideBoard(camp, player, metric, selectMetric)]
+      if (isWorldwide) metric = rivalMetric
+      content = isWorldwide ? [switcher, worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart })]
         : [switcher, ...leaderboard(lodge, metric, selectMetric)]
-    } else content = room === 'trophies' ? trophies(player) : room === 'journal' ? journal(player) : personalRecords(player)
+    } else if (room === 'kennel') {
+      ({ content, stage } = kennelRoom(lodge, onAppearance))
+    } else if (room === 'career') content = careerRoom(player, insignia)
+    else content = room === 'trophies' ? trophies(player) : room === 'journal' ? journal(player) : personalRecords(player)
     panel.replaceChildren(...content)
+    if (stage) onKennel(stage)
     panel.scrollTop = 0
   }
 
@@ -290,15 +300,18 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose }) {
   window.addEventListener('offline', onConnectivity)
   ui['close-lodge'].addEventListener('click', () => dialog.close())
   dialog.addEventListener('close', () => {
+    onKennel(null)
     onClose()
     trigger?.focus({ preventScroll: true })
   })
   return {
-    open(button) {
+    rivalMetric: () => rivalMetric,
+    open(button, targetRoom) {
       trigger = button
+      if (targetRoom) room = targetRoom
+      dialog.showModal()
       renderPlayers()
       ui['camp-profile'].open = false
-      dialog.showModal()
       dialog.scrollTop = 0
       onOpen()
       ui['close-lodge'].focus({ preventScroll: true })

@@ -1,8 +1,9 @@
 import { boardPageSize } from './camp-rules.js'
 import { categories } from './lodge-save.js'
 import { node, number, meters, date } from './lodge-elements.js'
+import { renderRival } from './rival-ui.js'
 
-const nameMessages = {
+export const nameMessages = {
   invalid_name: 'Choose 3–20 characters using A–Z letters, numbers, spaces, hyphens, or underscores. Some names are reserved.',
   name_taken: 'That nickname is already taken. Try a different one.',
   rename_wait: 'You can change your worldwide nickname once an hour.',
@@ -53,7 +54,7 @@ function standingsRow(run, metric, mine) {
   return row
 }
 
-export function worldwideBoard(camp, player, metric, selectMetric) {
+export function worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart }) {
   const section = node('section', null, 'worldwide-board')
   section.append(node('h3', 'Global Camp Leaderboard', 'section-title'))
   if (!camp.available) {
@@ -73,6 +74,8 @@ export function worldwideBoard(camp, player, metric, selectMetric) {
   status.setAttribute('role', 'status')
   const own = node('div', null, 'own-ranking')
   own.hidden = true
+  const rival = node('section', null, 'rival-card')
+  rival.hidden = true
   const roster = node('ol', null, 'camp-board worldwide-roster')
   const next = button('Show more', () => { void load(offset) })
   next.className = 'camp-more'
@@ -80,7 +83,7 @@ export function worldwideBoard(camp, player, metric, selectMetric) {
   const retry = button('Reload rankings', () => { void load(0) })
   retry.className = 'camp-more'
   retry.hidden = true
-  section.append(status, own, roster, next, retry)
+  section.append(status, own, rival, roster, next, retry)
 
   const profile = node('details', null, 'worldwide-profile')
   const summary = node('summary')
@@ -130,9 +133,11 @@ export function worldwideBoard(camp, player, metric, selectMetric) {
 
   form.addEventListener('submit', async event => {
     event.preventDefault()
+    if (claim.disabled) return
     claim.disabled = true
     identityMessage.textContent = 'Saving nickname…'
     const result = await camp.join(player.id, input.value)
+    if (result.status === 'ok') onJoin(player, camp.member(player.id))
     if (!section.isConnected) return
     claim.disabled = false
     if (result.status !== 'ok') {
@@ -155,6 +160,15 @@ export function worldwideBoard(camp, player, metric, selectMetric) {
     retry.hidden = true
     next.disabled = true
     status.textContent = 'Loading worldwide rankings…'
+    if (!start) {
+      rival.hidden = !camp.member(player.id)
+      if (!rival.hidden) {
+        rival.textContent = 'Loading your next rival…'
+        void camp.rival(player.id, metric).then(result => {
+          if (section.isConnected && request === newestRequest) renderRival(rival, result, metric, onStart)
+        })
+      }
+    }
     const result = await camp.board(player.id, metric, start)
     if (request !== newestRequest || !section.isConnected) return
     loading = false

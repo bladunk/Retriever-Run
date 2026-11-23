@@ -42,6 +42,10 @@
         <h1 id="menu-title">Retriever<br><em>Run</em></h1>
         <p id="menu-copy">Follow a yellow Lab through the cattails, creek beds, and flooded timber.</p>
         <p id="current-runner" class="current-runner"></p>
+        <div id="title-career" class="title-career" hidden>
+          <span id="title-rank"></span>
+          <progress id="title-xp" aria-label="Progress toward the next career level"></progress>
+        </div>
         <p id="record" class="record" hidden></p>
         <button id="primary" class="primary" type="button" disabled>Preparing trail…</button>
         <button id="open-lodge" class="lodge-entry" type="button">Outfitter’s Lodge</button>
@@ -57,9 +61,11 @@
           <div id="report-headline" class="record-grid"></div>
         </div>
         <div class="report-notes">
+          <section id="report-career" class="report-career" aria-label="Career progress" hidden></section>
+          <p id="report-worldwide" class="room-note" role="status" hidden></p>
+          <section id="report-rival" class="report-career" aria-live="polite" hidden></section>
           <dl class="field-list" id="report-tallies"></dl>
           <section id="report-highlights" aria-label="Run highlights"></section>
-          <p id="report-worldwide" class="room-note" role="status" hidden></p>
         </div>
         <div class="report-actions">
           <button id="run-again" class="primary" type="button">Run Again</button>
@@ -70,6 +76,36 @@
         </div>
       </div>
     </section>
+    <dialog id="onboarding" aria-labelledby="onboarding-title">
+      <div class="onboarding-dock">
+        <div class="onboarding-sheet">
+          <p class="lodge-kicker">Retriever Run</p>
+          <h2 id="onboarding-title" tabindex="-1">Welcome to <em>Retriever Camp</em></h2>
+          <form id="onboarding-form" novalidate>
+            <p>Every great hunting dog starts somewhere.</p>
+            <label for="camp-name">Choose your camp name</label>
+            <input id="camp-name" type="text" maxlength="20" autocomplete="off" autocapitalize="words" spellcheck="false" aria-describedby="camp-privacy onboarding-status">
+            <p id="onboarding-status" role="status"></p>
+            <button id="camp-join" class="primary" type="submit">Join the Camp</button>
+            <button id="camp-guest" type="button">Play in Guest Camp</button>
+          </form>
+          <p id="camp-privacy">Your camp name tracks records, honors, and standings. Your identity is stored in this browser. Clearing its data or changing devices can remove access.</p>
+          <div id="camp-welcome" hidden>
+            <h3 id="camp-greeting"></h3>
+            <p id="camp-enrollment-note"></p>
+            <button class="primary" id="camp-run" type="button">Let’s run</button>
+            <button id="camp-menu" type="button">Main Menu</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="promotion" aria-labelledby="promotion-title">
+      <p class="lodge-kicker">Field promotion</p>
+      <div id="promotion-patch" class="patch-badge"></div>
+      <h2 id="promotion-title"></h2>
+      <p id="promotion-reward"></p>
+      <button id="promotion-continue" class="primary" type="button">Continue</button>
+    </dialog>
     <dialog id="lodge" aria-labelledby="lodge-title">
       <div class="lodge-heading">
         <div>
@@ -99,6 +135,8 @@
         <button type="button" role="tab" id="tab-worldwide" aria-label="Global Camp Leaderboard" aria-selected="false" aria-controls="lodge-panel" data-room="worldwide" tabindex="-1">Worldwide Camp</button>
         <button type="button" role="tab" id="tab-journal" aria-selected="false" aria-controls="lodge-panel" data-room="journal" tabindex="-1">Field Journal</button>
         <button type="button" role="tab" id="tab-records" aria-selected="false" aria-controls="lodge-panel" data-room="records" tabindex="-1">Personal Records</button>
+        <button type="button" role="tab" id="tab-career" aria-selected="false" aria-controls="lodge-panel" data-room="career" tabindex="-1">Working Dog Career</button>
+        <button type="button" role="tab" id="tab-kennel" aria-selected="false" aria-controls="lodge-panel" data-room="kennel" tabindex="-1">The Kennel</button>
       </nav>
       <div id="lodge-panel" class="lodge-panel" role="tabpanel" aria-labelledby="tab-trophies" tabindex="0"></div>
     </dialog>
@@ -117,10 +155,6 @@
           <option value="auto">Adaptive</option><option value="low">Low</option><option value="balanced">Balanced</option><option value="high">High</option>
         </select>
       </label>
-      <fieldset>
-        <legend>Outfitter</legend>
-        <div id="outfits"></div>
-      </fieldset>
       <a class="asset-credits" href="https://github.com/bladunk/Retriever-Run/blob/main/PORTRAIT.md#asset-credits" target="_blank" rel="noopener">Art and animation credits</a>
       <a class="asset-credits" href="https://github.com/bladunk/Retriever-Run/blob/main/AUDIO.md#recording-credits" target="_blank" rel="noopener">Audio credits</a>
     </dialog>
