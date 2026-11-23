@@ -1,6 +1,11 @@
 import { boardCap, boardPageSize, campMetrics, campNickname, canPostRun, runIdPattern, validCampRank } from './camp-rules.js'
 import { createCampRivals } from './camp-rivals.js'
 
+const preseason = { season: 'preseason', generation: 0 }
+const seasonToken = value => ['preseason', 'season-one'].includes(value?.season) &&
+  Number.isSafeInteger(value.generation) && value.generation >= 0
+  ? { season: value.season, generation: value.generation } : null
+const sameSeason = (a, b) => a.season === b.season && a.generation === b.generation
 const cacheMs = 60_000
 const metrics = value => Object.fromEntries(campMetrics.map(key => [key,
   Number.isSafeInteger(value?.[key]) && value[key] >= 0 ? value[key] : 0]))
@@ -22,12 +27,14 @@ export function createWorldwideCamp(transport, {
   const joining = new Map()
   const retryAt = new Map()
   let queue = []
+  let active = preseason
   let cacheVersion = 0
   let draining
 
   if (transport) {
     try {
       const saved = JSON.parse(storage().getItem(key))
+      active = seasonToken(saved?.active) ?? preseason
       for (const [profile, raw] of Object.entries(saved?.members ?? {})) {
         const nickname = campNickname(raw?.nickname)
         if (!nickname || !/^\d+$/.test(profile) || !validIdentity(raw.identity)) continue
@@ -36,17 +43,17 @@ export function createWorldwideCamp(transport, {
           lastRun: Number.isSafeInteger(raw.lastRun) ? raw.lastRun : 0,
         })
       }
-      if (Array.isArray(saved?.queue)) queue = saved.queue.filter(run => {
+      if (Array.isArray(saved?.queue)) queue = saved.queue.map(run => ({ ...run, ...(seasonToken(run) ?? preseason) })).filter(run => {
         const member = members.get(run?.profile)
-        return member && belongsTo(run, run.profile, member) && runIdPattern.test(run.id) && canPostRun(run)
+        return member && sameSeason(run, active) && belongsTo(run, run.profile, member) && runIdPattern.test(run.id) && canPostRun(run)
       })
     } catch { /* Local gameplay has its own save and stays available. */ }
   }
 
-  const rivals = createCampRivals(transport, { storage, online, now, member: profile => members.get(profile) })
+  const rivals = createCampRivals(transport, { storage, online, now, member: profile => members.get(profile), season: () => active, acceptSeason })
 
   function persist() {
-    try { storage().setItem(key, JSON.stringify({ members: Object.fromEntries(members), queue })) }
+    try { storage().setItem(key, JSON.stringify({ active, members: Object.fromEntries(members), queue })) }
     catch { /* An in-session sync is still possible. */ }
   }
 
@@ -54,6 +61,22 @@ export function createWorldwideCamp(transport, {
     cache.clear()
     cacheVersion++
     rivals.invalidate()
+  }
+
+  function acceptSeason(response) {
+    const announced = seasonToken(response)
+    if (!announced) return sameSeason(active, preseason)
+    if (announced.generation < active.generation ||
+        (announced.generation === active.generation && !sameSeason(active, announced))) return false
+    if (!sameSeason(active, announced)) {
+      active = announced
+      queue = queue.filter(item => sameSeason(item, active))
+      for (const member of members.values()) member.best = null
+      retryAt.clear()
+      expireBoard()
+      persist()
+    }
+    return true
   }
 
   function candidates(profile) {
@@ -85,6 +108,13 @@ export function createWorldwideCamp(transport, {
       try { result = await transport.submit(profile, member.identity, run) }
       catch { return 'pending' }
       if (members.get(profile) !== member) return 'pending'
+      if (seasonToken(result) && !acceptSeason(result)) return 'pending'
+      if (result.status === 'season_changed' || !sameSeason(run, active)) {
+        queue = queue.filter(item => item.id !== run.id)
+        persist()
+        status = 'season_changed'
+        continue
+      }
       if (result.status === 'rate_limited') {
         retryAt.set(profile, now() + cacheMs)
         return 'pending'
@@ -136,9 +166,29 @@ export function createWorldwideCamp(transport, {
     } catch { return { status: 'unavailable' } }
   }
 
+  function enqueue(profile, member, report, run, permit) {
+    if (members.get(profile) !== member || report.id <= member.lastRun) return null
+    if (!acceptSeason(permit) || !sameSeason(seasonToken(permit) ?? preseason, active)) return { status: 'season_changed' }
+    if (permit.owner && permit.owner !== member.identity) return { status: 'reconnect' }
+    if (permit.status !== 'ok') return { status: permit.status }
+    const prior = candidates(profile)
+    const best = { ...member.best }
+    for (const key of campMetrics) best[key] = Math.max(best[key] ?? -1, ...prior.map(item => item[key]))
+    if (!improves(run, best)) return null
+    try { run.id = active.season === 'season-one' ? permit.run_id : uuid() } catch { return null }
+    if (!runIdPattern.test(run.id)) return { status: 'unranked' }
+    Object.assign(run, active)
+    member.lastRun = report.id
+    queue.push(run)
+    keepContenders(profile)
+    persist()
+    return { status: 'queued', done: sync(profile) }
+  }
+
   return {
     available: Boolean(transport),
     online,
+    season: () => active.season,
     member: profile => members.get(profile),
     pending: profile => candidates(profile).length,
     rival: rivals.read,
@@ -159,23 +209,30 @@ export function createWorldwideCamp(transport, {
       joining.set(profile, { nickname, promise })
       return promise
     },
-    record(profile, report) {
+    beginRun(profile) {
       const member = members.get(profile)
-      if (!transport || !member || !Number.isSafeInteger(report.id) || report.id <= member.lastRun) return null
+      if (!member || !transport?.startRun) return null
+      if (!online()) return Promise.resolve({ ...active, owner: member.identity, status: active.season === 'preseason' ? 'ok' : 'unranked' })
+      return transport.startRun(profile, member.identity).then(permit => {
+        if (seasonToken(permit) && !acceptSeason(permit)) return { ...active, status: 'season_changed' }
+        return { ...active, ...permit, owner: member.identity }
+      }).catch(() => ({ ...active, status: 'unranked' }))
+    },
+    record(profile, report, permit) {
+      const member = members.get(profile)
+      if (!transport || !member || report.practice || !Number.isSafeInteger(report.id) || report.id <= member.lastRun) return null
       const run = { profile, owner: member.identity, score: report.score, distance: Math.floor(report.distance),
         retrieves: report.retrieves, durationMs: Math.round(report.duration * 1000) }
       if (!canPostRun(run)) return { status: 'ineligible' }
-      const prior = candidates(profile)
-      const best = { ...member.best }
-      for (const key of campMetrics) best[key] = Math.max(best[key] ?? -1, ...prior.map(item => item[key]))
-      if (!improves(run, best)) return null
-      try { run.id = uuid() } catch { return null }
-      if (!runIdPattern.test(run.id)) return null
-      member.lastRun = report.id
-      queue.push(run)
-      keepContenders(profile)
-      persist()
-      return { status: 'queued', done: sync(profile) }
+      if (permit) return {
+        status: 'queued',
+        done: permit.then(ticket => {
+          const result = enqueue(profile, member, report, run, ticket)
+          return result?.done ?? result?.status ?? 'none'
+        }),
+      }
+      if (transport.startRun) return { status: 'unranked' }
+      return enqueue(profile, member, report, run, { ...preseason, status: 'ok' })
     },
     board(profile, metric, offset = 0) {
       if (!transport) return Promise.resolve({ status: 'unavailable' })
@@ -190,7 +247,7 @@ export function createWorldwideCamp(transport, {
       if (!reading.has(cacheKey)) {
         const version = cacheVersion
         const pending = transport.board(profile, owner, metric, offset, boardPageSize).then(result => {
-          if (result.status !== 'ok' || !Array.isArray(result.rows)) return { status: 'unavailable' }
+          if (result.status !== 'ok' || !Array.isArray(result.rows) || !acceptSeason(result)) return { status: 'unavailable' }
           const page = {
             ...result,
             rows: result.rows.filter(validCampRank).slice(0, boardPageSize),

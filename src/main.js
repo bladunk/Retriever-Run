@@ -26,6 +26,7 @@ import {
   advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun, touchesPickup,
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
+import { journalIssues } from './career-integrity.js'
 import { habitatAt, placeOnTrail, surfaceAt, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
@@ -70,7 +71,8 @@ let calloutAnimation
 
 const diagnosticsRequested = new URLSearchParams(location.search).get('debug') === 'collision'
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
-const camp = createWorldwideCamp(createCampTransport())
+const camp = createWorldwideCamp(diagnosticsRequested ? null : createCampTransport())
+ui.game.toggleAttribute('data-practice', diagnosticsRequested)
 if (!diagnosticsRequested) {
   restoreEnrollment(lodge, camp)
   window.addEventListener('online', () => camp.syncPending())
@@ -85,6 +87,7 @@ const saveProfile = lodge.commit
 let profile = lodge.current().profile
 let runPlayer
 let runStatistics
+let runPermit
 let runRival
 let runMetric
 let audioGesture = false
@@ -584,6 +587,7 @@ function updateHud() {
 function checkPatches() {
   if (run.elapsed >= nextPatchCheck) {
     nextPatchCheck = run.elapsed + .30
+    if (!diagnosticsRequested && journalIssues(lodge.current()).length) return
     patchNotices.push(...pendingPatches(lodge.current(), runStatistics.preview(run), seenPatches))
   }
   if (run.elapsed < toastUntil) return
@@ -646,7 +650,7 @@ function setMode(value, options = {}) {
       profile = lodge.current().profile
       fillReport(ui, report)
       fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
-      const posting = diagnosticsRequested ? null : camp.record(runPlayer, report)
+      const posting = diagnosticsRequested ? null : camp.record(runPlayer, report, runPermit)
       const worldwide = ui['report-worldwide']
       worldwide.dataset.run = String(report.id)
       worldwide.hidden = !posting
@@ -654,6 +658,7 @@ function setMode(value, options = {}) {
         worldwide.textContent = submissionMessages[posting.status]
         posting.done?.then(status => {
           if (worldwide.dataset.run === String(report.id)) {
+            worldwide.hidden = status === 'none'
             worldwide.textContent = submissionMessages[status] ?? submissionMessages.pending
           }
         })
@@ -736,6 +741,7 @@ function start() {
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
   runStatistics = lodge.beginRun()
+  runPermit = camp.beginRun(runPlayer)
   runMetric = lodgeUI.rivalMetric()
   runRival = diagnosticsRequested ? null : camp.peekRival(runPlayer, runMetric)
   nextPatchCheck = toastUntil = 0

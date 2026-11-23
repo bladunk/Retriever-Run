@@ -301,3 +301,49 @@ test('an existing 4.1 offline receipt retries with its saved identity and UUID a
   assert.ok(requests.submissions.every(item => item.id === id && item.identity === 'test-identity-1'))
   assert.equal(camp.record(1, fixture), null)
 })
+
+test('Season One keeps the anonymous profile, resets bests, and only queues a ticket issued at the start', async () => {
+  const storage = memory()
+  const id = 'ee9d3178-869a-4f33-a53d-739001dcd331'
+  const old = 'e47f6521-6ed3-4b98-8ca5-b5f2d7cdff44'
+  const key = 'retriever-run.worldwide.v1.season-test'
+  const summary = { score: 335, distance: 45, retrieves: 1, duration: 4 }
+  const season = { season: 'season-one', generation: 1 }
+  const sent = []
+  storage.setItem(key, JSON.stringify({
+    members: { 1: { nickname: 'Marsh Scout', identity: 'existing-identity',
+      lastRun: 12, best: { score: 89999, distance: 10500, retrieves: 9 } } },
+    queue: [{ profile: 1, owner: 'existing-identity', id: old, score: 335, distance: 45, retrieves: 1, durationMs: 4000 }],
+  }))
+  let connected = true
+  const transport = {
+    namespace: 'season-test',
+    async startRun(profile, owner) {
+      assert.equal(owner, 'existing-identity')
+      return { status: 'ok', ...season, run_id: id }
+    },
+    async submit(profile, owner, run) {
+      sent.push(run.id)
+      return { status: 'ok', ...season, score: run.score, distance: run.distance, retrieves: run.retrieves }
+    },
+  }
+  const options = { storage: () => storage, online: () => connected, uuid: () => { throw Error('not a server ticket') } }
+  let camp = createWorldwideCamp(transport, options)
+  assert.equal(camp.pending(1), 1)
+  assert.equal((await camp.beginRun(1)).run_id, id)
+  assert.equal(camp.member(1).best, null)
+  assert.equal(camp.pending(1), 0)
+  assert.equal(camp.member(1).identity, 'existing-identity')
+
+  const permit = camp.beginRun(1)
+  connected = false
+  assert.equal(camp.record(1, { ...summary, id: 13, practice: true }, permit), null)
+  assert.equal(await camp.record(1, { ...summary, id: 13 }, permit).done, 'pending')
+  assert.equal(await camp.record(1, { ...summary, id: 14 }, camp.beginRun(1)).done, 'unranked')
+  camp = createWorldwideCamp(transport, options)
+  assert.equal(camp.season(), 'season-one')
+  connected = true
+  assert.equal(await camp.sync(1), 'sent')
+  assert.deepEqual(sent, [id])
+  assert.equal(camp.member(1).best.score, 335)
+})

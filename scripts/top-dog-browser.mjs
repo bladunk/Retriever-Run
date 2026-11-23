@@ -87,6 +87,9 @@ try {
         players.set(owner, { ...players.get(owner), nickname })
         return send({ status: 'ok', nickname })
       }
+      if (endpoint === 'rr_camp_start_run') {
+        return send(owner ? { status: 'ok', season: 'preseason', generation: 0 } : { status: 'auth_required' })
+      }
       if (endpoint === 'rr_camp_submit') {
         if (!owner || !players.has(owner)) return send({ status: 'auth_required' })
         calls.submit++
@@ -212,6 +215,7 @@ try {
     player.patches.marathon = [date]
     player.patches['clean-paws'] = [date]
     player.stats.distance = 10_100
+    player.stats.playtime = 600
     player.records.duration = 120
     localStorage.setItem(key, JSON.stringify(save))
   }, { key: saveKey, xp: xpAt(10) - 15, date: fixedDate })

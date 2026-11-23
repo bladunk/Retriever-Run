@@ -113,7 +113,7 @@ const finalRun = { ...newRun(), elapsed: 9, distance: 100, scoreBonus: 10 }
 test('run IDs keep stats, XP, and promotion grants together through duplicate finish and reload', () => {
   const storage = disk({ [saveKey]: { version: saveVersion, players: [{ id: 1, enrollment: 'guest',
     patches: { 'marathon': [date], 'clean-paws': [date] },
-    stats: { distance: 10_000 }, records: { duration: 120 },
+    stats: { runs: 1, distance: 10_000, playtime: 600 }, records: { duration: 120 },
     career: { xp: xpAt(10) - 10 } }] } })
   let lodge = open(storage)
   const player = lodge.current()
@@ -127,7 +127,7 @@ test('run IDs keep stats, XP, and promotion grants together through duplicate fi
 
   lodge = open(storage)
   assert.equal(lodge.finalize(player.id, createRunStatistics(report.id), finalRun, 'stream'), null)
-  assert.equal(lodge.current().stats.runs, 1)
+  assert.equal(lodge.current().stats.runs, 2)
   assert.deepEqual(lodge.current().career.promotions, ['junior'])
   assert.ok(lodge.equip('collar', 'junior-collar'))
   lodge.acknowledgePromotion('junior')
@@ -270,4 +270,32 @@ test('the Labrador coat changes independently of fitted vest equipment', () => {
   assert.equal(shader.uniforms.coatCream.value, 0)
   tint(gearAppearance({ coat: 'cream' }).coat)
   assert.ok(shader.uniforms.coatCream.value > 0)
+})
+
+
+test('an unsupported Marsh Legend field cannot promote or unlock gear, and practice never inherits its journal', () => {
+  const xp = xpAt(102)
+  const storage = disk({ [saveKey]: { version: 3, active: 1, players: [{ id: 1,
+    profile: { best: 2215, quality: 'low' }, career: { xp, rank: 'legend', promotions: ['legend'] },
+    stats: { runs: 1, playtime: 4, distance: 20_000, pheasants: 300 }, records: { duration: 300 },
+  }] } })
+  const lodge = open(storage)
+  const player = lodge.current()
+  assert.equal(player.career.rank, 'pup')
+  assert.equal(player.career.reviewRank, 'legend')
+  assert.equal(player.career.xp, xp)
+  assert.equal(player.stats.pheasants, 300)
+  assert.equal(player.profile.best, 2215)
+  assert.deepEqual(player.career.promotions, [])
+  assert.equal(lodge.equip('vest', 'legend-vest'), false)
+  const report = lodge.finalize(1, lodge.beginRun(), finalRun, 'stream')
+  assert.deepEqual(report.earned, [])
+  assert.equal(report.career.after.rank.id, 'pup')
+  const live = storage.getItem(saveKey)
+  const practice = openLodge(() => storage, undefined, { practice: true })
+  assert.equal(practice.current().profile.quality, 'low')
+  assert.equal(practice.current().profile.best, 0)
+  assert.equal(practice.current().career.xp, 0)
+  assert.equal(practice.finalize(1, practice.beginRun(), finalRun, 'stream').practice, true)
+  assert.equal(storage.getItem(saveKey), live)
 })

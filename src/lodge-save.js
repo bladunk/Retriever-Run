@@ -2,6 +2,7 @@ import { completeRun, normalizeProfile } from './profile.js'
 import { causes, counters, createRunStatistics } from './field-stats.js'
 import { awardPatches, patches } from './honors.js'
 import { applyRunXP, careerStanding, legacyLevel, normalizeCareer, serviceCredit } from './career.js'
+import { journalIssues, reviewSavedRank } from './career-integrity.js'
 import { classicGear, kennelCatalog, legacyGear, newGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 
 export const saveKey = 'retriever-run.record'
@@ -47,6 +48,7 @@ function normalizePlayer(raw, id, schema) {
     ? raw.enrollment : legacy ? 'returning' : null
   const priorLevel = schema === 2 ? legacyLevel(raw?.career?.xp) : undefined
   player.career = normalizeCareer(raw?.career, legacy ? serviceCredit(player.stats) : 0, priorLevel)
+  reviewSavedRank(player)
   player.kennel = normalizeKennel(legacy ? raw?.kennel ?? legacyGear(player.profile) : raw?.kennel,
     careerStanding(player.career), priorLevel)
   return player
@@ -98,7 +100,13 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
   let raw
   try {
     const disk = storage()
-    raw = JSON.parse(disk.getItem(key) ?? (practice ? disk.getItem(saveKey) : null))
+    raw = JSON.parse(disk.getItem(key))
+    if (!raw && practice) {
+      const opening = JSON.parse(disk.getItem(saveKey))
+      const settings = opening?.players?.find(player => player.id === opening.active)?.profile ?? opening
+      const { quality, comfort, masterVolume, musicVolume, wildlifeVolume, effectsVolume } = settings ?? {}
+      raw = { quality, comfort, masterVolume, musicVolume, wildlifeVolume, effectsVolume }
+    }
   } catch { /* Use an in-memory save. */ }
   const futureSave = Number.isInteger(raw?.version) && raw.version > saveVersion
   const save = normalizeSave(futureSave ? null : raw)
@@ -193,15 +201,16 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
         improved.push(key)
       }
       player.profile = completeRun(player.profile, { ...result, elapsed: result.duration }, result.score)
-      const earned = awardPatches(player, date)
-      const career = practice ? null : applyRunXP(player.career, runId, result, improved, earned, player)
+      const plausible = !journalIssues(player).length
+      const earned = plausible || practice ? awardPatches(player, date) : []
+      const career = practice ? null : applyRunXP(player.career, runId, result, improved, earned, player, plausible)
       const gear = career ? newGear(career.before, career.after, player.kennel.inherited) : []
       const entry = { ...result, id: runId, player: id, date }
       save.entries = retainedEntries([...save.entries, entry])
       const placements = emptyCounts(metrics)
       for (const metric of metrics) placements[metric] = rankRuns(save.entries, metric).findIndex(run => run.id === entry.id) + 1
       commit()
-      return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements, career, gear }
+      return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements, career, gear, practice }
     },
   }
 }

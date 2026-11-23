@@ -204,6 +204,7 @@ export function fillReport(ui, report) {
 export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKennel, onAppearance, onStart, onJoin }) {
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
+  const scroll = dialog.querySelector('.lodge-scroll')
   const tabs = [...dialog.querySelectorAll('[role=tab]')]
   let room = 'trophies'
   let metric = 'score'
@@ -228,6 +229,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     function selectRoom(value, focus = false) {
       room = value
       renderRoom()
+      scroll.scrollTop = 0
       if (focus) tabs.find(tab => tab.dataset.room === value).focus({ preventScroll: true })
     }
     let content
@@ -280,7 +282,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     tab.addEventListener('click', () => {
       room = tab.dataset.room
       renderRoom()
-      dialog.scrollTop = 0
+      scroll.scrollTop = 0
     })
     tab.addEventListener('keydown', event => {
       const index = tabs.indexOf(tab)
@@ -322,7 +324,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
       fitViewport()
       renderPlayers()
       ui['camp-profile'].open = false
-      dialog.scrollTop = 0
+      scroll.scrollTop = 0
       onOpen()
       ui['close-lodge'].focus({ preventScroll: true })
     },

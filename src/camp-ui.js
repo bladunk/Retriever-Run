@@ -18,7 +18,12 @@ export const submissionMessages = {
   sent: 'Worldwide bests are up to date.',
   pending: 'Worldwide result pending. Retry from the Lodge when you’re connected.',
   reconnect: 'Reconnect your worldwide identity in the Lodge to sync this result.',
-  ineligible: 'This run is saved locally and falls outside the worldwide beta limits.',
+  ineligible: 'This run is saved locally and falls outside the worldwide limits.',
+  unranked: 'Run saved locally. A Season One entry needs a connection when the run starts.',
+  season_changed: 'This run stays in your local records. Start a new run to enter the current standings.',
+  rate_limited: 'Run saved locally. Worldwide Camp needs a moment before the next entry.',
+  profile_required: 'Run saved locally. Reconnect your Worldwide name in the Lodge.',
+
 }
 
 function button(label, action) {
@@ -68,7 +73,8 @@ export function worldwideBoard(camp, player, metric, selectMetric, { onJoin, onS
     control.setAttribute('aria-pressed', String(metric === id))
     filters.append(control)
   }
-  section.append(node('p', 'Top 100 players · Best results by category', 'room-note'), filters)
+  const season = node('p', '', 'room-note camp-season')
+  section.append(season, filters)
 
   const status = node('p', '', 'room-note worldwide-status')
   status.setAttribute('role', 'status')
@@ -115,6 +121,7 @@ export function worldwideBoard(camp, player, metric, selectMetric, { onJoin, onS
   let reconnect = false
   let loading = false
   let newestRequest = 0
+  let standingsGeneration
 
   function updateProfile() {
     const member = camp.member(player.id)
@@ -185,6 +192,13 @@ export function worldwideBoard(camp, player, metric, selectMetric, { onJoin, onS
       }
       return
     }
+    const generation = result.generation ?? 0
+    if (start && generation !== standingsGeneration) {
+      void load(0)
+      return
+    }
+    standingsGeneration = generation
+    season.textContent = (result.season === 'season-one' ? 'Season One' : 'Preseason') + ' · Top 100 players'
     if (!start) roster.replaceChildren()
     reconnect = Boolean(result.reconnect)
     updateProfile()

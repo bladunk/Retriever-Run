@@ -98,7 +98,7 @@ test('bad patches use exact hazard and early-death streaks, and advanced patches
   for (const id of ['marathon', 'clean-paws', 'top-dog', 'marsh-legend']) assert.ok(available.includes(id))
   assert.deepEqual(pendingPatches(player, preview, seen), [])
   assert.equal(player.patches['clean-paws'], undefined)
-  const result = finish(lodge, { distance: 70_000, elapsed: 120 }, 'fence')
+  const result = finish(lodge, { distance: 70_000, elapsed: 3_200 }, 'fence')
   assert.ok(result.earned.some(({ patch }) => patch.id === 'clean-paws'))
 })
 

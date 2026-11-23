@@ -45,8 +45,8 @@ try {
   page.on('console', message => { if (message.type() === 'error') errors.add(message.text()) })
   await page.addInitScript(({ key, xp }) => {
     if (localStorage.getItem(key) === null) localStorage.setItem(key, JSON.stringify({
-      version: 3, active: 1, players: [{ id: 1, nickname: 'Cypress Scout', enrollment: 'guest',
-        career: { xp, rank: 'legend' }, kennel: { inherited: ['marsh-bandana'] }, profile: { quality: 'low', masterVolume: 0 } }],
+      version: 2, active: 1, players: [{ id: 1, nickname: 'Cypress Scout', enrollment: 'guest',
+        career: { xp }, kennel: { inherited: ['marsh-bandana'] }, profile: { quality: 'low', masterVolume: 0 } }],
     }))
     const draw = WebGL2RenderingContext.prototype.drawElements
     window.frontier = { preview: 0, skin: false }
@@ -65,6 +65,7 @@ try {
   await ready()
   const lodge = page.locator('#lodge')
   const stage = page.locator('.kennel-stage')
+  const scroller = baseline ? lodge : page.locator('.lodge-scroll')
   const selection = page.locator('.kennel-selection')
   const category = name => page.locator('[data-category="' + name + '"]')
   const card = id => page.locator('[data-gear="' + id + '"]')
@@ -133,12 +134,12 @@ try {
         if (name === 'vest') {
           await card('canvas-vest').tap()
           await rendered()
-          await lodge.evaluate(dialog => { dialog.scrollTop = 0 })
+          await scroller.evaluate(dialog => { dialog.scrollTop = 0 })
           if (width === 320) await screenshot('320-top')
-          const before = await lodge.evaluate(dialog => dialog.scrollTop)
+          const before = await scroller.evaluate(dialog => dialog.scrollTop)
           const start = await lodge.evaluate(dialog => Math.floor(Math.min(dialog.getBoundingClientRect().bottom, innerHeight) - 29))
           await scrollFrom(Math.floor(width / 2), start, 180)
-          await page.waitForFunction(before => document.querySelector('#lodge').scrollTop > before, before)
+          await page.waitForFunction(before => document.querySelector('.lodge-scroll').scrollTop > before, before)
           if (width === 320) await screenshot('320-middle')
         }
         await card(last).tap()
@@ -153,9 +154,21 @@ try {
         await selection.getByRole('button', { name: 'Equip', exact: true }).tap()
         assert.equal((await record()).players[0].kennel.equipment[name], last)
         if (width === 320 && name === 'vest') {
-          await lodge.evaluate(dialog => { dialog.scrollTop = dialog.scrollHeight })
+          await scroller.evaluate(dialog => { dialog.scrollTop = dialog.scrollHeight })
           await screenshot('320-bottom')
         }
+      }
+      for (const [room, row] of [['journal', '.field-list dd'], ['career', '.career-rewards li']]) {
+        await page.locator('#tab-' + room).tap()
+        const last = page.locator('#lodge-panel ' + row).last()
+        await last.scrollIntoViewIfNeeded()
+        const visible = await last.evaluate(element => {
+          const view = element.closest('.lodge-scroll').getBoundingClientRect()
+          const box = element.getBoundingClientRect()
+          const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)
+          return box.top >= view.top - 1 && box.bottom <= view.bottom + 1 && element.contains(hit)
+        })
+        assert.ok(visible, `${width}×${height} ${room} final row reachable`)
       }
       await close()
       assert.equal(await stage.locator('canvas').count(), 0)
@@ -167,7 +180,7 @@ try {
       await card('canvas-vest').tap()
       await selection.getByRole('button', { name: 'Equip', exact: true }).tap()
       await close()
-      console.log(JSON.stringify({ engine: engine.name(), size: [width, height], allCategories: true, resizeAndReopen: true }))
+      console.log(JSON.stringify({ engine: engine.name(), size: [width, height], allCategories: true, journalAndCareer: true, resizeAndReopen: true }))
     }
     // Exercise a toolbar/keyboard-sized visual viewport with the editable profile open.
     await open()

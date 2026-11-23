@@ -32,6 +32,7 @@
       </div>
       <p id="combo" hidden></p>
     </section>
+    <span class="practice-status">Practice run · Career and Worldwide Camp disabled</span>
     <div id="conditions" hidden><span id="habitat"></span><span id="weather"></span></div>
     <div id="flight-warning" class="callout" role="status" hidden></div>
     <div id="callout" class="callout" aria-hidden="true"></div>
@@ -106,7 +107,37 @@
       <p id="promotion-reward"></p>
       <button id="promotion-continue" class="primary" type="button">Continue</button>
     </dialog>
-    <dialog id="lodge" aria-labelledby="lodge-title">
+    <dialog id="preferences" aria-labelledby="preferences-title">
+      <div class="preferences-heading">
+        <h2 id="preferences-title">Field settings</h2>
+        <button id="close-settings" type="button" aria-label="Close settings">×</button>
+      </div>
+      <label class="setting-row">Master volume <input id="masterVolume" type="range" min="0" max="100" step="1"></label>
+      <label class="setting-row">Music <input id="musicVolume" type="range" min="0" max="100" step="1"></label>
+      <label class="setting-row">Wildlife &amp; ambience <input id="wildlifeVolume" type="range" min="0" max="100" step="1"></label>
+      <label class="setting-row">Gameplay effects <input id="effectsVolume" type="range" min="0" max="100" step="1"></label>
+      <label class="setting-row">Comfort mode <input id="comfort" type="checkbox"></label>
+      <label class="setting-row">Graphics quality
+        <select id="quality">
+          <option value="auto">Adaptive</option><option value="low">Battery Saver</option><option value="balanced">Balanced</option><option value="high">High</option>
+        </select>
+      </label>
+      <a class="asset-credits" href="https://github.com/bladunk/Retriever-Run/blob/main/PORTRAIT.md#asset-credits" target="_blank" rel="noopener">Art and animation credits</a>
+      <a class="asset-credits" href="https://github.com/bladunk/Retriever-Run/blob/main/AUDIO.md#recording-credits" target="_blank" rel="noopener">Audio credits</a>
+    </dialog>
+    <nav id="controls" aria-label="Touch controls" hidden>
+      <div>
+        <button data-move="left" aria-label="Move left">←</button>
+        <button data-move="right" aria-label="Move right">→</button>
+      </div>
+      <div>
+        <button data-move="slide" aria-label="Slide">↓</button>
+        <button data-move="jump" aria-label="Jump">↑</button>
+      </div>
+    </nav>
+  </main>
+  <dialog id="lodge" aria-labelledby="lodge-title">
+    <div class="lodge-scroll" tabindex="0" aria-label="Lodge contents">
       <div class="lodge-heading">
         <div>
           <p class="lodge-kicker">Retriever Run</p>
@@ -139,36 +170,8 @@
         <button type="button" role="tab" id="tab-kennel" aria-selected="false" aria-controls="lodge-panel" data-room="kennel" tabindex="-1">The Kennel</button>
       </nav>
       <div id="lodge-panel" class="lodge-panel" role="tabpanel" aria-labelledby="tab-trophies" tabindex="0"></div>
+    </div>
     </dialog>
-    <dialog id="preferences" aria-labelledby="preferences-title">
-      <div class="preferences-heading">
-        <h2 id="preferences-title">Field settings</h2>
-        <button id="close-settings" type="button" aria-label="Close settings">×</button>
-      </div>
-      <label class="setting-row">Master volume <input id="masterVolume" type="range" min="0" max="100" step="1"></label>
-      <label class="setting-row">Music <input id="musicVolume" type="range" min="0" max="100" step="1"></label>
-      <label class="setting-row">Wildlife &amp; ambience <input id="wildlifeVolume" type="range" min="0" max="100" step="1"></label>
-      <label class="setting-row">Gameplay effects <input id="effectsVolume" type="range" min="0" max="100" step="1"></label>
-      <label class="setting-row">Comfort mode <input id="comfort" type="checkbox"></label>
-      <label class="setting-row">Graphics quality
-        <select id="quality">
-          <option value="auto">Adaptive</option><option value="low">Battery Saver</option><option value="balanced">Balanced</option><option value="high">High</option>
-        </select>
-      </label>
-      <a class="asset-credits" href="https://github.com/bladunk/Retriever-Run/blob/main/PORTRAIT.md#asset-credits" target="_blank" rel="noopener">Art and animation credits</a>
-      <a class="asset-credits" href="https://github.com/bladunk/Retriever-Run/blob/main/AUDIO.md#recording-credits" target="_blank" rel="noopener">Audio credits</a>
-    </dialog>
-    <nav id="controls" aria-label="Touch controls" hidden>
-      <div>
-        <button data-move="left" aria-label="Move left">←</button>
-        <button data-move="right" aria-label="Move right">→</button>
-      </div>
-      <div>
-        <button data-move="slide" aria-label="Slide">↓</button>
-        <button data-move="jump" aria-label="Jump">↑</button>
-      </div>
-    </nav>
-  </main>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
