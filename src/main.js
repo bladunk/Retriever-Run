@@ -9,7 +9,7 @@ import { swipeDirection } from './gesture.js'
 import { adaptiveQuality, graphics, pixelRatio } from './quality.js'
 import { createPlayer } from './player.js'
 import { createFootSpray } from './spray.js'
-import { completeRun, normalizeProfile, outfits } from './profile.js'
+import { audioDefaults, completeRun, normalizeProfile, outfits } from './profile.js'
 import {
   act, advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun,
   jumpDuration, pickupNames, powerDuration, score,
@@ -22,7 +22,10 @@ import './style.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
 const recordKey = 'retriever-run.record'
-const sound = createSound()
+const sound = createSound(() => {
+  if (mode === 'running') setMode('paused')
+})
+const volumeKeys = Object.keys(audioDefaults)
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 const format = new Intl.NumberFormat()
 const scene = new T.Scene()
@@ -34,6 +37,8 @@ const effects = []
 const pool = new Map()
 const dogPosition = {}
 const obstaclePosition = {}
+const cuePosition = {}
+const cueRunner = {}
 const clock = createFixedClock()
 const previous = {}
 const display = {}
@@ -193,10 +198,10 @@ function initialize() {
       glow.scale.set(pulse, pulse, 1)
       const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather)
       terrain.update(distance, visualTime, weather, preset.detail)
-      wildlife(visualTime, distance, preset.detail === 0, !idle && !ui.preferences.open)
+      wildlife(visualTime, distance, preset.detail === 0, mode === 'running')
       if (!idle && !frozen) {
         updateConditions(weather.name)
-        sound.ambience(weather, true)
+        sound.ambience(weather, visualTime, surfaceAt(distance) === 'mud', !display.jump && !display.slide)
       }
       spray.update(distance, visualTime)
       populate()
@@ -282,10 +287,15 @@ function positionEntities(time, distance) {
   }
 }
 
+function runningSurface() {
+  if (splashUntil > run.distance) return 'splash'
+  return habitatAt(run.distance) === 'Prairie Potholes' ? 'grass' : surfaceAt(run.distance)
+}
+
 function step(dt) {
   for (const direction of controls) {
     if (act(run, direction)) {
-      sound.play(direction)
+      sound.play(direction, runningSurface())
       actionBuffer = null
     } else if ((direction === 'jump' || direction === 'slide') &&
       (run.jump > 0 && run.jump < .13 || run.slide > 0 && run.slide < .13)) {
@@ -296,7 +306,7 @@ function step(dt) {
   controls.length = 0
   if (actionBuffer && run.elapsed >= bufferUntil) actionBuffer = null
   if (actionBuffer && act(run, actionBuffer)) {
-    sound.play(actionBuffer)
+    sound.play(actionBuffer, runningSurface())
     actionBuffer = null
   }
   const wasAirborne = run.jump > 0
@@ -324,7 +334,7 @@ function step(dt) {
   stride += dt * Math.PI * 2 * Math.min(2.86, 1.84 + (run.speed - 11) * .061)
   const nextFoot = Math.floor(stride / Math.PI)
   if (!run.jump && (nextFoot !== foot || wasAirborne) && !run.slide) {
-    const surface = splashUntil > run.distance ? 'splash' : surfaceAt(run.distance)
+    const surface = runningSurface()
     sound.footstep(surface, wasAirborne)
     if (surface === 'mud' || surface === 'splash') spray.step(run.distance, run.x, run.elapsed, surface === 'splash', preset.detail)
     if (wasAirborne) landing = 1
@@ -345,9 +355,18 @@ function step(dt) {
       const warning = diveWarning(entity, run.distance)
       if (warning) {
         warningLabel = flightWarnings[warning][entity.safeLane + 1]
-        if (warning === 'approach' && !entity.cued) {
-          entity.cued = true
-          sound.approachingGeese()
+        if (entity.audioCue !== warning) {
+          entity.audioCue = warning
+          const source = hazardFrame(cuePosition, entity, run.distance, run.distance)
+          const listener = playerFrame(cueRunner, run, run.distance)
+          const near = warning === 'duck'
+          const dx = source.x - listener.x
+          const dz = source.z - listener.z
+          sound.bird('goose', {
+            distance: Math.hypot(dx, source.y - listener.y, dz),
+            x: dx * Math.cos(listener.angle) - dz * Math.sin(listener.angle),
+            movement: entity.direction, near, wings: near,
+          })
         }
       }
       if (diveAge(entity, run.distance) > diveExit) entities.splice(index, 1)
@@ -495,7 +514,8 @@ function setMode(value) {
   if (!running) {
     flightLabel = ''
     ui['flight-warning'].hidden = true
-    sound.ambience({ wind: 0, rain: 0 }, false)
+    if (over) sound.finish()
+    else sound.pause()
     calloutAnimation?.cancel()
     ui.callout.textContent = ''
   }
@@ -508,8 +528,6 @@ function setMode(value) {
 }
 
 function start() {
-  sound.unlock()
-  sound.play('start')
   for (const entity of entities) release(entity)
   for (const effect of effects) release(effect)
   entities.length = 0
@@ -531,6 +549,7 @@ function start() {
   dog.reset()
   spray.reset()
   setMode('running')
+  sound.unlock(true)
   populate()
 }
 
@@ -541,15 +560,14 @@ function move(direction) {
 function pause() {
   if (mode === 'running') setMode('paused')
   else if (mode === 'paused') {
-    sound.unlock()
     setMode('running')
+    sound.unlock()
   }
 }
 
 function openSettings() {
   if (mode === 'running') pause()
-  ui.sfx.checked = profile.sfx
-  ui.soundtrack.checked = profile.soundtrack
+  for (const key of volumeKeys) ui[key].value = Math.round(profile[key] * 100)
   ui.quality.value = profile.quality
   ui.comfort.checked = profile.comfort
   function drawOutfits() {
@@ -579,14 +597,17 @@ function bindInput() {
   ui.settings.addEventListener('click', openSettings)
   ui['close-settings'].addEventListener('click', () => ui.preferences.close())
   ui.preferences.addEventListener('close', () => ui.settings.focus())
-  for (const key of ['sfx', 'soundtrack', 'quality', 'comfort']) {
+  for (const key of volumeKeys) {
+    ui[key].addEventListener('input', () => {
+      profile[key] = ui[key].valueAsNumber / 100
+      sound.settings(profile)
+      saveProfile()
+    })
+  }
+  for (const key of ['quality', 'comfort']) {
     ui[key].addEventListener('change', () => {
       profile[key] = key === 'quality' ? ui[key].value : ui[key].checked
       if (key === 'quality') resize()
-      else if (key !== 'comfort') {
-        sound.settings(profile)
-        sound.unlock()
-      }
       saveProfile()
     })
   }
@@ -632,7 +653,10 @@ function bindInput() {
       if (gesture?.id === event.pointerId) gesture = undefined
     })
   }
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && mode === 'running') setMode('paused')
-  })
+  const background = () => {
+    if (mode === 'running') setMode('paused')
+    else sound.pause()
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) background() })
+  window.addEventListener('pagehide', background)
 }

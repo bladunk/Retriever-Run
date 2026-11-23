@@ -85,7 +85,10 @@ test('quality caps resolution and adapts down and up after sustained frame press
 test('prior profiles retain records, cosmetics and settings with comfort enabled by default', () => {
   const old = { score: 810, distance: 608, best: 911, farthest: 631, retrieves: 4, streak: 23,
     outfit: 'copper', quality: 'high', sfx: false, soundtrack: true }
-  assert.deepEqual(normalizeProfile(old), { ...old, comfort: true })
+  const { sfx, soundtrack, ...progress } = old
+  assert.deepEqual(normalizeProfile(old), {
+    ...progress, comfort: true, masterVolume: .9, musicVolume: .55, wildlifeVolume: 0, effectsVolume: 0,
+  })
   assert.equal(normalizeProfile({ ...old, comfort: false, quality: 'balanced' }).comfort, false)
   assert.equal(normalizeProfile({ quality: 'balanced' }).quality, 'balanced')
 })
@@ -105,7 +108,7 @@ test('the compressed Labrador includes an actual skin, embedded coat and each po
 test('wildlife continues to recycle moving geese with independently flapping wings', () => {
   const scene = new Scene()
   const calls = []
-  const update = createWildlife(scene, (bird) => calls.push(bird))
+  const update = createWildlife(scene, (bird, cue) => calls.push({ bird, ...cue }))
   update(1, 12, false, true)
   const wings = scene.children[2]
   const initial = new Matrix4()
@@ -116,8 +119,16 @@ test('wildlife continues to recycle moving geese with independently flapping win
   wings.getMatrixAt(0, later)
   assert.notDeepEqual(later.elements, initial.elements)
   assert.equal(scene.children[2], wings)
-  assert.deepEqual(calls, ['goose'])
+  assert.deepEqual(calls.map(cue => cue.bird), ['goose'])
+  assert.ok(calls[0].distance > 20)
   update(14, 12, false, false)
   assert.equal(wings.visible, false)
   assert.equal(scene.children[8].visible, true)
+  update(14.1, 12, false, true)
+  update(16.4, 12, false, true)
+  update(16.6, 13, false, true)
+  assert.deepEqual(calls.map(cue => cue.bird), ['goose', 'mallard', 'mallard'])
+  assert.equal(calls[2].wings, true)
+  assert.equal(calls[2].vocal, false)
+  assert.ok(calls[2].distance < calls[1].distance)
 })
