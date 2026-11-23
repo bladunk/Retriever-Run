@@ -1,25 +1,14 @@
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, medals, patches } from './honors.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
-
-const numbers = new Intl.NumberFormat()
-const dates = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
-const number = value => numbers.format(Math.floor(value))
-const meters = value => number(value) + ' m'
-const date = value => dates.format(new Date(value))
+import { campSwitch, worldwideBoard } from './camp-ui.js'
+import { node, number, meters, date } from './lodge-elements.js'
 
 function duration(seconds) {
   const total = Math.floor(seconds)
   const minutes = Math.floor(total / 60)
   return (minutes >= 60 ? Math.floor(minutes / 60) + 'h ' : '') +
     (minutes ? (minutes % 60) + 'm ' : '') + total % 60 + 's'
-}
-
-function node(tag, text, className) {
-  const element = document.createElement(tag)
-  if (text != null) element.textContent = text
-  if (className) element.className = className
-  return element
 }
 
 function rows(items) {
@@ -211,7 +200,7 @@ export function fillReport(ui, report, outfitUnlocks) {
   }))
 }
 
-export function createLodgeUI(ui, lodge, { onPlayer, onOpen, onClose }) {
+export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose }) {
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
   const tabs = [...dialog.querySelectorAll('[role=tab]')]
@@ -227,11 +216,23 @@ export function createLodgeUI(ui, lodge, { onPlayer, onOpen, onClose }) {
       tab.setAttribute('aria-selected', String(active))
       tab.tabIndex = active ? 0 : -1
     }
-    const content = room === 'trophies' ? trophies(player) : room === 'board' ? leaderboard(lodge, metric, (value) => {
+    function selectMetric(value) {
       metric = value
       renderRoom()
-      panel.querySelector('[data-metric=' + value + ']').focus({ preventScroll: true })
-    }) : room === 'journal' ? journal(player) : personalRecords(player)
+      panel.querySelector('[data-metric=' + value + ']')?.focus({ preventScroll: true })
+    }
+    function selectRoom(value, focus = false) {
+      room = value
+      renderRoom()
+      if (focus) tabs.find(tab => tab.dataset.room === value).focus({ preventScroll: true })
+    }
+    let content
+    if (room === 'board' || room === 'worldwide') {
+      const isWorldwide = room === 'worldwide'
+      const switcher = campSwitch(isWorldwide, () => selectRoom('board', true), () => selectRoom('worldwide', true))
+      content = isWorldwide ? [switcher, worldwideBoard(camp, player, metric, selectMetric)]
+        : [switcher, ...leaderboard(lodge, metric, selectMetric)]
+    } else content = room === 'trophies' ? trophies(player) : room === 'journal' ? journal(player) : personalRecords(player)
     panel.replaceChildren(...content)
     panel.scrollTop = 0
   }
@@ -282,6 +283,11 @@ export function createLodgeUI(ui, lodge, { onPlayer, onOpen, onClose }) {
     })
   }
 
+  function onConnectivity() {
+    if (dialog.open && room === 'worldwide') renderRoom()
+  }
+  window.addEventListener('online', onConnectivity)
+  window.addEventListener('offline', onConnectivity)
   ui['close-lodge'].addEventListener('click', () => dialog.close())
   dialog.addEventListener('close', () => {
     onClose()
