@@ -1,5 +1,6 @@
 import { seededRandom } from './trail.js'
-import { difficultyAt, director, distanceAtTime, speedAtTime } from './difficulty.js'
+import { courseStages, director, distanceAtTime, speedAtTime } from './difficulty.js'
+import { regionAt } from './expedition.js'
 export { difficultyAt, difficultyCurve, director, distanceAtTime, speedAt, speedAtTime } from './difficulty.js'
 
 import { jumpDuration, jumpHeight, laneWidth, obstacleVolumes, slideDuration, traceContact } from './collision.js'
@@ -7,7 +8,8 @@ export { jumpDuration, laneWidth, obstacleOffset, slideDuration } from './collis
 
 export const powerDuration = 6
 export const laneResponse = 17
-export const reactionWindow = .38
+export const reactionWindow = .42
+export const gateGrace = .050
 const lanes = [-1, 0, 1]
 const types = ['log', 'fence', 'puddle', 'branch', 'root', 'tree']
 const bonuses = ['mallard', 'pheasant', 'call', 'decoy']
@@ -41,7 +43,10 @@ export function getHeight(run) {
 export function advance(run, dt, rules = director) {
   const previous = run.distance
   const speed = run.speed
-  run.elapsed += dt
+  const elapsed = run.elapsed + dt
+  const second = Math.round(elapsed)
+  // Exact fixed-step anniversaries should stay exact after thousands of sums.
+  run.elapsed = Math.abs(elapsed - second) < 1e-9 ? second : elapsed
   run.speed = speedAtTime(run.elapsed, rules)
   run.distance += (speed + run.speed) * .5 * dt
   run.x += (run.lane * laneWidth - run.x) * (1 - Math.exp(-laneResponse * dt))
@@ -110,12 +115,14 @@ export function validateRow(previous, row, maxSpeed, minSpeed = 11) {
     if (!item.wide) return false
     const duration = item.type === 'branch' ? slideDuration : jumpDuration
     if (lastGate && (item.distance - lastGate.distance) / maxSpeed < (duration + lastGate.duration) / 2 + reactionWindow) return false
-    for (let offset = -1.85; offset <= 1.85; offset += .085) {
-      sample.distance = item.distance + offset
-      const remaining = duration / 2 - offset / minSpeed
-      sample.jump = item.type === 'branch' ? 0 : remaining
-      sample.slide = item.type === 'branch' ? remaining : 0
-      if (traceContact(sample, sample, item)) return false
+    for (const timing of [-gateGrace, gateGrace]) {
+      for (let offset = -1.85; offset <= 1.85; offset += .105) {
+        sample.distance = item.distance + offset
+        const remaining = duration / 2 - offset / minSpeed + timing
+        sample.jump = item.type === 'branch' ? 0 : remaining
+        sample.slide = item.type === 'branch' ? remaining : 0
+        if (traceContact(sample, sample, item)) return false
+      }
     }
     lastGate = { distance: item.distance, duration }
   }
@@ -131,17 +138,20 @@ export function createCourse(seed = 1, rules = director) {
   let previous = { at: 0, lane: 0 }
   let nextGoose = between(rules.firstGoose)
   let nextPair = rules.pairAfter
-  let pairPending = false
+  let pairPending
+  let requiredLane = false
 
   return function nextRow() {
     const at = distanceAtTime(time, rules)
-    const level = (difficultyAt(time, rules.curve) - rules.curve[0][1]) /
-      (rules.curve.at(-1)[1] - rules.curve[0][1])
+    const stage = regionAt(time).index
+    const [baseGap, blockChance, gateChance, chainChance] = courseStages[stage]
     const maximum = speedAtTime(time + .35, rules)
     const reachable = lanes.filter((slot) => laneReachable(previous, at, slot, maximum))
     const goose = time >= nextGoose
-    const pairedJump = pairPending
-    const lane = index < 2 ? 0 : pick(reachable.length ? reachable : [previous.lane])
+    const gate = !goose && (index === 1 || pairPending ||
+      index > 6 && !requiredLane && nextGoose - time > 1.65 && random() < gateChance)
+    const nextLanes = stage >= 4 && requiredLane ? reachable.filter(slot => slot !== previous.lane) : reachable
+    const lane = index < 2 || gate ? previous.lane : pick(nextLanes.length ? nextLanes : reachable.length ? reachable : [previous.lane])
     const row = { at, time, lane, entities: [] }
     const add = (type, slot, distance, hazard = false, wide = false) => {
       row.entities.push({ type, lane: slot, distance, hazard, wide })
@@ -163,23 +173,26 @@ export function createCourse(seed = 1, rules = director) {
       }
       row.end = row.entities.at(-1).distance
       add('treat', lane, at)
-    } else if (index === 1 || pairedJump ||
-      (index > 6 && nextGoose - time > 1.65 && random() < .10 + level * .13)) {
-      const type = index > 5 && !pairedJump && random() < .29 + level * .21 ? 'branch' : 'stream'
+    } else if (gate) {
+      const type = pairPending || (index > 5 && random() < .32 + stage * .025 ? 'branch' : 'stream')
       add(type, 0, at, true, true)
       row.gate = { distance: at, duration: type === 'branch' ? slideDuration : jumpDuration }
       add('treat', lane, at + 3.6)
       add('treat', lane, at + 5.6)
     } else {
-      const count = random() < .18 + level * .76 ? 2 : 1
-      for (let i = 0; i < count; i++) add(index > 6 && random() < level * .32 ? 'drift' : pick(types), blocked[i], at, true)
+      const count = requiredLane && row.lane !== previous.lane || random() < blockChance ? 2 : 1
+      for (let i = 0; i < count; i++) add(index > 6 && random() < stage * .035 ? 'drift' : pick(types), blocked[i], at, true)
       for (let i = -1; i <= 1; i++) {
         add(i === 0 && (index === 4 || random() < .12) ? pick(bonuses) : 'treat', lane, at + i * 1.72)
       }
     }
 
-    let gap = index === 0 ? rules.openingGap : rules.earlyGap + (rules.lateGap - rules.earlyGap) * level + random() * rules.spacingVariation
-    pairPending = false
+    let gap = index === 0 ? rules.openingGap : baseGap +
+      (rules.earlyGap - director.earlyGap) * (1 - stage / 9) + (rules.lateGap - director.lateGap) * stage / 9 +
+      random() * rules.spacingVariation
+    const wasPaired = Boolean(pairPending)
+    pairPending = undefined
+    requiredLane = false
     if (!validateRow(previous, row, maximum, speedAtTime(Math.max(0, time - .5), rules))) {
       row.lane = previous.lane
       row.entities = [{ type: 'treat', lane: row.lane, distance: at, hazard: false, wide: false }]
@@ -188,13 +201,15 @@ export function createCourse(seed = 1, rules = director) {
     } else if (goose) {
       nextGoose = time + between(rules.gooseInterval)
       gap = Math.max(gap, 1.22)
-    } else if (!pairedJump && row.entities[0].type === 'stream' && time >= nextPair &&
-      nextGoose - time > 4 && random() < rules.pairChance) {
-      pairPending = true
+    } else if (!wasPaired && row.gate && time >= nextPair && nextGoose - time > 4 &&
+      random() < Math.max(rules.pairChance * Number(row.entities[0].type === 'stream'), chainChance)) {
+      pairPending = stage >= 4 && random() < .82
+        ? (row.entities[0].type === 'stream' ? 'branch' : 'stream') : row.entities[0].type
       nextPair = time + 17
-      gap = Math.max(gap, rules.pairGap)
+      gap = Math.max(gap, stage >= 7 ? 1.39 : rules.pairGap)
     } else if (row.gate) {
-      gap = Math.max(gap, 1.08)
+      requiredLane = stage >= 4
+      gap = Math.max(gap, requiredLane ? 1.17 : 1.10)
     }
     previous = { at, lane: row.lane, end: row.end, gate: row.gate ?? previous.gate }
     time += gap

@@ -17,6 +17,7 @@ import { createCampTransport } from './camp-transport.js'
 import { createWorldwideCamp } from './worldwide-camp.js'
 import { submissionMessages } from './camp-ui.js'
 import { createLodgeUI, fillReport, insignia, patchName } from './lodge-ui.js'
+import { createRunStatistics, deathCause } from './field-stats.js'
 import { careerStanding } from './career.js'
 import { careerLine, createPromotion, fillCareerReport } from './career-ui.js'
 import { createOnboarding, restoreEnrollment } from './camp-onboarding.js'
@@ -27,8 +28,9 @@ import {
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
 import { journalIssues } from './career-integrity.js'
-import { regionAt } from './expedition.js'
-import { habitatAt, placeOnTrail, surfaceAt, trailHeight } from './trail.js'
+import { expeditionRegions, regionAt } from './expedition.js'
+import { distanceAtTime, speedAtTime } from './difficulty.js'
+import { placeOnTrail, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
@@ -70,10 +72,16 @@ let previousStride = 0
 let frozen = false
 let calloutAnimation
 
-const diagnosticsRequested = new URLSearchParams(location.search).get('debug') === 'collision'
+const flags = new URLSearchParams(location.search)
+const previewRegion = import.meta.env.DEV || import.meta.env.MODE === 'migration-qa'
+  ? expeditionRegions[Number(flags.get('preview')) - 1] : undefined
+const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
+  Math.min(previewRegion.index === 9 ? 180 : 29.95, Number(flags.get('offset')) || 0)) : 0
+const diagnosticsRequested = Boolean(previewRegion) || flags.get('debug') === 'collision'
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
 const camp = createWorldwideCamp(diagnosticsRequested ? null : createCampTransport())
 ui.game.toggleAttribute('data-practice', diagnosticsRequested)
+if (previewRegion) document.querySelector('.practice-status').textContent = 'Territory preview · progress disabled'
 if (!diagnosticsRequested) {
   restoreEnrollment(lodge, camp)
   window.addEventListener('online', () => camp.syncPending())
@@ -270,7 +278,7 @@ function initialize() {
       }
     }
     let alpha = 1
-    if (mode === 'running' && terrain.readyAt(run.distance)) {
+    if (mode === 'running' && !document.hidden && terrain.readyAt(run.distance)) {
       alpha = clock.advance(wall, stepOnTerrain)
       updateHud()
     }
@@ -318,10 +326,10 @@ function initialize() {
       glow.scale.set(pulse, pulse, 1)
       const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather, distance)
       terrain.update(distance, visualTime, weather, preset.detail)
-      wildlife(visualTime, distance, preset.detail === 0, mode === 'running')
+      wildlife(visualTime, distance, preset.detail === 0, mode === 'running', display.elapsed)
       if (!idle && !frozen) {
         updateConditions(weather.name)
-        sound.ambience(weather, visualTime, surfaceAt(distance) === 'mud', !display.jump && !display.slide)
+        sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
       }
       spray.update(distance, visualTime)
       positionEntities(visualTime, distance)
@@ -414,7 +422,8 @@ function positionEntities(time, distance) {
 
 function runningSurface() {
   if (splashUntil > run.distance) return 'splash'
-  return habitatAt(run.distance) === 'Prairie Potholes' ? 'grass' : surfaceAt(run.distance)
+  const { kind } = regionAt(run.elapsed)
+  return kind === 'field' || kind === 'pothole' ? 'grass' : kind === 'river' || kind === 'alpine' ? 'dirt' : 'mud'
 }
 
 function onAction(move) {
@@ -552,11 +561,14 @@ function announce(message, priority) {
 }
 
 function updateConditions(weather) {
-  const habitat = regionAt(run.distance).name
+  const habitat = regionAt(run.elapsed).name
+  if (ui.habitat.textContent !== habitat) {
+    ui.habitat.textContent = habitat
+    if (!reducedMotion.matches) ui.habitat.animate([{ color: '#ffe4a2' }, { color: '#fff3de' }], 1800)
+  }
   const condition = habitat + weather
   if (lastCondition === condition) return
   lastCondition = condition
-  ui.habitat.textContent = habitat
   ui.weather.textContent = weather
 }
 
@@ -586,6 +598,7 @@ function updateHud() {
 }
 
 function checkPatches() {
+  if (previewRegion) return
   if (run.elapsed >= nextPatchCheck) {
     nextPatchCheck = run.elapsed + .30
     if (!diagnosticsRequested && journalIssues(lodge.current()).length) return
@@ -646,7 +659,10 @@ function setMode(value, options = {}) {
   const paused = value === 'paused'
   let newRecord = false
   if (over && oldMode !== 'over') {
-    const report = lodge.finalize(runPlayer, runStatistics, run, contact.type)
+    const report = previewRegion
+      ? { ...runStatistics.preview(run), cause: deathCause(contact.type), hazard: contact.type, nickname: 'Territory preview',
+        improved: [], earned: [], placements: {}, gear: [], preview: true }
+      : lodge.finalize(runPlayer, runStatistics, run, contact.type)
     if (report) {
       profile = lodge.current().profile
       fillReport(ui, report)
@@ -685,7 +701,7 @@ function setMode(value, options = {}) {
   ui['open-lodge'].hidden = !title
   if (title) showTitleRecord()
   else ui.record.hidden = true
-  ui.eyebrow.textContent = title ? 'THE NORTHERN EXPEDITION' : regionAt(run.distance).name.toUpperCase()
+  ui.eyebrow.textContent = title ? 'THE GREAT MIGRATION' : regionAt(run.elapsed).name.toUpperCase()
   ui['menu-title'].innerHTML = title ? 'Retriever<br><em>Run</em>' : '<em>Paused</em>'
   ui['menu-copy'].textContent = title ? 'Follow a yellow Lab through the cattails, creek beds, and flooded timber.'
     : 'Your run is held at ' + Math.floor(run.distance) + ' m.'
@@ -720,7 +736,11 @@ function resetTrail(seed) {
   run = newRun()
   nextRow = createCourse(seed)
   row = nextRow()
-  debug?.depart(run)
+  if (previewRegion) {
+    run.elapsed = previewElapsed
+    run.distance = distanceAtTime(run.elapsed)
+    run.speed = speedAtTime(run.elapsed)
+  } else debug?.depart(run)
   while (row.at < run.distance - 2) row = nextRow()
   stride = previousStride = 0
   ticks = 0
@@ -743,7 +763,7 @@ function start() {
       (!lodge.current().enrollment && !diagnosticsRequested)) return
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
-  runStatistics = lodge.beginRun()
+  runStatistics = previewRegion ? createRunStatistics() : lodge.beginRun()
   runPermit = camp.beginRun(runPlayer)
   runMetric = lodgeUI.rivalMetric()
   runRival = diagnosticsRequested ? null : camp.peekRival(runPlayer, runMetric)

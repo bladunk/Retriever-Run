@@ -155,15 +155,15 @@ export function createWildlife(scene, call) {
   let lastEvent = -1
   let lastFlyby = -1
   let lastTime = 0
-  return function update(time, distance, lowQuality, audible) {
+  return function update(time, distance, lowQuality, audible, elapsed = time) {
     if (time < lastTime) lastEvent = lastFlyby = -1
     lastTime = time
     const clock = time + 3
     const event = Math.floor(clock / 14)
     const progress = (clock % 14) / 10
-    const region = regionAt(distance).key
-    const group = event % flocks.length
-    const preferred = region === 'snow' ? group % 2 : region === 'river' && group === 3 ? 0 : group
+    // Hold a flight's species for its entire pass, even across territory entry.
+    const { birds } = regionAt(elapsed - clock % 14 + 3)
+    const preferred = species.findIndex(({ name }) => name === birds[event % birds.length])
     const bird = flocks[preferred].info.name
     const direction = event % 2 === 0 ? 1 : -1
     const landscapeOffset = centerAt(distance + 27) - centerAt(distance)

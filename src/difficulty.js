@@ -1,4 +1,5 @@
-export const difficultyCurve = [[0, 2], [15, 3.4], [30, 5.1], [60, 7.1], [90, 8.6], [120, 9.5]]
+export const difficultyCurve = [[0, 2], [15, 3.4], [30, 5.1], [60, 6.1], [90, 6.8],
+  [120, 7.4], [150, 8], [180, 8.5], [210, 8.9], [240, 9.25], [270, 9.5]]
 
 export const director = {
   curve: difficultyCurve,
@@ -6,9 +7,9 @@ export const director = {
   speedGain: 2.36,
   openingTime: 1.64,
   openingGap: 1.63,
-  earlyGap: 1.43,
-  lateGap: .91,
-  spacingVariation: .19,
+  earlyGap: 1.55,
+  lateGap: .94,
+  spacingVariation: .14,
   pairAfter: 35,
   pairGap: 1.52,
   pairChance: .30,
@@ -53,3 +54,10 @@ export function distanceAtTime(seconds, rules = director) {
   const [end, value] = rules.curve.at(-1)
   return distance + (seconds - end) * speedAt(value, rules)
 }
+
+export const courseStages = [
+  // Gap, second blocked lane, full-width action, and following action.
+  [1.55, .14, .09, 0], [1.40, .27, .16, .08], [1.32, .39, .20, .12],
+  [1.24, .50, .25, .19], [1.18, .63, .28, .22], [1.13, .73, .31, .26],
+  [1.08, .80, .33, .30], [1.04, .90, .37, .39], [1.00, .94, .41, .48], [.94, 1, .44, .55],
+]

@@ -4,6 +4,7 @@ import { hazardFrame, obstacleVolumes, playerFrame, traceContact } from '../src/
 import { act, advance, jumpDuration, laneWidth, newRun, slideDuration } from '../src/runner.js'
 import { createFixedClock, samplePose, tickSeconds } from '../src/timing.js'
 import { buildTile } from '../src/terrain-geometry.js'
+import { expeditionRegions } from '../src/expedition.js'
 import { centerAt, segmentLength, surfaceAt } from '../src/trail.js'
 
 const fixture = (type, distance = 100, lane = 0, wide = false) => ({ type, distance, lane, wide, hazard: true })
@@ -150,10 +151,11 @@ test('natural surface tiles align at boardwalk-free boundaries and pack transfer
 test('the same streamed habitat reproduces shore planting, water depths and tree locations', () => {
   const marsh = buildTile(3)
   assert.deepEqual(buildTile(3), marsh)
-  assert.deepEqual([3, 12, 22, 32].map(index => buildTile(index).plantType), [0, 2, 1, 2])
+  const examples = [0, 5, 7, 9].map(region => buildTile(Math.ceil(expeditionRegions[region].marker / segmentLength)))
+  assert.deepEqual(examples.map(tile => tile.plantType), [0, 2, 1, 2])
   assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth > .35))
   assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth === 0))
   assert.notDeepEqual(buildTile(4).reeds, marsh.reeds)
-  assert.deepEqual([3, 12, 22, 32].map(index => buildTile(index).treeStyle), [1, 0, 2, 3])
-  assert.notDeepEqual(buildTile(32).ground.buffers.color.values, buildTile(3).ground.buffers.color.values)
+  assert.deepEqual(examples.map(tile => tile.treeStyle), [0, 0, 2, 3])
+  assert.notDeepEqual(examples[3].ground.buffers.color.values, marsh.ground.buffers.color.values)
 })

@@ -1,7 +1,7 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { createLeafSpray } from './marsh-plants.js'
-import { expeditionBlend, regionAt, snowLevel } from './expedition.js'
+import { expeditionBlend, regionAtDistance, snowLevel } from './expedition.js'
 import { dressNorthernBank } from './expedition-props.js'
 import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
 
@@ -83,9 +83,25 @@ function shoreHeight(region, distance, x) {
   const ripple = .13 * Math.sin(distance * .29 + x * .53) + .12 * Math.sin(distance * .11 - x * .51)
   const wet = region.water + ripple
   const width = 2.43 + Math.sin(distance * .061 + cross) * .88
-  if (region.key === 'timber') return [wet, width]
   const bank = Math.sin(distance * .076 + cross + x * .098)
-  if (region.key === 'prairie') {
+  if (region.kind === 'tidal') {
+    const tidalCreek = Math.sin((edge + 1.8 * Math.sin(distance * .053 + cross)) * .61)
+    return [wet + tidalCreek * .37, width * .79]
+  }
+  if (region.kind === 'swamp') return [wet + bank * (region.key === 'cypress' ? .17 : .07), width]
+  if (region.kind === 'channel') {
+    const sand = Math.max(0, 1 - Math.abs(edge - 12 - bank * 4) / 4.8)
+    return [wet + sand * .91 + Math.max(0, edge - 23) * .023, width * .86]
+  }
+  if (region.kind === 'field') {
+    const slope = Math.min(1, Math.max(0, (edge - 5) / 10))
+    return [wet + slope * (.95 + .38 * bank + .11 * Math.cos(edge * 1.1)), width * 1.42]
+  }
+  if (region.kind === 'slough') {
+    const meadow = Math.sin(edge * .39 + distance * .041 + cross)
+    return [wet + Math.max(0, meadow) ** 2 * .78 + Math.max(0, edge - 21) * .034, width + .28]
+  }
+  if (region.kind === 'pothole') {
     const pothole = Math.cos(distance * .048 + cross) * .57 + Math.sin(edge * .29 + distance * .046) * .53
     const blindTile = Math.round((distance - 14) / 150)
     const pondSide = blindTile * 5 % 14 === 0 ? 1 : -1
@@ -96,21 +112,21 @@ function shoreHeight(region, distance, x) {
   }
   const bar = .58 * Math.sin(edge * .43 - .65 + bank * .88)
   const upland = Math.min(1, Math.max(0, (edge - 12) / 30))
-  return [wet + bar * .72 + upland * (region.key === 'river' ? 1.55 : .88), width + .31 * bank]
+  const bluff = region.kind === 'alpine' ? 1.3 + Math.sin(distance * .048) * .43 : region.key === 'boreal' ? 1.75 : 1.28
+  return [wet + bar * .72 + upland * bluff, width + .31 * bank]
 }
 
 export function buildTile(index) {
   const start = index * segmentLength
-  const colors = regionAt(start + segmentLength * .5)
+  const colors = regionAtDistance(start + segmentLength * .5)
   const { key } = colors
-  const north = key === 'river' || key === 'snow'
-  const winter = key === 'snow'
+  const winter = colors.snow > .6
   const random = seededRandom((index + 77) * 4871)
   const between = (min, max) => min + random() * (max - min)
   const tint = new T.Color()
   const list = []
   const trees = []
-  const plantType = key === 'timber' ? 0 : key === 'river' ? 1 : 2
+  const plantType = colors.plant
   const base = centerAt(start)
 
   function warp(array) {
@@ -243,7 +259,7 @@ export function buildTile(index) {
   land.computeVertexNormals()
 
   let water = null
-  if (colors.water) {
+  if (colors.water < 0) {
     const plane = new T.PlaneGeometry(99, segmentLength, 28, 30)
     plane.rotateX(-Math.PI / 2)
     plane.translate(0, -.55, -segmentLength / 2)
@@ -291,24 +307,26 @@ export function buildTile(index) {
       add(stone, i % 3 ? 0x655345 : 0x9a6638, side * between(.2, 3.03), -.005,
         between(-29.6, -.4), between(.035, .085), .014, between(.043, .10), 0, i)
     }
-    const totalTrees = key === 'prairie' ? 2 : north ? 7 : 6 + (side === 1 ? 2 : 0)
+    const totalTrees = colors.treesPerSide
     for (let i = 0; i < totalTrees; i++) {
       const z = between(-29.1, -.8)
-      const willow = !north && key === 'timber' && i % 4 === 1
+      const conifer = colors.conifers > 0 && (i + (side > 0 ? 1 : 0)) % 7 / 7 < colors.conifers
+      const cypress = key === 'cypress'
+      const willow = (key === 'timber' || key === 'gulf' || key === 'flyway') && i % 4 === 1
       const dead = key === 'timber' && i > 0 && (i % 3 === 0 || random() < .13)
       // Interleave closer landmark trees with an offset, broken treeline.
       const x = side * (i === 0 ? between(7, 9.9) : between(10 + i * .57, 38))
-      const h = key === 'prairie' ? between(1.9, 4.3) : willow ? between(3.9, 6.9)
-        : dead ? between(4.3, 10.2) : between(4.4, 9.4)
+      const h = colors.treeScale * (key === 'prairie' || key === 'dakota' ? between(1.9, 4.3) : willow ? between(3.9, 6.9)
+        : dead ? between(4.3, 10.2) : between(4.4, 9.4))
       const ground = earth(start - z, x)
-      const bark = dead ? 0x6b6254 : willow ? 0x655a46 : 0x76533d
+      const bark = dead || key === 'boreal' ? 0x9a9785 : willow ? 0x655a46 : 0x76533d
       const at = start - z
       const heading = headingAt(at)
       {
         trees.push(centerAt(at) - base + Math.cos(heading) * x, ground, z - Math.sin(heading) * x, h,
           i * 2.4 + side, i % 3)
       }
-      if (north) {
+      if (conifer) {
         branch(0x5d4f43, x, ground, z, x + .14, ground + h, z - .16, h * .030)
         for (let whorl = 0; whorl < 6; whorl++) {
           const t = whorl / 6
@@ -321,6 +339,24 @@ export function buildTile(index) {
             add(needles, whorl % 3 ? 0x4b6865 : 0x597676, x + .07, level - h * .068, z,
               bough * .91, h * .142, bough * .83, .08, i * 1.3 + whorl * .92)
           }
+        }
+        continue
+      }
+      if (cypress) {
+        const roots = Math.max(ground, waterline)
+        branch(bark, x, ground - .36, z, x, roots + h * .23, z, h * .083)
+        branch(bark, x, roots + h * .14, z, x + .16, roots + h, z, h * .042)
+        for (let knee = 0; knee < 5; knee++) {
+          const angle = knee * 2.4 + i
+          const radius = .64 + knee * .22
+          const rootX = x + Math.cos(angle) * radius, rootZ = z + Math.sin(angle) * radius
+          branch(0x695b48, rootX, roots - .32, rootZ, rootX + .08, roots + .17 + knee * .045, rootZ, .075)
+        }
+        for (let tier = 0; tier < 3; tier++) {
+          const w = h * (.25 - tier * .039)
+          const y = roots + h * (.66 + tier * .112)
+          add(canopy, colors.trees, x, y, z, w, w * .47, w * .91, .08, i + tier)
+          add(sprays[1], 0x77846b, x + w * .60, y - .32, z, w * .92, w * .87, w * .72, .1, i + tier)
         }
         continue
       }
@@ -363,7 +399,7 @@ export function buildTile(index) {
   }
 
   // Weathered blinds and floating decoys sit outside the playable lanes.
-  if ((key === 'timber' && index % 5 === 0) || (key === 'prairie' && index % 5 === 0)) {
+  if (colors.landmark === 'blind' && index % 5 === 0) {
     const side = index % 14 === 0 ? 1 : -1
     const x = side * 7.1
     const z = -13.5
@@ -464,7 +500,8 @@ export function buildTile(index) {
     tint.setHex(0xf4e6c3).lerp(vegetationTint, .28 + random() * .33).toArray(reeds, n + 3)
   }
   return { index, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds,
-    plantType, trees: new Float32Array(trees), treeStyle: winter ? 3 : north ? 2 : key === 'timber' ? 1 : 0, chimney }
+    plantType, trees: new Float32Array(trees), treeStyle: winter ? 3 : colors.conifers > .48 ? 2
+      : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney }
 }
 
 function pack(geometry) {
@@ -506,7 +543,7 @@ export function createDistantTree(style) {
     geometry.setAttribute('color', new T.BufferAttribute(colors, 3))
     pieces.push(geometry)
   }
-  if (style >= 2) {
+  if (style === 2 || style === 3) {
     piece(twig, 0x605647, 0, .42, 0, .029, .87, .029)
     for (let tier = 0; tier < 4; tier++) {
       const w = .23 - tier * .043
@@ -521,7 +558,11 @@ export function createDistantTree(style) {
   piece(twig, bark, 0, .44, 0, .052, .89, .043, .05)
   piece(twig, bark, .118, .66, .028, .027, .49, .025, -.53)
   piece(twig, bark, -.119, .72, -.041, .025, .47, .026, .47)
-  if (style !== 1) {
+  if (style === 4) {
+    piece(stone, 0x73826b, -.08, .71, 0, .27, .09, .22)
+    piece(stone, 0x667861, .07, .83, -.02, .24, .10, .22)
+    piece(stone, 0x78816a, 0, .93, .03, .18, .085, .16)
+  } else if (style !== 1) {
     piece(stone, 0xb3a17c, -.12, .81, -.04, .22, .16, .21, .21)
     piece(stone, 0xa8936f, .15, .77, .052, .23, .14, .20, -.17)
     piece(stone, 0xc4b791, .015, .93, 0, .20, .15, .17, .09)

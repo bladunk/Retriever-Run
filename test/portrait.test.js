@@ -109,7 +109,7 @@ test('wildlife continues to recycle moving geese with independently flapping win
   const scene = new Scene()
   const calls = []
   const update = createWildlife(scene, (bird, cue) => calls.push({ bird, ...cue }))
-  update(1, 12, false, true)
+  update(84, 12, false, true)
   const wings = scene.children[1]
   const tips = scene.children[2]
   const initial = new Matrix4()
@@ -120,7 +120,7 @@ test('wildlife continues to recycle moving geese with independently flapping win
   const tipLater = new Matrix4()
   tips.getMatrixAt(0, tipInitial)
   tipInitial.premultiply(initial.clone().invert())
-  update(1.14, 12, false, true)
+  update(84.14, 12, false, true)
   wings.getMatrixAt(0, later)
   assert.notDeepEqual(later.elements, initial.elements)
   tips.getMatrixAt(0, tipLater)

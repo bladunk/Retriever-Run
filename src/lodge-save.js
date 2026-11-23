@@ -3,6 +3,7 @@ import { causes, counters, createRunStatistics } from './field-stats.js'
 import { awardPatches, patches } from './honors.js'
 import { applyRunXP, careerStanding, legacyLevel, normalizeCareer, serviceCredit } from './career.js'
 import { journalIssues, reviewSavedRank } from './career-integrity.js'
+import { expeditionRegions, migrationSecondsByTerritory, regionAt, territorySeconds } from './expedition.js'
 import { classicGear, kennelCatalog, legacyGear, newGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 
 export const saveKey = 'retriever-run.record'
@@ -44,6 +45,13 @@ function normalizePlayer(raw, id, schema) {
       return Array.isArray(dates) ? [[patch.id, dates.filter(validDate).slice(0, patch.goals.length)]] : []
     })),
   }
+  const migrationDuration = player.stats.runs ? Math.min(measure(raw?.migration?.duration), player.records.duration) : 0
+  player.migration = {
+    duration: migrationDuration,
+    farthest: migrationDuration > 0 ? regionAt(migrationDuration).index + 1 : 0,
+    seconds: expeditionRegions.map((region, index) => Math.min(measure(raw?.migration?.seconds?.[index]),
+      player.stats.playtime, index < expeditionRegions.length - 1 ? player.stats.runs * territorySeconds : Infinity)),
+  }
   player.enrollment = ['guest', 'worldwide', 'returning'].includes(raw?.enrollment)
     ? raw.enrollment : legacy ? 'returning' : null
   const priorLevel = schema === 2 ? legacyLevel(raw?.career?.xp) : undefined
@@ -84,6 +92,7 @@ function normalizeSave(raw) {
   for (const item of Array.isArray(raw?.entries) ? raw.entries : []) {
     if (!count(item?.id) || !known.has(item.player) || !validDate(item.date)) continue
     const fields = Object.fromEntries([...metrics, 'duration', ...counters].map(key => [key, measure(item[key])]))
+    if (count(item.territory) === regionAt(fields.duration).index + 1) fields.territory = item.territory
     entries.set(item.id, { id: item.id, player: item.player, date: item.date, ...fields })
   }
   const nextPlayer = Math.max(count(raw?.nextPlayer), Math.max(...known) + 1)
@@ -182,6 +191,13 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       statistics.failureStreak++
       statistics.distance += result.distance
       statistics.playtime += result.duration
+      if (!practice) {
+        player.migration.duration = Math.max(player.migration.duration, result.duration)
+        player.migration.farthest = Math.max(player.migration.farthest, result.territory)
+        for (const [index, seconds] of migrationSecondsByTerritory(result.duration).entries()) {
+          player.migration.seconds[index] += seconds
+        }
+      }
       statistics.points += result.score
       statistics.deathsBy[result.cause]++
       for (const key of counters) statistics[key] += result[key]
