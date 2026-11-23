@@ -96,6 +96,22 @@ The standalone GLB alone is **7.24×** the current model's triangles and **49.62
 - **Feasibility gate.** To reach the audit's 15k-triangle and 400 kB ceiling, the standalone file needs about **79% fewer triangles** and **97% fewer transfer bytes**. That means retopology or major decimation, a smaller shared atlas, clip trimming and compression. The improved close-up gives the art pass a useful reference, while the shipped model already meets the runtime envelope.
 - **Terms and scope.** The README in the supplied GLB package allows personal and commercial project use and restricts redistribution of the asset files themselves. The publisher explicitly offers a web export. Confirm the allowed browser delivery and repository distribution before any release. The FBX, Unity, and Blender packages exceeded the workspace’s 32 MiB per-file transfer limit. Neither those packages nor any vendor engine helpers were needed for this comparison. [Publisher listing and terms](https://feralmotion.itch.io/labrador)
 
+## Supplied Trees and Bush Pack
+
+Imported `trees-and-bush-pack-lowpoly.zip` into Blender 4.3.2 in a scratch workspace. The archive contains one FBX and eight separate image files. Blender measured **11 static meshes and 212 triangles total**. The complete set is **29.27 MB** expanded. Its eight images would take **56.22 MiB** under the RGBA8 full-mip estimate if all were resident, including the AO file. The texture footprint makes a selective re-export more valuable than geometry simplification.
+
+| Candidate | Source triangles | Assessment |
+| --- | ---: | --- |
+| `tree2` and `TreeSmall` | 12 each | Shortlist for the distant woodland layer. Both provide leafy outlines with trunks that held up in the 90–102 game-unit prototype. |
+| `pine1` and `Pine2` | 8 and 16 | Defer. Generic conifers add little to the marsh identity, and one of the source maps reaches 2,107 px on its long side. |
+| Seven bush meshes | 8–52 each | Defer for the first pass. The card planes are more conspicuous at bank distance. The set has no cattail, sedge, rush, or leafless snag substitute. |
+
+**Prototype.** Converted only the two broadleaf meshes to a 3,080 B GLB, resized and packed their cutouts into a shared 512px WebP (64,302 B), and remapped the UVs. Total asset bodies are **67,382 B**. The atlas estimate is **1.33 MiB** with RGBA8 mips. At a 390 × 844 CSS viewport both Linux Chromium and WebKit rendered the asset with alpha testing and depth writes. The far scene submitted 192 foliage triangles for 16 instances in two foliage draws, with one atlas. The close view exposed the intersecting planes and stronger photographic contrast. The isolated prototype used the game's sky and fog. Gameplay integration and on-device performance remain unmeasured.
+
+**Use in 4.4.** Trial an attributed subset as a replacement for some far baked crowns after the terrain groups are separated. Keep the existing near-bank vegetation and habitat dressing. Normalize pivots and heights, grade the atlas, keep masked instancing, and compare fill cost and fog transitions on iPhone before rollout. A low triangle count alone does not capture the fragment cost of overlapping cutout cards.
+
+**License and scope.** Sketchfab's public model metadata identifies EFX’s 212-face pack as **CC BY 4.0**. A release should credit EFX, link to the model and license, and record the atlas, UV, and scale edits. The prototypes and captures stayed in the scratch workspace. `vegetation.zip` exceeded the 32 MiB transfer limit, so its contents and license remain unassessed. [EFX source listing](https://sketchfab.com/3d-models/trees-and-bush-pack-lowpoly-f2a25ee70df440c9ab03d57aba2dc3f2) · [Publisher metadata](https://api.sketchfab.com/v3/models/f2a25ee70df440c9ab03d57aba2dc3f2) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
 ## Captures
 
 - [Current Labrador from two angles, locomotion poses, and confirmed vest spill](rig-study.webp).
