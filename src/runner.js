@@ -26,7 +26,9 @@ export function newRun(rules = director) {
 
 export function act(run, move) {
   if (move === 'left' || move === 'right') {
+    const previous = run.lane
     run.lane = Math.max(-1, Math.min(1, run.lane + (move === 'left' ? -1 : 1)))
+    return run.lane !== previous
   } else if (move === 'jump' && !run.jump && !run.slide) {
     run.jump = jumpDuration
     return true

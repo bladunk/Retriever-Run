@@ -136,8 +136,8 @@ test('spawn terrain is streamed off the main thread and obsolete packets cannot 
   }
   const geometry = { buffers: { position: { values: new Float32Array(9), itemSize: 3 } } }
   const packet = index => ({ index, water: null, reeds: new Float32Array(reedCount * 6),
-    ground: geometry, plantType: 0, trees: new Float32Array(0), detail: geometry, treeStyle: 0,
-    crops: new Float32Array(0), territory: 'gulf' })
+    ground: geometry, plantType: 0, trees: new Float32Array([8, 0, -14, 7, 0, 0, 0]), detail: geometry, treeStyle: 0,
+    crops: new Float32Array(0), territory: index >= 10 ? 'boreal' : 'gulf' })
   try {
     const { createTerrain } = await vite.ssrLoadModule('/src/terrain.js')
     const scene = new Scene()
@@ -166,6 +166,26 @@ test('spawn terrain is streamed off the main thread and obsolete packets cannot 
     assert.equal(scene.children.length, 7)
     const firstRemaining = sent.length - 1
     for (let index = firstRemaining; index < sent.length; index++) worker.onmessage({ data: packet(sent[index]) })
+
+    const grove = scene.children[10 % 7].children.find(mesh => mesh.name === 'Canopy instances')
+    const model = grove.geometry
+    const material = grove.material
+    assert.equal(material.transparent, false)
+    assert.equal(material.depthWrite, true)
+    assert.ok(material.alphaTest > 0)
+    const shader = { fragmentShader: '#include <fog_fragment>' }
+    material.onBeforeCompile(shader)
+    assert.match(shader.fragmentShader, /vFogDepth/)
+    assert.doesNotMatch(shader.fragmentShader, /discard|gl_FragCoord/)
+    for (const [meters, detail] of [[219, 0], [229, 2], [241, 1], [299, 1], [319, 0]]) {
+      terrain.update(meters, 2, weather, detail)
+      assert.equal(grove.geometry, model)
+      assert.equal(grove.material, material)
+      assert.equal(grove.visible, true)
+    }
+    assert.equal(terrain.readyAt(0), false)
+    terrain.update(0, 3, weather, 1)
+    assert.ok(terrain.readyAt(0) && terrain.readyAt(-1))
   } finally {
     TextureLoader.prototype.load = loadTexture
     if (originalWorker === undefined) delete globalThis.Worker

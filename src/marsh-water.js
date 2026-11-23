@@ -56,6 +56,7 @@ export const marshWater = new T.ShaderMaterial({
       lake = mix(lake, vec3(.081,.163,.181) * (.85 + deep*.22 + crossWave*.055), crossing * .86);
       lake *= 1. - .26 * (1. - smoothstep(.012, .095, depth));
       float rim = smoothstep(.015,.04,depth) * (1. - smoothstep(.073,.115,depth));
+      rim *= .77 + .23 * sin(dot(p, vec2(1.77,.97)) + broad * .41);
       lake += rim * (.5 + crossWave * .5) * vec3(.032,.031,.015);
       float skyGradient = smoothstep(-.02, .55, reflected.y);
       vec3 mirrored = mix(waterHorizon, waterSky, skyGradient) * mix(.36, .60, skyGradient) * vec3(.73,.88,.99);

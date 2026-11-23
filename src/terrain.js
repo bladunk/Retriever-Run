@@ -27,6 +27,20 @@ const detailMaterial = terrainMaterial.clone()
 const lodRanges = [[43, 57, 71, 87], [69, 86, 99, 117], [69, 86, 126, 145]]
 const lodRange = { value: new T.Vector4() }
 
+// Canopies keep one solid depth-tested silhouette for the lifetime of a tile.
+// Only their distant color blends into the existing horizon haze.
+function settleTreeHaze(material) {
+  material.customProgramCacheKey = () => 'terrain-tree-haze'
+  material.onBeforeCompile = shader => {
+    shader.fragmentShader = shader.fragmentShader.replace('#include <fog_fragment>', `
+      #include <fog_fragment>
+      #ifdef USE_FOG
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, fogColor, .94 * smoothstep(73., 119., vFogDepth));
+      #endif
+    `)
+  }
+}
+
 function softenLOD(material, distant, baseShader) {
   material.customProgramCacheKey = () => distant ? 'field-tree-lod' : 'field-detail-lod'
   material.onBeforeCompile = shader => {
@@ -53,8 +67,8 @@ function softenLOD(material, distant, baseShader) {
   }
 }
 softenLOD(detailMaterial, false, terrainMaterial.onBeforeCompile)
-softenLOD(treeMaterial, true)
-softenLOD(forestMaterial, false)
+settleTreeHaze(treeMaterial)
+settleTreeHaze(forestMaterial)
 softenLOD(cropMaterial, false)
 softenLOD(cropFarMaterial, true)
 
@@ -105,6 +119,8 @@ export function createTerrain(scene) {
     const detail = new T.Mesh(new T.BufferGeometry(), detailMaterial)
     const trees = batch(distantTrees[0], treeMaterial, treeCount)
     const forest = [batch(distantTrees[0], forestMaterial, treeCount), batch(distantTrees[0], forestMaterial, treeCount)]
+    trees.name = 'Outer bank trees'
+    for (const grove of forest) grove.name = 'Canopy instances'
     const crops = [batch(cropGeometries[0], cropMaterial, 112), batch(cropGeometries[1], cropFarMaterial, 112)]
     const tufts = batch(vegetation[0][0], reedMaterial, 16)
     const reeds = batch(vegetation[0][0], reedMaterial, reedCount)
@@ -112,7 +128,7 @@ export function createTerrain(scene) {
     root.visible = false
     root.add(ground, water, reeds, detail, trees, ...forest, ...crops, tufts, smoke)
     scene.add(root)
-    return { root, ground, water, detail, trees, forest, variants: forestProfiles.gulf, crops, tufts, reeds, smoke, hasChimney: false,
+    return { root, ground, water, detail, trees, forest, crops, tufts, reeds, smoke, hasChimney: false,
       plantType: 0, index: null, wanted: null }
   })
   const slot = (index) => tiles[((index % tiles.length) + tiles.length) % tiles.length]
@@ -124,10 +140,12 @@ export function createTerrain(scene) {
   let workerDeadline
   let center = 0
   let requestedEnvironment = false
+  const openingTiles = new Map()
 
   function load(packet) {
     const tile = slot(packet.index)
     if (tile.wanted !== packet.index) return
+    if (packet.index === 0 || packet.index === -1) openingTiles.set(packet.index, packet)
     tile.ground.geometry.dispose()
     tile.water.geometry.dispose()
     tile.detail.geometry.dispose()
@@ -135,39 +153,39 @@ export function createTerrain(scene) {
     tile.water.geometry = packet.water ? unpack(packet.water) : new T.BufferGeometry()
     tile.detail.geometry = unpack(packet.detail)
     tile.water.visible = Boolean(packet.water)
-    const variants = tile.variants = forestProfiles[packet.territory]
+    const variants = forestProfiles[packet.territory]
     const cards = coverTypes.has(packet.territory) ? environmentAssets.get('trees') : null
     const grasses = coverTypes.has(packet.territory) ? environmentAssets.get('grass') : null
     if (cards && !cardsReady.has(cards)) {
-      softenLOD(cards.material, true)
+      settleTreeHaze(cards.material)
       cardsReady.add(cards)
     }
     const variant = Math.abs(packet.index) % 2
     tile.trees.geometry = cards?.models[variant] ?? distantTrees[packet.treeStyle]
     tile.trees.material = cards?.material ?? treeMaterial
-    tile.trees.count = packet.trees.length / 7
+    tile.trees.count = 0
     for (const [index, mesh] of tile.forest.entries()) {
       mesh.geometry = forestModel(variants[index], true)
       mesh.count = 0
     }
-    for (let n = 0; n < tile.trees.count; n++) {
+    for (let n = 0; n < packet.trees.length / 7; n++) {
       const at = n * 7
       dummy.position.fromArray(packet.trees, at)
       dummy.rotation.set(0, packet.trees[at + 4], 0)
       const height = packet.trees[at + 3]
       const width = height * (.86 + n % 5 * .072)
-      const near = tile.forest[variants[0] === variants[1] ? 0 : packet.trees[at + 6]]
+      // Outer-bank trees use a single lighter silhouette at every distance.
+      // They never share a pivot or fade against a near-bank tree.
+      const outer = Math.abs(packet.trees[at]) > 23 && n % 3 !== 0
+      const batch = outer ? tile.trees : tile.forest[variants[0] === variants[1] ? 0 : packet.trees[at + 6]]
       dummy.scale.set(width, height, width)
-      dummy.updateMatrix()
-      near.setMatrixAt(near.count, dummy.matrix)
-      near.setColorAt(near.count++, tint.setHex(fieldTints[packet.trees[at + 5]]))
-      if (cards) {
+      if (outer && cards) {
         const unit = variant ? 4.8 : 6.2
         dummy.scale.set(width / unit, height / unit, width / unit)
-        dummy.updateMatrix()
       }
-      tile.trees.setMatrixAt(n, dummy.matrix)
-      tile.trees.setColorAt(n, tint.multiplyScalar(cards ? .84 : .76))
+      dummy.updateMatrix()
+      batch.setMatrixAt(batch.count, dummy.matrix)
+      batch.setColorAt(batch.count++, tint.setHex(fieldTints[packet.trees[at + 5]]).multiplyScalar(outer ? .83 : 1))
     }
     for (const mesh of [tile.trees, ...tile.forest]) updateBatch(mesh)
     for (const [index, mesh] of tile.crops.entries()) {
@@ -290,6 +308,7 @@ export function createTerrain(scene) {
       for (let i = center - 1; i < center + 6; i++) {
         const tile = slot(i)
         tile.wanted = i
+        if (tile.index !== i && openingTiles.has(i)) load(openingTiles.get(i))
         const insideDrawDistance = i - center < (detail === 0 ? 4 : detail === 1 ? 5 : 6)
         tile.root.visible = tile.index === i && insideDrawDistance
         if (!tile.root.visible) continue
@@ -299,16 +318,8 @@ export function createTerrain(scene) {
         tile.detail.visible = tileStart < range[1] + 8
         const chimneyZ = tile.root.position.z + tile.smoke.position.z
         tile.smoke.visible = tile.hasChimney && detail > 0 && chimneyZ > -65 && chimneyZ < -6
-        tile.trees.visible = tile.trees.count > 0 &&
-          tileStart + segmentLength + 8 > range[0] && tileStart < range[3] + 8
-        for (const [index, grove] of tile.forest.entries()) {
-          const mesh = forestModel(tile.variants[index], detail < 2)
-          if (mesh !== grove.geometry) {
-            grove.geometry = mesh
-            if (grove.count) grove.computeBoundingSphere()
-          }
-          grove.visible = grove.count > 0 && tileStart < range[1] + 8
-        }
+        tile.trees.visible = tile.trees.count > 0 && tileStart < 113
+        for (const grove of tile.forest) grove.visible = grove.count > 0 && tileStart < 103
         tile.crops[0].visible = tile.crops[0].count > 0 && tileStart < range[1] + 2
         tile.crops[1].visible = tile.crops[1].count > 0 &&
           tileStart + segmentLength + 2 > range[0] && tileStart < range[3] + 2

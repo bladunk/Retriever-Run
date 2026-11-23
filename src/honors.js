@@ -27,6 +27,13 @@ export const hallOfShame = [
 export const patches = [...fieldHonors, ...hallOfShame]
 export const medals = ['Bronze', 'Silver', 'Gold']
 
+export function honorProgress(patch, player) {
+  const earned = player.patches[patch.id] ?? []
+  const goal = patch.goals[Math.min(earned.length, patch.goals.length - 1)]
+  const records = { ...player.records, score: player.profile.best, territory: player.migration?.farthest }
+  return { earned, goal, value: Math.min(goal, patch.measure(player.stats, records)) }
+}
+
 export function awardPatches(player, date) {
   const earned = []
   const records = { ...player.records, score: player.profile.best, territory: player.migration?.farthest }

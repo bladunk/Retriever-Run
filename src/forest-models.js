@@ -30,13 +30,14 @@ export function forestSurface() {
   const atlas = new T.TextureLoader().load(new URL('./assets/environment/forest-needles.webp', import.meta.url).href)
   atlas.colorSpace = T.SRGBColorSpace
   atlas.anisotropy = 2
-  return new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide, map: atlas, alphaTest: .39 })
+  return new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide, map: atlas, alphaTest: .32,
+    transparent: false, depthWrite: true })
 }
 
 export function forestModel(kind, compact = false) {
   const [spread, trunkRatio, top, bark, foliage] = shapes[kind]
   const conifer = conifers.has(kind)
-  const mobile = conifer && compact
+  const mobile = compact
   const cacheKey = mobile ? kind + ':mobile' : kind
   if (cache.has(cacheKey)) return cache.get(cacheKey)
   const random = seededRandom([...kind].reduce((key, char) => key * 31 + char.charCodeAt(0), 917))
@@ -108,7 +109,7 @@ export function forestModel(kind, compact = false) {
         [x * 1.14, .025 + random() * .045, z * 1.14], .017, .006, bark, 5)
     }
   }
-  const branches = conifer ? (mobile ? 15 : 21) : kind === 'snag' ? 8 : 12
+  const branches = conifer ? (mobile ? 15 : 21) : kind === 'snag' ? 8 : mobile ? 10 : 12
   for (let n = 0; n < branches; n++) {
     const t = n / branches
     const angle = n * 2.39996 + random() * .45
@@ -130,13 +131,13 @@ export function forestModel(kind, compact = false) {
     }
     const tint = foliage[n % foliage.length]
     const width = (conifer ? .100 : spread * .52) * (1 - (conifer ? t * .68 : t * .30))
-    for (let j = 0; j < (conifer ? (mobile ? 3 : 4) : 5); j++) {
+    for (let j = 0; j < (mobile ? (conifer ? 3 : 4) : conifer ? 4 : 5); j++) {
       const along = .52 + j * (conifer ? .175 : .111)
       const bend = (j % 2 ? 1 : -1) * width * (.56 + random() * .34)
       const lift = (conifer ? .002 : .017) + j * .018 + random() * .018
       spray(twig[0] * along + z * bend, twig[1] + lift, twig[2] * along - x * bend,
         width * (conifer ? 1.32 : 1.19), width * (.53 + random() * .31), angle + j * 1.05,
-        .26 - .14 * j, tint, conifer ? 7 : 9, roundCrown ? (j % 2 ? .87 : -.65) : .25)
+        .26 - .14 * j, tint, conifer || mobile ? 7 : 9, roundCrown ? (j % 2 ? .87 : -.65) : .25)
       if (kind === 'snowPine' && j === 1 && n % 3 !== 0) {
         spray(twig[0] * along + z * bend, twig[1] + lift + .03, twig[2] * along - x * bend,
           width * 1.10, width * .47, angle + .9, .22, 0xb8cbcc, 7)

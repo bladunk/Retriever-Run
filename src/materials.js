@@ -58,6 +58,7 @@ export function createFieldMaterial() {
             float rut = (1. - smoothstep(.09,.21,tracks)) * (.28 + .30*smoothstep(-.5,.58,silt));
             float bank = smoothstep(1.26,1.75,abs(vFieldUv.x));
             float damp = max(rut, bank * (.38 + .27 * silt));
+            damp = min(.82, damp + fieldWet * .15 * smoothstep(.10,.74,silt) * smoothstep(.62,1.54,abs(vFieldUv.x)));
             diffuseColor.rgb *= mix(vec3(1.15,1.13,1.10), vec3(.56,.66,.67), damp);
             fieldPbr.b -= .34 * damp;
           }

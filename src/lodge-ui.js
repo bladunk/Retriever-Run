@@ -1,5 +1,5 @@
 import { causes, causeNames, hazardName } from './field-stats.js'
-import { fieldHonors, hallOfShame, medals, patches } from './honors.js'
+import { fieldHonors, hallOfShame, honorProgress, medals, patches } from './honors.js'
 import { expeditionRegions } from './expedition.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
 import { campSwitch, worldwideBoard } from './camp-ui.js'
@@ -56,10 +56,8 @@ export function patchName(patch, level) {
 }
 
 function patchCard(patch, player, shame) {
-  const earned = player.patches[patch.id] ?? []
+  const { earned, goal, value: progress } = honorProgress(patch, player)
   const tier = earned.length - 1
-  const goal = patch.goals[Math.min(tier + 1, patch.goals.length - 1)]
-  const progress = Math.min(goal, patch.measure(player.stats, { ...player.records, score: player.profile.best }))
   const card = node('article', null, 'patch-card')
   card.dataset.tier = earned.length ? medals[tier].toLowerCase() : 'locked'
   if (shame) card.classList.add('patch-shame')
@@ -72,7 +70,8 @@ function patchCard(patch, player, shame) {
   track.value = progress
   track.setAttribute('aria-label', patch.name + ' progress')
   const footer = node('div', null, 'patch-progress')
-  const suffix = patch.id === 'clean-paws' ? ' s' : ['marathon', 'marsh-legend'].includes(patch.id) ? ' m' : ''
+  const suffix = patch.id === 'clean-paws' ? ' s' : ['marathon', 'marsh-legend'].includes(patch.id) ? ' m'
+    : patch.id === 'flyway-traveler' ? ' territories' : ''
   footer.append(track, node('span', number(progress) + ' / ' + number(goal) + suffix))
   if (tier >= 0) {
     const unlocked = node('time', date(earned[tier]))
@@ -175,25 +174,33 @@ function leaderboard(lodge, metric, selectMetric) {
     node('p', 'Local to this device · Top 20 per category', 'room-note'), controls, entries.length ? list : empty]
 }
 
-const messages = {
-  water: 'The marsh claimed another one.',
-  logs: 'Should’ve cleared that timber.',
-  geese: 'The goose won this round.',
-  other: 'The trail had the last word.',
-}
-
-export function fillReport(ui, report) {
+export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}) {
   ui['report-nickname'].textContent = report.nickname
-  const record = report.improved.includes('score') || report.improved.includes('distance')
+  const scoreRecord = report.improved.includes('score')
+  const record = scoreRecord || report.improved.includes('distance')
   const placement = Object.entries(report.placements).filter(([, rank]) => rank)
     .map(([metric, rank]) => '#' + rank + ' · ' + categories[metric])
-  ui['report-message'].textContent = record ? 'That’s a fine day’s work.' : messages[report.cause]
+  ui['report-message'].textContent = heckle
+  ui['report-record'].hidden = !record
+  ui['report-record'].textContent = scoreRecord ? 'New personal best' : 'New distance record'
+  ui['report-best'].textContent = scoreRecord && previousBest ? number(report.score - previousBest) + ' points above your previous best'
+    : scoreRecord ? 'Your first score on the board'
+      : previousBest > report.score ? number(previousBest - report.score) + ' points to match your personal best'
+        : previousBest && previousBest === report.score ? 'Matched your personal best' : ''
   ui['report-headline'].replaceChildren(...cards([
-    ['Score', number(report.score)], ['Distance', meters(report.distance)], ['Time', duration(report.duration)],
+    ['Score', number(report.score)], ['Distance', meters(report.distance)],
+    ['Personal best', number(Math.max(previousBest, scoreRecord ? report.score : 0))],
   ]))
+  const next = player && fieldHonors.map(patch => ({ patch, ...honorProgress(patch, player) }))
+    .filter(entry => entry.value > 0 && entry.value < entry.goal)
+    .sort((a, b) => b.value / b.goal - a.value / a.goal)[0]
+  const nextHonor = ui['report-next-honor']
+  nextHonor.hidden = !next
+  if (next) nextHonor.textContent = 'Next Field Honor · ' + patchName(next.patch, next.earned.length) +
+    ' · ' + number(Math.floor(next.value)) + ' / ' + number(next.goal)
   ui['report-tallies'].replaceChildren(...rows([
     ['Cause of death', hazardName(report.hazard)], ['Territory reached', expeditionRegions[report.territory - 1]?.name ?? '—'],
-    ['Treats collected', number(report.treats)],
+    ['Active time', duration(report.duration)], ['Treats collected', number(report.treats)],
     ['Logs jumped', number(report.logs)], ['Branches cleared', number(report.slidesCleared)],
     ['Geese dodged', number(report.geese)], ['Retrieves', number(report.retrieves)],
   ]))

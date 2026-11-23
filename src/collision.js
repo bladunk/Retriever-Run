@@ -29,7 +29,9 @@ const solids = {
   ],
   tree: [volume('tree trunk', 0, .64, 0, .27, .64, .27)],
   fallen: [
-    volume('upturned root plate', -.16, 1.18, 0, .72, 1.18, .46),
+    volume('soil and lower roots', -.18, .64, .01, .67, .63, .43),
+    volume('split root crown', -.17, 1.44, .10, .52, .48, .32),
+    volume('raised roots', -.16, 2.02, .10, .34, .32, .20),
     volume('downed trunk', .29, .65, .17, .66, .48, .42),
   ],
   tractor: [

@@ -53,30 +53,6 @@
         <p class="control-hint" id="hint">Swipe or use arrows to steer, jump, and duck.</p>
       </div>
     </section>
-    <section id="field-report" class="report" aria-labelledby="report-title" hidden>
-      <div class="report-sheet">
-        <div class="report-intro">
-          <p class="lodge-kicker" id="report-nickname"></p>
-          <h2 id="report-title">Field Report</h2>
-          <p id="report-message"></p>
-          <div id="report-headline" class="record-grid"></div>
-        </div>
-        <div class="report-notes">
-          <section id="report-career" class="report-career" aria-label="Career progress" hidden></section>
-          <p id="report-worldwide" class="room-note" role="status" hidden></p>
-          <section id="report-rival" class="report-career" aria-live="polite" hidden></section>
-          <dl class="field-list" id="report-tallies"></dl>
-          <section id="report-highlights" aria-label="Run highlights"></section>
-        </div>
-        <div class="report-actions">
-          <button id="run-again" class="primary" type="button">Run Again</button>
-          <div>
-            <button id="report-lodge" type="button">Outfitter’s Lodge</button>
-            <button id="main-menu" type="button">Main Menu</button>
-          </div>
-        </div>
-      </div>
-    </section>
     <dialog id="onboarding" aria-labelledby="onboarding-title">
       <div class="onboarding-dock">
         <div class="onboarding-sheet">
@@ -99,13 +75,6 @@
           </div>
         </div>
       </div>
-    </dialog>
-    <dialog id="promotion" aria-labelledby="promotion-title">
-      <p class="lodge-kicker">Field promotion</p>
-      <div id="promotion-patch" class="patch-badge"></div>
-      <h2 id="promotion-title"></h2>
-      <p id="promotion-reward"></p>
-      <button id="promotion-continue" class="primary" type="button">Continue</button>
     </dialog>
     <dialog id="preferences" aria-labelledby="preferences-title">
       <div class="preferences-heading">
@@ -136,6 +105,45 @@
       </div>
     </nav>
   </main>
+  <section id="field-report" class="report" aria-labelledby="report-title" hidden>
+    <div class="report-sheet">
+      <div class="report-scroll" id="report-scroll" tabindex="0" role="region" aria-label="Hunt results">
+        <div class="report-intro">
+          <p class="lodge-kicker" id="report-nickname"></p>
+          <h2 id="report-title" tabindex="-1">HUNT <em>OVER</em></h2>
+          <p id="report-record" class="hunt-record" hidden></p>
+          <figure class="campfire-card">
+            <figcaption>Campfire Heckling</figcaption>
+            <blockquote id="report-message"></blockquote>
+          </figure>
+          <div id="report-headline" class="record-grid"></div>
+          <p id="report-best" class="report-comparison"></p>
+        </div>
+        <div class="report-notes">
+          <section id="report-career" class="report-career" aria-label="Career progress" hidden></section>
+          <p id="report-next-honor" class="room-note"></p>
+          <p id="report-worldwide" class="room-note" role="status" hidden></p>
+          <section id="report-rival" class="report-career" aria-live="polite" hidden></section>
+          <dl class="field-list" id="report-tallies"></dl>
+          <section id="report-highlights" aria-label="Run highlights"></section>
+        </div>
+      </div>
+      <div class="report-actions">
+        <button id="run-again" class="primary" type="button">Play Again</button>
+        <div>
+          <button id="report-lodge" type="button">Outfitter’s Lodge</button>
+          <button id="main-menu" type="button">Main Menu</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <dialog id="promotion" aria-labelledby="promotion-title">
+    <p class="lodge-kicker">Field promotion</p>
+    <div id="promotion-patch" class="patch-badge"></div>
+    <h2 id="promotion-title"></h2>
+    <p id="promotion-reward"></p>
+    <button id="promotion-continue" class="primary" type="button">Continue</button>
+  </dialog>
   <dialog id="lodge" aria-labelledby="lodge-title">
     <div class="lodge-scroll" tabindex="0" aria-label="Lodge contents">
       <div class="lodge-heading">
