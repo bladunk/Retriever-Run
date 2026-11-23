@@ -7,7 +7,7 @@ import { firstContact, hazardFrame, playerFrame } from './collision.js'
 import { createFixedClock, samplePose } from './timing.js'
 import { swipeDirection } from './gesture.js'
 import { createRunControls } from './run-controls.js'
-import { adaptiveQuality, graphics, pixelRatio } from './quality.js'
+import { adaptivePresentation, adaptiveQuality, graphics, pixelRatio } from './quality.js'
 import { createPlayer } from './player.js'
 import { createFootSpray } from './spray.js'
 import { audioDefaults } from './profile.js'
@@ -231,11 +231,13 @@ function initialize() {
     resize()
   }
 
+  const present = adaptivePresentation()
+  let lastRenderMs
+
   const stepOnTerrain = dt => terrain.readyAt(run.distance) && step(dt)
 
   function render(ms) {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
-    const dt = Math.min(.10, Math.max(0, wall))
     previousTime = ms
     if (!contextReady) return
     if (ui.lodge.open) {
@@ -263,6 +265,11 @@ function initialize() {
       alpha = clock.advance(wall, stepOnTerrain)
       updateHud()
     }
+    if (mode === 'title' || mode === 'running' || frozen) populate()
+    const autoLow = mode === 'running' && profile.quality === 'auto' && autoPreset === 'low'
+    if (!present(ms, wall, autoLow) && !needsRedraw) return
+    const dt = Math.min(.10, Math.max(0, (ms - (lastRenderMs ?? ms)) / 1000))
+    lastRenderMs = ms
     const animate = mode === 'title' || mode === 'running' || frozen
     if (animate) {
       const idle = mode === 'title'
@@ -307,7 +314,6 @@ function initialize() {
         sound.ambience(weather, visualTime, surfaceAt(distance) === 'mud', !display.jump && !display.slide)
       }
       spray.update(distance, visualTime)
-      populate()
       positionEntities(visualTime, distance)
       diving(entities, distance, visualTime, preset.detail === 0)
       frozen = false
@@ -585,7 +591,7 @@ function checkPatches() {
 
 function showTitleRecord() {
   const player = lodge.current()
-  const career = careerStanding(player.career.xp)
+  const career = careerStanding(player.career)
   ui['current-runner'].textContent = 'Playing as ' + player.nickname + (player.enrollment === 'guest' ? ' · Guest Camp' : '')
   ui['title-rank'].textContent = careerLine(player)
   ui['title-xp'].max = career.span

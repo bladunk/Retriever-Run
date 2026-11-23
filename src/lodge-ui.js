@@ -214,6 +214,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     onKennel(null)
     const player = lodge.current()
     panel.setAttribute('aria-labelledby', 'tab-' + room)
+    panel.dataset.room = room
     for (const tab of tabs) {
       const active = tab.dataset.room === room
       tab.setAttribute('aria-selected', String(active))

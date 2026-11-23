@@ -97,8 +97,10 @@ test('the skinned Labrador clears the terrain and overhead envelope through real
   const rig = await loadRig()
   const player = new Group()
   player.add(rig.root)
+  rig.appearance(gearAppearance({ collar: 'brass-collar', vest: 'marsh-vest' }))
+  const vest = rig.root.getObjectByName('WorkingDogVest')
   let skin
-  rig.root.traverse(node => { if (node.isSkinnedMesh) skin = node })
+  rig.root.traverse(node => { if (node.isSkinnedMesh && node.name !== 'WorkingDogVest') skin = node })
   const point = new Vector3()
   const frame = {}
   const beam = obstacleVolumes({ type: 'branch', wide: true })[0]
@@ -123,12 +125,14 @@ test('the skinned Labrador clears the terrain and overhead envelope through real
       player.updateMatrixWorld(true)
       let max = -Infinity
       let clearance = Infinity
-      for (let i = 0; i < skin.geometry.attributes.position.count; i++) {
-        skin.getVertexPosition(i, point).applyMatrix4(skin.matrixWorld)
-        const at = run.distance - point.z
-        const lateral = (point.x - centerAt(at) + centerAt(run.distance)) / Math.cos(headingAt(at))
-        clearance = Math.min(clearance, point.y - (trailHeight(at, lateral) - .008))
-        max = Math.max(max, point.y - floor)
+      for (const mesh of [skin, vest]) {
+        for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+          mesh.getVertexPosition(i, point).applyMatrix4(mesh.matrixWorld)
+          const at = run.distance - point.z
+          const lateral = (point.x - centerAt(at) + centerAt(run.distance)) / Math.cos(headingAt(at))
+          clearance = Math.min(clearance, point.y - (trailHeight(at, lateral) - .008))
+          max = Math.max(max, point.y - floor)
+        }
       }
       assert.ok(clearance >= -.005, `distance ${run.distance}, depth ${frame.depth}, floor clearance ${clearance}`)
       if (lastMax !== undefined) assert.ok(Math.abs(max - lastMax) < .24, 'smooth pose blending')
@@ -167,7 +171,7 @@ test('rapid jump and slide transitions retain skinned ground clearance after a l
   const player = new Group()
   player.add(rig.root)
   let skin
-  rig.root.traverse(node => { if (node.isSkinnedMesh) skin = node })
+  rig.root.traverse(node => { if (node.isSkinnedMesh && node.name !== 'WorkingDogVest') skin = node })
   const point = new Vector3()
   const frame = {}
   const run = { ...newRun(), distance: 38_260, elapsed: 1380, speed: speedAtTime(1380) }
@@ -192,13 +196,56 @@ test('rapid jump and slide transitions retain skinned ground clearance after a l
       turn: 0, landing, ground })
     player.updateMatrixWorld(true)
     let clearance = Infinity
-    for (let vertex = 0; vertex < skin.geometry.attributes.position.count; vertex++) {
-      skin.getVertexPosition(vertex, point).applyMatrix4(skin.matrixWorld)
-      const at = run.distance - point.z
-      const lateral = (point.x - centerAt(at) + centerAt(run.distance)) / Math.cos(headingAt(at))
-      clearance = Math.min(clearance, point.y - (trailHeight(at, lateral) - .008))
+    for (const mesh of [skin, rig.root.getObjectByName('WorkingDogVest')]) {
+      for (let vertex = 0; vertex < mesh.geometry.attributes.position.count; vertex++) {
+        mesh.getVertexPosition(vertex, point).applyMatrix4(mesh.matrixWorld)
+        const at = run.distance - point.z
+        const lateral = (point.x - centerAt(at) + centerAt(run.distance)) / Math.cos(headingAt(at))
+        clearance = Math.min(clearance, point.y - (trailHeight(at, lateral) - .008))
+      }
     }
     assert.ok(clearance >= -.008, `frame ${index}, depth ${frame.depth}, clearance ${clearance}`)
   }
   assert.ok(changes >= 4)
+})
+
+test('all six vest styles share a separate weighted shell and leave the collision body and coat intact', async () => {
+  const rig = await loadRig()
+  const vest = rig.root.getObjectByName('WorkingDogVest')
+  const body = vest.parent
+  const skin = body.geometry
+  const bounds = playerVolumes().map(volume => ({ ...volume }))
+  const material = vest.material
+  const garment = vest.geometry
+  const points = garment.getAttribute('fitRest')
+  assert.ok(garment.index.count / 3 < 2200)
+  assert.equal(vest.skeleton, body.skeleton)
+  assert.ok(!vest.visible)
+  let chest = 0
+  let hem = 0
+  for (let i = 0; i < points.count; i++) {
+    assert.ok(points.getY(i) >= .999 && points.getY(i) < 2.4)
+    assert.ok(points.getZ(i) >= -.901 && points.getZ(i) <= 1.75)
+    if (points.getZ(i) > 1.45 && points.getY(i) < 1.81 && Math.abs(points.getX(i)) < .25) chest++
+    if (points.getW(i) < 0) hem++
+    const weight = garment.getAttribute('skinWeight')
+    const sum = weight.getX(i) + weight.getY(i) + weight.getZ(i) + weight.getW(i)
+    assert.ok(Math.abs(sum - 1) < 1e-6)
+  }
+  assert.ok(chest > 20 && hem > 40)
+  const colors = new Set()
+  for (const id of ['canvas', 'marsh', 'seasoned', 'blaze', 'master', 'legend']) {
+    rig.appearance(gearAppearance({ coat: 'fox-red', vest: id + '-vest' }))
+    assert.ok(vest.visible)
+    colors.add(material.color.getHex())
+    assert.equal(vest.material, material)
+    assert.equal(vest.geometry, garment)
+    assert.equal(body.geometry, skin)
+    assert.equal(body.material.color.getHex(), 0xbb8053)
+    assert.deepEqual(playerVolumes(), bounds)
+  }
+  assert.equal(colors.size, 6)
+  rig.appearance(gearAppearance())
+  assert.ok(!vest.visible)
+  assert.equal(body.material.color.getHex(), 0xffffff)
 })

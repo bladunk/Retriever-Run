@@ -2,14 +2,14 @@ import * as T from 'three'
 
 export function createKennelView() {
   const room = new T.Scene()
-  room.background = new T.Color(0x2c3327)
-  room.fog = new T.Fog(0x2c3327, 5.5, 13)
-  const sky = new T.HemisphereLight(0xefe3c9, 0x827954, 2.1)
-  const key = new T.DirectionalLight(0xffdab0, 2.2)
+  room.background = new T.Color(0x29382f)
+  room.fog = new T.Fog(0x29382f, 5.5, 13)
+  const sky = new T.HemisphereLight(0xd9e5df, 0x827055, 1.80)
+  const key = new T.DirectionalLight(0xffdec1, 2.5)
   key.position.set(2, 4, -3)
-  const rim = new T.DirectionalLight(0xc4d5bd, 1.1)
+  const rim = new T.DirectionalLight(0xcbdde5, 1.28)
   rim.position.set(-2, 2, 3)
-  const floor = new T.Mesh(new T.PlaneGeometry(60, 60), new T.MeshStandardMaterial({ color: 0x484333, roughness: 1 }))
+  const floor = new T.Mesh(new T.PlaneGeometry(60, 60), new T.MeshStandardMaterial({ color: 0x494635, roughness: 1 }))
   floor.rotation.x = -Math.PI / 2
   floor.position.y = -.01
   room.add(sky, key, rim, floor)
@@ -34,10 +34,10 @@ export function createKennelView() {
       previous = ms
       pose.time += reduced ? 0 : dt
       pose.dt = dt
-      const angle = .92 + (reduced ? 0 : .19 * Math.sin(pose.time * .37))
-      const radius = Math.max(4, 5.55 / Math.max(1, orbit.aspect))
-      orbit.position.set(Math.sin(angle) * radius, 1.48, -Math.cos(angle) * radius)
-      orbit.lookAt(0, .72, -.16)
+      const angle = 1.20 + (reduced ? 0 : .19 * Math.sin(pose.time * .37))
+      const radius = Math.max(3.65, 6.3 / Math.max(.75, orbit.aspect))
+      orbit.position.set(Math.sin(angle) * radius, 1.43, -Math.cos(angle) * radius)
+      orbit.lookAt(0, .76, -.085)
       dog.pose(pose)
       renderer.render(room, orbit)
     },

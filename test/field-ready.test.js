@@ -134,8 +134,9 @@ test('spawn terrain is streamed off the main thread and obsolete packets cannot 
     postMessage(index) { sent.push(index) }
     terminate() {}
   }
+  const geometry = { buffers: { position: { values: new Float32Array(9), itemSize: 3 } } }
   const packet = index => ({ index, water: null, reeds: new Float32Array(reedCount * 6),
-    ground: { buffers: { position: { values: new Float32Array(9), itemSize: 3 } } } })
+    ground: geometry, trees: new Float32Array(0), detail: geometry, flooded: false })
   try {
     const { createTerrain } = await vite.ssrLoadModule('/src/terrain.js')
     const scene = new Scene()

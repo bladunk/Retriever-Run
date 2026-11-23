@@ -1,6 +1,7 @@
 import * as T from 'three'
 import { createPawPlanting } from './paw-planting.js'
-import { collarBuckle, fitKennelMaterial } from './kennel-material.js'
+import { collarBuckle, tintLabradorCoat } from './kennel-material.js'
+import { createWorkingVest } from './working-vest.js'
 
 const oneTurn = Math.PI * 2
 const up = new T.Vector3(0, 1, 0)
@@ -22,8 +23,9 @@ export function createLabradorRig(gltf) {
     node.material.roughness = .9
     node.material.metalness = 0
     meshes.push(node)
-    dressMesh.push(fitKennelMaterial(node.material))
+    dressMesh.push(tintLabradorCoat(node.material))
   })
+  const dressVest = meshes.map(createWorkingVest)
   const planting = createPawPlanting(root, meshes)
   const mixer = new T.AnimationMixer(root)
   root.scale.setScalar(scale)
@@ -78,7 +80,8 @@ export function createLabradorRig(gltf) {
       bandana.visible = Boolean(gear.collar.bandana)
       buckle.visible = Boolean(gear.collar.buckle)
       tag.visible = !buckle.visible
-      for (const dress of dressMesh) dress(gear)
+      for (const dress of dressMesh) dress(gear.coat)
+      for (const dress of dressVest) dress(gear.vest)
     },
     reset() {
       air = groundCorrection = compression = 0

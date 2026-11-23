@@ -114,10 +114,10 @@ export function createAtmosphere(scene) {
   scene.add(sky)
   const fog = new T.FogExp2(0xb7a78a, .015)
   scene.fog = fog
-  const fill = new T.HemisphereLight(0xfcdfb4, 0x7f8a65, 1.61)
+  const fill = new T.HemisphereLight(0xd1dfde, 0x887750, 1.61)
   const sun = new T.DirectionalLight(0xf7cb8e, 1.8)
-  sun.position.set(-11, 9, -15)
-  const front = new T.DirectionalLight(0xe0d1b0, .93)
+  sun.position.set(-12, 7, -14)
+  const front = new T.DirectionalLight(0xf1dfc3, .79)
   front.position.set(7, 6, 10)
   scene.add(sun, fill, front)
   const rain = precipitation(scene, false)
@@ -135,9 +135,9 @@ export function createAtmosphere(scene) {
       uniforms.clock.value = time
       fog.color.copy(uniforms.horizon.value)
       result.sky.copy(uniforms.horizon.value)
-      fog.density = lerp('fog')
+      fog.density = lerp('fog') * 1.045
       sun.color.copy(uniforms.sunColor.value)
-      sun.intensity = lerp('light')
+      sun.intensity = lerp('light') * 1.12
       fill.intensity = 1.47 - lerp('cloud') * .22
       result.rain = lerp('rain')
       result.wind = lerp('wind')

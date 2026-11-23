@@ -6,12 +6,15 @@ import { createFixedClock, samplePose } from '../src/timing.js'
 import { seededRandom } from '../src/trail.js'
 import { createRunControls } from '../src/run-controls.js'
 import { createRunStatistics } from '../src/field-stats.js'
+import { runXP, xpAt } from '../src/career.js'
 
 const wallPatterns = [
   [1 / 60],
   [1 / 120, 1 / 30, 1 / 90, 1 / 54],
   [1 / 12, .24, 1 / 59, .87, 1 / 44, .045],
 ]
+const estimateCareer = process.argv.includes('career')
+const samples = { exploratory: [], guided: [], endurance: [] }
 const moves = ['left', 'right', 'jump', 'slide']
 const hazardKinds = new Set()
 const deaths = {}
@@ -101,6 +104,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
     for (let index = active.length - 1; index >= 0; index--) {
       const item = active[index]
       const ahead = item.distance - run.distance
+      if (estimateCareer && item.hazard) statistics.passed(previous, run, item)
       if (item.type === 'goose') {
         if (diveAge(item, run.distance) > diveExit) active.splice(index, 1)
         continue
@@ -160,6 +164,11 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
     totals.deaths++
     deaths[killer.type] = (deaths[killer.type] ?? 0) + 1
   } else totals.survived++
+  if (estimateCareer) {
+    const group = !guided ? 'exploratory' : duration >= 300 ? 'endurance' : 'guided'
+    const result = statistics.preview(run)
+    samples[group].push({ ...result, xp: runXP(result, [], []) })
+  }
   return { elapsed: run.elapsed, distance: run.distance, killer: killer ? { ...hit } : null }
 }
 
@@ -184,3 +193,20 @@ for (let i = 0; i < count; i++) {
 }
 console.log(JSON.stringify({ ...totals, fromSeed, hazards: [...hazardKinds].sort(), deathsBy: deaths,
   wallSeconds: +((performance.now() - time) / 1000).toFixed(2) }, null, 2))
+
+if (estimateCareer) {
+  const round = value => Math.round(value * 10) / 10
+  const average = (runs, key) => runs.reduce((total, run) => total + run[key], 0) / (runs.length || 1)
+  const short = Object.entries(samples).filter(([group]) => group !== 'endurance').map(([group, runs]) => {
+    const duration = average(runs, 'duration')
+    const xp = average(runs, 'xp')
+    const xpPerHour = 3600 * xp / (duration + 4)
+    return { group, runs: runs.length, duration: round(duration), distance: round(average(runs, 'distance')),
+      xp: round(xp), xpPerHour: round(xpPerHour),
+      hours: Object.fromEntries([10, 25, 50, 100].map(level => [level, round(xpAt(level) / xpPerHour)])) }
+  })
+  console.log(JSON.stringify({ repeatableXP: short, enduranceChecks: samples.endurance.map(run => ({
+    seconds: round(run.duration), score: run.score, retrieves: run.retrieves, jumpsCleared: run.jumpClears,
+    slidesCleared: run.slidesCleared, gooseDodges: run.geese, xp: run.xp,
+  })) }, null, 2))
+}

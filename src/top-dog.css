@@ -99,6 +99,20 @@
 .career-patch[data-earned="false"] .patch-badge { filter: saturate(.2); }
 .career-patch .patch-badge { --thread: #dcba7c; width: 43px; height: 43px; }
 .career-patch small, .career-patch span { color: #e0cda9; }
+.career-requirements { display: grid; gap: 6px; list-style: none; padding: 0; margin: 10px 0; }
+.career-requirements li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 3px 10px;
+  padding: 8px 10px;
+  border-left: 2px solid #b28e55;
+  background: #181e1aa3;
+  font-size: .84rem;
+}
+.career-requirements li[data-met="true"] { border-color: #90a77b; }
+.career-requirements li[data-met="true"] span { color: #c6daa9; }
+.career-requirements small { flex-basis: 100%; line-height: 1.35; color: #e0cda9; }
 .career-rewards { margin: 9px 0; padding-left: 1.23em; line-height: 1.55; overflow-wrap: anywhere; }
 .report-career { margin: 8px 0 4px; padding: 8px 11px; }
 .report-career h3, .rival-card h4 { margin: 0; color: #f3c987; font: 700 1.09rem Georgia, serif; }
@@ -125,25 +139,35 @@
   #promotion[open], #camp-welcome:not([hidden]) { animation: none; }
 }
 
-.kennel-heading .section-title { margin-bottom: 9px; }
 .kennel-stage {
-  height: clamp(160px, 29vh, 235px);
+  height: clamp(145px, 28dvh, 235px);
   width: 100%;
   position: relative;
   overflow: hidden;
   border: 1px solid #a0986675;
   border-radius: 6px;
   margin-bottom: 8px;
-  background: #2c3327;
+  background: #29382f;
 }
 .kennel-stage #trail { position: absolute; }
-.kennel-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; margin-block: 8px; }
+.kennel-fitting {
+  flex: none;
+  padding-block: 5px 8px;
+  background: #263027;
+  border-radius: 6px;
+}
+.kennel-fitting .board-filters button { min-height: 44px; padding-inline: 5px; }
+.kennel-items { display: grid; align-content: start; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; margin-block: 8px; }
+@media (min-height: 541px) {
+  .lodge-panel[data-room="kennel"] { display: flex; flex-direction: column; overflow: hidden; }
+  .kennel-items { min-height: 54px; overflow-y: auto; overscroll-behavior: contain; }
+}
 .gear-option {
   display: grid;
   align-items: center;
   gap: 2px 6px;
   grid-template-columns: 14px minmax(0, 1fr);
-  min-height: 48px;
+  min-height: 52px;
   padding: 6px 7px;
   text-align: left;
   font-size: .87rem;
@@ -155,3 +179,13 @@
 .kennel-selection { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .kennel-selection p { flex-basis: 100%; margin: 2px 0; }
 .kennel-selection button { min-height: 44px; padding: 0 10px; }
+
+
+@media (max-height: 680px) {
+  .kennel-stage { height: clamp(105px, 21dvh, 143px); }
+}
+
+@media (max-width: 350px) {
+  .lodge-heading { padding-block: 14px 12px; }
+  .lodge-heading h2 { font-size: 1.43rem; }
+}
