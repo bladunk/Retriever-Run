@@ -40,6 +40,7 @@ The simulation tests exercise full-speed camera projection, gestures, quality hy
 - **Labrador Dog** by [kenchoo](https://sketchfab.com/kenchoo), based on [Dog by all of life](https://skfb.ly/oHLVz), under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). [Original Labrador Dog model](https://sketchfab.com/3d-models/labrador-dog-1f56cfbab07e4fe49b5d9e521c82073a).
 - The skinned mesh and motion source are from the credited model adaptation in [ResourcePackAI's 3DPets 0.1.3](https://hangar.papermc.io/ResourcePackAI/3DPets/versions/0.1.3). Its bundled credits identify the source models above and [Quaternius](https://quaternius.com)' Shiba Inu motion under [CC0](https://creativecommons.org/publicdomain/zero/1.0/). Only the animal asset and matching motion data were used. Retriever Run smoothed and simplified the mesh, adjusted paw weights and coat texture size, retargeted and trimmed the motion tracks, added accessories, and compressed the resulting GLB. The Labrador adaptation remains under CC BY 4.0.
 - **Brown Mud Leaves 01** and **Wood Planks Grey** from [Poly Haven](https://polyhaven.com/license) under CC0. Maps were resized, the material channels packed, and the images encoded as WebP. [Mud material](https://polyhaven.com/a/brown_mud_leaves_01) · [Wood material](https://polyhaven.com/a/wood_planks_grey).
+- **5.3 vegetation** uses selected, modified tree cards by EFX and grasses by Nicholas-3D under CC BY 4.0. [Environment model credits and license](src/assets/environment/ATTRIBUTION.md)
 
 ## Production smoke
 

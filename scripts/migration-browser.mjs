@@ -38,7 +38,10 @@ const checkpoint = time => courseRows.find(row => row.time >= time).time + .28
 const portraits = expeditionRegions.map(region => ({
   key: region.key, start: checkpoint(region.seconds + 9), region: region.index,
 }))
+const floodedRow = courseRows.find(row => row.entities.some(item => item.type === 'washout'))
 const captures = [...portraits,
+  { key: 'farmstead', start: checkpoint(127.9), region: 4, wide: true },
+  ...(floodedRow ? [{ key: 'flooded-lane', start: floodedRow.time - .66, region: Math.floor(floodedRow.time / 30), wide: true }] : []),
   { key: 'alpine-entry', start: 268.55, stop: 271.74, region: 8 },
   { key: 'endgame', start: checkpoint(321), region: 9 },
   { key: 'visibility', start: checkpoint(28.2), stop: 29.85, region: 0 },
@@ -67,6 +70,7 @@ try {
   for (const scene of argv.includes('production') ? [] : scenes) {
     const { key, start, region, stop = start + .36 } = scene
     const page = await context.newPage()
+    if (scene.wide) await page.setViewportSize({ width: 844, height: 480 })
     const errors = []
     const offsite = []
     page.on('pageerror', error => errors.push(error.message))
@@ -216,6 +220,8 @@ try {
       frames: migrationQA.frames, ready: migrationQA.ready, end: retrieverDebug.elapsed,
       genuine: localStorage.getItem('retriever-run.record') === migrationQA.original,
       practice: localStorage.getItem('retriever-run.record.practice'),
+      assets: performance.getEntriesByType('resource').filter(entry => entry.name.includes('assets/landscape-'))
+        .map(({ name, encodedBodySize }) => ({ file: name.split('/').at(-1), bytes: encodedBodySize })),
     }))
     assert.ok(observed.genuine && observed.practice === null)
     assert.deepEqual(errors, [])

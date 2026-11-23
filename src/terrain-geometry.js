@@ -7,7 +7,6 @@ import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from '.
 
 const box = new T.BoxGeometry()
 const stone = new T.IcosahedronGeometry(1, 0)
-const canopy = leafCrown()
 const sprays = [createLeafSpray(false), createLeafSpray(true)]
 const oval = new T.SphereGeometry(1, 7, 4)
 const twig = new T.CylinderGeometry(.47, 1, 1, 5, 1, true)
@@ -19,19 +18,6 @@ const branchRotation = new T.Quaternion()
 
 export const reedCount = 70
 export const treeCount = 20
-
-function leafCrown() {
-  const geom = new T.IcosahedronGeometry(1, 1)
-  const points = geom.attributes.position
-  for (let i = 0; i < points.count; i++) {
-    const x = points.getX(i)
-    const y = points.getY(i)
-    const z = points.getZ(i)
-    const scatter = .95 + Math.sin(x * 7.4 + y * 4.9 + z * 5.3) * .16 + Math.cos(y * 10.4 - z * 13) * .07
-    points.setXYZ(i, x * scatter, y * scatter, z * scatter)
-  }
-  return geom
-}
 
 function weatheredBank() {
   const geom = new T.IcosahedronGeometry(1, 1)
@@ -46,36 +32,9 @@ function weatheredBank() {
   geom.computeVertexNormals()
   return geom
 }
-const needles = spruceWhorl()
 const snowTint = new T.Color(0xe7e5d7)
 const otherTint = new T.Color()
 const waterline = -.55
-
-function spruceWhorl() {
-  const xyz = [], uv = [], indices = []
-  const tips = 18
-  for (let row = 0; row < 3; row++) {
-    for (let n = 0; n < tips; n++) {
-      const angle = n * Math.PI * 2 / tips
-      const pointed = n % 2 === 0
-      const radius = row === 0 ? .16 : row === 1 ? (pointed ? 1 : .58) : .42
-      const y = row === 0 ? .80 : row === 1 ? -.11 + Math.sin(angle * 3) * .13 : -.28
-      xyz.push(Math.cos(angle) * radius, y + (pointed ? -.08 : .03), Math.sin(angle) * radius)
-      uv.push(.5 + Math.cos(angle) * radius * .5, .5 + Math.sin(angle) * radius * .5)
-      if (row > 0) {
-        const next = (n + 1) % tips
-        const a = (row - 1) * tips, b = row * tips
-        indices.push(a + n, a + next, b + n, a + next, b + next, b + n)
-      }
-    }
-  }
-  const mesh = new T.BufferGeometry()
-  mesh.setAttribute('position', new T.Float32BufferAttribute(xyz, 3))
-  mesh.setAttribute('uv', new T.Float32BufferAttribute(uv, 2))
-  mesh.setIndex(indices)
-  mesh.computeVertexNormals()
-  return mesh
-}
 
 function shoreHeight(region, distance, x) {
   const edge = Math.abs(x)
@@ -178,7 +137,7 @@ export function buildTile(index) {
     const vertex = geometry.attributes.position
     for (let i = 0; i < data.length; i += 3) {
       tint.toArray(data, i)
-      if (shape === canopy || sprays.includes(shape)) {
+      if (sprays.includes(shape)) {
         const n = i / 3
         const flake = .88 + .17 * Math.sin(vertex.getX(n) * 6.1 + vertex.getZ(n) * 8.7)
           + .14 * (vertex.getY(n) - y) / sy
@@ -307,93 +266,33 @@ export function buildTile(index) {
       add(stone, i % 3 ? 0x655345 : 0x9a6638, side * between(.2, 3.03), -.005,
         between(-29.6, -.4), between(.035, .085), .014, between(.043, .10), 0, i)
     }
-    const totalTrees = colors.treesPerSide
-    for (let i = 0; i < totalTrees; i++) {
+    for (let i = 0; i < colors.treesPerSide; i++) {
       const z = between(-29.1, -.8)
-      const conifer = colors.conifers > 0 && (i + (side > 0 ? 1 : 0)) % 7 / 7 < colors.conifers
-      const cypress = key === 'cypress'
-      const willow = (key === 'timber' || key === 'gulf' || key === 'flyway') && i % 4 === 1
-      const dead = key === 'timber' && i > 0 && (i % 3 === 0 || random() < .13)
-      // Interleave closer landmark trees with an offset, broken treeline.
-      const x = side * (i === 0 ? between(7, 9.9) : between(10 + i * .57, 38))
-      const h = colors.treeScale * (key === 'prairie' || key === 'dakota' ? between(1.9, 4.3) : willow ? between(3.9, 6.9)
-        : dead ? between(4.3, 10.2) : between(4.4, 9.4))
+      const x = side * (i === 0 ? between(7.2, 10.8) : between(10 + i * .57, 38))
+      const tall = colors.treesPerSide > 3
+      const height = colors.treeScale * (tall ? between(5.8, 10.5) : between(4.2, 7.3))
       const ground = earth(start - z, x)
-      const bark = dead || key === 'boreal' ? 0x9a9785 : willow ? 0x655a46 : 0x76533d
       const at = start - z
       const heading = headingAt(at)
-      {
-        trees.push(centerAt(at) - base + Math.cos(heading) * x, ground, z - Math.sin(heading) * x, h,
-          i * 2.4 + side, i % 3)
-      }
-      if (conifer) {
-        branch(0x5d4f43, x, ground, z, x + .14, ground + h, z - .16, h * .030)
-        for (let whorl = 0; whorl < 6; whorl++) {
-          const t = whorl / 6
-          const bough = h * (.238 - t * .205) * between(.86, 1.10)
-          const level = ground + h * (.24 + t * .70)
-          const tint = winter ? (whorl % 3 ? 0x91b1b4 : 0xbacfd5) : (whorl % 3 ? 0x375449 : 0x58756a)
-          add(needles, tint, x + .1 * t, level, z, bough, h * .18, bough * .88,
-            .09 - t * .08, i * 1.3 + whorl * .92, -.08)
-          if (winter && whorl < 5) {
-            add(needles, whorl % 3 ? 0x4b6865 : 0x597676, x + .07, level - h * .068, z,
-              bough * .91, h * .142, bough * .83, .08, i * 1.3 + whorl * .92)
-          }
-        }
-        continue
-      }
-      if (cypress) {
-        const roots = Math.max(ground, waterline)
-        branch(bark, x, ground - .36, z, x, roots + h * .23, z, h * .083)
-        branch(bark, x, roots + h * .14, z, x + .16, roots + h, z, h * .042)
-        for (let knee = 0; knee < 5; knee++) {
-          const angle = knee * 2.4 + i
-          const radius = .64 + knee * .22
-          const rootX = x + Math.cos(angle) * radius, rootZ = z + Math.sin(angle) * radius
-          branch(0x695b48, rootX, roots - .32, rootZ, rootX + .08, roots + .17 + knee * .045, rootZ, .075)
-        }
-        for (let tier = 0; tier < 3; tier++) {
-          const w = h * (.25 - tier * .039)
-          const y = roots + h * (.66 + tier * .112)
-          add(canopy, colors.trees, x, y, z, w, w * .47, w * .91, .08, i + tier)
-          add(sprays[1], 0x77846b, x + w * .60, y - .32, z, w * .92, w * .87, w * .72, .1, i + tier)
-        }
-        continue
-      }
-      const bend = between(-h * .16, h * .16)
-      const rake = between(-h * .21, h * .21)
-      if (i % 2 === 0) {
-        for (let root = 0; root < 3; root++) {
-          const a = i * .74 + root * 2.1
-          branch(bark, x, ground + .56, z, x + Math.cos(a) * .96, ground + .045, z + Math.sin(a) * .95, h * .023)
-        }
-      }
-      branch(bark, x, ground - .045, z, x + bend * .42, h * .53, z + rake * .45, h * .046)
-      branch(bark, x + bend * .42, h * .53, z + rake * .45, x + bend, h * .94, z + rake, h * .022)
-      const orientation = between(0, Math.PI * 2)
-      for (let j = 0; j < (dead ? 5 : 4); j++) {
-        const angle = orientation + j * 2.4
-        const reach = h * (willow ? between(.24, .45) : between(.17, .32))
-        const baseY = h * (.40 + j * .068)
-        const top = baseY + h * between(.22, .38)
-        const tipX = x + bend + Math.cos(angle) * reach
-        const tipZ = z + rake + Math.sin(angle) * reach
-        const midX = x + bend * .69 + (tipX - x) * .53
-        const midZ = z + rake * .63 + (tipZ - z) * .53
-        branch(bark, x + bend * .53, baseY, z + rake * .52, midX, (baseY + top) * .52, midZ, h * .018)
-        branch(bark, midX, (baseY + top) * .52, midZ, tipX, top, tipZ, h * .009)
-        if (dead) {
-          branch(bark, midX, (baseY + top) * .52, midZ, tipX + Math.cos(angle + 1.2) * h * .12,
-            top - .17, tipZ + Math.sin(angle + 1.2) * h * .12, h * .005)
-        } else {
-          const fall = key === 'timber' && i % 4 !== 2
-          const leaves = willow ? [0x929452, 0x737e4b, 0xa88749, 0x7a8148][j]
-            : fall ? [0x9a653c, 0xbc8847, 0xa7673d, 0x867e48][j] : colors.trees
-          const crown = h * (willow ? .16 : .12)
-          add(canopy, leaves, tipX, top, tipZ, crown, crown * (willow ? .38 : .71), crown * .86, .25, angle, .17)
-          add(sprays[Number(willow)], leaves, tipX, top + crown * .18, tipZ,
-            crown * 1.63, crown * (willow ? 1.42 : 1.04), crown * 1.49, .16, angle, .15)
-        }
+      const kind = (i + index + Number(side === 1)) % 4 === 0 ? 1 : 0
+      trees.push(centerAt(at) - base + Math.cos(heading) * x, ground, z - Math.sin(heading) * x, height,
+        between(0, Math.PI * 2), i % 3, kind)
+    }
+  }
+
+  const crops = []
+  const harvested = index % 7 === 4
+  if (key === 'farm' || key === 'prairie' && index % 6 === 1) {
+    const side = Math.floor(index / 5) % 2 ? -1 : 1
+    for (let plant = 0; plant < 16; plant++) {
+      for (let row = 0; row < 7; row++) {
+        const x = side * (7.4 + row * 1.14 + between(-.12, .12))
+        const at = start + .68 + plant * 1.82 + between(-.21, .21)
+        const y = earth(at, x)
+        if (y < waterline + .17) continue
+        const heading = headingAt(at)
+        crops.push(centerAt(at) - base + Math.cos(heading) * x, y - .025,
+          start - at - Math.sin(heading) * x, between(.78, 1.28), between(0, Math.PI * 2), row % 3)
       }
     }
   }
@@ -469,7 +368,7 @@ export function buildTile(index) {
   for (let i = 0; i < landPoints.count; i++) {
     const x = landPoints.getX(i), z = landPoints.getZ(i)
     let shade = 0
-    for (let at = 0; at < trees.length; at += 6) {
+    for (let at = 0; at < trees.length; at += 7) {
       const dx = x - trees[at], dz = z - trees[at + 2]
       const length = trees[at + 3] * 1.22
       const along = dx * .58 + dz * .82
@@ -500,7 +399,7 @@ export function buildTile(index) {
     tint.setHex(0xf4e6c3).lerp(vegetationTint, .28 + random() * .33).toArray(reeds, n + 3)
   }
   return { index, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds,
-    plantType, trees: new Float32Array(trees), treeStyle: winter ? 3 : colors.conifers > .48 ? 2
+    plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
       : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney }
 }
 

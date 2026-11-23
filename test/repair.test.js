@@ -34,12 +34,12 @@ test('scenery is physics-free and passing a hazard clears it for good', () => {
   }
 })
 
-test('branch contact follows beam height, supports and the crouch envelope', () => {
+test('branch contact follows the visible overhead timbers, supports and crouch envelope', () => {
   const standing = { ...newRun(), distance: 100 }
   const beam = fixture('branch', 100, 0, true)
   assert.ok(traceContact(standing, standing, beam))
   const jumping = { ...standing, jump: jumpDuration / 2 }
-  assert.equal(traceContact(jumping, jumping, beam), false)
+  assert.ok(traceContact(jumping, jumping, beam))
   const sliding = { ...standing, slide: slideDuration / 2 }
   assert.equal(traceContact(sliding, sliding, beam), false)
   assert.ok(traceContact({ ...standing, slide: slideDuration }, { ...standing, slide: slideDuration }, beam))

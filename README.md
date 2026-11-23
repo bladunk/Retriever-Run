@@ -1,4 +1,4 @@
-# Retriever Run | Operation Top Dog
+# Retriever Run | The Great Migration
 
 An endless runner through North American wetlands with an athletic yellow Labrador. Follow the treat trail through sweeping bends, run muddy levees, jump shallow creeks, and watch for wildlife as the weather and pace change.
 
@@ -33,7 +33,9 @@ npm run dev
 
 Test the static production build with `npm run build` and `npm run preview`. The [4.0 Lodge notes](OUTFITTER.md) cover progression, local profiles, and save migration. The [audio notes](AUDIO.md) include the original score and recording licenses. The [3.2 update notes](DIVING-GEESE.md) document the pace curve and flight warnings. The [3.1 repair notes](REPAIR.md) cover fixed-step contact, diagnostics, and terrain streaming. The [3.0 engineering notes](PORTRAIT.md) describe portrait framing, validation, and asset licensing. The [Wildlands notes](WILDLANDS.md) describe the original course and habitat systems.
 
-The [5.1 release report](NORTHERN-EXPEDITION-5.1.md) includes the four-region expedition, Season One rollout and rollback, mobile verification, and running-game captures.
+The [5.3 release report](PREMIUM-ENVIRONMENT-5.3.md) includes the updated farm and woodland scenery, obstacle rules, asset audit and performance checks. Run the dev server and open `/environment-gallery.html` to inspect the optimized models.
+
+The [5.2 release report](GREAT-MIGRATION-5.2.md) covers ten time-based territories, the changing course, mountain rendering, and the mobile acceptance checklist. The [5.1 release report](NORTHERN-EXPEDITION-5.1.md) documents the earlier expedition and the Season One rollout and rollback.
 
 The [5.0 release report](WILD-FRONTIER-5.0.md) covers the Kennel scrolling repair, graphics overhaul, performance comparisons, and Safari acceptance checks.
 

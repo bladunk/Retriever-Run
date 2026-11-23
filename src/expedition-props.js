@@ -5,6 +5,13 @@ const round = new T.SphereGeometry(1, 7, 4)
 const roof = new T.CylinderGeometry(1, 1, 1, 3, 1)
 const silo = new T.CylinderGeometry(.98, .98, 1, 9)
 roof.rotateX(Math.PI / 2)
+const gable = new T.BufferGeometry()
+gable.setAttribute('position', new T.Float32BufferAttribute([
+  -.5, 0, .5, .5, 0, .5, 0, 1, .5, -.5, 0, -.5, .5, 0, -.5, 0, 1, -.5,
+], 3))
+gable.setAttribute('uv', new T.Float32BufferAttribute([0, 0, 2, 0, 1, 1, 0, 0, 2, 0, 1, 1], 2))
+gable.setIndex([0, 1, 2, 3, 5, 4])
+gable.computeVertexNormals()
 const canoe = boatHull(false)
 const jonBoat = boatHull(true)
 
@@ -43,12 +50,27 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
   let chimney = null
   const feature = region.landmark
 
-  if (feature === 'farm' && index % 5 === 2) {
-    const x = -20, z = -20, y = earth(-z, x)
-    put(0x694638, x, y + 1.55, z, 5.6, 3.1, 4)
-    add(roof, 0x706859, x, y + 3.35, z, 3.72, 1.28, 2.23)
-    put(0x43382c, x, y + .87, z + 2.02, 1.55, 1.74, .11)
-    put(0xbba57a, x - 1.97, y + 1.88, z + 2.07, .68, .71, .08)
+  if (feature === 'farm' && index % 4 === 2) {
+    const x = -12.6, z = -19.4, y = earth(-z, x)
+    const red = 0x933e2d, cream = 0xc8b79a
+    put(0x73705d, x, y - .025, z, 5.9, .55, 4.18)
+    put(red, x, y + 1.61, z, 5.7, 3.05, 4)
+    add(gable, red, x, y + 3.13, z, 5.71, 1.37, 4, 0, 0, 0, false, 2)
+    for (const side of [-1, 1]) {
+      add(board, 0x504a40, x + side * 1.50, y + 3.83, z, 3.51, .14, 4.6, 0, 0, -side * .44, false, 2)
+      put(cream, x + side * 2.78, y + 1.67, z + 2.045, .14, 2.88, .12)
+      put(cream, x + side * .99, y + 1.16, z + 2.075, .086, 2.10, .10)
+      put(0x4d3229, x + side * 1.88, y + 2.19, z + 2.047, .63, .72, .070)
+      put(0x8c8e79, x + side * 1.88, y + 2.19, z + 2.085, .51, .57, .045)
+      add(board, 0x887059, x + side * .44, y + 1.11, z + 2.135, 1.25, .089, .07, 0, 0, side * -.70, false, 2)
+    }
+    put(0x50332b, x, y + 1.10, z + 2.08, 1.91, 2.03, .092)
+    put(cream, x, y + 2.22, z + 2.08, 2.09, .095, .115)
+    put(0x504235, x, y + 3.51, z + 2.041, .55, .56, .061)
+    for (let plank = 0; plank < 11; plank++) {
+      const xx = x + (plank - 5) * .48
+      put(plank % 2 ? 0x754031 : 0xa25339, xx, y + 1.63, z + 2.006, .045, 2.98, .026)
+    }
     const siloBase = earth(-z, x - 5)
     add(silo, 0xb4aea0, x - 5, siloBase + 2.55, z, 1, 5.1, 1)
     add(round, 0xa6a196, x - 5, siloBase + 5.04, z, 1.02, .73, 1.02)
@@ -57,13 +79,6 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
       const fy = earth(13, fx)
       put(0x766850, fx, fy + .40, -13, .17, .81, .19)
       if (fence < 6) put(0x8f8060, fx - 1.02, fy + .59, -13, 2.3, .10, .10)
-    }
-  }
-
-  if (feature === 'farm') {
-    for (let row = 0; row < 14; row++) {
-      const x = 7.5 + row * 1.20, z = -15.1
-      add(round, row % 2 ? 0xa5864d : 0xb6a05f, x, earth(-z, x) + .14, z, .38, .20, 10.2, 0, -.31)
     }
   }
 

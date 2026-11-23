@@ -1,5 +1,5 @@
 import * as T from 'three'
-import { createHazard, createPickup } from './art.js'
+import { createHazard, createPickup, prepareWashout } from './art.js'
 import { createAtmosphere } from './atmosphere.js'
 import { createSound } from './audio.js'
 import { cameraLayout, newCameraState, updateFollow } from './camera.js'
@@ -371,12 +371,14 @@ function initialize() {
 function acquire(entity) {
   const key = entity.type + (entity.wide ? '-wide' : '')
   const model = pool.get(key)?.pop()
+  const object = model ?? (entity.hazard
+    ? createHazard(scenery, entity.type, 0, 0, entity.wide) : createPickup(scenery, entity.type))
   if (model) {
-    model.visible = true
-    scenery.add(model)
-    return model
+    object.visible = true
+    scenery.add(object)
   }
-  return entity.hazard ? createHazard(scenery, entity.type, 0, 0, entity.wide) : createPickup(scenery, entity.type)
+  if (entity.span) prepareWashout(object, entity)
+  return object
 }
 
 function release(entity) {
@@ -391,7 +393,7 @@ function release(entity) {
 function populate() {
   while (row.at < run.distance + 102) {
     for (const entity of row.entities) {
-      if (entity.type !== 'goose') entity.model = acquire(entity)
+      if (entity.type !== 'goose' && (entity.type !== 'washout' || entity.span)) entity.model = acquire(entity)
       entities.push(entity)
     }
     row = nextRow()
@@ -495,6 +497,10 @@ function step(dt) {
       continue
     }
     if (entity.hazard) {
+      if (entity.span && !entity.cued && ahead - entity.span * .5 > 0 && ahead - entity.span * .5 < run.speed * 1.45) {
+        announce('Change lanes · Flooded trail', 4)
+        entity.cued = true
+      }
       if (entity.wide && !entity.cued && ahead > 0 && ahead < run.speed * 1.05) {
         announce(entity.type === 'stream' ? '↑  Jump the crossing' : '↓  Slide under the branch', 4)
         entity.cued = true
@@ -518,7 +524,7 @@ function step(dt) {
       else announce('+' + result.points + (multiplier(run.streak) > 1 ? '  ·  ' + multiplier(run.streak) + '× streak' : ''), 1)
       effects.push(entity)
       entities.splice(index, 1)
-    } else if (ahead < (entity.type === 'treat' ? -1 : -8)) {
+    } else if (ahead < (entity.type === 'treat' ? -1 : -8 - (entity.span ?? 0) * .5)) {
       if (entity.type === 'treat') run.streak = 0
       release(entity)
       entities.splice(index, 1)
