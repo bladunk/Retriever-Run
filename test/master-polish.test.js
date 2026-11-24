@@ -12,7 +12,7 @@ const familiar = { duration: 41, priorRuns: 12, score: 300, previousBest: 540, b
 test('every original heckle is distinct and reachable in its intended context', () => {
   const all = Object.values(campfireLines).flat()
   const distinct = new Set(all.map(line => line.toLowerCase().replace(/[^a-z0-9]/g, '')))
-  assert.equal(all.length, 165)
+  assert.equal(all.length, 205)
   assert.equal(distinct.size, all.length)
   assert.ok(all.every(line => line.length <= 110))
   const contexts = {
@@ -21,6 +21,9 @@ test('every original heckle is distinct and reachable in its intended context', 
     slide: { slide: true }, lane: { changingLane: true }, short: { duration: 3 },
     rookie: { priorRuns: 0 }, long: { duration: 180 }, best: { score: 500 },
     rival: { rivalGap: .08 }, combo: { bestStreak: 22 }, camp: {},
+    legend: { duration: 296 }, arrivedNorth: { duration: 243 }, nearNorth: { duration: 237 },
+    postedTimber: { postedTimber: true }, downedTimber: { hazard: 'fallen' },
+    treatDetour: { recentTreat: true }, freshStage: { duration: 61 }, slowFinish: { hazard: 'root', duration: 171 },
   }
   for (const [category, context] of Object.entries(contexts)) {
     const campfire = createCampfire(() => null, seededRandom(5862))

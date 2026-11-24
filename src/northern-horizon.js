@@ -12,29 +12,44 @@ export function horizonPosition(distance, layer) {
   }
 }
 
+const ridges = [
+  [[-178, 22, 44, 67], [-135, 38, 42, 65], [-81, 55, 45, 58], [-30, 45, 46, 30],
+    [16, 61, 32, 64], [63, 39, 37, 39], [113, 51, 52, 46], [167, 32, 28, 67]],
+  [[-166, 21, 51, 47], [-101, 25, 41, 57], [-55, 31, 52, 28], [2, 26, 36, 59],
+    [45, 32, 24, 38], [92, 43, 52, 34], [144, 29, 34, 51], [196, 36, 52, 30]],
+]
+
 function mountainMesh(layer) {
   const random = seededRandom(47509 + layer * 491)
   const points = [], heights = [], faces = []
-  const columns = 88
-  const ranges = [[-152, 31, 45], [-92, 25, 31], [-41, 46, 44], [8, 33, 23], [66, 45, 36], [119, 28, 31]]
+  const columns = 144
+  const bands = 8
   for (let i = 0; i <= columns; i++) {
-    const x = (i - columns * .5) * 5.3
-    let peak = 4 + 4 * random()
-    for (const [center, height, span] of ranges) {
-      peak = Math.max(peak, 8 + height * Math.max(0, 1 - Math.abs(x - center - layer * 19) / span))
+    const x = (i - columns * .5) * 3.15
+    let contour = 3 + 1.6 * Math.sin(x * .071 - layer)
+    for (const [center, height, left, right] of ridges[layer]) {
+      const slope = x < center ? left : right
+      const shoulder = Math.exp(-1.19 * (Math.abs(x - center) / slope) ** 1.77)
+      const ledge = Math.exp(-.88 * (Math.abs(x - center - 8) / (slope * .45)) ** 1.36) * .17
+      contour = Math.max(contour, height * (shoulder + ledge))
     }
-    peak = peak * (.84 + random() * .26) * (layer === 0 ? 1 : .68)
-    for (let row = 0; row < 5; row++) {
-      const t = row / 4
-      const y = T.MathUtils.lerp(-7, peak, t) + Math.sin(x * .27 + row * 1.7) * t * 1.44
-      const azimuth = (x + Math.cos(row * 2.7 + i * .44) * (3.6 * (1 - t))) / 155
-      const radius = farRadii[layer] + (16 + layer * 9) * t
-      points.push(Math.sin(azimuth) * radius, y * (layer === 0 ? 2.25 : 2.05), -Math.cos(azimuth) * radius)
-      heights.push(t, random())
+    const fracture = Math.sin(x * .31 + layer * 5.4) * 1.6 + Math.cos(x * .57 - layer * 3.1) * 1.45
+      + Math.cos(x * .14 + Math.sin(x * .053) * 2.6) * 2.2
+    const peak = contour + fracture * (.49 + contour * .011)
+    for (let row = 0; row < bands; row++) {
+      const t = row / (bands - 1)
+      const spur = Math.sin(x * .079 + row * .63) * (1 - t) * .08
+      const gully = Math.sin(x * .23 + row * .46) * Math.cos(x * .052 - layer) * Math.sin(t * Math.PI)
+      const y = -8 + (peak + 8) * (t ** 1.18 + spur) + gully * (layer ? 6.5 : 8.1)
+      const azimuth = (x + 2.7 * Math.sin(row * .60 + x * .09) * (1 - t)) / 157
+      const radius = farRadii[layer] + (98 - layer * 24) * (t - .72)
+        - (gully * 8.5 + Math.cos(x * .06) * 7) * (1 - t * .40)
+      points.push(Math.sin(azimuth) * radius, y * (layer === 0 ? 2.18 : 2.09), -Math.cos(azimuth) * radius)
+      heights.push(y / 65, random())
       if (i && row) {
-        const a = i * 5 + row
-        if (i % 2) faces.push(a, a - 5, a - 1, a - 1, a - 5, a - 6)
-        else faces.push(a, a - 5, a - 6, a, a - 6, a - 1)
+        const a = i * bands + row
+        if (i % 2) faces.push(a, a - bands, a - 1, a - 1, a - bands, a - bands - 1)
+        else faces.push(a, a - bands, a - bands - 1, a, a - bands - 1, a - 1)
       }
     }
   }
@@ -76,20 +91,25 @@ export function createNorthernHorizon(scene) {
         varying vec2 face;
         varying vec3 ridgePoint, ridgeNormal;
         void main() {
-          float facets = abs(dot(normalize(ridgeNormal), normalize(vec3(.6,.15,-.78))));
+          vec3 rockNormal = normalize(ridgeNormal);
+          vec3 sunVector = normalize(vec3(-.60,.44,.48));
+          float faceLight = .26 + .74 * max(0., dot(rockNormal, sunVector));
           vec2 stone = ridgePoint.xy;
-          float relief = sin(dot(stone, vec2(.037,.060))) * cos(dot(stone, vec2(.046,-.028)));
-          relief += .30 * sin(dot(stone, vec2(.083,-.091)) + ridgePoint.z * .051);
-          float runnel = relief * .075;
-          float snowLine = mix(.84,.47,frost);
-          float blanket = smoothstep(snowLine-.09,snowLine+.13,face.x+runnel-facets*.14);
-          vec3 rock = mix(vec3(.101,.168,.205), vec3(.143,.242,.235), layer*.44);
-          vec3 cap = mix(vec3(.55,.62,.69),vec3(.84,.89,.93),facets*.80);
-          float band = sin(stone.y * .29 + stone.x * .040 + relief * 1.6);
-          float rockFace = smoothstep(-.15,.89,band) * (.16 + .29 * facets);
-          vec3 color = mix(rock * (.85+facets*.26+relief*.095+face.y*.04-rockFace), cap * (.95 + relief*.075), blanket);
-          float separation = (.54 + layer * .21) * smoothstep(.04,.48,face.x) * amount;
-          gl_FragColor = vec4(mix(haze, color, .70 + layer * .20), separation);
+          float erosion = sin(dot(stone, vec2(.047,.031)) + sin(stone.x * .032) * 1.65)
+            * cos(dot(stone, vec2(.050,-.046)));
+          float gullies = sin(stone.x * .100 + stone.y * .028 + erosion * 1.09)
+            * sin(stone.x * .038 - stone.y * .072 + ridgePoint.z * .095);
+          float bedrock = smoothstep(.12,.77,abs(gullies));
+          float snowLine = mix(.62,.27,frost) + .10 * erosion;
+          float snowfield = smoothstep(snowLine-.12,snowLine+.16,face.x + .23 * gullies);
+          snowfield *= 1. - .64 * bedrock * (1. - smoothstep(.22,.86,abs(rockNormal.y)));
+          vec3 rock = mix(vec3(.143,.207,.236), vec3(.265,.294,.317), faceLight);
+          rock *= .76 + .25 * faceLight + erosion * .09 - bedrock * .16;
+          vec3 snow = mix(vec3(.39,.51,.60),vec3(.87,.91,.93),faceLight * .88 + .12);
+          snow *= .92 + erosion * .055 + face.y * .045;
+          vec3 shade = mix(rock, snow, snowfield);
+          float separation = (.64 + layer * .25) * smoothstep(-.09,.28,face.x) * amount;
+          gl_FragColor = vec4(mix(haze,shade,.66 + layer*.18), separation);
           #include <tonemapping_fragment>
           #include <colorspace_fragment>
         }

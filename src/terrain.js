@@ -4,7 +4,7 @@ import { cornModel } from './corn.js'
 import { environmentAssets } from './environment-assets.js'
 import { expeditionRegions } from './expedition.js'
 import { fieldMaterials } from './materials.js'
-import { forestModel, forestProfiles, forestSurface } from './forest-models.js'
+import { forestModel, forestProfileAt, forestSurface } from './forest-models.js'
 import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
 import { createBankPlant } from './marsh-plants.js'
 import { marshWater, updateMarshWater } from './marsh-water.js'
@@ -166,7 +166,7 @@ export function createTerrain(scene, showSign) {
     tile.water.geometry = packet.water ? unpack(packet.water) : new T.BufferGeometry()
     tile.detail.geometry = unpack(packet.detail)
     tile.water.visible = Boolean(packet.water)
-    const variants = forestProfiles[packet.territory]
+    const variants = forestProfileAt(packet.territory, packet.index)
     const cards = coverTypes.has(packet.territory) ? environmentAssets.get('trees') : null
     const grasses = coverTypes.has(packet.territory) ? environmentAssets.get('grass') : null
     if (cards && !cardsReady.has(cards)) {
@@ -186,7 +186,7 @@ export function createTerrain(scene, showSign) {
       dummy.position.fromArray(packet.trees, at)
       dummy.rotation.set(0, packet.trees[at + 4], 0)
       const height = packet.trees[at + 3]
-      const width = height * (.86 + n % 5 * .072)
+      const width = height * (.80 + n % 5 * .087)
       // Outer-bank trees use a single lighter silhouette at every distance.
       // They never share a pivot or fade against a near-bank tree.
       const outer = Math.abs(packet.trees[at]) > 23 && n % 3 !== 0

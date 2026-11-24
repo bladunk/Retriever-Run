@@ -10,7 +10,8 @@ const catalog = Object.fromEntries(Object.entries(campfireLines).map(([category,
   [category, lines.map((line, index) => ({ id: category + '-' + index, category, line }))]))
 const known = new Set(Object.values(catalog).flat().map(joke => joke.id))
 
-function weights({ hazard, duration, score, previousBest, priorRuns, bestStreak, jump, slide, changingLane, rivalGap }) {
+function weights({ hazard, duration, score, previousBest, priorRuns, bestStreak, jump, slide, changingLane, rivalGap,
+  postedTimber, recentTreat }) {
   const result = { camp: 3, tree: 0, log: 0, water: 0, tractor: 0, goose: 0, jump: 0, slide: 0,
     lane: 0, short: 0, rookie: 0, long: 0, best: 0, rival: 0, combo: 0 }
   if (byHazard[hazard]) result[byHazard[hazard]] = 7
@@ -23,6 +24,14 @@ function weights({ hazard, duration, score, previousBest, priorRuns, bestStreak,
   if (previousBest > 0 && score < previousBest && score >= previousBest * .88) result.best = 9
   if (rivalGap > 0 && rivalGap <= .14) result.rival = 9
   if (bestStreak >= 15) result.combo = 8
+  if (duration >= 285) result.legend = 13
+  if (duration >= 240 && duration < 248) result.arrivedNorth = 14
+  if (duration >= 232 && duration < 240) result.nearNorth = 14
+  if (postedTimber) result.postedTimber = 13
+  if (hazard === 'fallen') result.downedTimber = 11
+  if (recentTreat) result.treatDetour = 9
+  if (duration >= 15 && duration < 288 && duration % 15 < 3) result.freshStage = 8
+  if (duration >= 150 && ['puddle', 'root', 'log', 'fence', 'tree', 'branch'].includes(hazard)) result.slowFinish = 9
   return result
 }
 

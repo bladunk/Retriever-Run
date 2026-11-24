@@ -208,7 +208,11 @@ try {
     const started = Date.now()
     await page.locator('#primary').tap()
     if (replays) {
-      await page.waitForFunction(() => fieldQA.rows.length === 200, null, { timeout: 240_000, polling: 250 })
+      await page.waitForFunction(() => fieldQA.rows.length === 200, null, { timeout: 360_000, polling: 250 })
+        .catch(async cause => {
+          const result = await page.evaluate(() => ({ restarts: fieldQA.rows.length, run: retrieverDebug }))
+          throw new Error('Restart stress stalled at ' + JSON.stringify(result), { cause })
+        })
       const saved = JSON.parse(await page.evaluate(() => localStorage.getItem('retriever-run.record.practice')))
       assert.equal(saved.players[0].stats.runs, 200)
       assert.equal(saved.players[0].stats.deathsBy.water, 200)

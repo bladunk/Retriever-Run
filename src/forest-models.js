@@ -8,6 +8,16 @@ export const forestProfiles = {
   mountain: ['fir', 'snowPine'],
 }
 
+const northernStands = {
+  boreal: [['spruce', 'fir'], ['fir', 'jackPine'], ['spruce', 'snag'], ['fir', 'spruce'], ['jackPine', 'fir']],
+  mountain: [['fir', 'snowPine'], ['snowPine', 'spruce'], ['snowPine', 'snag'], ['fir', 'snowPine'], ['spruce', 'jackPine']],
+}
+
+export function forestProfileAt(territory, tile) {
+  const stands = northernStands[territory]
+  return stands?.[Math.abs(tile) % stands.length] ?? forestProfiles[territory]
+}
+
 const shapes = {
   cypress: [.25, .29, .89, 0x69614b, [0x647549, 0x717845, 0x82804a]],
   tupelo: [.30, .20, .90, 0x615347, [0x587044, 0x71794a, 0x8b8149]],
@@ -19,11 +29,12 @@ const shapes = {
   snag: [.25, .27, .79, 0x6e6151, []],
   spruce: [.29, .17, .98, 0x5e5749, [0x496758, 0x587568, 0x425f53]],
   fir: [.24, .23, .97, 0x6c6355, [0x537468, 0x47685b, 0x728481]],
+  jackPine: [.30, .34, .99, 0x7c6f5d, [0x546b52, 0x637b54, 0x546451]],
   snowPine: [.28, .21, .98, 0x635d51, [0x718b8c, 0xa3b5b7, 0x59776c]],
 }
 
 const cache = new Map()
-const conifers = new Set(['spruce', 'fir', 'snowPine'])
+const conifers = new Set(['spruce', 'fir', 'jackPine', 'snowPine'])
 const up = new T.Vector3(0, 1, 0)
 
 export function forestSurface() {
@@ -63,7 +74,8 @@ export function forestModel(kind, compact = false) {
         const angle = n * Math.PI * 2 / sides
         point.set(radius * Math.sin(angle), 0, radius * Math.cos(angle)).applyQuaternion(rotate)
         vertex(at[0] + point.x, at[1] + point.y, at[2] + point.z,
-          (kind === 'birch' || kind === 'aspen') && n % 5 === 0 ? 0x796e60 : tint, .83 + random() * .27)
+          (kind === 'birch' || kind === 'aspen') && n % 5 === 0 ? 0x796e60 : tint,
+          conifer ? .71 + .29 * ((n * 5) % sides) / sides + random() * .17 : .83 + random() * .27)
       }
     }
     for (let n = 0; n < sides; n++) {
@@ -112,16 +124,17 @@ export function forestModel(kind, compact = false) {
   const branches = conifer ? (mobile ? 15 : 21) : kind === 'snag' ? 8 : mobile ? 10 : 12
   for (let n = 0; n < branches; n++) {
     const t = n / branches
-    const angle = n * 2.39996 + random() * .45
+    const angle = n * 2.39996 + random() * (conifer ? .63 : .45)
     const x = Math.cos(angle), z = Math.sin(angle)
     const roundCrown = !conifer && !['cypress', 'snag'].includes(kind)
-    const y = conifer ? .20 + t * .70 : roundCrown
+    const y = conifer ? trunkRatio + t * (.935 - trunkRatio) + Math.sin(n * 2.7) * .025 : roundCrown
       ? .52 + Math.sin(n * 1.69) * .14 + random() * .19 : trunkRatio + t * (.89 - trunkRatio)
-    const h = conifer ? -.025 + .055 * t : .080 + random() * .089
-    const radius = spread * (conifer ? 1 - t * .87 : roundCrown
+    const h = conifer ? (kind === 'spruce' ? -.063 : kind === 'jackPine' ? .018 : -.029) * (1 - t)
+      + .067 * t : .080 + random() * .089
+    const radius = spread * (conifer ? (1 - t) ** (kind === 'fir' ? 1.05 : .78) + .10 : roundCrown
       ? Math.sqrt(Math.max(.14, 1 - ((y + h - .73) / .36) ** 2)) : .71 + Math.sin(t * Math.PI) * .29) *
       (.71 + random() * .35)
-    const fork = [x * radius * .63, y + h * .55, z * radius * .63]
+    const fork = [x * radius * .63, y + h * .55 - (conifer ? .019 * (1 - t) : 0), z * radius * .63]
     const twig = [x * radius, y + h, z * radius]
     wood([trunkRatio * .09, y, -.017], fork, .013 * (1 - t) + .004, .007, bark, 5)
     wood(fork, twig, .008, .0022, bark, 4)
@@ -130,17 +143,25 @@ export function forestModel(kind, compact = false) {
       continue
     }
     const tint = foliage[n % foliage.length]
-    const width = (conifer ? .100 : spread * .52) * (1 - (conifer ? t * .68 : t * .30))
-    for (let j = 0; j < (mobile ? (conifer ? 3 : 4) : conifer ? 4 : 5); j++) {
+    const width = conifer ? radius * .47 + .025 : spread * .52 * (1 - t * .30)
+    if (conifer) {
+      // Overlapping inner boughs sheath the leader. Outer sprays break up the
+      // outline and hang differently on spruce, fir and the higher-crowned pine.
+      spray(x * radius * .31, y + h * .33 + .019, z * radius * .31, width * 1.02, width * .71,
+        angle + .46, .43, foliage[(n + 1) % foliage.length], 7, -.28)
+    }
+    for (let j = 0; j < (mobile ? 4 : 5); j++) {
       const along = .52 + j * (conifer ? .175 : .111)
-      const bend = (j % 2 ? 1 : -1) * width * (.56 + random() * .34)
-      const lift = (conifer ? .002 : .017) + j * .018 + random() * .018
-      spray(twig[0] * along + z * bend, twig[1] + lift, twig[2] * along - x * bend,
-        width * (conifer ? 1.32 : 1.19), width * (.53 + random() * .31), angle + j * 1.05,
-        .26 - .14 * j, tint, conifer || mobile ? 7 : 9, roundCrown ? (j % 2 ? .87 : -.65) : .25)
-      if (kind === 'snowPine' && j === 1 && n % 3 !== 0) {
+      const bend = (j % 2 ? 1 : -1) * width * (conifer ? .46 + random() * .31 : .56 + random() * .34)
+      const lift = conifer ? -.015 + j * .016 + random() * .021 : .017 + j * .018 + random() * .018
+      const stem = conifer ? Math.min(1.02, along) : along
+      spray(twig[0] * stem + z * bend, twig[1] + lift, twig[2] * stem - x * bend,
+        width * (conifer ? 1.43 : 1.19), width * (.53 + random() * .31), angle + (conifer ? (j % 2 ? .8 : -.5) + j * .16 : j * 1.05),
+        conifer ? .23 - .105 * j : .26 - .14 * j, tint, conifer || mobile ? 7 : 9,
+        conifer ? (j % 2 ? .56 : -.46) : roundCrown ? (j % 2 ? .87 : -.65) : .25)
+      if ((kind === 'snowPine' || kind === 'fir' && t > .62) && j === 1 && n % 3 !== 0) {
         spray(twig[0] * along + z * bend, twig[1] + lift + .03, twig[2] * along - x * bend,
-          width * 1.10, width * .47, angle + .9, .22, 0xb8cbcc, 7)
+          width * 1.10, width * .47, angle + .9, .22, kind === 'snowPine' ? 0xc3d0cb : 0x9cae9c, 7)
       }
     }
     if (kind === 'cypress' && n % 3 === 0) {
@@ -155,6 +176,7 @@ export function forestModel(kind, compact = false) {
   }
 
   const geometry = new T.BufferGeometry()
+  geometry.name = kind
   geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3))
   geometry.setAttribute('color', new T.Float32BufferAttribute(colors, 3))
   geometry.setAttribute('uv', new T.Float32BufferAttribute(uv, 2))

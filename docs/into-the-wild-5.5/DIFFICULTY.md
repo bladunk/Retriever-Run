@@ -1,6 +1,6 @@
 # Into the Wild · Difficulty configuration and measurement
 
-Pace is interpolated between the starts. Probabilities are conditional on compatible rows. A finite safety window takes precedence over a requested pattern. The final column is the center of the requested flock cadence. Cooldowns and upcoming timed gates affect individual arrivals.
+Pace is interpolated between the starts. Probabilities are conditional on compatible rows. Safety windows take precedence over a requested pattern. The default flock interval is drawn from four seconds below to six seconds above the final column. Cooldowns and upcoming timed gates affect individual arrivals.
 
 | Stage | Active s | Territory | Label | Start m/s | Base gap s | Second blocker | Timed gate | Gate pair | Dodge follow-up | Risk pickup | Washout | Flock s |
 | ---: | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |

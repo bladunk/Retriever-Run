@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { Color, Scene } from 'three'
+import { Color, Group, Scene } from 'three'
 import { canPostRun } from '../src/camp-rules.js'
+import { traceContact } from '../src/collision.js'
+import { fallenTimberModel, fallenTimbers, fallenVariant } from '../src/fallen-timber.js'
+import { forestModel, forestProfileAt } from '../src/forest-models.js'
 import { courseStages, distanceAtTime, speedAtTime, stageAt } from '../src/difficulty.js'
 import { createDriftingLeaves } from '../src/drifting-leaves.js'
 import { regionAt } from '../src/expedition.js'
-import { advance, newRun } from '../src/runner.js'
-import { createTrailSigns } from '../src/sign-scenery.js'
+import { act, advance, newRun } from '../src/runner.js'
+import { createPostedTimber, createTrailSigns } from '../src/sign-scenery.js'
 import { signMessages } from '../src/sign-lines.js'
 import { signAnchor, signInterval } from '../src/sign-placement.js'
 import { signSlots, signTextRows, trailSign } from '../src/trail-signs.js'
@@ -106,6 +109,25 @@ test('sign art and drifting leaves reuse allocations across trail recycling and 
   assert.equal(canvasCount, signSlots)
   assert.deepEqual(scene.children, models)
 
+  const posted = createPostedTimber(() => {
+    canvasCount++
+    return { getContext: () => ctx }
+  })
+  const model = new Group()
+  const notice = { type: 'branch', model, lane: 0, distance: 25 }
+  posted([notice], 2, 62)
+  const plate = model.children[0]
+  assert.equal(plate.name, 'Posted timber lettering')
+  const postedPaint = painted
+  posted([notice], 3, 62)
+  assert.equal(painted, postedPaint)
+  posted([], 26, 62)
+  assert.equal(plate.parent, null)
+  posted([notice], 25, 62)
+  assert.equal(model.children[0], plate)
+  assert.equal(painted, postedPaint)
+  assert.equal(canvasCount, signSlots + 2)
+
   const leaves = createDriftingLeaves(scene)
   const points = scene.children.at(-1)
   const position = points.geometry.attributes.position
@@ -123,4 +145,59 @@ test('sign art and drifting leaves reuse allocations across trail recycling and 
   assert.equal(points.visible, false)
   leaves(9, 985, 46, weather, 2, false)
   assert.equal(points.visible, false)
+})
+
+test('each new fallen timber reads tall and uses the same dodge-only swept hull', () => {
+  const geometry = fallenTimbers.map((_, variant) => fallenTimberModel(variant))
+  assert.equal(new Set(geometry).size, 3)
+  for (const [variant, model] of geometry.entries()) {
+    assert.equal(fallenTimberModel(variant), model)
+    assert.ok(model.index.count / 3 < 1700)
+    assert.ok(model.boundingBox.max.y > 2.10 && model.boundingBox.max.y < 2.39)
+    assert.ok(model.boundingBox.min.y < .06)
+    assert.ok(model.boundingBox.max.x - model.boundingBox.min.x > 1.65)
+    assert.ok(model.attributes.fieldLayer.array.includes(3))
+    const target = 6118 + variant / 4
+    const hazard = { type: 'fallen', distance: target, lane: 0, hazard: true }
+    for (const action of ['slide', 'jump']) {
+      for (const timing of [-.23, -.14, -.05, 0, .085, .17, .25]) {
+        const run = { ...newRun(), distance: target - 24, speed: speedAtTime(289), elapsed: 289 }
+        let fired = false
+        let hit = false
+        const before = {}
+        while (run.distance < target + 3 && !hit) {
+          if (!fired && (target - run.distance) / run.speed < .45 + timing) fired = act(run, action)
+          Object.assign(before, run)
+          advance(run, tickSeconds)
+          hit = traceContact(before, run, hazard)
+        }
+        assert.ok(hit, model.name + ' allowed ' + action + ' at ' + timing)
+      }
+    }
+    for (const [move, lane] of [['left', -1], ['right', 1]]) {
+      const run = { ...newRun(), distance: target - 14, speed: speedAtTime(289), elapsed: 289 }
+      act(run, move)
+      const before = {}
+      while (run.distance < target + 3) {
+        Object.assign(before, run)
+        advance(run, tickSeconds)
+        assert.equal(traceContact(before, run, hazard), false)
+      }
+      assert.equal(run.lane, lane)
+    }
+  }
+  assert.deepEqual(new Set(Array.from({ length: 12 }, (_, n) => fallenVariant(6118 + n * .127, n % 3 - 1))), new Set([0, 1, 2]))
+})
+
+test('northern tree stands include three live silhouettes and dead snags with bounded geometry', () => {
+  for (const territory of ['boreal', 'mountain']) {
+    const species = new Set(Array.from({ length: 15 }, (_, tile) => forestProfileAt(territory, tile)).flat())
+    assert.ok(species.has('snag') && species.has('spruce') && species.has('fir') && species.has('jackPine'))
+    for (const kind of species) {
+      const mesh = forestModel(kind, true)
+      assert.equal(forestModel(kind, true), mesh)
+      assert.ok(mesh.index.count / 3 < 1000)
+      assert.ok(mesh.attributes.position.array.every(Number.isFinite))
+    }
+  }
 })

@@ -6,4 +6,4 @@
 
 Both modified exports retain the [Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/). The [license text](CC-BY-4.0.txt) accompanies them. These credits identify the sources and do not imply endorsement.
 
-**forest-needles.webp** is original foliage art generated for Retriever Run. The corn, close forest geometry, barn and new hazards are authored in the repository. Remaining uploaded source archives and restricted assets are excluded from shipping. [Asset inventory](../../../ASSET-INVENTORY-5.3.md)
+**forest-needles.webp** is original foliage art generated for Retriever Run. The right panel uses the 5.5 needle generator. The corn, close forests, barn, uprooted trees and alpine ridges are authored in the repository. [Needle generator](../../../scripts/prepare-northern-needles.py) · [Asset inventory](../../../ASSET-INVENTORY-5.3.md)
