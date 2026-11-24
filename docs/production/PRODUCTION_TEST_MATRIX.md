@@ -1,0 +1,30 @@
+# Production test matrix
+
+Run on Node.js 22.12 or later. Browser tests serve the built app at `/Retriever-Run/`. A Vite dev-page demonstration cannot substitute for this check.
+
+| Check | Reproducible coverage |
+| --- | --- |
+| Gameplay, career, migration, security behavior | `npm test`, `npm run stress`, `npm run stress:master`. Cover determinism, varied collision timing, offline/outbox behavior, incremental rewards, Supabase rules, long runs and readable obstacle variants |
+| Asset contract | `npm run build && npm run verify:production`. Verify receiver paths, dependency graph, worker/manifest parity, byte length and checksum of each emitted file |
+| Browser content | `npm run test:production -- repair` and `npm run test:production -- webkit`. Assert that the engine is not requested before consent, fail a late transfer, retry from verified files, and reload offline. The `repair` case corrupts one entry and checks that only that file is downloaded again |
+| Player activity and update | The rendered production suite starts offline and finishes a hunt, checks local run count, enters the Kennel and reaches its last card. Its next-release fixture changes real shell bytes and checks that a second tab with an active or paused hunt vetoes activation. It then applies the update from idle and verifies both tabs and the save |
+| Mobile viewport and controls | Existing `npm run test:master -- phone` covers 320 × 568. The production harness uses a 390 × 844 mobile view, touch targets, offline reload, background/resume, scroll-to-card, and a standalone-state simulation. Native installed Home Screen and Android display-mode behavior require devices |
+| Context and resources | Node checks late wake acquisition, resource disposal including a late pack completion, and bounded frame history. Existing migration browser harness covers transitions and route scenery. Existing 5.5 baseline records extended restart and residency behavior |
+| Registry and source review | Asset register, temporary icon review, Field Note source links, rendered screenshots and click-through UI. Browser evidence and actual results belong in the implementation report |
+
+Install the automation browsers with `npx playwright install --with-deps chromium webkit`. Choose another output with `FIELD_QA_OUTPUT`. Set `FIELD_BUILD` to a specific build. Run a pre-release comparison with `FIELD_BUILD=/path/to/baseline npm run test:production -- baseline`. Reproduce migration without the download prompt by building `npm run build -- --mode migration-qa --outDir qa-output/migration-build` and running `FIELD_BUILD=qa-output/migration-build npm run test:migration -- webkit canopy-timber alpine-entry`.
+
+The prior worker upgrade uses `FIELD_LEGACY_BUILD=/path/to/5.5.1-dist npm run test:production -- legacy`. It waits outside the game scope for the old worker to relinquish its clients before opening Phase 01, then verifies the local record and reuse of an unchanged audio file. WebKit cache repair can be exercised separately with `npm run test:production -- webkit offline-only repair`.
+
+## Manual device matrix
+
+| Device or mode | Required before production certification | Current evidence boundary |
+| --- | --- | --- |
+| iPhone Safari at minimum and current supported iOS | Share-menu installation, portrait/landscape, notch/home indicator, pinch zoom in menus, native swipe/long Kennel scroll, no accidental browser scrolling during a hunt | Linux WebKit with mobile viewports and DOM interaction. Physical checks pending |
+| Installed iPhone Home Screen | Launch offline in airplane mode after caching, screen lock and interruption, suspend/resume with audio off, update without closing idle app windows, low-storage eviction/recovery, icon and splash fit | Standalone-state simulation only. Physical checks pending |
+| Android Chrome and installed PWA | Native install prompt, icon mask, safe area, navigation, lock, wake lock decline, offline cold start, content updates and storage pressure | Chromium automation tests browser mechanics. Native install checks pending |
+| Desktop Chrome, Safari and Firefox | Fullscreen exit, keyboard and tab-focus behavior, repeated starts, corrupt-cache recovery, private-window fallback | Desktop Chromium/WebKit engines with mobile emulation. Native Safari/Firefox manual pass pending |
+| GPU and long session | At least 30 minutes of real play, stable 30/60 FPS quality, context recovery, thermals, and decode and texture memory at territory boundaries | Seeded simulations plus two rendered migration windows. Long physical soak pending |
+| Worldwide and unavailable Supabase | Verify an enrolled eligible ticket online, reject a hunt begun offline, preserve local rewards during outage, and audit access controls on an isolated project | Existing adapter/rules regression and isolated offline guest browser. No production database changes |
+
+Owner approval and recorded physical-device evidence are separate from automated acceptance. [Release checklist](RELEASE_CHECKLIST.md)

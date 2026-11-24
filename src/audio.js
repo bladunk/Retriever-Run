@@ -28,6 +28,7 @@ export function createSound(onInterruption) {
   let context
   let buses
   let trail
+  let terrainBed
   let musicBed
   let flightGate
   let layers
@@ -68,7 +69,7 @@ export function createSound(onInterruption) {
   function noiseBed(frequency, type) {
     const source = context.createBufferSource()
     const filter = context.createBiquadFilter()
-    const volume = gain(0, trail)
+    const volume = gain(0, terrainBed)
     filter.type = type
     filter.frequency.value = frequency
     source.buffer = noise
@@ -94,9 +95,11 @@ export function createSound(onInterruption) {
       masterVolume: master,
       musicVolume: gain(levels.musicVolume * .78, limit),
       wildlifeVolume: gain(levels.wildlifeVolume, limit),
+      ambientVolume: gain(levels.ambientVolume, limit),
       effectsVolume: gain(levels.effectsVolume, limit),
     }
     trail = gain(.001, buses.wildlifeVolume)
+    terrainBed = gain(.001, buses.ambientVolume)
     flightGate = gain(1, buses.musicVolume)
     musicBed = gain(0, flightGate)
     layers = musicMix(scene, elapsed).map(level => gain(level, musicBed))
@@ -254,6 +257,7 @@ export function createSound(onInterruption) {
       if (context?.state === 'running') {
         ramp(musicBed.gain, 0, .062)
         ramp(trail.gain, 0, .065)
+        ramp(terrainBed.gain, 0, .065)
         transitionTimer = setTimeout(suspend, 245)
       } else suspend()
       return
@@ -267,6 +271,7 @@ export function createSound(onInterruption) {
       ramp(flightGate.gain, 1, .21)
       flight = undefined
       ramp(trail.gain, scene === 'running' ? 1 : 0, .15)
+      ramp(terrainBed.gain, scene === 'running' ? 1 : 0, .15)
       const arrivingAtReport = scene === 'over' && previousScene === 'running'
       const bed = scene === 'running' ? 1 : scene === 'title' ? .69 : scene === 'lodge' ? .54 : .46
       ramp(musicBed.gain, arrivingAtReport ? .15 : bed, scene === 'running' ? .16 : .21)

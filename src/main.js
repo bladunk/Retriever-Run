@@ -12,6 +12,10 @@ import { adaptivePresentation, adaptiveQuality, graphics, pixelRatio } from './q
 import { createPlayer } from './player.js'
 import { createFootSpray } from './spray.js'
 import { audioDefaults } from './profile.js'
+import { productionSession } from './production-session.js'
+import { createWakeLock } from './mobile-lifecycle.js'
+import { createPerformanceProbe } from './performance-probe.js'
+import { createRewardNotices } from './reward-notices.js'
 import { pendingPatches } from './honors.js'
 import { openLodge } from './lodge-save.js'
 import { createCampTransport } from './camp-transport.js'
@@ -80,6 +84,11 @@ let frozen = false
 let calloutAnimation
 
 const flags = new URLSearchParams(location.search)
+const localPerformance = flags.get('perf') === '1' &&
+  (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
+const performanceProbe = localPerformance ? createPerformanceProbe() : null
+if (performanceProbe) window.retrieverPerformance = performanceProbe.read
+const wakeLock = createWakeLock(navigator.wakeLock && (() => navigator.wakeLock.request('screen')), () => !document.hidden)
 const previewRegion = import.meta.env.DEV || import.meta.env.MODE === 'migration-qa'
   ? expeditionRegions[Number(flags.get('preview')) - 1] : undefined
 const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
@@ -94,17 +103,16 @@ if (!diagnosticsRequested) {
   restoreEnrollment(lodge, camp)
   window.addEventListener('online', () => camp.syncPending())
 }
-window.addEventListener('load', () => {
-  if (!diagnosticsRequested) camp.syncPending()
-  if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register(new URL('offline-sw.js', document.baseURI)).catch(() => {})
-  }
-}, { once: true })
+if (!diagnosticsRequested) {
+  if (document.readyState === 'complete') camp.syncPending()
+  else window.addEventListener('load', () => camp.syncPending(), { once: true })
+}
 const saveProfile = lodge.commit
 let profile = lodge.current().profile
 let runPlayer
 let runStatistics
 let runPermit
+let connectedRun = false
 let runRival
 let runMetric
 let coaching = false
@@ -115,7 +123,7 @@ let audioGesture = false
 let nextPatchCheck = 0
 let toastUntil = 0
 const seenPatches = new Map()
-const patchNotices = []
+const patchNotices = createRewardNotices()
 
 let mode = 'title'
 let run = newRun()
@@ -268,6 +276,7 @@ function initialize() {
   const stepOnTerrain = dt => terrain.readyAt(run.distance) && step(dt)
 
   function render(ms) {
+    const renderStart = performanceProbe ? performance.now() : 0
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     previousTime = ms
     if (!contextReady) return
@@ -277,6 +286,7 @@ function initialize() {
     }
     if (!trailReady && terrain.readyAt(0) && terrain.readyAt(-1)) {
       trailReady = true
+      performanceProbe?.ready()
       ui.primary.disabled = false
       if (mode === 'title') ui.primary.textContent = 'Start run'
       if (!diagnosticsRequested && mode === 'title') {
@@ -359,6 +369,8 @@ function initialize() {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(),
       }, camera, signs)
       renderer.render(scene, camera)
+      if (mode === 'running' && performanceProbe) performanceProbe.frame(wall * 1000, performance.now() - renderStart,
+        renderer.info, terrain.count(), regionAt(display.elapsed).key, terrain.packCount())
       needsRedraw = false
     }
   }
@@ -371,7 +383,7 @@ function initialize() {
     ui.primary.disabled = true
     ui.pause.disabled = true
     ui['run-again'].disabled = true
-    ui['menu-copy'].textContent = 'Graphics were interrupted. Waiting for the connection to recover.'
+    ui['menu-copy'].textContent = 'Graphics were interrupted. Waiting for the renderer to recover.'
   })
   ui.trail.addEventListener('webglcontextrestored', () => {
     contextReady = true
@@ -450,6 +462,7 @@ function runningSurface() {
 }
 
 function onAction(move) {
+  if (profile.haptics && !reducedMotion.matches) navigator.vibrate?.(move === 'jump' ? 18 : 10)
   if (move === 'left' || move === 'right') {
     lastShift = run.elapsed
     return
@@ -653,15 +666,18 @@ function checkPatches() {
   if (run.elapsed >= nextPatchCheck) {
     nextPatchCheck = run.elapsed + .30
     if (!diagnosticsRequested && journalIssues(lodge.current()).length) return
-    patchNotices.push(...pendingPatches(lodge.current(), runStatistics.preview(run), seenPatches))
+    for (const item of pendingPatches(lodge.current(), runStatistics.preview(run), seenPatches)) {
+      const label = patchName(item.patch, item.level)
+      patchNotices.add(label, label + ' · Patch earned')
+    }
   }
   if (run.elapsed < toastUntil) return
-  const notice = patchNotices.shift()
+  const notice = patchNotices.take()
   const toast = ui['patch-toast']
   toast.hidden = !notice
   if (!notice) return
   toastUntil = run.elapsed + 2.35
-  toast.textContent = patchName(notice.patch, notice.level) + ' · Patch earned'
+  toast.textContent = notice
 }
 
 function showTitleRecord() {
@@ -712,6 +728,7 @@ function setMode(value, options = {}) {
   }
   ui.game.dataset.mode = value
   const running = value === 'running'
+  void wakeLock.set(running)
   const title = value === 'title'
   const over = value === 'over'
   const paused = value === 'paused'
@@ -737,7 +754,8 @@ function setMode(value, options = {}) {
       })
       fillReport(ui, report, { heckle: line, previousBest, player: previewRegion ? undefined : runner })
       fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
-      const posting = diagnosticsRequested ? null : camp.record(runPlayer, report, runPermit)
+      const posting = diagnosticsRequested ? null : connectedRun ? camp.record(runPlayer, report, runPermit) :
+        runner.enrollment === 'worldwide' ? { status: 'unranked' } : null
       const worldwide = ui['report-worldwide']
       worldwide.dataset.run = String(report.id)
       worldwide.hidden = !posting
@@ -840,18 +858,21 @@ function resetTrail(seed) {
 }
 
 function start() {
-  if (mode === 'running' || !trailReady || !contextReady || ui.onboarding.open || ui.promotion.open ||
+  if (productionSession.locked() || ui['content-screen'].open || mode === 'running' || !trailReady || !contextReady ||
+      ui.onboarding.open || ui.promotion.open ||
       (!lodge.current().enrollment && !diagnosticsRequested)) return
+  performanceProbe?.restart()
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
   coaching = lodge.current().stats.runs < 3
   runStatistics = previewRegion ? createRunStatistics() : lodge.beginRun()
-  runPermit = camp.beginRun(runPlayer)
+  connectedRun = navigator.onLine && !productionSession.gateRanked()
+  runPermit = connectedRun ? camp.beginRun(runPlayer) : null
   runMetric = lodgeUI.rivalMetric()
   runRival = diagnosticsRequested ? null : camp.peekRival(runPlayer, runMetric)
   nextPatchCheck = toastUntil = 0
   seenPatches.clear()
-  patchNotices.length = 0
+  patchNotices.clear()
   setMode('running', { gesture: true, restart: true })
   populate()
 }
@@ -877,6 +898,8 @@ function openSettings() {
   for (const key of volumeKeys) ui[key].value = Math.round(profile[key] * 100)
   ui.quality.value = profile.quality
   ui.comfort.checked = profile.comfort
+  ui.haptics.checked = profile.haptics
+  ui.haptics.closest('label').hidden = typeof navigator.vibrate !== 'function'
   ui.preferences.showModal()
 }
 
@@ -916,7 +939,7 @@ function bindInput() {
       saveProfile()
     })
   }
-  for (const key of ['quality', 'comfort']) {
+  for (const key of ['quality', 'comfort', 'haptics']) {
     ui[key].addEventListener('change', () => {
       profile[key] = key === 'quality' ? ui[key].value : ui[key].checked
       if (key === 'quality') resize()
@@ -932,7 +955,7 @@ function bindInput() {
   const keys = { arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right', arrowup: 'jump', w: 'jump',
     ' ': 'jump', arrowdown: 'slide', s: 'slide' }
   window.addEventListener('keydown', (event) => {
-    if (event.altKey || event.metaKey || event.ctrlKey || ui.preferences.open || ui.lodge.open ||
+    if (event.altKey || event.metaKey || event.ctrlKey || ui['content-screen'].open || ui.preferences.open || ui.lodge.open ||
         ui.onboarding.open || ui.promotion.open) return
     const key = event.key.toLowerCase()
     if (mode === 'over' && key === ' ' && event.target === ui['report-scroll']) return
@@ -970,5 +993,13 @@ function bindInput() {
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) background() })
   window.addEventListener('blur', () => { if (mode === 'running') background() })
+  window.addEventListener('offline', () => {
+    if (mode === 'running' || mode === 'paused') connectedRun = false
+  })
   window.addEventListener('pagehide', background)
+  window.addEventListener('pageshow', () => {
+    clock.reset()
+    previousTime = undefined
+    resize()
+  })
 }

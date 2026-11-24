@@ -104,17 +104,34 @@ function normalizeSave(raw) {
   }
 }
 
+function readSave(serialized) {
+  try {
+    const raw = JSON.parse(serialized)
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null
+    if (raw.version == null || raw.version > saveVersion) return raw
+    if (![1, 2, 3].includes(raw.version) || !Array.isArray(raw.players) ||
+        !raw.players.some(player => count(player?.id) > 0)) return null
+    return raw
+  } catch { return null }
+}
+
 export function openLodge(storage = () => globalThis.localStorage, now = () => new Date(), { practice = false } = {}) {
   const key = practice ? practiceSaveKey : saveKey
+  const backup = key + '.backup'
   let raw
+  let recovered = false
   try {
     const disk = storage()
-    raw = JSON.parse(disk.getItem(key))
+    raw = readSave(disk.getItem(key))
+    if (!raw) {
+      raw = readSave(disk.getItem(backup))
+      recovered = Boolean(raw)
+    }
     if (!raw && practice) {
-      const opening = JSON.parse(disk.getItem(saveKey))
+      const opening = readSave(disk.getItem(saveKey))
       const settings = opening?.players?.find(player => player.id === opening.active)?.profile ?? opening
-      const { quality, comfort, masterVolume, musicVolume, wildlifeVolume, effectsVolume } = settings ?? {}
-      raw = { quality, comfort, masterVolume, musicVolume, wildlifeVolume, effectsVolume }
+      const { quality, comfort, haptics, masterVolume, musicVolume, wildlifeVolume, ambientVolume, effectsVolume } = settings ?? {}
+      raw = { quality, comfort, haptics, masterVolume, musicVolume, wildlifeVolume, ambientVolume, effectsVolume }
     }
   } catch { /* Use an in-memory save. */ }
   const futureSave = Number.isInteger(raw?.version) && raw.version > saveVersion
@@ -122,13 +139,24 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
   const commit = () => {
     if (futureSave) return false
     try {
-      storage().setItem(key, JSON.stringify(save))
+      const disk = storage()
+      const previous = disk.getItem(key)
+      const prior = readSave(previous)
+      if (prior?.version > saveVersion) return false
+      const next = JSON.stringify(save)
+      if (previous === next) return true
+      // Write a last-known-good copy before replacing the single-key snapshot.
+      if (prior) {
+        try { disk.setItem(backup, previous) } catch { /* The current snapshot remains the priority under quota pressure. */ }
+      }
+      disk.setItem(key, next)
       return true
     } catch { return false }
   }
   const current = () => save.players.find(player => player.id === save.active)
   return {
     current,
+    localRecovery: recovered ? 'backup' : futureSave ? 'newer-version' : 'normal',
     commit,
     players: () => save.players,
     nameFor: id => save.players.find(player => player.id === id)?.nickname ?? 'Marsh Runner',

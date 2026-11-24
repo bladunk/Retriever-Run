@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="pines" x2=".8" y2="1"><stop stop-color="#31483b"/><stop offset="1" stop-color="#172820"/></linearGradient>
+    <linearGradient id="coat" x2=".1" y2="1"><stop stop-color="#f8ddab"/><stop offset="1" stop-color="#c59257"/></linearGradient>
+  </defs>
+  <path fill="url(#pines)" d="M0 0h512v512H0z"/>
+  <circle cx="256" cy="256" r="155" fill="none" stroke="#ad8b5a" stroke-width="2"/>
+  <path fill="#25392e" d="M103 325l40-49 30 54 26-18 18 25 50-54 31 28 26-9 74 45v24H106z"/>
+  <path d="M166 361c25-14 45-23 57-48 8-18 7-45 3-60l-4-40c8-27 33-43 64-43 40 0 57 26 61 57l28 13 24 9c7 10 2 30-13 36-18 7-47 4-61 10l-17 28 10 38z" fill="url(#coat)"/>
+  <path d="M227 208c-19 15-27 35-23 55 3 23 16 42 32 48 14-2 25-29 31-47 7-22 7-51-10-62-10-6-22-2-30 6z" fill="#b57c46"/>
+  <path d="M229 210c-16 14-22 33-17 55 4 15 10 26 18 33" fill="none" stroke="#d8a674" stroke-width="4" stroke-linecap="round"/>
+  <path d="M324 288c23-10 45 1 66-12" stroke="#8d633b" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M375 246l24 3c5 4 4 12-1 16-7 3-16 0-19-5z" fill="#282924"/>
+  <path d="M305 226c6-5 13-5 18 0" stroke="#785742" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <circle cx="315" cy="230" r="4" fill="#292720"/>
+  <circle cx="316" cy="229" r="1" fill="#fff0ce"/>
+  <path d="M215 332c14 6 58 14 99 2l4 11c-42 13-83 5-111-1z" fill="#865b3b"/>
+</svg>

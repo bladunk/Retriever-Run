@@ -103,7 +103,7 @@ progress::-moz-progress-bar { background: var(--brass); }
 #preferences {
   color: var(--parchment); background: #252b21; border: 1px solid #ad8c60;
   width: min(380px, calc(100% - 32px)); max-height: calc(100% - 24px); padding: 15px 17px 17px;
-  border-radius: 7px; overflow: auto; touch-action: pan-y;
+  border-radius: 7px; overflow: auto; touch-action: pan-y pinch-zoom;
 }
 #preferences::backdrop { background: #141711a8; }
 .preferences-heading { display: flex; justify-content: space-between; align-items: center; gap: 15px; }

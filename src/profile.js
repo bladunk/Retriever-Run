@@ -1,7 +1,7 @@
-export const audioDefaults = { masterVolume: .9, musicVolume: .55, wildlifeVolume: .8, effectsVolume: .85 }
+export const audioDefaults = { masterVolume: .9, musicVolume: .55, wildlifeVolume: .8, ambientVolume: .8, effectsVolume: .85 }
 
 const defaults = { score: 0, distance: 0, best: 0, farthest: 0, retrieves: 0, streak: 0,
-  outfit: 'field', quality: 'auto', comfort: true, musicRestore: audioDefaults.musicVolume, ...audioDefaults }
+  outfit: 'field', quality: 'auto', comfort: true, haptics: false, musicRestore: audioDefaults.musicVolume, ...audioDefaults }
 
 export const outfits = [
   { id: 'field', name: 'Field collar', hint: 'Standard issue', available: () => true },
@@ -19,7 +19,10 @@ export function normalizeProfile(raw) {
   profile.best = Math.max(profile.best, profile.score)
   profile.farthest = Math.max(profile.farthest, profile.distance)
   if (typeof raw.comfort === 'boolean') profile.comfort = raw.comfort
-  if (raw.sfx === false) profile.wildlifeVolume = profile.effectsVolume = 0
+  if (typeof raw.haptics === 'boolean') profile.haptics = raw.haptics
+  if (raw.sfx === false) profile.wildlifeVolume = profile.ambientVolume = profile.effectsVolume = 0
+  if (!Number.isFinite(raw.ambientVolume) && Number.isFinite(raw.wildlifeVolume))
+    profile.ambientVolume = Math.min(1, Math.max(0, raw.wildlifeVolume))
   if (raw.soundtrack === false) profile.musicVolume = 0
   for (const key of Object.keys(audioDefaults)) {
     if (Number.isFinite(raw[key])) profile[key] = Math.min(1, Math.max(0, raw[key]))

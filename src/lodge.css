@@ -42,10 +42,10 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
   scroll-padding-block: 12px max(12px, env(safe-area-inset-bottom));
 }
-.kennel-stage, .lodge-tabs, .lodge-panel { touch-action: pan-y; }
+.kennel-stage, .lodge-tabs, .lodge-panel { touch-action: pan-y pinch-zoom; }
 .practice-status { display: none; }
 #game[data-practice] .practice-status {
   display: block;
@@ -255,7 +255,7 @@
   padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right))
     max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
   background: radial-gradient(ellipse at 50% 19%, #4c392896, transparent 65%), #131c16df;
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
 }
 .report-sheet {
   display: grid;
@@ -270,7 +270,7 @@
   box-shadow: 0 15px 48px #111610be;
   animation: hunt-report-in 230ms ease-out both;
 }
-.report-scroll { min-block-size: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-y; }
+.report-scroll { min-block-size: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-y pinch-zoom; }
 .report-scroll:focus-visible { outline: 2px solid #e8c796; outline-offset: -3px; }
 .report-intro { display: block; padding: clamp(12px, 4vw, 24px); background: linear-gradient(150deg, #493321, #2c3024 72%); }
 .report-intro h2 { font-size: clamp(2.40rem, 11vw, 4.1rem); font-weight: 750; letter-spacing: .015em; }
