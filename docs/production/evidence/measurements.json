@@ -1,9 +1,9 @@
 {
   "environment": "Linux, software WebGL, mobile-size viewports. Real callback intervals are distinct from the accelerated simulation timestamps.",
   "build": {
-    "version": "2c623bc2daf7e510e5d2",
+    "version": "3c5811cd95d5cc196b2b",
     "files": 30,
-    "buildBytes": 2456551,
+    "buildBytes": 2456499,
     "requiredFiles": 27,
     "requiredBytes": 2428822,
     "uniqueRequiredBytes": 2403499,

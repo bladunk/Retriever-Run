@@ -24,7 +24,7 @@ Raw file bytes from the actual Vite output. Unique content counts byte-identical
 
 | Measure | Pre-release 5.5.1 | Phase 01 |
 | --- | ---: | ---: |
-| Full build | 2,352,943 bytes | 2,456,551 bytes |
+| Full build | 2,352,943 bytes | 2,456,499 bytes |
 | HTML and static launch assets | 897,695 bytes before background assets | 65,751 unique shell bytes. 91,074 bytes including both icon paths |
 | Required offline edition | Previous auto-prefetch policy | 27 files, 2,428,822 logical bytes, 2,403,499 unique bytes |
 

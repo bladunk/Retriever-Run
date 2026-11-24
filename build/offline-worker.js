@@ -11,7 +11,7 @@ const groups = {
   core: { label: 'Game engine and trail', license: 'code' },
   terrain: { label: 'Terrain and vegetation', license: 'terrain-materials' },
   vegetation: { label: 'Territory vegetation', license: 'landscape-vegetation',
-    territories: ['flyway', 'timber', 'farm', 'prairie', 'dakota', 'border'] },
+    territories: ['flyway', 'timber', 'farm', 'prairie', 'dakota'] },
   dogs: { label: 'Labrador and animations', license: 'labrador' },
   audio: { label: 'Music and wildlife audio', license: 'game-audio' },
   diagnostics: { label: 'Developer diagnostics', license: 'code' },
@@ -56,11 +56,13 @@ export function offlineWorker() {
         // Vite rewrites module-preload markers late. Hash the final bytes on disk.
         const bytes = readFileSync(resolve(output.dir, file))
         const group = groupFor(file, shell)
+        const id = cleanId(file)
+        const license = item?.type === 'chunk' ? 'code' : id === 'forest-needles.webp' ? 'original' : groups[group].license
         const references = item?.type === 'chunk' ? [...item.imports, ...(item.viteMetadata?.importedCss ?? []),
           ...(item.viteMetadata?.importedAssets ?? [])] : []
-        return { id: cleanId(file), path: file, group, sha256: digest(bytes), bytes: bytes.length,
+        return { id, path: file, group, sha256: digest(bytes), bytes: bytes.length,
           required: group !== 'diagnostics', variant: 'universal', dependencies: [...new Set(references)].map(cleanId),
-          license: groups[group].license, cache: group === 'shell' ? 'release' : 'immutable' }
+          license, cache: group === 'shell' ? 'release' : 'immutable' }
       })
       const version = digest(JSON.stringify({ groups, assets }) + worker).slice(0, 20)
       const manifest = createContentManifest({ schema: 1, version, groups, assets })
