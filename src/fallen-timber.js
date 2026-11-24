@@ -104,7 +104,7 @@ function sculptedEarth(mass, palette, random, detail, tone = palette.earth) {
   return shape
 }
 
-function curvedWood(guide, tint, endColor, random, fractured) {
+export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = false) {
   const curve = new T.CatmullRomCurve3(guide.map(point => new T.Vector3(point[0], point[1], point[2])))
   const curveSteps = fractured ? 11 : 6
   const sides = fractured ? 12 : 7
@@ -122,6 +122,7 @@ function curvedWood(guide, tint, endColor, random, fractured) {
   }
 
   let rim
+  let firstRim
   for (let segment = 0; segment <= curveSteps; segment++) {
     const t = segment / curveSteps
     const at = curve.getPoint(t)
@@ -147,16 +148,21 @@ function curvedWood(guide, tint, endColor, random, fractured) {
         indices.push(ring - stride - 1, ring - stride, ring - 1, ring - 1, ring - stride, ring)
       }
     }
+    if (!segment) firstRim = rim
   }
 
-  const end = curve.getPoint(1)
-  const middle = point(end.clone().addScaledVector(tangent, .045), endColor, .78, .46, .53, 3)
-  for (let j = 0; j <= sides; j++) {
-    const angle = j * Math.PI * 2 / sides
-    const ring = point(rim[j], endColor, .79 + .19 * Math.sin(angle * 3 + .8), .46 + .47 * Math.cos(angle),
-      .53 + .42 * Math.sin(angle), 3)
-    if (j) indices.push(middle, ring - 1, ring)
+  function endGrain(ringPoints, endpoint) {
+    const end = curve.getPoint(endpoint)
+    const middle = point(end, endColor, .86, .46, .53, 3)
+    for (let j = 0; j <= sides; j++) {
+      const angle = j * Math.PI * 2 / sides
+      const ring = point(ringPoints[j], endColor, .86 + .16 * Math.sin(angle * 3 + .8), .46 + .47 * Math.cos(angle),
+        .53 + .42 * Math.sin(angle), 3)
+      if (j) indices.push(middle, endpoint ? ring - 1 : ring, endpoint ? ring : ring - 1)
+    }
   }
+  endGrain(rim, 1)
+  if (bothEnds) endGrain(firstRim, 0)
   return textureGeometry(values, uvs, colors, layers, indices)
 }
 

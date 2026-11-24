@@ -2,6 +2,7 @@ import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { fieldMaterials } from './materials.js'
 import { fallenTimberModel } from './fallen-timber.js'
+import { trailTimber } from './trail-timber.js'
 import { marshWater } from './marsh-water.js'
 import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
 
@@ -152,7 +153,11 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     object.add(new T.Mesh(fallenTimberModel(variant), fieldMaterials.material))
     return object
   }
-  if (type === 'root') object.scale.y = .7
+  const timber = trailTimber(type)
+  if (timber) {
+    object.add(new T.Mesh(timber, fieldMaterials.material))
+    return object
+  }
   if (baked.has(key)) {
     object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
     return object
@@ -193,27 +198,6 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     mesh(object, box, 0x744336, 0, 2.42, .35, 1.13, .13, 1.15)
     mesh(object, box, 0x58716a, 0, 1.88, -.16, .92, .84, .065)
     mesh(object, cylinder, 0x41362e, .37, 1.51, -.64, .072, .66, .072)
-  } else if (type === 'tree') {
-    // A standing snag in a playable lane. Habitat trees remain decorative.
-    mesh(object, barkCylinder, bark, 0, .625, 0, .292, 1.25, .292)
-    mesh(object, cylinder, cut, 0, 1.254, 0, .276, .036, .274)
-    mesh(object, cylinder, bark, .14, 1.226, .075, .068, .34, .062).rotation.z = -.27
-    mesh(object, sphere, bark, -.16, .09, .077, .28, .11, .186).rotation.y = -.63
-  } else if (type === 'log' || type === 'root' || type === 'drift') {
-    mesh(object, barkCylinder, bark, 0, .33, 0, .34, 1.97, .34).rotation.z = Math.PI / 2
-    for (const side of [-1, 1]) {
-      mesh(object, cylinder, cut, side * .994, .33, 0, .27, .025, .27).rotation.z = Math.PI / 2
-    }
-    mesh(object, cylinder, bark, .42, .58, -.04, .09, .34, .09).rotation.z = -.39
-    mesh(object, leaf, 0x59603a, -.37, .606, .105, .36, .044, .103).rotation.y = .11
-    mesh(object, leaf, 0x737046, -.76, .569, .173, .17, .038, .118).rotation.y = -.34
-    if (type === 'root') {
-      mesh(object, cylinder, bark, -.40, .18, -.27, .07, .92, .07).rotation.set(.63, 0, -.99)
-    }
-    if (type === 'drift') {
-      mesh(object, sphere, 0x504842, 0, .036, 0, 1.13, .022, .50)
-      mesh(object, box, 0x8c7b58, -.31, .39, .064, .57, .12, .54).rotation.y = .21
-    }
   }
   return compact(object, key, true)
 }

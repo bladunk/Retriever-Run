@@ -5,6 +5,7 @@ import { canPostRun } from '../src/camp-rules.js'
 import { traceContact } from '../src/collision.js'
 import { fallenTimberModel, fallenTimbers, fallenVariant } from '../src/fallen-timber.js'
 import { forestModel, forestProfileAt } from '../src/forest-models.js'
+import { trailTimber } from '../src/trail-timber.js'
 import { courseStages, distanceAtTime, speedAtTime, stageAt } from '../src/difficulty.js'
 import { createDriftingLeaves } from '../src/drifting-leaves.js'
 import { regionAt } from '../src/expedition.js'
@@ -200,4 +201,18 @@ test('northern tree stands include three live silhouettes and dead snags with bo
       assert.ok(mesh.attributes.position.array.every(Number.isFinite))
     }
   }
+})
+
+test('small timber forms have distinct shared meshes and retain their intended visual envelope', () => {
+  const bounds = { log: [.55, .73], root: [.30, .49], drift: [.48, .70], tree: [1.14, 1.34] }
+  const meshes = new Set()
+  for (const [kind, [min, max]] of Object.entries(bounds)) {
+    const mesh = trailTimber(kind)
+    assert.equal(trailTimber(kind), mesh)
+    assert.ok(mesh.boundingBox.max.y >= min && mesh.boundingBox.max.y <= max)
+    assert.ok(mesh.index.count / 3 < 500)
+    assert.ok(mesh.attributes.fieldLayer.array.includes(3))
+    meshes.add(mesh)
+  }
+  assert.equal(meshes.size, 4)
 })

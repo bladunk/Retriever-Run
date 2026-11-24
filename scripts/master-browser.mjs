@@ -128,6 +128,8 @@ try {
         const end = await report.locator('#report-highlights').evaluate(element => element.getBoundingClientRect().bottom)
         const viewport = await scroll.evaluate(element => element.getBoundingClientRect().bottom)
         assert.ok(end <= viewport + 1)
+        if (phone) await page.screenshot({ path: resolve(output, engine.name() + '-' + width + 'x' + height + '-scrolled.png'),
+          scale: 'css', timeout: 90000 })
         await press(page.locator('#report-lodge'))
         await page.locator('#lodge').waitFor()
         await press(page.locator('#tab-trophies'))
