@@ -7,6 +7,7 @@ const oneTurn = Math.PI * 2
 const up = new T.Vector3(0, 1, 0)
 
 const pitchAxis = new T.Vector3(1, 0, 0)
+const bankAxis = new T.Vector3(0, 0, 1)
 
 export function createLabradorRig(gltf) {
   const root = gltf.scene
@@ -65,6 +66,7 @@ export function createLabradorRig(gltf) {
   let groundCorrection = 0
   let compression = 0
   let earFollow = 0
+  let banking = 0
   const lean = new T.Quaternion()
   const headPose = head.quaternion.clone()
   const bodyPose = body.quaternion.clone()
@@ -87,16 +89,17 @@ export function createLabradorRig(gltf) {
       for (const dress of dressVest) dress(gear.vest)
     },
     reset() {
-      air = groundCorrection = compression = earFollow = 0
+      air = groundCorrection = compression = earFollow = banking = 0
       idle = 0
     },
-    pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing, ground }) {
+    pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing, ground, wet = 0 }) {
       const blend = -Math.expm1(-15 * dt)
       idle += (Number(resting) - idle) * blend
       air += (Number(airborne) - air) * -Math.expm1(-34 * dt)
       const low = sliding
       compression = Math.max(landing, compression * Math.exp(-18 * dt))
       const grounded = (1 - idle) * (1 - air)
+      banking += (T.MathUtils.clamp(turn * .054, -.097, .097) * (1 - .40 * low) - banking) * blend
       weights[0] = idle
       weights[1] = grounded * (1 - low)
       weights[2] = (1 - idle) * air
@@ -123,7 +126,9 @@ export function createLabradorRig(gltf) {
       // joints lower into the crouch, and the rig child may receive upward support.
       body.position.y -= low * .88 + compression * .065
       body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105))
+      body.quaternion.premultiply(lean.setFromAxisAngle(bankAxis, banking))
       head.quaternion.multiply(lean.setFromAxisAngle(up, -turn * .08 + (resting ? .07 * Math.sin(time * .8) : 0)))
+      head.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, compression * .040 - .026 * air * Math.sin(jumpPhase * Math.PI)))
       const activeEars = (1 - idle) * (1 - .82 * low)
       const earRoll = activeEars * (.096 * Math.sin(stride * 2 - .79) + .041 * air + compression * .047)
       earFollow += (earRoll - earFollow) * -Math.expm1(-23 * dt)
@@ -137,6 +142,7 @@ export function createLabradorRig(gltf) {
       const correction = planting.support(ground + (low > .001 ? .030 : .014))
       groundCorrection = Math.max(correction, groundCorrection * Math.exp(-25 * dt))
       root.position.y += groundCorrection
+      for (const mesh of meshes) mesh.material.roughness = .91 - wet * .19
     },
   }
 }

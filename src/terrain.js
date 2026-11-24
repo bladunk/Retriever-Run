@@ -29,9 +29,22 @@ const lodRange = { value: new T.Vector4() }
 
 // Canopies keep one solid depth-tested silhouette for the lifetime of a tile.
 // Only their distant color blends into the existing horizon haze.
-function settleTreeHaze(material) {
-  material.customProgramCacheKey = () => 'terrain-tree-haze'
+function settleTreeHaze(material, wind = false) {
+  material.customProgramCacheKey = () => wind ? 'terrain-tree-wind' : 'terrain-tree-haze'
   material.onBeforeCompile = shader => {
+    if (wind && shader.vertexShader) {
+      shader.uniforms.windClock = windClock
+      shader.uniforms.windStrength = windStrength
+      shader.vertexShader = 'uniform float windClock, windStrength;\n' + shader.vertexShader
+        .replace('#include <begin_vertex>', `#include <begin_vertex>
+          #ifdef USE_INSTANCING
+            float crown = smoothstep(.39, .98, position.y);
+            float gust = sin(windClock * 1.13 + instanceMatrix[3].x * .46 + instanceMatrix[3].z * .52);
+            transformed.x += crown * (gust * .008 + windStrength * (.011 + gust * .009));
+            transformed.z += crown * sin(windClock * .81 + instanceMatrix[3].x) * .007;
+          #endif
+        `)
+    }
     shader.fragmentShader = shader.fragmentShader.replace('#include <fog_fragment>', `
       #include <fog_fragment>
       #ifdef USE_FOG
@@ -68,7 +81,7 @@ function softenLOD(material, distant, baseShader) {
 }
 softenLOD(detailMaterial, false, terrainMaterial.onBeforeCompile)
 settleTreeHaze(treeMaterial)
-settleTreeHaze(forestMaterial)
+settleTreeHaze(forestMaterial, true)
 softenLOD(cropMaterial, false)
 softenLOD(cropFarMaterial, true)
 
@@ -110,7 +123,7 @@ function updateBatch(mesh) {
   mesh.computeBoundingSphere()
 }
 
-export function createTerrain(scene) {
+export function createTerrain(scene, showSign) {
   const tint = new T.Color()
   const tiles = Array.from({ length: 7 }, () => {
     const root = new T.Group()
@@ -236,6 +249,7 @@ export function createTerrain(scene) {
     tile.reeds.boundingSphere.radius += .65
     tile.hasChimney = Boolean(packet.chimney)
     if (packet.chimney) tile.smoke.position.fromArray(packet.chimney)
+    tile.sign = packet.sign
     tile.index = packet.index
   }
 
@@ -312,6 +326,7 @@ export function createTerrain(scene) {
         const insideDrawDistance = i - center < (detail === 0 ? 4 : detail === 1 ? 5 : 6)
         tile.root.visible = tile.index === i && insideDrawDistance
         if (!tile.root.visible) continue
+        if (tile.sign) showSign?.(tile.sign, distance)
         tile.root.position.set(centerAt(i * segmentLength) - offset, 0, distance - i * segmentLength)
         const tileStart = i * segmentLength - distance
         // Include a margin for outer tree crowns that reach across tile edges.

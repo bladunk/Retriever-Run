@@ -16,7 +16,7 @@ function mountainMesh(layer) {
   const random = seededRandom(47509 + layer * 491)
   const points = [], heights = [], faces = []
   const columns = 88
-  const ranges = [[-152, 31, 45], [-92, 25, 31], [-41, 43, 36], [8, 29, 28], [66, 41, 33], [119, 30, 32]]
+  const ranges = [[-152, 31, 45], [-92, 25, 31], [-41, 46, 44], [8, 33, 23], [66, 45, 36], [119, 28, 31]]
   for (let i = 0; i <= columns; i++) {
     const x = (i - columns * .5) * 5.3
     let peak = 4 + 4 * random()
@@ -85,7 +85,9 @@ export function createNorthernHorizon(scene) {
           float blanket = smoothstep(snowLine-.09,snowLine+.13,face.x+runnel-facets*.14);
           vec3 rock = mix(vec3(.101,.168,.205), vec3(.143,.242,.235), layer*.44);
           vec3 cap = mix(vec3(.55,.62,.69),vec3(.84,.89,.93),facets*.80);
-          vec3 color = mix(rock * (.78+facets*.26+relief*.095+face.y*.04), cap, blanket);
+          float band = sin(stone.y * .29 + stone.x * .040 + relief * 1.6);
+          float rockFace = smoothstep(-.15,.89,band) * (.16 + .29 * facets);
+          vec3 color = mix(rock * (.85+facets*.26+relief*.095+face.y*.04-rockFace), cap * (.95 + relief*.075), blanket);
           float separation = (.54 + layer * .21) * smoothstep(.04,.48,face.x) * amount;
           gl_FragColor = vec4(mix(haze, color, .70 + layer * .20), separation);
           #include <tonemapping_fragment>

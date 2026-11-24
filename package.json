@@ -1,6 +1,6 @@
 {
   "name": "retriever-run",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +15,8 @@
     "test:expedition": "node scripts/expedition-browser.mjs",
     "test:migration": "node scripts/migration-browser.mjs",
     "test:master": "node scripts/master-browser.mjs",
-    "stress:master": "node scripts/master-stress.mjs"
+    "stress:master": "node scripts/master-stress.mjs",
+    "test:difficulty-survey": "node scripts/difficulty-survey.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.2",

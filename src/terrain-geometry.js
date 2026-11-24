@@ -4,6 +4,8 @@ import { createLeafSpray } from './marsh-plants.js'
 import { expeditionBlend, regionAtDistance, snowLevel } from './expedition.js'
 import { dressNorthernBank } from './expedition-props.js'
 import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
+import { signAnchor } from './sign-placement.js'
+import { dressWildBanks } from './wilderness-banks.js'
 
 const box = new T.BoxGeometry()
 const stone = new T.IcosahedronGeometry(1, 0)
@@ -197,11 +199,14 @@ export function buildTile(index) {
       uvs.push(x / 2.5, -distance / 2.5)
       positions.push(x, y, z)
       const rut = Math.sin(x * 5.5 + Math.sin(distance * .42) * .9) * .032
-      const drift = Math.cos(distance * .18 + x * .63) * .058
+      const drift = Math.cos(distance * .18 + x * .63) * .044 + Math.sin(distance * .41 - x * 1.7) * .024
       tint.copy(soil).lerp(olive, edgeFade)
-      const drifts = .5 + .5 * Math.sin(distance * .34 + x * 1.9)
-      tint.lerp(snowTint, snow * (.12 + .68 * edgeFade + .17 * drifts))
-      tint.multiplyScalar(.91 + drift + rut).toArray(values, values.length)
+      const drifts = .5 + .24 * Math.sin(distance * .34 + x * 1.9) + .24 * Math.cos(distance * .087 - x * .58)
+      tint.lerp(snowTint, snow * (.10 + .65 * edgeFade + (.18 + edgeFade * .10) * drifts))
+      const farmland = T.MathUtils.lerp(Number(zone.from.kind === 'field'), Number(zone.to.kind === 'field'), zone.blend)
+      const tire = Math.max(0, 1 - Math.abs(Math.abs(x) - 1.56 - .13 * Math.sin(distance * .12)) / .57)
+      const tread = Math.abs(Math.cos((distance + x * .48) * 3.81)) ** 5
+      tint.multiplyScalar(.91 + drift + rut - farmland * tire * (.076 + tread * .11)).toArray(values, values.length)
       if (row && col) {
         const a = row * offsets.length + col
         indices.push(a, a - 1, a - offsets.length, a - 1, a - offsets.length - 1, a - offsets.length)
@@ -298,7 +303,7 @@ export function buildTile(index) {
   }
 
   // Weathered blinds and floating decoys sit outside the playable lanes.
-  if (colors.landmark === 'blind' && index % 5 === 0) {
+  if (colors.landmark === 'blind' && index % 5 === 0 || key === 'gulf' && index % 7 === 1) {
     const side = index % 14 === 0 ? 1 : -1
     const x = side * 7.1
     const z = -13.5
@@ -355,6 +360,7 @@ export function buildTile(index) {
   }
 
   const chimney = dressNorthernBank({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline, random })
+  dressWildBanks({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline })
   if (chimney) {
     const at = start - chimney[2]
     const heading = headingAt(at)
@@ -400,7 +406,7 @@ export function buildTile(index) {
   }
   return { index, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds,
     plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
-      : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney }
+      : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign: signAnchor(index, earth) }
 }
 
 function pack(geometry) {

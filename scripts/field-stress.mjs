@@ -7,6 +7,7 @@ import { seededRandom } from '../src/trail.js'
 import { createRunControls } from '../src/run-controls.js'
 import { createRunStatistics } from '../src/field-stats.js'
 import { runXP, xpAt } from '../src/career.js'
+import { canPostRun } from '../src/camp-rules.js'
 
 const wallPatterns = [
   [1 / 60],
@@ -101,12 +102,12 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
       return false
     }
 
-    for (let index = active.length - 1; index >= 0; index--) {
+    for (let index = 0; index < active.length; index++) {
       const item = active[index]
       const ahead = item.distance - run.distance
       if (estimateCareer && item.hazard) statistics.passed(previous, run, item)
       if (item.type === 'goose') {
-        if (diveAge(item, run.distance) > diveExit) active.splice(index, 1)
+        if (diveAge(item, run.distance) > diveExit) active.splice(index--, 1)
         continue
       }
       if (touchesPickup(run, item)) {
@@ -117,10 +118,10 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
         points += pickup.points
         retrieves += Number(item.type === 'mallard' || item.type === 'pheasant')
         totals.pickups++
-        active.splice(index, 1)
-      } else if (ahead < (item.type === 'treat' ? -1 : -8)) {
+        active.splice(index--, 1)
+      } else if (ahead < (item.type === 'treat' ? -1 : -8 - (item.span ?? 0) * .5)) {
         if (item.type === 'treat') run.streak = 0
-        active.splice(index, 1)
+        active.splice(index--, 1)
       }
     }
 
@@ -154,6 +155,8 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
   assert.equal(score(run), Math.floor(run.distance) + points)
   assert.equal(run.retrieves, retrieves)
   assert.ok(Number.isSafeInteger(score(run)) && score(run) >= 0)
+  if (run.elapsed >= 2) assert.ok(canPostRun({ durationMs: Math.round(run.elapsed * 1000),
+    score: score(run), distance: Math.floor(run.distance), retrieves }), 'Camp rejected seeded run ' + seed)
   totals.sessions++
   totals[guided ? 'guided' : 'freePlay']++
   if (killer) {

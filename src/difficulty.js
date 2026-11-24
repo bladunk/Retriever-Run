@@ -1,5 +1,41 @@
-export const difficultyCurve = [[0, 2], [15, 3.4], [30, 5.1], [60, 6.1], [90, 6.8],
-  [120, 7.4], [150, 8], [180, 8.5], [210, 8.9], [240, 9.25], [270, 9.5]]
+export const stageSeconds = 15
+const groups = ['Rookie', 'Field Dog', 'Seasoned Hunter', 'Veteran', 'Northern Expedition', 'Wilderness Legend']
+
+// Pace, base gap, two-lane chance, wide action, paired action, dodge follow-up,
+// optional retrieve route, flood, and preferred flock interval (seconds).
+const progression = [
+  [2.00, 1.55, .14, .09, .00, .00, .00, .00, 24],
+  [3.40, 1.48, .23, .16, .06, .00, .00, .00, 23],
+  [5.10, 1.40, .31, .21, .12, .05, .00, .00, 22],
+  [5.64, 1.34, .40, .26, .20, .09, .01, .00, 21],
+  [6.16, 1.28, .48, .30, .27, .13, .03, .00, 20],
+  [6.55, 1.23, .55, .34, .34, .18, .04, .00, 19],
+  [6.91, 1.18, .62, .37, .40, .23, .06, .00, 18],
+  [7.25, 1.14, .68, .40, .45, .28, .08, .00, 17],
+  [7.57, 1.10, .73, .43, .49, .32, .10, .00, 16],
+  [7.85, 1.07, .78, .46, .53, .36, .12, .00, 15],
+  [8.10, 1.04, .82, .49, .58, .41, .14, .035, 14],
+  [8.34, 1.01, .86, .52, .62, .45, .16, .040, 13],
+  [8.55,  .98, .89, .55, .66, .49, .18, .045, 12],
+  [8.74,  .95, .92, .58, .70, .53, .20, .050, 11],
+  [8.91,  .92, .94, .61, .74, .57, .22, .055, 10.5],
+  [9.06,  .90, .96, .64, .78, .61, .24, .060, 10],
+  [9.20,  .88, .98, .67, .82, .65, .26, .065, 9.6],
+  [9.33,  .86, .99, .70, .86, .69, .28, .070, 9.2],
+  [9.45,  .84, 1.0, .73, .90, .73, .30, .075, 8.8],
+  [9.57,  .82, 1.0, .77, .94, .77, .32, .080, 8.4],
+]
+
+export const courseStages = progression.map(([pace, gap, blocks, action, chain, follow, reward, flood, flock], index) => ({
+  level: index + 1, start: index * stageSeconds, territory: Math.floor(index / 2),
+  group: groups[index < 16 ? Math.floor(index / 4) : 4 + Math.floor((index - 16) / 2)],
+  pace, gap, blocks, action, chain, follow, reward, flood, flock,
+}))
+export const difficultyCurve = courseStages.map(({ start, pace }) => [start, pace])
+
+export function stageAt(seconds) {
+  return courseStages[Math.min(courseStages.length - 1, Math.floor(Math.max(0, seconds) / stageSeconds))]
+}
 
 export const director = {
   curve: difficultyCurve,
@@ -10,8 +46,8 @@ export const director = {
   earlyGap: 1.55,
   lateGap: .94,
   spacingVariation: .14,
-  pairAfter: 35,
-  pairGap: 1.52,
+  pairAfter: 29,
+  pairGap: 1.49,
   pairChance: .30,
   firstGoose: [49, 54],
   gooseInterval: [20, 30],
@@ -54,10 +90,3 @@ export function distanceAtTime(seconds, rules = director) {
   const [end, value] = rules.curve.at(-1)
   return distance + (seconds - end) * speedAt(value, rules)
 }
-
-export const courseStages = [
-  // Gap, second blocked lane, full-width action, and following action.
-  [1.55, .14, .09, 0], [1.40, .27, .16, .08], [1.32, .39, .20, .12],
-  [1.24, .50, .25, .19], [1.18, .63, .28, .22], [1.13, .73, .31, .26],
-  [1.08, .80, .33, .30], [1.04, .90, .37, .39], [1.00, .94, .41, .48], [.94, 1, .44, .55],
-]

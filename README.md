@@ -35,6 +35,8 @@ Test the static production build with `npm run build` and `npm run preview`. The
 
 The [5.4 release report](MASTER-POLISH-5.4.md) covers canopy stability, obstacle and input polish, the Hunt Over screen, and the five-pass verification.
 
+The [5.5 release report](INTO-THE-WILD-5.5.md) records the 20-stage difficulty comparison, trail sign catalog, environment captures, and browser and device acceptance checks.
+
 The [5.3 release report](PREMIUM-ENVIRONMENT-5.3.md) includes the updated farm and woodland scenery, obstacle rules, asset audit and performance checks. Run the dev server and open `/environment-gallery.html` to inspect the optimized models.
 
 The [5.2 release report](GREAT-MIGRATION-5.2.md) covers ten time-based territories, the changing course, mountain rendering, and the mobile acceptance checklist. The [5.1 release report](NORTHERN-EXPEDITION-5.1.md) documents the earlier expedition and the Season One rollout and rollback.

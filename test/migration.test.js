@@ -88,7 +88,7 @@ test('far terrain reuses two alpha-blended meshes across chunk seams and the end
   scene.children.forEach((ridge, layer) => {
     assert.equal(ridge.geometry, geometry[layer])
     assert.ok(ridge.position.distanceTo(previous[layer]) < .03)
-    assert.equal(ridge.position.x + centerAt(seam + .01), horizonPosition(0, layer).x)
+    assert.ok(Math.abs(ridge.position.x + centerAt(seam + .01) - horizonPosition(0, layer).x) < 1e-9)
   })
   update(21_000, 1, 1, haze)
   assert.deepEqual(scene.children.map(ridge => ridge.geometry), geometry)
@@ -97,7 +97,7 @@ test('far terrain reuses two alpha-blended meshes across chunk seams and the end
 
 test('late sets add action chains while preserving a delayed swept route and Camp speed bounds', () => {
   const samples = expeditionRegions.map(() => ({ decisions: 0, forcedLanes: 0, wide: 0, alternating: 0 }))
-  assert.ok(courseStages.every(([gap], index) => index === 0 || gap < courseStages[index - 1][0]))
+  assert.ok(courseStages.every(({ gap }, index) => index === 0 || gap < courseStages[index - 1].gap))
   for (let seed = 0; seed < 14; seed++) {
     const course = createCourse(16427 + seed * 1837)
     const controls = createRunControls()

@@ -1,6 +1,5 @@
 import { seededRandom } from './trail.js'
-import { courseStages, director, distanceAtTime, speedAtTime } from './difficulty.js'
-import { regionAt } from './expedition.js'
+import { director, distanceAtTime, speedAtTime, stageAt } from './difficulty.js'
 export { difficultyAt, difficultyCurve, director, distanceAtTime, speedAt, speedAtTime } from './difficulty.js'
 
 import { jumpDuration, jumpHeight, laneWidth, obstacleVolumes, slideDuration, traceContact,
@@ -13,6 +12,7 @@ export const reactionWindow = .42
 export const gateGrace = .050
 const lanes = [-1, 0, 1]
 const types = ['log', 'fence', 'puddle', 'branch', 'root', 'tree']
+const lowHazards = new Set(['log', 'root', 'puddle', 'drift'])
 const bonuses = ['mallard', 'pheasant', 'call', 'decoy']
 
 export const pickupNames = {
@@ -143,17 +143,21 @@ export function createCourse(seed = 1, rules = director) {
   let nextPair = rules.pairAfter
   let pairPending
   let requiredLane = false
+  let followAction = false
+  let previousGateType
 
   return function nextRow() {
     const at = distanceAtTime(time, rules)
-    const stage = regionAt(time).index
-    const [baseGap, blockChance, gateChance, chainChance] = courseStages[stage]
+    const stage = stageAt(time)
+    const territory = stage.territory
+    const progress = (stage.level - 1) / 19
     const maximum = speedAtTime(time + .35, rules)
     const reachable = lanes.filter((slot) => laneReachable(previous, at, slot, maximum))
     const goose = time >= nextGoose
-    const gate = !goose && (index === 1 || pairPending ||
-      index > 6 && !requiredLane && nextGoose - time > 1.65 && random() < gateChance)
-    const nextLanes = stage >= 4 && requiredLane ? reachable.filter(slot => slot !== previous.lane) : reachable
+    const washout = !goose && !pairPending && stage.flood && nextGoose - time > 3.4 && random() < stage.flood
+    const gate = !goose && !washout && (index === 1 || pairPending ||
+      index > 6 && !requiredLane && nextGoose - time > 1.45 && (followAction || random() < stage.action))
+    const nextLanes = requiredLane ? reachable.filter(slot => slot !== previous.lane) : reachable
     const lane = index < 2 || gate ? previous.lane : pick(nextLanes.length ? nextLanes : reachable.length ? reachable : [previous.lane])
     const row = { at, time, lane, entities: [] }
     const add = (type, slot, distance, hazard = false, wide = false) => {
@@ -161,7 +165,7 @@ export function createCourse(seed = 1, rules = director) {
     }
     const blocked = lanes.filter((slot) => slot !== lane)
     if (random() < .5) blocked.reverse()
-    const washout = stage >= 5 && !gate && !goose && !requiredLane && nextGoose - time > 3.8 && random() < .036
+    let heavyBlock = false
 
     if (index === 0) {
       for (let i = -2; i <= 2; i++) add('treat', 0, at + i * 1.7)
@@ -178,7 +182,8 @@ export function createCourse(seed = 1, rules = director) {
       row.end = row.entities.at(-1).distance
       add('treat', lane, at)
     } else if (gate) {
-      const type = pairPending || (index > 5 && random() < .32 + stage * .025 ? 'branch' : 'stream')
+      const overhead = previousGateType === 'branch' && stage.level >= 7 ? .29 : .32 + territory * .025
+      const type = pairPending || (index > 5 && random() < overhead ? 'branch' : 'stream')
       add(type, 0, at, true, true)
       row.gate = { distance: at, duration: type === 'branch' ? slideDuration : jumpDuration }
       add('treat', lane, at + 3.6)
@@ -193,44 +198,55 @@ export function createCourse(seed = 1, rules = director) {
       add('treat', lane, at)
       add('treat', lane, at + 5.4)
     } else {
-      const count = requiredLane && row.lane !== previous.lane || random() < blockChance ? 2 : 1
+      const count = requiredLane && row.lane !== previous.lane || random() < stage.blocks ? 2 : 1
       for (let i = 0; i < count; i++) {
-        const large = stage >= 3 && random() < stage * .034
-        const type = large ? stage === 4 && random() < .75 ? 'tractor' : 'fallen'
-          : index > 6 && random() < stage * .035 ? 'drift' : pick(types)
+        const large = territory >= 3 && random() < .09 + progress * .30 + (requiredLane ? .15 : 0)
+        const type = large ? territory === 4 && random() < .77 ? 'tractor' : 'fallen'
+          : index > 6 && random() < territory * .038 ? 'drift' : pick(types)
+        heavyBlock ||= large
         add(type, blocked[i], at, true)
       }
+      const alternate = row.entities.find(item => lowHazards.has(item.type))
+      const risky = alternate && stage.reward && random() < stage.reward
       for (let i = -1; i <= 1; i++) {
-        add(i === 0 && (index === 4 || random() < .12) ? pick(bonuses) : 'treat', lane, at + i * 1.72)
+        add(i === 0 && (index === 4 || !risky && random() < .12) ? pick(bonuses) : 'treat', lane, at + i * 1.72)
       }
+      if (risky) add(pick(bonuses), alternate.lane, at + 6.1)
     }
 
-    let gap = index === 0 ? rules.openingGap : baseGap +
-      (rules.earlyGap - director.earlyGap) * (1 - stage / 9) + (rules.lateGap - director.lateGap) * stage / 9 +
-      random() * rules.spacingVariation
+    let gap = index === 0 ? rules.openingGap : stage.gap +
+      (rules.earlyGap - director.earlyGap) * (1 - progress) + (rules.lateGap - director.lateGap) * progress +
+      random() * rules.spacingVariation * (1 - progress * .38)
     const wasPaired = Boolean(pairPending)
     pairPending = undefined
     requiredLane = false
+    followAction = false
     if (!validateRow(previous, row, maximum, speedAtTime(Math.max(0, time - .5), rules))) {
       row.lane = previous.lane
       row.entities = [{ type: 'treat', lane: row.lane, distance: at, hazard: false, wide: false }]
       row.gate = undefined
       row.end = undefined
     } else if (goose) {
-      nextGoose = time + between(rules.gooseInterval)
+      const preferred = rules.gooseInterval === director.gooseInterval ? stage.flock - 24 : 0
+      nextGoose = time + between(rules.gooseInterval) + preferred
       gap = Math.max(gap, 1.22)
     } else if (washout) {
       gap = (row.end - row.at) / speedAtTime(time, rules) + 1.25
-    } else if (!wasPaired && row.gate && time >= nextPair && nextGoose - time > 4 &&
-      random() < Math.max(rules.pairChance * Number(row.entities[0].type === 'stream'), chainChance)) {
-      pairPending = stage >= 4 && random() < .82
-        ? (row.entities[0].type === 'stream' ? 'branch' : 'stream') : row.entities[0].type
-      nextPair = time + 17
-      gap = Math.max(gap, stage >= 7 ? 1.39 : rules.pairGap)
+      followAction = random() < stage.follow
+    } else if (!wasPaired && row.gate && time >= nextPair && nextGoose - time > 2.9 &&
+      random() < Math.max(rules.pairChance * Number(row.entities[0].type === 'stream'), stage.chain)) {
+      const type = row.entities[0].type
+      pairPending = territory >= 2 && random() < .85 ? (type === 'stream' ? 'branch' : 'stream') : type
+      nextPair = time + Math.max(3.9, 15 - stage.level * .55)
+      gap = Math.max(gap, territory >= 5 ? 1.37 : rules.pairGap)
     } else if (row.gate) {
-      requiredLane = stage >= 4
-      gap = Math.max(gap, requiredLane ? 1.17 : 1.10)
+      requiredLane = territory >= 2 && (territory >= 4 || random() < stage.follow)
+      gap = Math.max(gap, requiredLane ? (territory >= 6 ? 1.02 : 1.14) : 1.05)
+    } else if (heavyBlock && nextGoose - time > 2.4 && random() < stage.follow) {
+      followAction = true
+      gap = Math.max(gap, .93)
     }
+    if (row.gate) previousGateType = row.entities[0].type
     previous = { at, lane: row.lane, end: row.end, gate: row.gate ?? previous.gate }
     time += gap
     index++

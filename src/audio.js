@@ -11,6 +11,7 @@ const footsteps = {
   dirt: [310, .032, .077, 'lowpass'],
   wood: [590, .035, .073, 'lowpass'],
   splash: [1090, .048, .169, 'bandpass'],
+  snow: [1280, .030, .102, 'bandpass'],
 }
 
 const rewards = {
@@ -369,6 +370,7 @@ export function createSound(onInterruption) {
         length * vary(.82, 1.2), 0, vary(-.10, .10), 0, .008)
       if (surface === 'wood') instrument('wood', 0, context.currentTime + .004, .10, level * .56, 0, bus)
       if (surface === 'splash') rustle(bus, 'bandpass', 1690, .024, .14, .035, .09)
+      if (surface === 'snow') rustle(bus, 'highpass', 1460, .009, .055, .024)
     },
     play(effect, surface = 'dirt') {
       if (!canPlay('effectsVolume')) return
