@@ -41,3 +41,10 @@ To rehearse an actual Phase 01 update, point `FIELD_PHASE_ONE_BUILD` at an isola
 ## Phase 03 additions
 
 The revision tests the fifteen-stage-pair route, all boundary seams, bounded terrain packets, seeded topology, landmark placement, the slide volume and snowmobile eligibility, and save schema 4. `scripts/phase-three-browser.mjs` runs the compiled Pages subpath in Chromium or WebKit. Its default mode captures both approach and landmark scenes, and `transitions` replays the boundaries at the actual stage clock. The `timber` case uses independent Phase 02 and Phase 03 build and source directories for the reported cypress scene. `from-phase-two repair` rehearses updating while a paused hunt prevents activation.
+
+## Phase 03B additions
+
+- The Phase 03B Node checks evaluate deterministic landmark packets in all fifteen territories, color and water profiles, replacement of tile-owned geometry and serialized texture quality transitions. The previous obstacle, mobility and offline suites remain.
+- The built-site runner adds `landmark-pass` with a reproducible continuous approach, center coast, passing frame, trail departure and tile recycling. The candidate checks that all drawn frames share the same stable landmark ID and geometry. `video` records actual game output while the test advances.
+- Run `FIELD_FAULT_ASSET=field-atlas-full.webp npm run test:production -- webkit small offline-only partial repair` against the built subpath. The test severs the HTTP body at one quarter, verifies retry and reuse of downloaded audio, damages the atlas in Cache Storage, and tests repair. It then exercises offline boot, a hunt, background pause and the final Kennel card at 320 × 568.
+- To test the real worker transition, build the Phase 03 merge and set `FIELD_PHASE_THREE_BUILD` to that artifact. Run `npm run test:production -- from-phase-three`. It tests that a paused tab prevents update, then verifies the activated worker, existing runs and swipe settings.

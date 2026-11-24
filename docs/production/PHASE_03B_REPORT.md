@@ -56,3 +56,58 @@ FIELD_BUILD=dist FIELD_PHASE_THREE_BUILD=/path/to/phase-03-dist npm run test:pro
 ```
 
 The scenery capture harness uses ordinary game-camera screenshots from built gameplay and deterministic practice positions. Its simulated game clock is separate from the render callback rate. Native device latency, playback FPS, thermals, battery and iOS memory pressure need direct testing. [Performance budget](PERFORMANCE_BUDGET.md)
+
+## Verified artifact and distribution
+
+| Local built artifact | Phase 03 | Phase 03B |
+| --- | ---: | ---: |
+| Build bytes | 2,487,534 | 5,611,909 |
+| Required bytes including duplicate files | 2,458,841 | 5,581,420 |
+| Unique required bytes | 2,433,518 | 5,556,097 |
+| Unique shell bytes | 66,202 | 76,074 |
+| Optional diagnostic bytes | 5,372 | 5,372 |
+| Required production files | 27 | 29 |
+
+The Phase 03B verifier matched the manifest and service worker and checked each emitted SHA-256 and byte length. The local release ID is `3565eb83e40bd8feef02`. Comparing distinct required hashes against the prior build found 3,637,807 bytes to transfer and 1,918,290 bytes reusable when all old files remain verified. The worker may prepare some shell files before the initial download button. The download dialog measured 5.49 MB still to download and 5.58 MB total, based on the current fixture's byte accounting including duplicate paths. Compression, cache eviction and already-installed assets affect wire traffic.
+
+There are no optional art downloads. Both texture choices remain available during an offline hunt, and the optional payload is the existing collision diagnostic module. Original diffuse scans were RGB photographs. The conversion retains relief and surface contrast as sampled color modulation while the existing normal/roughness techniques still provide lighting. The atlas accounts for the overwhelming majority of growth and materially changes nearby ground, exterior finishes and shallow water. Most of the geometry remains reproducibly generated and instanced. No asset host besides Pages is needed. [Hosting budget and projections](PERFORMANCE_BUDGET.md)
+
+## Gameplay and production regression
+
+- The baseline passed 131 Node tests. The candidate passed 134 with the new landscape, geometry ownership and variant swap checks. All existing obstacle and save tests remain.
+- Seeded gameplay passed 10,000 hunts, 31,865,525 fixed steps, and all 15 hazard types. The difficulty suite passed 100,020 windows and 69,147,728 fixed ticks across all 30 stages. Neither course generator nor collision solver differs from the deployed Phase 03 source.
+- WebKit ran at the built Pages subpath in a 320 × 568 touch viewport. The test deliberately dropped three transfers one quarter of the way into the 2.57 MB atlas. Retry reused verified audio, repair replaced only the corrupted cached atlas, and the verified pack booted offline. The same sequence played a hunt, persisted local progression, paused on backgrounding and used the last Kennel item. This was Linux WebKit emulation.
+- That fault-injection run reached the title in 16.16 s including retries, and in 6.47 s from a subsequent offline reload. Its measured replay took 493 ms end-to-end, with an internal render marker of 69 ms. It was a shared software host. Those figures should not be interpreted as native iPhone loading or input latency.
+
+## Matched rendering checkpoints
+
+The numbers below use mobile-sized Linux WebKit with software WebGL, the same seed and normal gameplay camera, and the Balanced preset. They compare submitted geometry and draw counts. The practice harness holds the simulation at each checkpoint, so these values do not describe sustained frame rate.
+
+| Checkpoint | Phase 03 draws / triangles | Phase 03B draws / triangles |
+| --- | ---: | ---: |
+| Gulf opening | 53 / 106,778 | 56 / 107,574 |
+| Cypress interior | 58 / 139,994 | 64 / 141,484 |
+| Flooded Timber | 61 / 144,260 | 68 / 145,303 |
+| Farm landmark | 68 / 179,913 | 70 / 179,598 |
+| Platte River | 66 / 116,203 | 71 / 117,780 |
+| Sandhills | 46 / 85,475 | 47 / 84,370 |
+| Boreal Forest | 66 / 120,861 | 72 / 123,004 |
+| Mountain Wilderness | 53 / 102,744 | 56 / 101,065 |
+
+Thirty running checkpoints showed 41–65 geometries and 10–13 renderer textures, seven resident tiles, and at most two optional habitat packs. The most demanding sampled Balanced checkpoint remained the cornfields by the Farm landmark at 179,598 triangles. Draw counts rise with the extra opaque batches. Cypress lifetime sampling recorded 334 in-window observations of a single opaque geometry, then 19 observations after the tile left that render window. [Measurements](evidence/phase-03b/measurements.json)
+
+The median title readiness marker across independent capture navigations was 3.78 s in the baseline and 5.67 s in the candidate. Both sets shared the software host with other browser jobs at different points, so the difference is an observation to check on-device. The candidate logged 106 ms median and 309 ms p95 for tile generation on the loaded worker. Its largest sampled main-thread unpack interval was 75 ms. The atlas image request and load callback ranged from 1.17 to 4.90 s in those navigation samples. The callback includes transfer, decode and scheduling. A dedicated GPU upload duration, production frame pacing, and a cold-to-cold iPhone comparison were not measured.
+
+## Visual review and follow-up
+
+1. **Environments.** Inspected all fifteen territory approaches and landmark views. During review, dark water replaced clipped pale reflections and wave distortion reduced visible repeating bands. The distinct ground scans read most clearly in Gulf, Platte, Sandhills and alpine terrain.
+2. **Readability.** Checked the normal camera against timber, water crossings, fences, the tractor and snowmobile. The camera, collision solver, lane coordinates and movement were retained. The backlit fog and rain samples still need native-phone comfort checks.
+3. **Lifetime.** The solid batch removes the destructive fade and keeps the shape while visible. Procedural placement and plate ownership have focused unit tests. The assembled clips show real browser footage. Their wall playback is accelerated to reduce software-renderer waiting.
+4. **Mobile.** Tested portrait rendering, the small-phone Kennel card, offline restart, backgrounding and an interrupted WebP transfer. High's extra detail is a choice. The physical frame cadence and texture-memory margin remain unmeasured.
+5. **Release safety.** Verified the two image variants, package version, game identity, documentation, unchanged competitive gate and save schema. The review branch has no database, account, hosting, or deploy changes.
+
+The current pass concentrates external intake on surfaces. The revised models are original procedural forms, with some shared cabin components and cutout tree crowns. Full reflected scene geometry, dedicated higher-poly vehicles, a second forest foliage library and systematic seasonal swaps are outside this implementation. Clearer regional land silhouettes and material variety are visible across the route. The annotated evidence lists the exercised cases and the matched captures. [Visual evidence index](evidence/phase-03b/README.md)
+
+Phase 04 can use the existing habitat markers and the current tile and surface architecture once the owner accepts the visual revision. Before publishing, check iPhone readability and scene stability in a long hunt, try all three fixed presets and Adaptive, and verify cache behavior after a normal update. Phase 03B native FPS, thermals, low-storage eviction and a continuous rendered 7:30 hunt remain unverified.
+
+In the matched 320 × 568 Chromium Cypress check, Battery Saver submitted 110,320 triangles in 59 draws, Balanced submitted 141,880 in 65, and High submitted 178,156 in 68. All three drew ten renderer texture objects, with the active atlas dimensions reduced by half per axis in Battery Saver. These are controlled checkpoint counts at the same seed. [Preset evidence](evidence/phase-03b/small-phone-presets.webp)

@@ -108,6 +108,7 @@ try {
     else { errors.push(error.message); console.error(error.message) }
   })
   page.on('console', message => { if (message.type() === 'error') console.error(message.text()) })
+  const phase = message => { if (process.env.FIELD_QA_TRACE) console.error(message) }
   const log = { engine: safari ? 'webkit' : 'chromium', baseline, upgrade: phaseThree ? 'phase-three' : phaseTwo ? 'phase-two' : upgrade ? 'phase-one' : false }
   const ready = async (tab = page) => {
     await tab.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
@@ -198,6 +199,7 @@ try {
     blocked = null
     await page.getByRole('button', { name: 'Retry download' }).tap()
     log.coldReadyMsIncludingRetry = Math.round(await ready())
+    phase('Verified download and title')
     assert.equal(hits.get(previouslyVerified.path), audioHits)
     await play(page)
     await finish(page)
@@ -232,6 +234,7 @@ try {
     await context.setOffline(true)
     await page.reload({ waitUntil: 'domcontentloaded' })
     log.offlineReadyMs = Math.round(await ready())
+    phase('Verified offline launch')
     await page.screenshot({ path: resolve(output, 'offline-camp.png'), scale: 'css' })
     await page.locator('#settings').tap()
     assert.equal(await page.locator('#install-app').isHidden(), true)
@@ -254,14 +257,19 @@ try {
     assert.ok(await page.locator('.kennel-selection').isVisible())
     await page.locator('#close-lodge').tap()
     await context.setOffline(false)
+    phase('Completed offline hunt and last Kennel card')
     if (!args.includes('offline-only')) {
       const idle = await context.newPage()
       await idle.goto(url + '?perf=1')
       await ready(idle)
+      phase('Started second tab')
+      await page.bringToFront()
       await play(page)
       await page.evaluate(() => window.qaBackground(true))
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'paused')
       newRelease = true
+      phase('First tab paused during hunt')
+      await idle.bringToFront()
       await idle.evaluate(async () => {
         const registration = await navigator.serviceWorker.ready
         await registration.update()
@@ -271,7 +279,8 @@ try {
       await idle.getByRole('button', { name: 'Game update available' }).tap()
       const preparation = idle.getByRole('button', { name: /^(Download|Apply) update$/ })
       await preparation.tap()
-      await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 60_000 })
+      await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 65_000 })
+      phase('Verified paused tab veto')
       const releaseMarker = phaseTwo ? 'meta[name="course-ruleset"]' : upgrade ? '#swipe' : 'meta[name="qa-release"]'
       const migrated = tab => phaseThree
         ? tab.waitForFunction(() => Boolean(window.retrieverPerformance?.().surfaces), null, { timeout: 55_000 })
@@ -279,10 +288,13 @@ try {
       if (phaseThree) assert.equal(await page.evaluate(() => Boolean(window.retrieverPerformance?.().surfaces)), false)
       else assert.equal(await page.locator(releaseMarker).count(), 0)
       assert.equal(await page.locator('#game').getAttribute('data-mode'), 'paused')
+      await page.bringToFront()
       await page.evaluate(() => window.qaBackground(false))
       await finish(page)
+      await idle.bringToFront()
       await idle.getByRole('button', { name: 'Apply update' }).tap()
       await migrated(idle)
+      phase('Activated candidate content')
       await idle.bringToFront()
       await ready(idle)
       await page.bringToFront()

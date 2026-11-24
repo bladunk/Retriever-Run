@@ -1,0 +1,2909 @@
+{
+  "phase03": {
+    "engine": "webkit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scenes": [
+      {
+        "label": "gulf-approach",
+        "seed": 7,
+        "distance": 3,
+        "weather": "Autumn sunrise",
+        "stage": "1 / 30",
+        "hud": "Gulf Coast Marsh",
+        "render": {
+          "draws": 53,
+          "triangles": 106778,
+          "geometries": 38,
+          "textures": 8,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 1894,
+          "restart": 1397,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "gulf-landmark",
+        "seed": 7,
+        "distance": 6.9896560960449285,
+        "weather": "Autumn sunrise",
+        "stage": "1 / 30",
+        "hud": "Gulf Coast Marsh",
+        "render": {
+          "draws": 53,
+          "triangles": 106778,
+          "geometries": 42,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 3372,
+          "restart": 383,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "cypress-approach",
+        "seed": 7,
+        "distance": 545.85528,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 58,
+          "triangles": 139994,
+          "geometries": 45,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 3986,
+          "restart": 706,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "cypress-landmark",
+        "seed": 7,
+        "distance": 484.9573660649359,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 60,
+          "triangles": 143521,
+          "geometries": 45,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 3866,
+          "restart": 505,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "flyway-approach",
+        "seed": 7,
+        "distance": 1147.79808,
+        "weather": "Overcast",
+        "stage": "5 / 30",
+        "hud": "Mississippi Delta",
+        "render": {
+          "draws": 58,
+          "triangles": 107521,
+          "geometries": 52,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3720,
+          "restart": 580,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "flyway-landmark",
+        "seed": 7,
+        "distance": 1082.2157585430891,
+        "weather": "Overcast",
+        "stage": "5 / 30",
+        "hud": "Mississippi Delta",
+        "render": {
+          "draws": 62,
+          "triangles": 106446,
+          "geometries": 55,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 4372,
+          "restart": 618,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "timber-approach",
+        "seed": 7,
+        "distance": 1809.88548,
+        "weather": "Morning fog",
+        "stage": "7 / 30",
+        "hud": "Arkansas Flooded Timber",
+        "render": {
+          "draws": 61,
+          "triangles": 144260,
+          "geometries": 48,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3976,
+          "restart": 696,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "timber-landmark",
+        "seed": 7,
+        "distance": 1715.3616770313122,
+        "weather": "Morning fog",
+        "stage": "7 / 30",
+        "hud": "Arkansas Flooded Timber",
+        "render": {
+          "draws": 61,
+          "triangles": 145478,
+          "geometries": 52,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 4103,
+          "restart": 685,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "ozark-approach",
+        "seed": 7,
+        "distance": 2520.4071599999997,
+        "weather": "Light rain",
+        "stage": "9 / 30",
+        "hud": "Ozark River Country",
+        "render": {
+          "draws": 58,
+          "triangles": 101834,
+          "geometries": 49,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 3585,
+          "restart": 944,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "ozark-landmark",
+        "seed": 7,
+        "distance": 2435.05349999601,
+        "weather": "Light rain",
+        "stage": "9 / 30",
+        "hud": "Ozark River Country",
+        "render": {
+          "draws": 55,
+          "triangles": 98346,
+          "geometries": 50,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 4494,
+          "restart": 988,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "farm-approach",
+        "seed": 7,
+        "distance": 3271.4476799999998,
+        "weather": "Heavy rain",
+        "stage": "11 / 30",
+        "hud": "Midwest Farm Country",
+        "render": {
+          "draws": 66,
+          "triangles": 119774,
+          "geometries": 60,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3603,
+          "restart": 1116,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "farm-landmark",
+        "seed": 7,
+        "distance": 3128.0847329076378,
+        "weather": "Heavy rain",
+        "stage": "11 / 30",
+        "hud": "Midwest Farm Country",
+        "render": {
+          "draws": 68,
+          "triangles": 179913,
+          "geometries": 58,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3789,
+          "restart": 906,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "platte-approach",
+        "seed": 7,
+        "distance": 4056.01908,
+        "weather": "Windy",
+        "stage": "13 / 30",
+        "hud": "Platte River Valley",
+        "render": {
+          "draws": 66,
+          "triangles": 116203,
+          "geometries": 55,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3814,
+          "restart": 518,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "platte-landmark",
+        "seed": 7,
+        "distance": 3931.706046546716,
+        "weather": "Windy",
+        "stage": "13 / 30",
+        "hud": "Platte River Valley",
+        "render": {
+          "draws": 65,
+          "triangles": 116273,
+          "geometries": 58,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 5014,
+          "restart": 1023,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "sandhills-approach",
+        "seed": 7,
+        "distance": 4867.8414,
+        "weather": "Snow",
+        "stage": "15 / 30",
+        "hud": "Nebraska Sandhills",
+        "render": {
+          "draws": 46,
+          "triangles": 85475,
+          "geometries": 48,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 4494,
+          "restart": 827,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "sandhills-landmark",
+        "seed": 7,
+        "distance": 4743.804116894491,
+        "weather": "Snow",
+        "stage": "15 / 30",
+        "hud": "Nebraska Sandhills",
+        "render": {
+          "draws": 47,
+          "triangles": 89375,
+          "geometries": 48,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3622,
+          "restart": 1013,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "prairie-approach",
+        "seed": 7,
+        "distance": 5701.56216,
+        "weather": "Sleet",
+        "stage": "17 / 30",
+        "hud": "Dakota Prairie Potholes",
+        "render": {
+          "draws": 51,
+          "triangles": 102500,
+          "geometries": 47,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3719,
+          "restart": 1266,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "prairie-landmark",
+        "seed": 7,
+        "distance": 5582.959594161995,
+        "weather": "Snow",
+        "stage": "17 / 30",
+        "hud": "Dakota Prairie Potholes",
+        "render": {
+          "draws": 54,
+          "triangles": 106370,
+          "geometries": 52,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3771,
+          "restart": 802,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "dakota-approach",
+        "seed": 7,
+        "distance": 6555.610839999999,
+        "weather": "Sleet",
+        "stage": "19 / 30",
+        "hud": "Northern Dakota Wetlands",
+        "render": {
+          "draws": 57,
+          "triangles": 91773,
+          "geometries": 52,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3506,
+          "restart": 863,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "dakota-landmark",
+        "seed": 7,
+        "distance": 6422.347469528764,
+        "weather": "Sleet",
+        "stage": "19 / 30",
+        "hud": "Northern Dakota Wetlands",
+        "render": {
+          "draws": 51,
+          "triangles": 101873,
+          "geometries": 48,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3694,
+          "restart": 1119,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "manitoba-approach",
+        "seed": 7,
+        "distance": 7419.326904,
+        "weather": "Autumn sunrise",
+        "stage": "21 / 30",
+        "hud": "Manitoba Marshlands",
+        "render": {
+          "draws": 53,
+          "triangles": 101274,
+          "geometries": 51,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 3726,
+          "restart": 886,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "manitoba-landmark",
+        "seed": 7,
+        "distance": 7291.425456746947,
+        "weather": "Autumn sunrise",
+        "stage": "21 / 30",
+        "hud": "Manitoba Marshlands",
+        "render": {
+          "draws": 52,
+          "triangles": 99781,
+          "geometries": 46,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 3625,
+          "restart": 855,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "parklands-approach",
+        "seed": 7,
+        "distance": 8286.508452,
+        "weather": "Overcast",
+        "stage": "23 / 30",
+        "hud": "Saskatchewan Parklands",
+        "render": {
+          "draws": 64,
+          "triangles": 113768,
+          "geometries": 53,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 4142,
+          "restart": 940,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "parklands-landmark",
+        "seed": 7,
+        "distance": 8161.72491148524,
+        "weather": "Overcast",
+        "stage": "23 / 30",
+        "hud": "Saskatchewan Parklands",
+        "render": {
+          "draws": 56,
+          "triangles": 100432,
+          "geometries": 48,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "ready": 3722,
+          "restart": 719,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "boreal-approach",
+        "seed": 7,
+        "distance": 9152.795972000002,
+        "weather": "Morning fog",
+        "stage": "25 / 30",
+        "hud": "Canadian Boreal Forest",
+        "render": {
+          "draws": 66,
+          "triangles": 120861,
+          "geometries": 59,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 3634,
+          "restart": 1086,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "boreal-landmark",
+        "seed": 7,
+        "distance": 9033.882876569685,
+        "weather": "Morning fog",
+        "stage": "25 / 30",
+        "hud": "Canadian Boreal Forest",
+        "render": {
+          "draws": 51,
+          "triangles": 109038,
+          "geometries": 48,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 4271,
+          "restart": 638,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "foothills-approach",
+        "seed": 7,
+        "distance": 10023.46212,
+        "weather": "Light rain",
+        "stage": "27 / 30",
+        "hud": "Rocky Mountain Foothills",
+        "render": {
+          "draws": 67,
+          "triangles": 117544,
+          "geometries": 58,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 4309,
+          "restart": 2618,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "foothills-landmark",
+        "seed": 7,
+        "distance": 9904.864056614973,
+        "weather": "Light rain",
+        "stage": "27 / 30",
+        "hud": "Rocky Mountain Foothills",
+        "render": {
+          "draws": 61,
+          "triangles": 129409,
+          "geometries": 54,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 5660,
+          "restart": 995,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "mountain-approach",
+        "seed": 7,
+        "distance": 10893.066444,
+        "weather": "High-country snow",
+        "stage": "29 / 30",
+        "hud": "Canadian Mountain Wilderness",
+        "render": {
+          "draws": 53,
+          "triangles": 102744,
+          "geometries": 50,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 3546,
+          "restart": 1135,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "mountain-landmark",
+        "seed": 7,
+        "distance": 10773.203779102023,
+        "weather": "Heavy rain",
+        "stage": "29 / 30",
+        "hud": "Canadian Mountain Wilderness",
+        "render": {
+          "draws": 72,
+          "triangles": 110092,
+          "geometries": 58,
+          "textures": 9,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "ready": 4353,
+          "restart": 1903,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      }
+    ]
+  },
+  "phase03b": {
+    "engine": "webkit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scenes": [
+      {
+        "label": "gulf-approach",
+        "seed": 7,
+        "distance": 3,
+        "weather": "Autumn sunrise",
+        "stage": "1 / 30",
+        "hud": "Gulf Coast Marsh",
+        "render": {
+          "draws": 56,
+          "triangles": 107574,
+          "geometries": 41,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 4900,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 0,
+              "buildMs": 511,
+              "unpackMs": 61
+            },
+            {
+              "index": 1,
+              "buildMs": 214,
+              "unpackMs": 2
+            },
+            {
+              "index": 2,
+              "buildMs": 65,
+              "unpackMs": 2
+            },
+            {
+              "index": 3,
+              "buildMs": 27,
+              "unpackMs": 6
+            },
+            {
+              "index": 4,
+              "buildMs": 269,
+              "unpackMs": 2
+            },
+            {
+              "index": 5,
+              "buildMs": 134,
+              "unpackMs": 1
+            },
+            {
+              "index": -1,
+              "buildMs": 325,
+              "unpackMs": 12
+            }
+          ],
+          "ready": 3603,
+          "restart": 2284,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "gulf-landmark",
+        "seed": 7,
+        "distance": 6.9896560960449285,
+        "weather": "Autumn sunrise",
+        "stage": "1 / 30",
+        "hud": "Gulf Coast Marsh",
+        "render": {
+          "draws": 56,
+          "triangles": 107574,
+          "geometries": 45,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1886,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 0,
+              "buildMs": 383,
+              "unpackMs": 10
+            },
+            {
+              "index": 1,
+              "buildMs": 279,
+              "unpackMs": 38
+            },
+            {
+              "index": 2,
+              "buildMs": 165,
+              "unpackMs": 1
+            },
+            {
+              "index": 3,
+              "buildMs": 70,
+              "unpackMs": 2
+            },
+            {
+              "index": 4,
+              "buildMs": 24,
+              "unpackMs": 1
+            },
+            {
+              "index": 5,
+              "buildMs": 209,
+              "unpackMs": 1
+            },
+            {
+              "index": -1,
+              "buildMs": 314,
+              "unpackMs": 19
+            }
+          ],
+          "ready": 6294,
+          "restart": 1178,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "cypress-approach",
+        "seed": 7,
+        "distance": 545.85528,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 64,
+          "triangles": 141484,
+          "geometries": 51,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1323,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 21,
+              "buildMs": 177,
+              "unpackMs": 2
+            },
+            {
+              "index": 22,
+              "buildMs": 27,
+              "unpackMs": 1
+            },
+            {
+              "index": 23,
+              "buildMs": 74,
+              "unpackMs": 1
+            },
+            {
+              "index": 17,
+              "buildMs": 218,
+              "unpackMs": 2
+            },
+            {
+              "index": 18,
+              "buildMs": 104,
+              "unpackMs": 1
+            },
+            {
+              "index": 19,
+              "buildMs": 133,
+              "unpackMs": 2
+            },
+            {
+              "index": 20,
+              "buildMs": 107,
+              "unpackMs": 8
+            }
+          ],
+          "ready": 5715,
+          "restart": 580,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "cypress-landmark",
+        "seed": 7,
+        "distance": 484.9573660649359,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 67,
+          "triangles": 146397,
+          "geometries": 52,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1496,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 21,
+              "buildMs": 89,
+              "unpackMs": 1
+            },
+            {
+              "index": 15,
+              "buildMs": 191,
+              "unpackMs": 3
+            },
+            {
+              "index": 16,
+              "buildMs": 296,
+              "unpackMs": 8
+            },
+            {
+              "index": 17,
+              "buildMs": 301,
+              "unpackMs": 10
+            },
+            {
+              "index": 18,
+              "buildMs": 293,
+              "unpackMs": 3
+            },
+            {
+              "index": 19,
+              "buildMs": 355,
+              "unpackMs": 3
+            },
+            {
+              "index": 20,
+              "buildMs": 288,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 5276,
+          "restart": 699,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "flyway-approach",
+        "seed": 7,
+        "distance": 1147.79808,
+        "weather": "Overcast",
+        "stage": "5 / 30",
+        "hud": "Mississippi Delta",
+        "render": {
+          "draws": 65,
+          "triangles": 108890,
+          "geometries": 57,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1471,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 42,
+              "buildMs": 309,
+              "unpackMs": 2
+            },
+            {
+              "index": 43,
+              "buildMs": 111,
+              "unpackMs": 12
+            },
+            {
+              "index": 37,
+              "buildMs": 100,
+              "unpackMs": 8
+            },
+            {
+              "index": 38,
+              "buildMs": 192,
+              "unpackMs": 7
+            },
+            {
+              "index": 39,
+              "buildMs": 87,
+              "unpackMs": 1
+            },
+            {
+              "index": 40,
+              "buildMs": 95,
+              "unpackMs": 1
+            },
+            {
+              "index": 41,
+              "buildMs": 107,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 5634,
+          "restart": 691,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "flyway-landmark",
+        "seed": 7,
+        "distance": 1082.2157585430891,
+        "weather": "Overcast",
+        "stage": "5 / 30",
+        "hud": "Mississippi Delta",
+        "render": {
+          "draws": 66,
+          "triangles": 106908,
+          "geometries": 59,
+          "textures": 13,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1691,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 35,
+              "buildMs": 75,
+              "unpackMs": 3
+            },
+            {
+              "index": 36,
+              "buildMs": 112,
+              "unpackMs": 7
+            },
+            {
+              "index": 37,
+              "buildMs": 66,
+              "unpackMs": 1
+            },
+            {
+              "index": 38,
+              "buildMs": 45,
+              "unpackMs": 1
+            },
+            {
+              "index": 39,
+              "buildMs": 64,
+              "unpackMs": 1
+            },
+            {
+              "index": 40,
+              "buildMs": 30,
+              "unpackMs": 1
+            },
+            {
+              "index": 41,
+              "buildMs": 25,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 5385,
+          "restart": 748,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "timber-approach",
+        "seed": 7,
+        "distance": 1809.88548,
+        "weather": "Morning fog",
+        "stage": "7 / 30",
+        "hud": "Arkansas Flooded Timber",
+        "render": {
+          "draws": 68,
+          "triangles": 145303,
+          "geometries": 55,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1486,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 63,
+              "buildMs": 41,
+              "unpackMs": 1
+            },
+            {
+              "index": 64,
+              "buildMs": 72,
+              "unpackMs": 6
+            },
+            {
+              "index": 65,
+              "buildMs": 99,
+              "unpackMs": 2
+            },
+            {
+              "index": 59,
+              "buildMs": 76,
+              "unpackMs": 2
+            },
+            {
+              "index": 60,
+              "buildMs": 108,
+              "unpackMs": 5
+            },
+            {
+              "index": 61,
+              "buildMs": 86,
+              "unpackMs": 1
+            },
+            {
+              "index": 62,
+              "buildMs": 174,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 5306,
+          "restart": 864,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "timber-landmark",
+        "seed": 7,
+        "distance": 1715.3616770313122,
+        "weather": "Morning fog",
+        "stage": "7 / 30",
+        "hud": "Arkansas Flooded Timber",
+        "render": {
+          "draws": 68,
+          "triangles": 146016,
+          "geometries": 59,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1450,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 56,
+              "buildMs": 139,
+              "unpackMs": 3
+            },
+            {
+              "index": 57,
+              "buildMs": 181,
+              "unpackMs": 7
+            },
+            {
+              "index": 58,
+              "buildMs": 170,
+              "unpackMs": 2
+            },
+            {
+              "index": 59,
+              "buildMs": 40,
+              "unpackMs": 3
+            },
+            {
+              "index": 60,
+              "buildMs": 151,
+              "unpackMs": 2
+            },
+            {
+              "index": 61,
+              "buildMs": 71,
+              "unpackMs": 1
+            },
+            {
+              "index": 62,
+              "buildMs": 99,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 5579,
+          "restart": 786,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "ozark-approach",
+        "seed": 7,
+        "distance": 2520.4071599999997,
+        "weather": "Light rain",
+        "stage": "9 / 30",
+        "hud": "Ozark River Country",
+        "render": {
+          "draws": 61,
+          "triangles": 102539,
+          "geometries": 52,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1368,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 84,
+              "buildMs": 98,
+              "unpackMs": 4
+            },
+            {
+              "index": 85,
+              "buildMs": 79,
+              "unpackMs": 4
+            },
+            {
+              "index": 86,
+              "buildMs": 82,
+              "unpackMs": 1
+            },
+            {
+              "index": 87,
+              "buildMs": 88,
+              "unpackMs": 6
+            },
+            {
+              "index": 88,
+              "buildMs": 138,
+              "unpackMs": 1
+            },
+            {
+              "index": 89,
+              "buildMs": 85,
+              "unpackMs": 4
+            },
+            {
+              "index": 83,
+              "buildMs": 122,
+              "unpackMs": 3
+            }
+          ],
+          "ready": 5319,
+          "restart": 1196,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "ozark-landmark",
+        "seed": 7,
+        "distance": 2435.05349999601,
+        "weather": "Light rain",
+        "stage": "9 / 30",
+        "hud": "Ozark River Country",
+        "render": {
+          "draws": 56,
+          "triangles": 98297,
+          "geometries": 51,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1167,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 84,
+              "buildMs": 24,
+              "unpackMs": 1
+            },
+            {
+              "index": 85,
+              "buildMs": 54,
+              "unpackMs": 3
+            },
+            {
+              "index": 86,
+              "buildMs": 129,
+              "unpackMs": 1
+            },
+            {
+              "index": 80,
+              "buildMs": 61,
+              "unpackMs": 2
+            },
+            {
+              "index": 81,
+              "buildMs": 46,
+              "unpackMs": 2
+            },
+            {
+              "index": 82,
+              "buildMs": 28,
+              "unpackMs": 1
+            },
+            {
+              "index": 83,
+              "buildMs": 54,
+              "unpackMs": 1
+            }
+          ],
+          "ready": 4985,
+          "restart": 1088,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "farm-approach",
+        "seed": 7,
+        "distance": 3271.4476799999998,
+        "weather": "Heavy rain",
+        "stage": "11 / 30",
+        "hud": "Midwest Farm Country",
+        "render": {
+          "draws": 67,
+          "triangles": 118689,
+          "geometries": 62,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1402,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 112,
+              "buildMs": 73,
+              "unpackMs": 1
+            },
+            {
+              "index": 113,
+              "buildMs": 101,
+              "unpackMs": 2
+            },
+            {
+              "index": 114,
+              "buildMs": 172,
+              "unpackMs": 1
+            },
+            {
+              "index": 108,
+              "buildMs": 108,
+              "unpackMs": 3
+            },
+            {
+              "index": 109,
+              "buildMs": 45,
+              "unpackMs": 7
+            },
+            {
+              "index": 110,
+              "buildMs": 33,
+              "unpackMs": 2
+            },
+            {
+              "index": 111,
+              "buildMs": 78,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 4661,
+          "restart": 1203,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "farm-landmark",
+        "seed": 7,
+        "distance": 3128.0847329076378,
+        "weather": "Heavy rain",
+        "stage": "11 / 30",
+        "hud": "Midwest Farm Country",
+        "render": {
+          "draws": 70,
+          "triangles": 179598,
+          "geometries": 60,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1249,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 105,
+              "buildMs": 23,
+              "unpackMs": 5
+            },
+            {
+              "index": 106,
+              "buildMs": 125,
+              "unpackMs": 3
+            },
+            {
+              "index": 107,
+              "buildMs": 94,
+              "unpackMs": 2
+            },
+            {
+              "index": 108,
+              "buildMs": 70,
+              "unpackMs": 2
+            },
+            {
+              "index": 109,
+              "buildMs": 76,
+              "unpackMs": 1
+            },
+            {
+              "index": 103,
+              "buildMs": 167,
+              "unpackMs": 1
+            },
+            {
+              "index": 104,
+              "buildMs": 53,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 4344,
+          "restart": 1326,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "platte-approach",
+        "seed": 7,
+        "distance": 4056.01908,
+        "weather": "Windy",
+        "stage": "13 / 30",
+        "hud": "Platte River Valley",
+        "render": {
+          "draws": 71,
+          "triangles": 117780,
+          "geometries": 60,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2863,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 140,
+              "buildMs": 73,
+              "unpackMs": 6
+            },
+            {
+              "index": 134,
+              "buildMs": 138,
+              "unpackMs": 2
+            },
+            {
+              "index": 135,
+              "buildMs": 91,
+              "unpackMs": 10
+            },
+            {
+              "index": 136,
+              "buildMs": 71,
+              "unpackMs": 1
+            },
+            {
+              "index": 137,
+              "buildMs": 122,
+              "unpackMs": 1
+            },
+            {
+              "index": 138,
+              "buildMs": 84,
+              "unpackMs": 3
+            },
+            {
+              "index": 139,
+              "buildMs": 216,
+              "unpackMs": 7
+            }
+          ],
+          "ready": 8330,
+          "restart": 605,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "platte-landmark",
+        "seed": 7,
+        "distance": 3931.706046546716,
+        "weather": "Windy",
+        "stage": "13 / 30",
+        "hud": "Platte River Valley",
+        "render": {
+          "draws": 70,
+          "triangles": 118532,
+          "geometries": 61,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1990,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 133,
+              "buildMs": 215,
+              "unpackMs": 1
+            },
+            {
+              "index": 134,
+              "buildMs": 86,
+              "unpackMs": 1
+            },
+            {
+              "index": 135,
+              "buildMs": 102,
+              "unpackMs": 1
+            },
+            {
+              "index": 136,
+              "buildMs": 226,
+              "unpackMs": 5
+            },
+            {
+              "index": 130,
+              "buildMs": 268,
+              "unpackMs": 10
+            },
+            {
+              "index": 131,
+              "buildMs": 205,
+              "unpackMs": 2
+            },
+            {
+              "index": 132,
+              "buildMs": 122,
+              "unpackMs": 1
+            }
+          ],
+          "ready": 6840,
+          "restart": 737,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "sandhills-approach",
+        "seed": 7,
+        "distance": 4867.8414,
+        "weather": "Snow",
+        "stage": "15 / 30",
+        "hud": "Nebraska Sandhills",
+        "render": {
+          "draws": 47,
+          "triangles": 84370,
+          "geometries": 50,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1473,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 161,
+              "buildMs": 172,
+              "unpackMs": 41
+            },
+            {
+              "index": 162,
+              "buildMs": 255,
+              "unpackMs": 9
+            },
+            {
+              "index": 163,
+              "buildMs": 158,
+              "unpackMs": 2
+            },
+            {
+              "index": 164,
+              "buildMs": 77,
+              "unpackMs": 0
+            },
+            {
+              "index": 165,
+              "buildMs": 38,
+              "unpackMs": 3
+            },
+            {
+              "index": 166,
+              "buildMs": 105,
+              "unpackMs": 1
+            },
+            {
+              "index": 167,
+              "buildMs": 58,
+              "unpackMs": 40
+            }
+          ],
+          "ready": 5322,
+          "restart": 900,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "sandhills-landmark",
+        "seed": 7,
+        "distance": 4743.804116894491,
+        "weather": "Snow",
+        "stage": "15 / 30",
+        "hud": "Nebraska Sandhills",
+        "render": {
+          "draws": 51,
+          "triangles": 88255,
+          "geometries": 53,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1655,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 161,
+              "buildMs": 35,
+              "unpackMs": 4
+            },
+            {
+              "index": 162,
+              "buildMs": 85,
+              "unpackMs": 2
+            },
+            {
+              "index": 163,
+              "buildMs": 91,
+              "unpackMs": 0
+            },
+            {
+              "index": 157,
+              "buildMs": 90,
+              "unpackMs": 4
+            },
+            {
+              "index": 158,
+              "buildMs": 203,
+              "unpackMs": 4
+            },
+            {
+              "index": 159,
+              "buildMs": 196,
+              "unpackMs": 1
+            },
+            {
+              "index": 160,
+              "buildMs": 139,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 5350,
+          "restart": 971,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "prairie-approach",
+        "seed": 7,
+        "distance": 5701.56216,
+        "weather": "Sleet",
+        "stage": "17 / 30",
+        "hud": "Dakota Prairie Potholes",
+        "render": {
+          "draws": 56,
+          "triangles": 102880,
+          "geometries": 51,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1375,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 189,
+              "buildMs": 99,
+              "unpackMs": 4
+            },
+            {
+              "index": 190,
+              "buildMs": 319,
+              "unpackMs": 10
+            },
+            {
+              "index": 191,
+              "buildMs": 146,
+              "unpackMs": 1
+            },
+            {
+              "index": 192,
+              "buildMs": 39,
+              "unpackMs": 2
+            },
+            {
+              "index": 193,
+              "buildMs": 60,
+              "unpackMs": 1
+            },
+            {
+              "index": 194,
+              "buildMs": 133,
+              "unpackMs": 3
+            },
+            {
+              "index": 195,
+              "buildMs": 81,
+              "unpackMs": 1
+            }
+          ],
+          "ready": 5717,
+          "restart": 1096,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "prairie-landmark",
+        "seed": 7,
+        "distance": 5582.959594161995,
+        "weather": "Snow",
+        "stage": "17 / 30",
+        "hud": "Dakota Prairie Potholes",
+        "render": {
+          "draws": 62,
+          "triangles": 112740,
+          "geometries": 59,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1370,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 189,
+              "buildMs": 98,
+              "unpackMs": 7
+            },
+            {
+              "index": 190,
+              "buildMs": 100,
+              "unpackMs": 9
+            },
+            {
+              "index": 191,
+              "buildMs": 109,
+              "unpackMs": 5
+            },
+            {
+              "index": 185,
+              "buildMs": 83,
+              "unpackMs": 3
+            },
+            {
+              "index": 186,
+              "buildMs": 247,
+              "unpackMs": 5
+            },
+            {
+              "index": 187,
+              "buildMs": 134,
+              "unpackMs": 2
+            },
+            {
+              "index": 188,
+              "buildMs": 187,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 5270,
+          "restart": 1424,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "dakota-approach",
+        "seed": 7,
+        "distance": 6555.610839999999,
+        "weather": "Sleet",
+        "stage": "19 / 30",
+        "hud": "Northern Dakota Wetlands",
+        "render": {
+          "draws": 59,
+          "triangles": 90989,
+          "geometries": 56,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1209,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 217,
+              "buildMs": 85,
+              "unpackMs": 3
+            },
+            {
+              "index": 218,
+              "buildMs": 82,
+              "unpackMs": 5
+            },
+            {
+              "index": 219,
+              "buildMs": 100,
+              "unpackMs": 1
+            },
+            {
+              "index": 220,
+              "buildMs": 73,
+              "unpackMs": 2
+            },
+            {
+              "index": 221,
+              "buildMs": 79,
+              "unpackMs": 4
+            },
+            {
+              "index": 222,
+              "buildMs": 61,
+              "unpackMs": 2
+            },
+            {
+              "index": 223,
+              "buildMs": 28,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 4517,
+          "restart": 1593,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "dakota-landmark",
+        "seed": 7,
+        "distance": 6422.347469528764,
+        "weather": "Sleet",
+        "stage": "19 / 30",
+        "hud": "Northern Dakota Wetlands",
+        "render": {
+          "draws": 54,
+          "triangles": 99113,
+          "geometries": 52,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1635,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 217,
+              "buildMs": 145,
+              "unpackMs": 5
+            },
+            {
+              "index": 218,
+              "buildMs": 93,
+              "unpackMs": 1
+            },
+            {
+              "index": 219,
+              "buildMs": 162,
+              "unpackMs": 3
+            },
+            {
+              "index": 213,
+              "buildMs": 283,
+              "unpackMs": 9
+            },
+            {
+              "index": 214,
+              "buildMs": 181,
+              "unpackMs": 5
+            },
+            {
+              "index": 215,
+              "buildMs": 192,
+              "unpackMs": 2
+            },
+            {
+              "index": 216,
+              "buildMs": 22,
+              "unpackMs": 3
+            }
+          ],
+          "ready": 5403,
+          "restart": 1027,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "manitoba-approach",
+        "seed": 7,
+        "distance": 7419.326904,
+        "weather": "Autumn sunrise",
+        "stage": "21 / 30",
+        "hud": "Manitoba Marshlands",
+        "render": {
+          "draws": 55,
+          "triangles": 99381,
+          "geometries": 53,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1267,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 252,
+              "buildMs": 95,
+              "unpackMs": 3
+            },
+            {
+              "index": 246,
+              "buildMs": 174,
+              "unpackMs": 5
+            },
+            {
+              "index": 247,
+              "buildMs": 290,
+              "unpackMs": 8
+            },
+            {
+              "index": 248,
+              "buildMs": 106,
+              "unpackMs": 4
+            },
+            {
+              "index": 249,
+              "buildMs": 183,
+              "unpackMs": 5
+            },
+            {
+              "index": 250,
+              "buildMs": 111,
+              "unpackMs": 47
+            },
+            {
+              "index": 251,
+              "buildMs": 51,
+              "unpackMs": 1
+            }
+          ],
+          "ready": 5941,
+          "restart": 913,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "manitoba-landmark",
+        "seed": 7,
+        "distance": 7291.425456746947,
+        "weather": "Autumn sunrise",
+        "stage": "21 / 30",
+        "hud": "Manitoba Marshlands",
+        "render": {
+          "draws": 54,
+          "triangles": 100555,
+          "geometries": 48,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1842,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 245,
+              "buildMs": 75,
+              "unpackMs": 5
+            },
+            {
+              "index": 246,
+              "buildMs": 39,
+              "unpackMs": 5
+            },
+            {
+              "index": 247,
+              "buildMs": 105,
+              "unpackMs": 1
+            },
+            {
+              "index": 248,
+              "buildMs": 19,
+              "unpackMs": 3
+            },
+            {
+              "index": 242,
+              "buildMs": 173,
+              "unpackMs": 6
+            },
+            {
+              "index": 243,
+              "buildMs": 224,
+              "unpackMs": 6
+            },
+            {
+              "index": 244,
+              "buildMs": 76,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 6186,
+          "restart": 1307,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "parklands-approach",
+        "seed": 7,
+        "distance": 8286.508452,
+        "weather": "Overcast",
+        "stage": "23 / 30",
+        "hud": "Saskatchewan Parklands",
+        "render": {
+          "draws": 69,
+          "triangles": 115666,
+          "geometries": 58,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1835,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 280,
+              "buildMs": 123,
+              "unpackMs": 3
+            },
+            {
+              "index": 281,
+              "buildMs": 40,
+              "unpackMs": 7
+            },
+            {
+              "index": 275,
+              "buildMs": 117,
+              "unpackMs": 7
+            },
+            {
+              "index": 276,
+              "buildMs": 180,
+              "unpackMs": 10
+            },
+            {
+              "index": 277,
+              "buildMs": 186,
+              "unpackMs": 5
+            },
+            {
+              "index": 278,
+              "buildMs": 460,
+              "unpackMs": 7
+            },
+            {
+              "index": 279,
+              "buildMs": 90,
+              "unpackMs": 3
+            }
+          ],
+          "ready": 6700,
+          "restart": 1286,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "parklands-landmark",
+        "seed": 7,
+        "distance": 8161.72491148524,
+        "weather": "Overcast",
+        "stage": "23 / 30",
+        "hud": "Saskatchewan Parklands",
+        "render": {
+          "draws": 61,
+          "triangles": 101778,
+          "geometries": 53,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1969,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 273,
+              "buildMs": 182,
+              "unpackMs": 5
+            },
+            {
+              "index": 274,
+              "buildMs": 199,
+              "unpackMs": 1
+            },
+            {
+              "index": 275,
+              "buildMs": 199,
+              "unpackMs": 2
+            },
+            {
+              "index": 276,
+              "buildMs": 86,
+              "unpackMs": 1
+            },
+            {
+              "index": 277,
+              "buildMs": 40,
+              "unpackMs": 2
+            },
+            {
+              "index": 271,
+              "buildMs": 125,
+              "unpackMs": 3
+            },
+            {
+              "index": 272,
+              "buildMs": 285,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 8281,
+          "restart": 1786,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "boreal-approach",
+        "seed": 7,
+        "distance": 9152.795972000002,
+        "weather": "Morning fog",
+        "stage": "25 / 30",
+        "hud": "Canadian Boreal Forest",
+        "render": {
+          "draws": 72,
+          "triangles": 123004,
+          "geometries": 65,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2355,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 308,
+              "buildMs": 21,
+              "unpackMs": 44
+            },
+            {
+              "index": 309,
+              "buildMs": 106,
+              "unpackMs": 6
+            },
+            {
+              "index": 310,
+              "buildMs": 107,
+              "unpackMs": 15
+            },
+            {
+              "index": 304,
+              "buildMs": 141,
+              "unpackMs": 3
+            },
+            {
+              "index": 305,
+              "buildMs": 196,
+              "unpackMs": 56
+            },
+            {
+              "index": 306,
+              "buildMs": 449,
+              "unpackMs": 40
+            },
+            {
+              "index": 307,
+              "buildMs": 31,
+              "unpackMs": 12
+            }
+          ],
+          "ready": 7429,
+          "restart": 1577,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "boreal-landmark",
+        "seed": 7,
+        "distance": 9033.882876569685,
+        "weather": "Morning fog",
+        "stage": "25 / 30",
+        "hud": "Canadian Boreal Forest",
+        "render": {
+          "draws": 54,
+          "triangles": 110384,
+          "geometries": 51,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 4560,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 301,
+              "buildMs": 179,
+              "unpackMs": 11
+            },
+            {
+              "index": 302,
+              "buildMs": 33,
+              "unpackMs": 3
+            },
+            {
+              "index": 303,
+              "buildMs": 63,
+              "unpackMs": 2
+            },
+            {
+              "index": 304,
+              "buildMs": 226,
+              "unpackMs": 40
+            },
+            {
+              "index": 305,
+              "buildMs": 39,
+              "unpackMs": 4
+            },
+            {
+              "index": 306,
+              "buildMs": 122,
+              "unpackMs": 11
+            },
+            {
+              "index": 300,
+              "buildMs": 35,
+              "unpackMs": 3
+            }
+          ],
+          "ready": 9924,
+          "restart": 1382,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "foothills-approach",
+        "seed": 7,
+        "distance": 10023.46212,
+        "weather": "Light rain",
+        "stage": "27 / 30",
+        "hud": "Rocky Mountain Foothills",
+        "render": {
+          "draws": 72,
+          "triangles": 117665,
+          "geometries": 63,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3308,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 336,
+              "buildMs": 587,
+              "unpackMs": 42
+            },
+            {
+              "index": 337,
+              "buildMs": 154,
+              "unpackMs": 1
+            },
+            {
+              "index": 338,
+              "buildMs": 298,
+              "unpackMs": 1
+            },
+            {
+              "index": 339,
+              "buildMs": 517,
+              "unpackMs": 1
+            },
+            {
+              "index": 333,
+              "buildMs": 100,
+              "unpackMs": 49
+            },
+            {
+              "index": 334,
+              "buildMs": 205,
+              "unpackMs": 5
+            },
+            {
+              "index": 335,
+              "buildMs": 146,
+              "unpackMs": 9
+            }
+          ],
+          "ready": 11177,
+          "restart": 4248,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "foothills-landmark",
+        "seed": 7,
+        "distance": 9904.864056614973,
+        "weather": "Light rain",
+        "stage": "27 / 30",
+        "hud": "Rocky Mountain Foothills",
+        "render": {
+          "draws": 65,
+          "triangles": 127178,
+          "geometries": 58,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 4420,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 329,
+              "buildMs": 74,
+              "unpackMs": 2
+            },
+            {
+              "index": 330,
+              "buildMs": 161,
+              "unpackMs": 6
+            },
+            {
+              "index": 331,
+              "buildMs": 263,
+              "unpackMs": 2
+            },
+            {
+              "index": 332,
+              "buildMs": 75,
+              "unpackMs": 1
+            },
+            {
+              "index": 333,
+              "buildMs": 104,
+              "unpackMs": 36
+            },
+            {
+              "index": 334,
+              "buildMs": 163,
+              "unpackMs": 2
+            },
+            {
+              "index": 335,
+              "buildMs": 76,
+              "unpackMs": 7
+            }
+          ],
+          "ready": 11603,
+          "restart": 2000,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "mountain-approach",
+        "seed": 7,
+        "distance": 10893.066444,
+        "weather": "High-country snow",
+        "stage": "29 / 30",
+        "hud": "Canadian Mountain Wilderness",
+        "render": {
+          "draws": 56,
+          "triangles": 101065,
+          "geometries": 53,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1770,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 364,
+              "buildMs": 30,
+              "unpackMs": 9
+            },
+            {
+              "index": 365,
+              "buildMs": 68,
+              "unpackMs": 4
+            },
+            {
+              "index": 366,
+              "buildMs": 178,
+              "unpackMs": 11
+            },
+            {
+              "index": 367,
+              "buildMs": 85,
+              "unpackMs": 75
+            },
+            {
+              "index": 368,
+              "buildMs": 49,
+              "unpackMs": 14
+            },
+            {
+              "index": 362,
+              "buildMs": 127,
+              "unpackMs": 2
+            },
+            {
+              "index": 363,
+              "buildMs": 202,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 11405,
+          "restart": 2983,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "mountain-landmark",
+        "seed": 7,
+        "distance": 10773.203779102023,
+        "weather": "Heavy rain",
+        "stage": "29 / 30",
+        "hud": "Canadian Mountain Wilderness",
+        "render": {
+          "draws": 75,
+          "triangles": 110147,
+          "geometries": 61,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3391,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 364,
+              "buildMs": 165,
+              "unpackMs": 6
+            },
+            {
+              "index": 358,
+              "buildMs": 167,
+              "unpackMs": 11
+            },
+            {
+              "index": 359,
+              "buildMs": 232,
+              "unpackMs": 14
+            },
+            {
+              "index": 360,
+              "buildMs": 134,
+              "unpackMs": 1
+            },
+            {
+              "index": 361,
+              "buildMs": 264,
+              "unpackMs": 7
+            },
+            {
+              "index": 362,
+              "buildMs": 111,
+              "unpackMs": 7
+            },
+            {
+              "index": 363,
+              "buildMs": 86,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 11580,
+          "restart": 3746,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      }
+    ]
+  },
+  "presets": {
+    "engine": "chromium",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "scenes": [
+      {
+        "label": "balanced-cypress",
+        "seed": 7,
+        "distance": 545.85528,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 65,
+          "triangles": 141880,
+          "geometries": 52,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2694.9000000059605,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 21,
+              "buildMs": 117,
+              "unpackMs": 2.4000000059604645
+            },
+            {
+              "index": 22,
+              "buildMs": 199.30000001192093,
+              "unpackMs": 0.699999988079071
+            },
+            {
+              "index": 23,
+              "buildMs": 126.7000000178814,
+              "unpackMs": 0.9000000059604645
+            },
+            {
+              "index": 17,
+              "buildMs": 211.09999999403954,
+              "unpackMs": 45.099999994039536
+            },
+            {
+              "index": 18,
+              "buildMs": 201.90000000596046,
+              "unpackMs": 4.299999982118607
+            },
+            {
+              "index": 19,
+              "buildMs": 198.7000000178814,
+              "unpackMs": 1.0999999940395355
+            },
+            {
+              "index": 20,
+              "buildMs": 191.19999998807907,
+              "unpackMs": 0.9000000059604645
+            }
+          ],
+          "ready": 12276,
+          "restart": 6925.800000011921,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "high-cypress",
+        "seed": 7,
+        "distance": 545.85528,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 68,
+          "triangles": 178156,
+          "geometries": 54,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2404.199999988079,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 21,
+              "buildMs": 192.59999999403954,
+              "unpackMs": 1.4000000059604645
+            },
+            {
+              "index": 22,
+              "buildMs": 179.30000001192093,
+              "unpackMs": 0.699999988079071
+            },
+            {
+              "index": 23,
+              "buildMs": 103.80000001192093,
+              "unpackMs": 1.199999988079071
+            },
+            {
+              "index": 17,
+              "buildMs": 327,
+              "unpackMs": 1.300000011920929
+            },
+            {
+              "index": 18,
+              "buildMs": 172.40000000596046,
+              "unpackMs": 6.200000017881393
+            },
+            {
+              "index": 19,
+              "buildMs": 130.09999999403954,
+              "unpackMs": 1.0999999940395355
+            },
+            {
+              "index": 20,
+              "buildMs": 126.2000000178814,
+              "unpackMs": 1.100000023841858
+            }
+          ],
+          "ready": 15929.199999988079,
+          "restart": 10471.800000011921,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "low-cypress",
+        "seed": 7,
+        "distance": 546.3102609453553,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 59,
+          "triangles": 110320,
+          "geometries": 49,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "compact",
+            "pending": false,
+            "lastLoadMs": 1239.4000000059605,
+            "width": 1280,
+            "height": 1024,
+            "estimatedRgbaMipBytes": 6990507
+          },
+          "tileTimings": [
+            {
+              "index": 21,
+              "buildMs": 110.30000001192093,
+              "unpackMs": 0.800000011920929
+            },
+            {
+              "index": 22,
+              "buildMs": 110.40000000596046,
+              "unpackMs": 0.7999999821186066
+            },
+            {
+              "index": 23,
+              "buildMs": 94.5,
+              "unpackMs": 0.9000000059604645
+            },
+            {
+              "index": 17,
+              "buildMs": 102.30000001192093,
+              "unpackMs": 1.199999988079071
+            },
+            {
+              "index": 18,
+              "buildMs": 256.80000001192093,
+              "unpackMs": 39
+            },
+            {
+              "index": 19,
+              "buildMs": 90.2000000178814,
+              "unpackMs": 0.7000000178813934
+            },
+            {
+              "index": 20,
+              "buildMs": 110.90000000596046,
+              "unpackMs": 3.0999999940395355
+            }
+          ],
+          "ready": 14926.799999982119,
+          "restart": 2747.9000000059605,
+          "cpuMs": {
+            "samples": 1,
+            "median": 111.7,
+            "p95": 111.7,
+            "p99": 111.7,
+            "max": 111.7,
+            "slow": 1,
+            "average": 111.7
+          },
+          "framesMs": {
+            "samples": 1,
+            "median": 0.2,
+            "p95": 0.2,
+            "p99": 0.2,
+            "max": 0.2,
+            "slow": 0,
+            "average": 0.2
+          }
+        }
+      }
+    ]
+  },
+  "review-offline": {
+    "engine": "webkit",
+    "baseline": false,
+    "upgrade": false,
+    "disclosure": "5.49 MB to download \u00b7 5.58 MB total",
+    "interruptedAsset": "field-atlas-full.webp",
+    "injectedNetworkErrors": 3,
+    "interruption": "The download stopped. Retry to resume from your verified files.",
+    "coldReadyMsIncludingRetry": 16162,
+    "restartMs": 493,
+    "wallFrameIntervals": {
+      "observations": 9,
+      "median": 87,
+      "p95": 130,
+      "slow": 9
+    },
+    "renderer": {
+      "ready": 14887,
+      "restart": 69,
+      "frames": 32,
+      "discarded": 0,
+      "draws": 53,
+      "triangles": 83185,
+      "textures": 9,
+      "geometries": 45,
+      "residentTiles": 7,
+      "residentPacks": 0,
+      "territory": "gulf",
+      "transitions": [
+        {
+          "territory": "gulf",
+          "wall": 0,
+          "at": 22204
+        }
+      ],
+      "surfaces": {
+        "active": "compact",
+        "pending": false,
+        "lastLoadMs": 172,
+        "width": 1280,
+        "height": 1024,
+        "estimatedRgbaMipBytes": 6990507
+      },
+      "tileTimings": [
+        {
+          "index": 0,
+          "buildMs": 458,
+          "unpackMs": 15
+        },
+        {
+          "index": 1,
+          "buildMs": 800,
+          "unpackMs": 3
+        },
+        {
+          "index": 2,
+          "buildMs": 184,
+          "unpackMs": 2
+        },
+        {
+          "index": 3,
+          "buildMs": 144,
+          "unpackMs": 2
+        },
+        {
+          "index": 4,
+          "buildMs": 19,
+          "unpackMs": 1
+        },
+        {
+          "index": 5,
+          "buildMs": 92,
+          "unpackMs": 1
+        },
+        {
+          "index": -1,
+          "buildMs": 680,
+          "unpackMs": 1
+        }
+      ],
+      "framesMs": {
+        "samples": 32,
+        "median": 130,
+        "p95": 130,
+        "p99": 130,
+        "max": 130,
+        "slow": 32,
+        "average": 118.78
+      },
+      "cpuMs": {
+        "samples": 32,
+        "median": 18,
+        "p95": 437,
+        "p99": 2220,
+        "max": 2220,
+        "slow": 10,
+        "average": 115.38
+      }
+    },
+    "corruptFileRepaired": true,
+    "offlineReadyMs": 6474
+  },
+  "cypress-lifetime": {
+    "samples": 353,
+    "first": {
+      "distance": 689.0265604309106,
+      "id": "cypress:25:20",
+      "geometry": 337,
+      "opaque": true
+    },
+    "last": {
+      "distance": 813.285990138797
+    },
+    "instances": [
+      337
+    ],
+    "allActiveOpaque": true,
+    "phase": "03b"
+  }
+}
