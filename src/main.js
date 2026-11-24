@@ -33,8 +33,9 @@ import { expeditionRegions, regionAt } from './expedition.js'
 import { courseStages, distanceAtTime, speedAtTime, stageAt } from './difficulty.js'
 import { placeOnTrail, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
-import { createTrailSigns } from './sign-scenery.js'
+import { createPostedTimber, createTrailSigns } from './sign-scenery.js'
 import { createDriftingLeaves } from './drifting-leaves.js'
+import { fallenVariant } from './fallen-timber.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
@@ -107,6 +108,7 @@ let runRival
 let runMetric
 let coaching = false
 let lastShift = -Infinity
+let lastTreat = -Infinity
 let signSeed = 7
 let audioGesture = false
 let nextPatchCheck = 0
@@ -198,6 +200,7 @@ function initialize() {
   renderer.toneMappingExposure = 1.15
   const atmosphere = createAtmosphere(scene)
   const signs = createTrailSigns(scene)
+  const postedTimber = createPostedTimber()
   const terrain = createTerrain(scene, (anchor, distance) => signs.show(anchor, distance, signSeed))
   const leaves = createDriftingLeaves(scene)
   const wildlife = createWildlife(scene, sound.bird)
@@ -347,6 +350,7 @@ function initialize() {
       }
       spray.update(distance, visualTime)
       positionEntities(visualTime, distance)
+      postedTimber(entities, distance, signSeed)
       diving(entities, distance, visualTime, preset.detail === 0)
       frozen = false
     }
@@ -383,10 +387,11 @@ function initialize() {
 }
 
 function acquire(entity) {
-  const key = entity.type + (entity.wide ? '-wide' : '')
+  const variant = entity.type === 'fallen' ? fallenVariant(entity.distance, entity.lane) : 0
+  const key = entity.modelKey = entity.type + (entity.wide ? '-wide' : '') + (entity.type === 'fallen' ? '-' + variant : '')
   const model = pool.get(key)?.pop()
   const object = model ?? (entity.hazard
-    ? createHazard(scenery, entity.type, 0, 0, entity.wide) : createPickup(scenery, entity.type))
+    ? createHazard(scenery, entity.type, 0, 0, entity.wide, variant) : createPickup(scenery, entity.type))
   if (model) {
     object.visible = true
     scenery.add(object)
@@ -398,7 +403,7 @@ function acquire(entity) {
 function release(entity) {
   if (!entity.model) return
   entity.model.removeFromParent()
-  const key = entity.type + (entity.wide ? '-wide' : '')
+  const key = entity.modelKey
   if (!entity.hazard) entity.model.scale.setScalar(1)
   if (!pool.has(key)) pool.set(key, [])
   pool.get(key).push(entity.model)
@@ -469,7 +474,7 @@ function step(dt) {
     debug?.hit(contact)
     frozen = true
     sound.play('hit', isWaterHazard(impacted.type) ? 'splash' : runningSurface())
-    setMode('over')
+    setMode('over', { postedTimber: impacted.type === 'branch' && !impacted.wide })
     return false
   }
   stride += dt * Math.PI * 2 * Math.min(2.86, 1.84 + (run.speed - 11) * .061)
@@ -539,6 +544,7 @@ function step(dt) {
       const result = collect(run, entity.type)
       runStatistics.pickup(entity.type)
       const treat = entity.type === 'treat'
+      if (treat) lastTreat = run.elapsed
       const retrieve = entity.type === 'mallard' || entity.type === 'pheasant'
       entity.duration = retrieve ? .72 : .30
       entity.remaining = entity.duration
@@ -726,6 +732,7 @@ function setMode(value, options = {}) {
         jump: run.jump > 0, slide: run.slide > 0, changingLane: run.elapsed - lastShift < .45,
         rivalGap: target > 0 ? (target + 1 - measured) / (target + 1) : 0,
         bestStreak: run.bestStreak,
+        postedTimber: options.postedTimber, recentTreat: run.elapsed - lastTreat < .65,
       })
       fillReport(ui, report, { heckle: line, previousBest, player: previewRegion ? undefined : runner })
       fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
@@ -821,6 +828,7 @@ function resetTrail(seed) {
   cueUntil = 0
   cuePriority = 0
   lastShift = -Infinity
+  lastTreat = -Infinity
   introduced.clear()
   follow.heading = null
   follow.offset = 0

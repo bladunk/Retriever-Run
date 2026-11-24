@@ -1,5 +1,5 @@
 import * as T from 'three'
-import { headingAt, placeOnTrail, seededRandom } from './trail.js'
+import { headingAt, placeOnTrail, seededRandom, segmentLength } from './trail.js'
 import { signSlots, signTextRows, trailSign } from './trail-signs.js'
 import { signInterval } from './sign-placement.js'
 
@@ -83,13 +83,7 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
   const wood = new T.MeshLambertMaterial({ color: 0x6f5238 })
   const slots = Array.from({ length: signSlots }, () => {
     const root = new T.Group()
-    const canvas = makeCanvas()
-    canvas.width = width
-    canvas.height = height
-    const texture = new T.CanvasTexture(canvas)
-    texture.colorSpace = T.SRGBColorSpace
-    texture.anisotropy = 2
-    const plate = new T.Mesh(face, new T.MeshBasicMaterial({ map: texture }))
+    const { canvas, texture, plate } = noticePlate(face, makeCanvas)
     plate.position.z = .055
     const backing = new T.Mesh(board, wood)
     const supports = [-1, 1].map(() => new T.Mesh(posts, wood))
@@ -136,5 +130,57 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
     finish() {
       for (const slot of slots) slot.root.visible = slot.seen
     },
+  }
+}
+
+function noticePlate(face, makeCanvas) {
+  const canvas = makeCanvas()
+  canvas.width = width
+  canvas.height = height
+  const texture = new T.CanvasTexture(canvas)
+  texture.colorSpace = T.SRGBColorSpace
+  texture.anisotropy = 2
+  const plate = new T.Mesh(face, new T.MeshBasicMaterial({ map: texture }))
+  return { canvas, texture, plate }
+}
+
+export function createPostedTimber(makeCanvas = () => document.createElement('canvas')) {
+  const geometry = new T.PlaneGeometry(1.74, .72)
+  const messages = new WeakMap()
+  const recent = []
+  const slots = Array.from({ length: 2 }, () => {
+    const slot = noticePlate(geometry, makeCanvas)
+    slot.plate.position.set(-.05, 1.72, .271)
+    slot.plate.name = 'Posted timber lettering'
+    return slot
+  })
+  return (entities, distance, seed) => {
+    let count = 0
+    for (const entity of entities) {
+      if (count === slots.length) break
+      if (entity.type !== 'branch' || entity.wide || !entity.model?.visible ||
+        entity.distance - distance > 52 || entity.distance < distance - 4) continue
+      const slot = slots[count++]
+      const tile = Math.floor(entity.distance / (signInterval * segmentLength)) * signInterval
+      const at = Math.round(entity.distance * 48) + seed + entity.lane * 131
+      const key = entity.distance + ':' + entity.lane + ':' + seed
+      if (slot.key !== key) {
+        let message = messages.get(entity)
+        if (!message) {
+          for (let attempt = 0; attempt < 28; attempt++) {
+            message = trailSign(tile, at + attempt * 912931)
+            if (!recent.includes(message.line)) break
+          }
+          messages.set(entity, message)
+          recent.push(message.line)
+          if (recent.length > 12) recent.shift()
+        }
+        paint(slot.canvas.getContext('2d'), { ...message, style: 'posted' }, at)
+        slot.texture.needsUpdate = true
+        slot.key = key
+      }
+      if (slot.plate.parent !== entity.model) entity.model.add(slot.plate)
+    }
+    for (let n = count; n < slots.length; n++) slots[n].plate.removeFromParent()
   }
 }

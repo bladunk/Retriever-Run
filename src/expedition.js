@@ -32,11 +32,11 @@ const territories = [
     soil: 0x89817a, bank: 0x626857, grass: 0x758764, trees: 0x526e60, water: -.93,
     sky: 0x577c92, horizon: 0xaeccc8, sun: 0xffddb7, fog: .012 },
   { key: 'boreal', name: 'Canadian Boreal Forest', kind: 'river', landmark: 'snag',
-    birds: ['mallard', 'teal'], plant: 1, treesPerSide: 8, treeScale: 1.09, conifers: .91, relief: .54, snow: .39,
+    birds: ['mallard', 'teal'], plant: 1, treesPerSide: 9, treeScale: 1.09, conifers: .91, relief: .54, snow: .39,
     soil: 0x898980, bank: 0x66786b, grass: 0x728170, trees: 0x45635c, water: -.83,
     sky: 0x647d98, horizon: 0xb0c9cb, sun: 0xffdfc3, fog: .013 },
   { key: 'mountain', name: 'Canadian Mountain Wilderness', kind: 'alpine', landmark: 'cairn',
-    birds: ['goose', 'teal'], plant: 2, treesPerSide: 6, treeScale: 1.02, conifers: 1, relief: 1, snow: .97,
+    birds: ['goose', 'teal'], plant: 2, treesPerSide: 7, treeScale: 1.02, conifers: 1, relief: 1, snow: .97,
     soil: 0x989892, bank: 0xc9d9dd, grass: 0x9da9a0, trees: 0x526c6a, water: -.88,
     sky: 0x527b9a, horizon: 0xb2cfdc, sun: 0xffd7ad, fog: .012 },
 ]

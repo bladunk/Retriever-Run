@@ -273,9 +273,10 @@ export function buildTile(index) {
     }
     for (let i = 0; i < colors.treesPerSide; i++) {
       const z = between(-29.1, -.8)
-      const x = side * (i === 0 ? between(7.2, 10.8) : between(10 + i * .57, 38))
+      const northern = colors.conifers > .80
+      const x = side * (i === 0 ? between(7.2, 10.8) : northern && i === 1 ? between(9.5, 14.6) : between(10 + i * .57, 38))
       const tall = colors.treesPerSide > 3
-      const height = colors.treeScale * (tall ? between(5.8, 10.5) : between(4.2, 7.3))
+      const height = colors.treeScale * (northern && i % 5 === 3 ? between(3.4, 5.8) : tall ? between(5.8, 10.5) : between(4.2, 7.3))
       const ground = earth(start - z, x)
       const at = start - z
       const heading = headingAt(at)
@@ -435,6 +436,43 @@ function pack(geometry) {
 
 // Shared distant silhouettes use solid color and a few shaped branches. No alpha
 // overdraw or tile-specific buffers are needed for their mesh data.
+function distantNeedles(snow) {
+  const positions = [], colors = [], uv = [], indices = []
+  const color = new T.Color()
+  const sides = 11
+  for (let tier = 0; tier < 7; tier++) {
+    const level = .23 + tier * .104
+    const spread = .258 * (1 - tier / 7) ** .78
+    const starter = positions.length / 3
+    for (let ring = 0; ring < 3; ring++) {
+      for (let j = 0; j < sides; j++) {
+        const angle = j / sides * Math.PI * 2 + tier * .77
+        const fan = .83 + .16 * Math.sin(angle * 4 + tier * 1.4) + .10 * Math.cos(angle * 3 - tier)
+        const radius = spread * fan * [.45, 1, .36][ring]
+        positions.push(Math.cos(angle) * radius + Math.sin(tier * 1.8) * .021,
+          level + [-.022, .027, .134][ring] + Math.sin(angle * 3 + tier) * .022,
+          Math.sin(angle) * radius + .018 * Math.cos(tier * 1.3))
+        uv.push(j / sides, ring * .5)
+        color.setHex(snow ? (ring === 2 ? 0x91a7a1 : 0x506961) : ring === 2 ? 0x668675 : 0x3c594e)
+          .multiplyScalar(.91 + .14 * Math.cos(tier + angle * 2.7)).toArray(colors, colors.length)
+        if (!ring) continue
+        const at = starter + ring * sides + j
+        const next = starter + ring * sides + (j + 1) % sides
+        indices.push(at, next, at - sides, next, next - sides, at - sides)
+      }
+    }
+  }
+  const mesh = new T.BufferGeometry()
+  mesh.setAttribute('position', new T.Float32BufferAttribute(positions, 3))
+  mesh.setAttribute('color', new T.Float32BufferAttribute(colors, 3))
+  mesh.setAttribute('uv', new T.Float32BufferAttribute(uv, 2))
+  mesh.setIndex(indices)
+  mesh.computeVertexNormals()
+  const solid = mesh.toNonIndexed()
+  mesh.dispose()
+  return solid
+}
+
 export function createDistantTree(style) {
   const pieces = []
   function piece(shape, color, x, y, z, sx, sy, sz, lean = 0) {
@@ -450,11 +488,7 @@ export function createDistantTree(style) {
   }
   if (style === 2 || style === 3) {
     piece(twig, 0x605647, 0, .42, 0, .029, .87, .029)
-    for (let tier = 0; tier < 4; tier++) {
-      const w = .23 - tier * .043
-      piece(strip, style === 3 ? 0x91a9af : 0x4c756a,
-        0, .30 + tier * .17, 0, w, .55, w, .055 * tier)
-    }
+    pieces.push(distantNeedles(style === 3))
     const result = mergeGeometries(pieces)
     for (const geometry of pieces) geometry.dispose()
     return result
