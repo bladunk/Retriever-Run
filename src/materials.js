@@ -61,6 +61,15 @@ export function createFieldMaterial() {
             damp = min(.82, damp + fieldWet * .15 * smoothstep(.10,.74,silt) * smoothstep(.62,1.54,abs(vFieldUv.x)));
             diffuseColor.rgb *= mix(vec3(1.15,1.13,1.10), vec3(.56,.66,.67), damp);
             fieldPbr.b -= .34 * damp;
+            if (fieldDetail > .0) {
+              vec3 grains = texture2D(fieldEarth, vec2(.79 * vFieldUv.x + .34 * vFieldUv.y,
+                .64 * vFieldUv.y - .31 * vFieldUv.x) * .52).rgb;
+              diffuseColor.rgb *= mix(.86, 1.09, smoothstep(.13,.46,grains.g));
+            }
+            if (fieldFrost > .05) {
+              float iceDust = smoothstep(.24,.56,grain.g * .9 + silt * .13) * fieldFrost;
+              diffuseColor.rgb = mix(diffuseColor.rgb, vec3(.52,.61,.66), iceDust * .34);
+            }
           }
           if (onCrossCut) {
             vec2 split = surfaceUV - vec2(.46,.53);

@@ -30,9 +30,11 @@ import {
 } from './runner.js'
 import { journalIssues } from './career-integrity.js'
 import { expeditionRegions, regionAt } from './expedition.js'
-import { distanceAtTime, speedAtTime } from './difficulty.js'
+import { courseStages, distanceAtTime, speedAtTime, stageAt } from './difficulty.js'
 import { placeOnTrail, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
+import { createTrailSigns } from './sign-scenery.js'
+import { createDriftingLeaves } from './drifting-leaves.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
@@ -105,6 +107,7 @@ let runRival
 let runMetric
 let coaching = false
 let lastShift = -Infinity
+let signSeed = 7
 let audioGesture = false
 let nextPatchCheck = 0
 let toastUntil = 0
@@ -194,7 +197,9 @@ function initialize() {
   renderer.toneMapping = T.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.15
   const atmosphere = createAtmosphere(scene)
-  const terrain = createTerrain(scene)
+  const signs = createTrailSigns(scene)
+  const terrain = createTerrain(scene, (anchor, distance) => signs.show(anchor, distance, signSeed))
+  const leaves = createDriftingLeaves(scene)
   const wildlife = createWildlife(scene, sound.bird)
   const diving = createDivingFlocks(scene)
   if (diagnosticsRequested) {
@@ -320,9 +325,10 @@ function initialize() {
       }
       landing *= Math.exp(-12 * dt)
       const height = getHeight(display)
+      const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather, distance)
       trailPose = {
         x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
-        time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing,
+        time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing, wet: weather.wet,
         airborne: display.jump > 0, jumpPhase: display.jump > 0 ? 1 - display.jump / jumpDuration : 1,
       }
       dog.pose(trailPose)
@@ -330,8 +336,10 @@ function initialize() {
       glow.position.set(body.x, ground + .045, body.z)
       const pulse = 1.05 + Math.sin(visualTime * 11) * .13
       glow.scale.set(pulse, pulse, 1)
-      const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather, distance)
+      signs.begin()
       terrain.update(distance, visualTime, weather, preset.detail)
+      signs.finish()
+      leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reducedMotion.matches)
       wildlife(visualTime, distance, preset.detail === 0, mode === 'running', display.elapsed)
       if (!idle && !frozen) {
         updateConditions(weather.name)
@@ -430,7 +438,8 @@ function positionEntities(time, distance) {
 
 function runningSurface() {
   if (splashUntil > run.distance) return 'splash'
-  const { kind } = regionAt(run.elapsed)
+  const { kind, snow } = regionAt(run.elapsed)
+  if (snow > .32) return 'snow'
   return kind === 'field' || kind === 'pothole' ? 'grass' : kind === 'river' || kind === 'alpine' ? 'dirt' : 'mud'
 }
 
@@ -491,7 +500,7 @@ function step(dt) {
       if (warning) {
         if (!warningPhase) {
           warningPhase = warning
-          warningLabel = coaching && run.elapsed < 80 ? flightWarnings[warning][entity.safeLane + 1] : advancedFlight[warning]
+          warningLabel = coaching && run.elapsed < 60 ? flightWarnings[warning][entity.safeLane + 1] : advancedFlight[warning]
         }
         if (entity.audioCue !== warning) {
           entity.audioCue = warning
@@ -516,7 +525,7 @@ function step(dt) {
         entity.cued = true
       }
       if (entity.wide && !entity.cued && ahead > 0 && ahead < run.speed * 1.05) {
-        if (coaching && !introduced.has(entity.type)) {
+        if (coaching && run.elapsed < 60 && !introduced.has(entity.type)) {
           announce(entity.type === 'stream' ? '↑  Jump the crossing' : '↓  Slide under the timber', 4)
           introduced.add(entity.type)
         }
@@ -600,6 +609,17 @@ function updateHud() {
   const points = score(run)
   const distance = Math.floor(run.distance)
   const charge = run.power ? Math.ceil(run.power / powerDuration * 100) : run.meter
+  const stage = stageAt(run.elapsed)
+  if (hudCache.stage !== stage.level) {
+    const display = ui['difficulty-stage']
+    display.textContent = stage.level + ' / ' + courseStages.length
+    display.title = stage.group
+    display.setAttribute('aria-label', 'Stage ' + stage.level + ' of ' + courseStages.length + ', ' + stage.group)
+    if (hudCache.stage && stage.level > hudCache.stage && !reducedMotion.matches) {
+      display.animate([{ color: '#fff0cd' }, { color: '#efca91' }], 650)
+    }
+    hudCache.stage = stage.level
+  }
   if (hudCache.points !== points) ui.score.textContent = format.format(points)
   if (hudCache.distance !== distance) ui.distance.textContent = format.format(distance) + ' m'
   if (hudCache.best !== profile.best) ui.best.textContent = format.format(profile.best)
@@ -782,6 +802,7 @@ function resetTrail(seed) {
   entities.length = 0
   effects.length = 0
   run = newRun()
+  signSeed = seed
   nextRow = createCourse(seed)
   row = nextRow()
   if (previewRegion) {

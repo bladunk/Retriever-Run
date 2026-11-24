@@ -110,6 +110,7 @@ try {
       assert.match(await report.locator('#report-headline').textContent(), /Score.*Distance.*Personal best/)
       assert.match(await report.locator('#report-career').textContent(), /Career XP/)
       assert.match(await report.locator('#report-next-honor').textContent(), /Next Field Honor/)
+      assert.match(await report.locator('#report-tallies').textContent(), /Difficulty reachedStage 1 · Rookie/)
       const line = await report.locator('#report-message').textContent()
       assert.ok(line.length >= 16 && !heard.has(line))
       heard.add(line)

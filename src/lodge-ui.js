@@ -1,6 +1,7 @@
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, honorProgress, medals, patches } from './honors.js'
 import { expeditionRegions } from './expedition.js'
+import { stageAt } from './difficulty.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
 import { campSwitch, worldwideBoard } from './camp-ui.js'
 import { node, number, meters, date } from './lodge-elements.js'
@@ -176,6 +177,7 @@ function leaderboard(lodge, metric, selectMetric) {
 
 export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}) {
   ui['report-nickname'].textContent = report.nickname
+  const stage = stageAt(report.duration)
   const scoreRecord = report.improved.includes('score')
   const record = scoreRecord || report.improved.includes('distance')
   const placement = Object.entries(report.placements).filter(([, rank]) => rank)
@@ -200,6 +202,7 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
     ' · ' + number(Math.floor(next.value)) + ' / ' + number(next.goal)
   ui['report-tallies'].replaceChildren(...rows([
     ['Cause of death', hazardName(report.hazard)], ['Territory reached', expeditionRegions[report.territory - 1]?.name ?? '—'],
+    ['Difficulty reached', 'Stage ' + stage.level + ' · ' + stage.group],
     ['Active time', duration(report.duration)], ['Treats collected', number(report.treats)],
     ['Logs jumped', number(report.logs)], ['Branches cleared', number(report.slidesCleared)],
     ['Geese dodged', number(report.geese)], ['Retrieves', number(report.retrieves)],

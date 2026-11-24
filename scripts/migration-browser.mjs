@@ -5,6 +5,9 @@ import { extname, resolve, sep } from 'node:path'
 import { chromium, devices, webkit } from 'playwright'
 import { expeditionRegions } from '../src/expedition.js'
 import { createCourse } from '../src/runner.js'
+import { distanceAtTime, stageAt } from '../src/difficulty.js'
+import { signInterval, signOffset } from '../src/sign-placement.js'
+import { segmentLength } from '../src/trail.js'
 
 const engine = process.argv.includes('webkit') ? webkit : chromium
 const argv = process.argv.slice(2)
@@ -44,6 +47,20 @@ const canopySequences = [1, 3, 8].map(region => {
   return { key: 'canopy-' + expeditionRegions[region].key, start, stop: start + 3.45, region,
     frames: [['distant', start + .48], ['approach', start + 1.95], ['passing', start + 3.45]] }
 })
+const signScenes = [0, 4, 8].map(region => {
+  const territory = expeditionRegions[region]
+  let from = territory.seconds
+  let until = from + 29
+  const gap = signInterval * segmentLength
+  const board = Math.ceil((distanceAtTime(from + 2) - signOffset) / gap) * gap + signOffset
+  for (let n = 0; n < 24; n++) {
+    const middle = (from + until) * .5
+    if (distanceAtTime(middle) < board - 12) from = middle
+    else until = middle
+  }
+  const start = (from + until) * .5
+  return { key: 'notice-' + territory.key, start, stop: start + .32, region, wide: true, notice: true }
+})
 const captures = [...portraits,
   { key: 'farmstead', start: checkpoint(127.9), region: 4, wide: true },
   ...(floodedRow ? [{ key: 'flooded-lane', start: floodedRow.time - .66, region: Math.floor(floodedRow.time / 30), wide: true }] : []),
@@ -52,6 +69,7 @@ const captures = [...portraits,
   { key: 'visibility', start: checkpoint(28.2), stop: 29.85, region: 0 },
   { key: 'preview-loss', start: 0, stop: 4.8, region: 0 },
   ...canopySequences,
+  ...signScenes,
 ]
 const selected = captures.filter(({ key }) => argv.includes(key))
 const scenes = selected.length ? selected : captures
@@ -89,6 +107,12 @@ try {
       localStorage.setItem('retriever-run.record', original)
       localStorage.removeItem('retriever-run.record.practice')
       const qa = window.migrationQA = { frames: [], ready: 0, skin: false, stop, original, hidden: false }
+      qa.signLines = new Set()
+      const drawText = CanvasRenderingContext2D.prototype.fillText
+      CanvasRenderingContext2D.prototype.fillText = function (line, ...args) {
+        if (this.canvas.width === 384 && this.canvas.height === 192 && /[A-Z]{2}/.test(line)) qa.signLines.add(line)
+        return drawText.call(this, line, ...args)
+      }
       Object.defineProperty(document, 'hidden', { get: () => qa.hidden })
       qa.suspend = () => {
         qa.hidden = true
@@ -193,11 +217,13 @@ try {
 
     if (key === 'visibility') {
       assert.equal(await page.locator('#habitat').textContent(), 'Gulf Coast Marsh')
-      const readClock = () => page.evaluate(() => ({ elapsed: retrieverDebug.elapsed, ticks: retrieverDebug.ticks }))
+      const readClock = () => page.evaluate(() => ({ elapsed: retrieverDebug.elapsed, ticks: retrieverDebug.ticks,
+        stage: document.querySelector('#difficulty-stage').textContent }))
       async function checkHold(held) {
         const stopped = await readClock()
         assert.equal(stopped.ticks, held.ticks)
         assert.ok(Math.abs(stopped.elapsed - held.elapsed) < 1e-8)
+        assert.equal(stopped.stage, held.stage)
       }
       const paused = () => page.waitForFunction(() => retrieverDebug.mode === 'paused')
       await page.locator('#pause').tap()
@@ -218,6 +244,7 @@ try {
       await page.locator('#primary').tap()
       await checkAt(30.22)
       assert.equal(await page.locator('#habitat').textContent(), 'Southern Cypress Swamp')
+      assert.equal(await page.locator('#difficulty-stage').textContent(), '3 / 20')
     } else if (key !== 'preview-loss') {
       const expected = expeditionRegions[key === 'alpine-entry' ? 9 : region].name
       assert.equal(await page.locator('#habitat').textContent(), expected)
@@ -232,7 +259,11 @@ try {
         .filter(entry => entry.responseEnd <= migrationQA.ready)
         .reduce((bytes, entry) => bytes + entry.encodedBodySize, 0),
       weather: document.querySelector('#weather').textContent,
+      stage: document.querySelector('#difficulty-stage').textContent,
+      signLines: [...migrationQA.signLines],
     }))
+    if (key !== 'preview-loss') assert.equal(observed.stage, stageAt(observed.end).level + ' / 20')
+    if (scene.notice) assert.ok(observed.signLines.length > 0)
     assert.ok(observed.genuine && observed.practice === null)
     assert.deepEqual(errors, [])
     assert.deepEqual(offsite, [])

@@ -4,6 +4,7 @@ import { dawnDirection } from './atmosphere.js'
 const uniforms = T.UniformsUtils.clone(T.UniformsLib.fog)
 Object.assign(uniforms, {
   waterClock: { value: 0 }, waterDetail: { value: 1 }, waterWeather: { value: 0 }, waterFrost: { value: 0 },
+  waterTint: { value: new T.Color(.049, .109, .113) },
   worldOrigin: { value: new T.Vector2() }, waterSky: { value: new T.Color(0xb4c3ba) },
   waterHorizon: { value: new T.Color(0xe3b994) }, waterLight: { value: new T.Color(0xffdaaa) },
   waterSun: { value: dawnDirection },
@@ -27,7 +28,7 @@ export const marshWater = new T.ShaderMaterial({
   fragmentShader: `
     uniform float waterClock, waterDetail, waterWeather, waterFrost;
     uniform vec2 worldOrigin;
-    uniform vec3 waterSky, waterHorizon, waterSun, waterLight;
+    uniform vec3 waterSky, waterHorizon, waterSun, waterLight, waterTint;
     varying float bedDepth;
     varying vec3 waterPoint;
     #include <fog_pars_fragment>
@@ -52,7 +53,7 @@ export const marshWater = new T.ShaderMaterial({
       float deep = smoothstep(.02, .64, depth);
       float strand = .5 + .5 * sin(p.x * 1.43 + p.y * .57 + .48 * broad);
       vec3 mud = mix(vec3(.12,.084,.046), vec3(.190,.137,.071), strand);
-      vec3 lake = mix(mud, vec3(.049,.109,.113), deep);
+      vec3 lake = mix(mud, waterTint, deep);
       lake = mix(lake, vec3(.081,.163,.181) * (.85 + deep*.22 + crossWave*.055), crossing * .86);
       lake *= 1. - .26 * (1. - smoothstep(.012, .095, depth));
       float rim = smoothstep(.015,.04,depth) * (1. - smoothstep(.073,.115,depth));
@@ -67,6 +68,16 @@ export const marshWater = new T.ShaderMaterial({
       float reflectivity = fresnel * mix(.80, 1., deep) * mix(1., .64, crossing);
       vec3 color = mix(lake, reflectedLight, reflectivity);
       color += crossing * rim * vec3(.025,.036,.036);
+      if (waterDetail > .5 && waterWeather > .40) {
+        vec2 grid = p * 1.8;
+        vec2 cell = floor(grid);
+        float seed = fract(dot(cell, vec2(.754877,.56984)));
+        vec2 center = .28 + .44 * vec2(seed, fract(seed * 3.73));
+        float age = fract(waterClock * 1.81 + seed);
+        float ring = 1. - smoothstep(.013, .041, abs(length(fract(grid) - center) - (.025 + age * .20)));
+        float rainFocus = 1. - smoothstep(.073, .20, length(fwidth(grid)));
+        color += ring * rainFocus * (1. - age) * waterWeather * vec3(.038,.048,.047);
+      }
       if (waterFrost > .01 && crossing < .5) {
         float channel = deep + .16 * sin(p.y * .37 + p.x * .22) + .07 * sin(p.x * 2.18 + p.y * .42);
         float edge = smoothstep(.48, .62, channel);
@@ -93,4 +104,5 @@ export function updateMarshWater(time, center, distance, weather, detail) {
   uniforms.waterHorizon.value.copy(weather.sky)
   if (weather.zenith) uniforms.waterSky.value.copy(weather.zenith)
   if (weather.light) uniforms.waterLight.value.copy(weather.light)
+  if (weather.waterTint) uniforms.waterTint.value.copy(weather.waterTint)
 }
