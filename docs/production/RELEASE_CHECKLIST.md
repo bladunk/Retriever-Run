@@ -34,3 +34,7 @@ Phase 02 `6ced9492d1f330bca91f4461dc068a035b8c6152` is the verified Pages baseli
 ## Separate launch reset operation
 
 The owner’s eventual reset authorization records intent. The actual reset requires a separate reviewed migration and explicit final deployment approval. Take verified backups first, rehearse on an isolated environment, agree on reset scope and recovery, review permissions, and record the approval with the release. Phase 01 does not run that operation.
+
+## Phase 03B rollback
+
+The live Phase 03 merge is `02db9239fbdeb28655eb0ae577fa703bb0bc1789`. Rebuild it in an isolated checkout with `npm ci`, `npm run build` and `npm run verify:production`. The rollback link points to the deployed Pages workflow. The owner can optionally tag the merge as `retriever-run-phase-03` before publication. Phase 03B retains the Phase 03 save schema and competitive gate. [Deployed Phase 03 workflow](https://github.com/bladunk/Retriever-Run/actions/runs/45472889024)

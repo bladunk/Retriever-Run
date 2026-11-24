@@ -18,7 +18,7 @@ export function createPerformanceProbe(now = () => performance.now()) {
   return {
     ready() { record.ready ??= now() },
     restart() { start = now() },
-    frame(wall, cpu, renderer, tileCount, territory, packCount = 0) {
+    frame(wall, cpu, renderer, tileCount, territory, packCount = 0, surfaces = null, tileTimings = null) {
       if (start !== undefined) { record.restart = now() - start; start = undefined }
       if (wall > 0 && wall <= 350) {
         const at = record.frames++ % limit
@@ -31,6 +31,8 @@ export function createPerformanceProbe(now = () => performance.now()) {
       record.geometries = renderer.memory.geometries
       record.residentTiles = tileCount
       record.residentPacks = packCount
+      if (surfaces) record.surfaces = surfaces
+      if (tileTimings) record.tileTimings = tileTimings
       if (territory !== region) {
         region = record.territory = territory
         record.transitions.push({ territory, wall, at: now() })

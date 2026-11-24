@@ -1,4 +1,5 @@
 import * as T from 'three'
+import { waterProfiles } from './landscape-surfaces.js'
 import { seededRandom } from './trail.js'
 import { atmosphereBlend, blendProperty, expeditionRegions, northLevel, snowLevel } from './expedition.js'
 import { createNorthernHorizon } from './northern-horizon.js'
@@ -151,11 +152,13 @@ export function createAtmosphere(scene) {
   scene.add(sun, fill, front)
   const horizon = createNorthernHorizon(scene)
   const tone = new T.Color()
+  const atmosphereWater = new T.Vector4()
+  const daylight = [.06, -.44, -.10, -.33, .26, .42, .35, .52, .18, .04, -.12, .17, -.27, .36, .51]
   const accent = new T.Color()
   const rain = precipitation(scene, false)
   const snow = precipitation(scene, true)
   const result = { name: '', wind: 0, wet: 0, rain: 0, frost: 0, sky: new T.Color(), zenith: new T.Color(),
-    light: new T.Color(), waterTint: new T.Color() }
+    light: new T.Color(), waterTint: new T.Color(), waterProfile: new T.Vector4() }
   return {
     update(elapsed, time, budget, distance = 0) {
       const { from, to, blend } = routeWeatherAt(elapsed)
@@ -171,8 +174,10 @@ export function createAtmosphere(scene) {
       tint(uniforms.horizon.value, 'horizon', .70)
       tint(uniforms.sunColor.value, 'sun', .64)
       result.frost = snowLevel(region)
-      horizon(distance, northLevel(region), result.frost, uniforms.horizon.value)
-      uniforms.cloud.value = lerp('cloud')
+      horizon(distance, northLevel(region), result.frost, uniforms.horizon.value, budget)
+      const lightness = T.MathUtils.lerp(daylight[region.from.index], daylight[region.to.index], region.blend)
+      uniforms.cloud.value = T.MathUtils.clamp(lerp('cloud') - lightness * .24, .05, .99)
+      result.waterProfile.fromArray(waterProfiles[region.from.key]).lerp(atmosphereWater.fromArray(waterProfiles[region.to.key]), region.blend)
       uniforms.clock.value = time
       uniforms.skyDetail.value = budget > .53 ? 1 : 0
       fog.color.copy(uniforms.horizon.value)
@@ -182,9 +187,12 @@ export function createAtmosphere(scene) {
       result.waterTint.setHex(region.from.waterTint).lerp(tone.setHex(region.to.waterTint), region.blend)
       fog.density = T.MathUtils.lerp(lerp('fog'), blendProperty(region, 'fog'), .72)
       sun.color.copy(uniforms.sunColor.value)
-      sun.intensity = lerp('light') * 1.12
+      sun.intensity = lerp('light') * 1.12 * (1 + lightness * .21)
+      const elevation = .22 + lightness * .23
+      dawnDirection.set(-.58, elevation, -.82).normalize()
+      sun.position.copy(dawnDirection).multiplyScalar(28)
       const shade = (region.from.treesPerSide + (region.to.treesPerSide - region.from.treesPerSide) * region.blend) / 12
-      fill.intensity = 1.61 - lerp('cloud') * .19 - shade * .17
+      fill.intensity = 1.67 - lerp('cloud') * .19 - shade * .26
       fill.groundColor.setHex(region.from.bank).lerp(tone.setHex(region.to.bank), region.blend).multiplyScalar(.71)
       sun.intensity *= 1.08 - shade * .10
       result.rain = lerp('rain') * (1 - result.frost)

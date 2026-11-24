@@ -11,9 +11,10 @@ const source = process.env.FIELD_SOURCE ?? '.'
 const fromSource = name => import(pathToFileURL(resolve(source, 'src', name + '.js')).href)
 const { expeditionRegions } = await fromSource('expedition')
 const { distanceAtTime, speedAtTime, courseStages, stageAt } = await fromSource('difficulty')
-const { advance, createCourse, newRun } = await fromSource('runner')
+const { advance, createCourse, newRun, reactionWindow } = await fromSource('runner')
 const { firstContact } = await fromSource('collision')
 const { tickSeconds } = await fromSource('timing')
+const { createRunControls } = await fromSource('run-controls')
 const { buildTile } = await fromSource('terrain-geometry')
 const isPhaseThree = expeditionRegions.length === 15
 const root = resolve(process.env.FIELD_BUILD ?? 'dist')
@@ -46,10 +47,55 @@ function rowsFor(seed, stop) {
   return rows
 }
 
+
+// Drive the same guided route used in collision stress checks. Store the
+// resulting keyboard inputs so the browser still owns movement and contacts.
+function guidedInputs(seed, duration) {
+  const run = newRun()
+  const controls = createRunControls()
+  const course = createCourse(seed)
+  const inputs = []
+  const rows = []
+  const hazards = []
+  const arrows = { left: 'ArrowLeft', right: 'ArrowRight', jump: 'ArrowUp', slide: 'ArrowDown' }
+  const enqueue = action => {
+    controls.enqueue(action)
+    inputs.push({ at: run.elapsed, key: arrows[action] })
+  }
+  let next = course(), released = -1, laneReady = 0, usedGate = false
+  while (run.elapsed < duration) {
+    while (next.at < run.distance + 102) {
+      rows.push(next)
+      hazards.push(...next.entities.filter(item => item.hazard))
+      next = course()
+    }
+    const row = rows[0]
+    if (row && run.elapsed - released >= reactionWindow && run.lane !== row.lane && run.elapsed >= laneReady) {
+      enqueue(run.lane < row.lane ? 'right' : 'left')
+      laneReady = run.elapsed + .16
+    }
+    if (!usedGate && row?.gate && row.at - run.distance <= run.speed * row.gate.duration / 2) {
+      enqueue(row.gate.action)
+      usedGate = true
+    }
+    controls.apply(run, () => {})
+    const previous = { ...run }
+    advance(run, tickSeconds)
+    assert.ok(!firstContact(previous, run, hazards, {}), 'guided fixture contact at ' + run.elapsed)
+    if (row && run.distance > (row.end ?? row.at) + 1.58) {
+      rows.shift()
+      released = run.elapsed
+      usedGate = false
+    }
+  }
+  return inputs
+}
+
 try {
   const viewport = args.includes('wide') ? { width: 844, height: 470 }
     : args.includes('small') ? { width: 320, height: 568 } : { width: 390, height: 844 }
-  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: .70 })
+  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: args.includes('retina') ? 2 : .70,
+    ...(args.includes('video') ? { recordVideo: { dir: output, size: viewport } } : {}) })
   // Block the external APIs, while letting the same-origin app worker serve
   // an actually verified content pack for the full set of offline checkpoints.
   await context.route(/.*/, route => {
@@ -60,20 +106,41 @@ try {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   page.on('console', msg => { if (msg.type() === 'error' && /shader error|THREE.WebGLProgram/i.test(msg.text())) errors.push(msg.text()) })
-  await page.addInitScript(quality => {
+  await page.addInitScript(initial => {
+    const quality = new URLSearchParams(location.search).get('qaview') || initial
     localStorage.setItem('retriever-run.record.practice', JSON.stringify({ quality, masterVolume: 0 }))
     Object.defineProperty(document, 'hidden', { get: () => false })
     const native = window.requestAnimationFrame.bind(window)
     let stamp
     const qa = window.phaseThreeQA = { limit: -1, elapsed: [], rendered: 0 }
+    qa.landmarkFrames = []
     window.requestAnimationFrame = callback => native(ms => {
       const state = window.retrieverDebug
       if (stamp === undefined) stamp = ms
       if (state?.mode !== 'running') stamp += 40
-      else if (state.distance < qa.limit) stamp += 25
+      else if (qa.soak && state.elapsed < qa.soak.duration) {
+        const replay = qa.soak
+        while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
+        }
+        stamp += 1000 / 30
+      } else if (state.distance < qa.limit) stamp += 25
       else if (qa.limit < 0 && quality === 'low') stamp += .10
       const start = performance.now()
       callback(stamp)
+      if (qa.inspectLandmark && window.retrieverDebug?.mode === 'running') {
+        const frame = window.retrieverDebug
+        const tile = frame.world?.find(t => t.index === qa.inspectLandmark)
+        qa.landmarkFrames.push({ distance: frame.distance, id: tile?.landmark?.id,
+          geometry: tile?.solid, opaque: tile?.solidOpaque })
+      }
+      if (qa.soak && state?.mode === 'running' && state.elapsed >= qa.soak.nextSample) {
+        const sample = window.retrieverPerformance()
+        qa.soak.samples.push({ elapsed: state.elapsed, distance: state.distance,
+          draws: sample.draws, triangles: sample.triangles, geometries: sample.geometries,
+          textures: sample.textures, tiles: sample.residentTiles, packs: sample.residentPacks })
+        qa.soak.nextSample += .5
+      }
       if (state?.mode === 'running' && qa.rendered < 180) {
         qa.elapsed.push({ timestamp: ms, cpu: performance.now() - start })
         qa.rendered++
@@ -81,8 +148,8 @@ try {
     })
   }, quality)
 
-  async function runAt(distance, seed) {
-    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance,
+  async function runAt(distance, seed, sceneQuality = quality) {
+    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality,
       { waitUntil: 'domcontentloaded' })
     if (await page.locator('#content-screen').isVisible()) {
       if (args.includes('offline')) {
@@ -95,11 +162,15 @@ try {
     await page.locator('#primary').tap()
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running', null, { timeout: 40_000 })
     if (args.includes('offline')) await context.setOffline(true)
-    await settle(distance)
+    await settle(distance, sceneQuality)
+    await page.waitForFunction(quality => {
+      const surfaces = window.retrieverPerformance()?.surfaces
+      return !surfaces || surfaces.active === (quality === 'low' ? 'compact' : 'full')
+    }, sceneQuality, { timeout: 40_000 })
     if (!isPhaseThree) await page.waitForTimeout(730)
   }
 
-  async function settle(distance) {
+  async function settle(distance, sceneQuality) {
     await page.waitForFunction(({ distance, isPhaseThree, quality }) => {
       const s = window.retrieverDebug
       if (!s || s.mode !== 'running') return false
@@ -107,7 +178,7 @@ try {
       const count = quality === 'low' ? 4 : 5
       const center = Math.floor(distance / 30)
       return Array.from({ length: count }, (_, i) => center + i).every(i => s.world?.some(t => t.index === i))
-    }, { distance, isPhaseThree, quality }, { timeout: 35_000 })
+    }, { distance, isPhaseThree, quality: sceneQuality }, { timeout: 35_000 })
   }
 
   async function stepTo(distance) {
@@ -115,7 +186,7 @@ try {
     await page.waitForFunction(distance => {
       const s = window.retrieverDebug
       return s?.mode === 'over' || s?.distance >= distance - .76
-    }, distance, { timeout: 75_000 }).catch(async error => {
+    }, distance, { timeout: 150_000 }).catch(async error => {
       console.error(await page.evaluate(() => ({ state: window.retrieverDebug,
         limit: window.phaseThreeQA.limit,
         mode: document.querySelector('#game')?.dataset.mode })))
@@ -131,7 +202,7 @@ try {
 
   async function capture(label, extra = {}) {
     assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running')
-    await page.screenshot({ path: resolve(output, label + '.png'), scale: 'css', timeout: 45_000 })
+    await page.screenshot({ path: resolve(output, label + '.png'), scale: args.includes('retina') ? 'device' : 'css', timeout: 45_000 })
     results.push(await page.evaluate(({ label, extra }) => ({
       label, ...extra, ...window.retrieverDebug, perf: window.retrieverPerformance(),
       weather: document.querySelector('#weather')?.textContent,
@@ -142,17 +213,145 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('presets')) {
+  if (args.includes('soak')) {
+    const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
+    assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
+    const seed = 7
+    const inputs = guidedInputs(seed, duration)
+    await runAt(0, seed)
+    await page.evaluate(({ inputs, duration }) => {
+      window.phaseThreeQA.soak = { inputs, duration, next: 0, nextSample: 0, samples: [] }
+    }, { inputs, duration })
+    await page.waitForFunction(duration => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
+      window.retrieverDebug?.elapsed >= duration, duration, { timeout: 900_000 })
+    const soak = await page.evaluate(() => ({ ...window.phaseThreeQA.soak, state: window.retrieverDebug }))
+    await writeFile(resolve(output, 'soak.json'), JSON.stringify({ engine: engine.name(), seed, duration,
+      offline: args.includes('offline'), quality, executed: soak.next, samples: soak.samples, elapsed: soak.state.elapsed }, null, 2) + '\n')
+    assert.equal(soak.state.mode, 'running', JSON.stringify(soak.state))
+    assert.ok(soak.samples.length >= duration, 'insufficient rendered samples')
+    assert.ok(soak.samples.every(({ tiles, packs, textures, geometries }) => tiles === 7 && packs <= 2 &&
+      textures <= 18 && geometries <= 90), 'unexpected scene resource growth')
+    await capture('soak-finish', { seed, duration, executed: soak.next })
+  } else if (args.includes('landmark-pass')) {
+    const keys = args.filter(a => a.startsWith('only=')).map(a => a.slice(5))
+    const selected = expeditionRegions.filter(r => keys.length ? keys.includes(r.key) : ['gulf','cypress','farm'].includes(r.key))
+    for (const region of selected) {
+      const first = Math.ceil(region.marker / 30)
+      let pair
+      for (let seed = 1; seed <= 96 && !pair; seed++) {
+        const rows = rowsFor(seed, region.seconds + 32)
+        const hazards = rows.flatMap(row => row.entities).filter(item => item.hazard)
+        for (let i = first; i < first + 16; i++) {
+          const tile = buildTile(i, i < 3 ? 0 : seed)
+          if (tile.territory !== region.key || !tile.landmark) continue
+          const marker = tile.landmark.distance
+          const start = marker - 77
+          if (start < region.marker + 1) continue
+          const finish = (i + 2) * 30 + 3
+          const localHazards = hazards.filter(item => item.distance > start - 35 && item.distance < finish + 10)
+          const run = { ...newRun(), distance: start }
+          // Match practice seek's elapsed time so the goose trajectory is also checked.
+          let lo = region.seconds, hi = region.seconds + 33
+          for (let iteration = 0; iteration < 32; iteration++) {
+            const half = (lo + hi) * .5
+            if (distanceAtTime(half) < start) lo = half
+            else hi = half
+          }
+          run.elapsed = hi
+          run.speed = speedAtTime(hi)
+          let hit
+          while (run.distance < finish && !hit) {
+            const previous = { ...run }
+            advance(run, tickSeconds)
+            hit = firstContact(previous, run, localHazards, {})
+          }
+          if (!hit) { pair = { seed, tile, start, finish }; break }
+        }
+      }
+      assert.ok(pair, 'No clear center-lane coast through ' + region.key)
+      const { seed, tile, start, finish } = pair
+      const at = tile.landmark.distance
+      await runAt(start, seed)
+      await page.evaluate(index => { window.phaseThreeQA.inspectLandmark = index }, tile.index)
+      for (const [label, distance] of [['approach',at - 56],['handoff',at - 46],['near',at - 26],['pass',at - 4],
+        ['depart',at + 11],['recycled',finish]]) {
+        await stepTo(distance)
+        await capture(region.key + '-' + label, { landmark: tile.landmark, seed, index: tile.index })
+      }
+      const check = await page.evaluate(() => {
+        const qa = window.phaseThreeQA
+        qa.inspectLandmark = undefined
+        return qa.landmarkFrames
+      })
+      await writeFile(resolve(output, region.key + '-lifetime.json'), JSON.stringify(check))
+      if (tile.landmark.id && await page.evaluate(() => Boolean(window.retrieverPerformance()?.surfaces))) {
+        const active = check.filter(frame => frame.distance < (tile.index + 2) * 30 - 1)
+        assert.ok(active.length > 16, region.key)
+        assert.equal(new Set(active.map(frame => frame.geometry)).size, 1, 'geometry replaced in view')
+        assert.ok(active.every(frame => frame.id === tile.landmark.id && frame.opaque), 'landmark split or hidden in view')
+        assert.ok(check.some(frame => frame.distance > (tile.index + 2) * 30 && !frame.id), 'tile never left the render window')
+      }
+    }
+  } else if (args.includes('presets-fresh')) {
+    for (const selected of ['balanced','high','low']) {
+      await runAt(distanceAtTime(36), 7, selected)
+      await capture(selected + '-cypress', { seed: 7, selected })
+    }
+  } else if (args.includes('presets')) {
     await runAt(distanceAtTime(36), 7)
     await capture('balanced-cypress')
     for (const selected of ['high', 'low', 'auto']) {
       await page.locator('#settings').tap()
       await page.locator('#quality').selectOption(selected)
       await page.locator('#close-settings').tap()
-      await page.locator('#primary').tap()
-      await page.waitForFunction(() => window.retrieverDebug?.mode === 'running')
-      await page.waitForTimeout(250)
+      await page.evaluate(() => { window.phaseThreeQA.limit = window.retrieverDebug.distance })
+      await page.bringToFront()
+      await page.locator('#game[data-mode="paused"] #primary').click()
+      await page.waitForFunction(() => {
+        const mode = document.querySelector('#game')?.dataset.mode
+        return mode === 'over' || window.retrieverDebug?.mode === 'running'
+      }, null, { polling: 250, timeout: 45_000 })
+      assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running',
+        JSON.stringify(await page.evaluate(() => window.retrieverDebug)))
+      await page.waitForFunction(selected => {
+        const surfaces = window.retrieverPerformance()?.surfaces
+        if (!surfaces || selected === 'auto' && !surfaces.pending ||
+          surfaces.active === (selected === 'low' ? 'compact' : 'full')) return true
+        // Battery Saver can skip draws once the fixture stops the game clock.
+        // Request a normal redraw so an async decode updates its live metrics.
+        window.dispatchEvent(new Event('resize'))
+        return false
+      }, selected, { polling: 300, timeout: 40_000 }).catch(async error => {
+        console.error(await page.evaluate(() => ({ render: window.retrieverPerformance()?.surfaces,
+          mode: document.querySelector('#game')?.dataset.mode, quality: document.querySelector('#quality')?.value,
+          distance: window.retrieverDebug?.distance, limit: window.phaseThreeQA.limit,
+          assets: performance.getEntriesByType('resource').filter(x => x.name.includes('field-atlas')).map(x => x.name.split('/').at(-1)) })))
+        throw error
+      })
       await capture(selected + '-cypress')
+    }
+  } else if (args.includes('equipment')) {
+    for (const [type, from, to] of [['tractor', 150, 180], ['snowmobile', 392, 449], ['log', 40, 58]]) {
+      const selected = args.find(arg => arg.startsWith('only='))
+      if (selected && selected !== 'only=' + type) continue
+      let example
+      for (let seed = 1; seed <= 24 && !example; seed++) {
+        for (const row of rowsFor(seed, to)) {
+          if (row.time < from) continue
+          const item = row.entities.find(entity => entity.hazard && entity.type === type && entity.lane !== 0)
+          if (!item) continue
+          const distance = item.distance - (type === 'log' ? 5 : 6.75)
+          const pose = { ...newRun(), distance }
+          const hazards = rowsFor(seed, to).flatMap(row => row.entities).filter(entity => entity.hazard &&
+            Math.abs(entity.distance - distance) < 44)
+          if (firstContact(pose, pose, hazards, {})) continue
+          example = { seed, item, distance }
+          break
+        }
+      }
+      assert.ok(example, type)
+      await runAt(example.distance, example.seed)
+      await capture('view-' + type, { seed: example.seed, target: example.item.distance, lane: example.item.lane })
     }
   } else if (args.includes('timber')) {
     const targets = isPhaseThree ? ['branch','leaning-tree','fallen','drift','snowmobile'] : ['branch','leaning-tree','fallen','drift']
@@ -248,6 +447,7 @@ try {
   }
   assert.deepEqual(errors, [])
   await writeFile(resolve(output, 'report.json'), JSON.stringify({ engine: engine.name(), viewport, quality, offline: args.includes('offline'), results }, null, 2) + '\n')
+  await context.close()
 } finally {
   await browser.close()
   await new Promise(done => server.close(done))

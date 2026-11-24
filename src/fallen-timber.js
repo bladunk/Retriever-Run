@@ -118,7 +118,7 @@ export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = 
     values.push(position.x, Math.max(-.028, position.y), position.z)
     uvs.push(u, v)
     shade.setHex(color).multiplyScalar(bright).toArray(colors, colors.length)
-    layers.push(layer)
+    layers.push(layer === 2 ? 4 : layer)
     return layers.length - 1
   }
 

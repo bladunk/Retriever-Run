@@ -375,7 +375,7 @@ function initialize() {
       }, camera, signs)
       renderer.render(scene, camera)
       if (mode === 'running' && performanceProbe) performanceProbe.frame(wall * 1000, performance.now() - renderStart,
-        renderer.info, terrain.count(), regionAt(display.elapsed).key, terrain.packCount())
+        renderer.info, terrain.count(), regionAt(display.elapsed).key, terrain.packCount(), terrain.landscapeResidency(), terrain.measurements())
       needsRedraw = false
     }
   }

@@ -1,6 +1,7 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { createLeafSpray } from './marsh-plants.js'
+import { surfaceOrder } from './landscape-surfaces.js'
 import { expeditionBlend, regionAtDistance, snowLevel } from './expedition.js'
 import { shoreHeight, vegetationPocket } from './landforms.js'
 import { dressMigrationLandmark } from './migration-landmarks.js'
@@ -49,7 +50,9 @@ export function buildTile(index, seed = 0) {
   const random = seededRandom(((index + 77) * 4871) ^ Math.imul(seed, 0x6cd15b9d))
   const between = (min, max) => min + random() * (max - min)
   const tint = new T.Color()
-  const list = []
+  const details = []
+  const solids = []
+  let batch = details
   const trees = []
   const habitats = []
   const plantType = colors.plant
@@ -113,7 +116,7 @@ export function buildTile(index, seed = 0) {
     }
     geometry.setAttribute('color', new T.BufferAttribute(data, 3))
     geometry.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(count).fill(layer), 1))
-    list.push(geometry)
+    batch.push(geometry)
   }
 
   function branch(color, x, y, z, tx, ty, tz, thickness) {
@@ -149,6 +152,7 @@ export function buildTile(index, seed = 0) {
   const uvs = []
   const indices = []
   const terrainStyle = []
+  const surfaceStyle = []
   const offsets = [-78, -62, -48, -35, -23, -15, -10, -8, -6, -5.2, -4.3, -3.6, -3.2, -2.45, -1.6, -.8, 0,
     .8, 1.6, 2.45, 3.2, 3.6, 4.3, 5.2, 6, 8, 10, 15, 23, 35, 48, 62, 78]
   for (let row = 0; row <= segmentLength * 2; row++) {
@@ -165,6 +169,8 @@ export function buildTile(index, seed = 0) {
       const edgeFade = Math.min(1, Math.max(0, (edge - trailEdge(distance, x) + .44) / .88))
       uvs.push(x / 2.5, -distance / 2.5)
       terrainStyle.push(T.MathUtils.lerp(bedStyles[zone.from.kind] ?? 0, bedStyles[zone.to.kind] ?? 0, zone.blend))
+      const surface = T.MathUtils.lerp(surfaceOrder[zone.from.key], surfaceOrder[zone.to.key], zone.blend)
+      surfaceStyle.push(surface, edgeFade)
       positions.push(x, y, z)
       const rut = Math.sin(x * 5.5 + Math.sin(distance * .42) * .9) * .032
       const drift = Math.cos(distance * .18 + x * .63) * .044 + Math.sin(distance * .41 - x * 1.7) * .024
@@ -188,6 +194,7 @@ export function buildTile(index, seed = 0) {
   land.setAttribute('uv', new T.Float32BufferAttribute(uvs, 2))
   land.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(positions.length / 3).fill(1), 1))
   land.setAttribute('landStyle', new T.Float32BufferAttribute(terrainStyle, 1))
+  land.setAttribute('regionalSurface', new T.Float32BufferAttribute(surfaceStyle, 2))
   land.setIndex(indices)
   land.computeVertexNormals()
 
@@ -269,8 +276,10 @@ export function buildTile(index, seed = 0) {
           const depth = z + between(-1.2, .9)
           const y = earth(start - depth, foot)
           const h = Math.max(.44, waterline - y + between(.29, .72))
+          batch = solids
           add(twig, colors.key === 'cypress' ? 0x645947 : 0x756048, foot, y + h * .39, depth,
-            .11 + knee * .026, h, .17, 0, knee, side * .18, false, 2)
+            .11 + knee * .026, h, .17, 0, knee, side * .18, false, 4)
+          batch = details
         }
       }
     }
@@ -293,6 +302,8 @@ export function buildTile(index, seed = 0) {
     }
   }
 
+  // Structural pieces all share the same opaque batch and lifetime.
+  batch = solids
   // Weathered blinds and floating decoys sit outside the playable lanes.
   if ((key === 'gulf' || key === 'prairie' || key === 'manitoba') && index % 7 === 1) {
     const side = index % 14 === 0 ? 1 : -1
@@ -362,6 +373,25 @@ export function buildTile(index, seed = 0) {
     chimney[2] -= Math.sin(heading) * lateral
   }
 
+  const landmarkZ = landmark ? start - landmark.distance : 0
+  const landmarkX = landmark ? centerAt(landmark.distance) - base + landmark.x : 0
+  if (water) {
+    const positions = water.attributes.position
+    const canopy = water.attributes.marshCanopy
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i), z = positions.getZ(i)
+      let reflection = 0
+      for (let n = 0; n < trees.length; n += 7) {
+        const height = trees[n + 3]
+        const dx = (x - trees[n]) / (height * .41 + .25)
+        const dz = (z - trees[n + 2] - height * .17) / (height * .61 + .35)
+        const patch = .90 - dx * dx - dz * dz
+        if (patch > reflection) reflection = patch
+      }
+      canopy.setX(i, Math.min(1, canopy.getX(i) * .40 + reflection))
+    }
+  }
+
   const landPoints = land.attributes.position
   const landColors = land.attributes.color
   for (let i = 0; i < landPoints.count; i++) {
@@ -376,12 +406,22 @@ export function buildTile(index, seed = 0) {
       const canopyShadow = Math.max(0, 1 - Math.abs(along - length * .43) / length) * Math.max(0, 1 - Math.abs(across) / 1.08)
       shade = Math.max(shade, root * .24 + canopyShadow * .15)
     }
+    if (landmark && Math.abs(z - landmarkZ) < 5.4) {
+      const contact = Math.max(0, 1 - Math.hypot((x - landmarkX) / 4.5, (z - landmarkZ) / 4.1))
+      shade = Math.max(shade, contact * .46)
+    }
     landColors.setXYZ(i, landColors.getX(i) * (1 - shade), landColors.getY(i) * (1 - shade * .87),
       landColors.getZ(i) * (1 - shade * .70))
   }
 
-  const merged = mergeGeometries(list)
-  for (const geometry of list) geometry.dispose()
+  function mergedPacket(pieces) {
+    if (!pieces.length) return null
+    const geometry = mergeGeometries(pieces)
+    for (const piece of pieces) piece.dispose()
+    return pack(geometry)
+  }
+  const detail = mergedPacket(details)
+  const solid = mergedPacket(solids)
   const reeds = []
   const bankBias = random() < .5 ? -1 : 1
   for (let i = 0; i < reedCount; i++) {
@@ -402,7 +442,9 @@ export function buildTile(index, seed = 0) {
     if (i % 7 === 0) habitats.push({ distance: at, side, lateral: x, depth: waterline - y,
       kind: y < waterline ? 'shallow-water' : colors.habitats[1] })
   }
-  return { index, seed, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds: new Float32Array(reeds), habitats, landmark,
+  const ground = pack(land)
+  const waterPacket = water ? pack(water) : null
+  return { index, seed, ground, detail, solid, water: waterPacket, reeds: new Float32Array(reeds), habitats, landmark: landmark ? { id: key + ':' + index + ':' + seed, ...landmark } : null,
     plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
       : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign }
 }

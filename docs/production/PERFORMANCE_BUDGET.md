@@ -39,3 +39,11 @@ Supabase’s Free plan lists a 500 MB database, 50,000 monthly active users and 
 | 250 MB | 25 GB | 250 GB | 400 |
 
 Estimates use decimal units and count full transfers. A monthly player who reopens a verified cached edition costs mostly shell/update metadata and optional Camp traffic. New installs, evictions and large updates raise bandwidth. These rows exclude shell checks, retries, other requests and compression variance. If traffic trends approach the soft limit, retain Pages for the shell and evaluate a separately approved public object store/CDN for immutable content with verified CORS, correct MIME types and content hashes. Keep the manifest and local save formats independent of that migration.
+
+## Phase 03B visual allocation
+
+The old 5 MB Phase 01 trial limit is superseded by the 75–150 MB complete-content planning range. The Phase 03B surface pack adds just over 3 MB of useful compressed detail. Game content receives a separate budget from the launch shell. The optional 250 MB ceiling still requires owner and infrastructure review.
+
+The atlas is shared across all fifteen territories. The game verifies both WebP variants for offline use, and one ready texture stays bound at a time. Uncompressed RGBA8 plus mipmaps would cost about 6.67 MiB for Battery Saver and 26.67 MiB for Balanced or High. A browser can transiently retain the decoded image during a swap. Budget around those estimates and measure iOS GPU allocation and storage under memory pressure. The larger pack uses the existing digest cache and one in-flight transfer buffer. WebP bytes are smaller than decoded residency, and any future KTX2 or equivalent should be compared on physical WebKit before changing formats. [Phase 03B measurements](PHASE_03B_REPORT.md)
+
+A clean install at 5.56 MB of unique required content implies about 5.56 GB per thousand full downloads, or 55.6 GB for ten thousand. Reopening with intact cached bytes avoids that full transfer. The largest new individual runtime file is approximately 2.57 MB. Keep monitoring Pages limits and repeat downloads from iOS storage eviction before expanding toward the full production ceiling.

@@ -27,7 +27,8 @@ export function contactShadow(kind = 'dog') {
   if (kind === 'dog') return new T.Mesh(plane, timberMaterial.clone())
   if (!stamps.has(kind)) {
     const patches = kind === 'leaning-tree' ? [[-3.16, 1.75, 1.19], [3.66, 1.54, 1.57]]
-      : kind === 'branch' ? [[.91, 1.48, 1.28]] : kind === 'snowmobile' ? [[0, 1.65, 3.05]] : [[0, 2.26, 1.19]]
+      : kind === 'branch' ? [[.91, 1.48, 1.28]] : kind === 'snowmobile' ? [[0, 1.65, 3.05]]
+        : kind === 'tractor' ? [[0, 2.42, 2.80]] : [[0, 2.26, 1.19]]
     const pieces = patches.map(([x, width, depth]) => plane.clone()
       .rotateX(-Math.PI / 2).scale(width, 1, depth).translate(x, .029, 0))
     stamps.set(kind, mergeGeometries(pieces))
