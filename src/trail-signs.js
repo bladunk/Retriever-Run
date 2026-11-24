@@ -34,6 +34,19 @@ const surfaces = {
   camp: 'direction', farm: 'farm', warning: 'posted', north: 'north', canada: 'north',
   veteran: 'plank', rookie: 'oldPaint', weather: 'oldPaint', trail: 'direction',
 }
+const catalog = Object.values(signMessages).flat()
+
+export function obstacleSignLine(distance, random, recent) {
+  const plan = plans[regionAtDistance(distance).index]
+  const skip = new Set(recent)
+  if (random() < .86) {
+    const preferred = plan[Math.floor(random() * plan.length)]
+    const choices = signMessages[preferred].filter(line => !skip.has(line))
+    if (choices.length) return choices[Math.floor(random() * choices.length)]
+  }
+  const choices = catalog.filter(line => !skip.has(line))
+  return choices[Math.floor(random() * choices.length)]
+}
 
 export function trailSign(tile, seed) {
   const ordinal = tile / signInterval

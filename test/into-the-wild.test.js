@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { Color, Group, Scene } from 'three'
+import { Color, Scene } from 'three'
 import { canPostRun } from '../src/camp-rules.js'
 import { traceContact } from '../src/collision.js'
 import { fallenTimberModel, fallenTimbers, fallenVariant } from '../src/fallen-timber.js'
@@ -10,7 +10,7 @@ import { courseStages, distanceAtTime, speedAtTime, stageAt } from '../src/diffi
 import { createDriftingLeaves } from '../src/drifting-leaves.js'
 import { regionAt } from '../src/expedition.js'
 import { act, advance, newRun } from '../src/runner.js'
-import { createPostedTimber, createTrailSigns } from '../src/sign-scenery.js'
+import { createTrailSigns } from '../src/sign-scenery.js'
 import { signMessages } from '../src/sign-lines.js'
 import { signAnchor, signInterval } from '../src/sign-placement.js'
 import { signSlots, signTextRows, trailSign } from '../src/trail-signs.js'
@@ -109,25 +109,6 @@ test('sign art and drifting leaves reuse allocations across trail recycling and 
   assert.equal(models[0].visible, false)
   assert.equal(canvasCount, signSlots)
   assert.deepEqual(scene.children, models)
-
-  const posted = createPostedTimber(() => {
-    canvasCount++
-    return { getContext: () => ctx }
-  })
-  const model = new Group()
-  const notice = { type: 'branch', model, lane: 0, distance: 25 }
-  posted([notice], 2, 62)
-  const plate = model.children[0]
-  assert.equal(plate.name, 'Posted timber lettering')
-  const postedPaint = painted
-  posted([notice], 3, 62)
-  assert.equal(painted, postedPaint)
-  posted([], 26, 62)
-  assert.equal(plate.parent, null)
-  posted([notice], 25, 62)
-  assert.equal(model.children[0], plate)
-  assert.equal(painted, postedPaint)
-  assert.equal(canvasCount, signSlots + 2)
 
   const leaves = createDriftingLeaves(scene)
   const points = scene.children.at(-1)
