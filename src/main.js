@@ -34,7 +34,7 @@ import { courseStages, distanceAtTime, speedAtTime, stageAt } from './difficulty
 import { placeOnTrail, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createTrailSigns } from './sign-scenery.js'
-import { createObstacleSigns } from './obstacle-signs.js'
+import { setRockWeather } from './rock-art.js'
 import { createDriftingLeaves } from './drifting-leaves.js'
 import { fallenVariant } from './fallen-timber.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
@@ -55,7 +55,6 @@ scene.add(scenery)
 const entities = []
 const effects = []
 const pool = new Map()
-const obstacleSigns = createObstacleSigns()
 const dogPosition = {}
 const obstaclePosition = {}
 const cuePosition = {}
@@ -330,6 +329,7 @@ function initialize() {
       landing *= Math.exp(-12 * dt)
       const height = getHeight(display)
       const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather, distance)
+      setRockWeather(weather)
       trailPose = {
         x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
         time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing, wet: weather.wet,
@@ -357,7 +357,7 @@ function initialize() {
     if (mode === 'title' || mode === 'running' || needsRedraw) {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(),
-      }, camera, obstacleSigns)
+      }, camera, signs)
       renderer.render(scene, camera)
       needsRedraw = false
     }
@@ -387,23 +387,22 @@ function initialize() {
 }
 
 function acquire(entity) {
-  const variant = entity.type === 'fallen' ? fallenVariant(entity.distance, entity.lane) : 0
-  const key = entity.modelKey = entity.type + (entity.wide ? '-wide' : '') + (entity.type === 'fallen' ? '-' + variant : '')
+  const variant = entity.type === 'fallen' ? fallenVariant(entity.distance, entity.lane) : entity.variant ?? 0
+  const style = entity.type === 'rock' ? '-' + variant + '-' + entity.turn : entity.type === 'fallen' ? '-' + variant : ''
+  const key = entity.modelKey = entity.type + (entity.wide ? '-wide' : '') + style
   const model = pool.get(key)?.pop()
   const object = model ?? (entity.hazard
-    ? createHazard(scenery, entity.type, 0, 0, entity.wide, variant) : createPickup(scenery, entity.type))
+    ? createHazard(scenery, entity.type, 0, 0, entity.wide, variant, entity.turn) : createPickup(scenery, entity.type))
   if (model) {
     object.visible = true
     scenery.add(object)
   }
   if (entity.span) prepareWashout(object, entity)
-  if (entity.type === 'branch') obstacleSigns.bind(object, entity, signSeed)
   return object
 }
 
 function release(entity) {
   if (!entity.model) return
-  if (entity.type === 'branch') obstacleSigns.release(entity.model)
   entity.model.removeFromParent()
   const key = entity.modelKey
   if (!entity.hazard) entity.model.scale.setScalar(1)
@@ -476,7 +475,7 @@ function step(dt) {
     debug?.hit(contact)
     frozen = true
     sound.play('hit', isWaterHazard(impacted.type) ? 'splash' : runningSurface())
-    setMode('over', { postedTimber: impacted.type === 'branch' && !impacted.wide })
+    setMode('over')
     return false
   }
   stride += dt * Math.PI * 2 * Math.min(2.86, 1.84 + (run.speed - 11) * .061)
@@ -734,7 +733,7 @@ function setMode(value, options = {}) {
         jump: run.jump > 0, slide: run.slide > 0, changingLane: run.elapsed - lastShift < .45,
         rivalGap: target > 0 ? (target + 1 - measured) / (target + 1) : 0,
         bestStreak: run.bestStreak,
-        postedTimber: options.postedTimber, recentTreat: run.elapsed - lastTreat < .65,
+        recentTreat: run.elapsed - lastTreat < .65,
       })
       fillReport(ui, report, { heckle: line, previousBest, player: previewRegion ? undefined : runner })
       fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))

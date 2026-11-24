@@ -1,5 +1,6 @@
 import { seededRandom } from './trail.js'
 import { director, distanceAtTime, speedAtTime, stageAt } from './difficulty.js'
+import { chooseRock, rocks, rockTurns } from './rocks.js'
 export { difficultyAt, difficultyCurve, director, distanceAtTime, speedAt, speedAtTime } from './difficulty.js'
 
 import { jumpDuration, jumpHeight, laneWidth, obstacleVolumes, slideDuration, traceContact,
@@ -11,7 +12,19 @@ export const laneResponse = 17
 export const reactionWindow = .42
 export const gateGrace = .050
 const lanes = [-1, 0, 1]
-const types = ['log', 'fence', 'puddle', 'branch', 'root', 'tree']
+const types = ['log', 'root', 'puddle', 'branch', 'fence', 'tree', 'drift', 'fallen', 'tractor', 'rock']
+const weights = [
+  [2.6, 1.9, 1.8, .65, 1.5, .68, .45, .32, 0, 1.45],
+  [2.2, 2.7, 1.9, .90, .61, 1.2, .58, .55, 0, 1.76],
+  [2.1, 1.4, 2.4, .60, 1.1, .68, 1.4, .75, 0, 1.95],
+  [1.8, 2.5, 1.8, 1.1, .62, 1.5, 1.1, 1.65, 0, 1.95],
+  [1.7, 1.7, 1.3, .55, 2.0, .80, .45, 1.10, 2.4, 2.23],
+  [2.2, 1.65, 1.8, .55, 1.57, .62, .69, 1.7, 0, 2.30],
+  [1.8, 1.8, 1.75, .65, 1.4, .80, 1.1, 1.8, 0, 2.4],
+  [2.0, 1.8, 1.3, .92, 1.0, 1.63, .95, 2.2, 0, 2.6],
+  [2.25, 1.85, .85, 1.15, .72, 1.70, .95, 2.3, 0, 2.45],
+  [1.9, 1.7, 1.0, .86, .56, 1.30, .78, 2.0, 0, 3.0],
+]
 const lowHazards = new Set(['log', 'root', 'puddle', 'drift'])
 const bonuses = ['mallard', 'pheasant', 'call', 'decoy']
 
@@ -145,6 +158,23 @@ export function createCourse(seed = 1, rules = director) {
   let requiredLane = false
   let followAction = false
   let previousGateType
+  let priorTypes = []
+  let lastRock = -Infinity
+  let lastVariant
+
+  function selectBlock(territory, row) {
+    const values = weights[territory].map((weight, i) => {
+      const type = types[i]
+      if ((type === 'rock' && index - lastRock < 3) || row.entities.some(item => item.type === type)) return 0
+      return weight * (priorTypes.includes(type) ? .23 : 1)
+    })
+    let ball = random() * values.reduce((total, weight) => total + weight, 0)
+    for (const [i, value] of values.entries()) {
+      ball -= value
+      if (ball < 0) return types[i]
+    }
+    return 'log'
+  }
 
   return function nextRow() {
     const at = distanceAtTime(time, rules)
@@ -182,7 +212,7 @@ export function createCourse(seed = 1, rules = director) {
       row.end = row.entities.at(-1).distance
       add('treat', lane, at)
     } else if (gate) {
-      const overhead = previousGateType === 'branch' && stage.level >= 7 ? .29 : .32 + territory * .025
+      const overhead = previousGateType === 'branch' ? .22 : .34 + territory * .019
       const type = pairPending || (index > 5 && random() < overhead ? 'branch' : 'stream')
       add(type, 0, at, true, true)
       row.gate = { distance: at, duration: type === 'branch' ? slideDuration : jumpDuration }
@@ -200,13 +230,17 @@ export function createCourse(seed = 1, rules = director) {
     } else {
       const count = requiredLane && row.lane !== previous.lane || random() < stage.blocks ? 2 : 1
       for (let i = 0; i < count; i++) {
-        const large = territory >= 3 && random() < .09 + progress * .30 + (requiredLane ? .15 : 0)
-        const type = large ? territory === 4 && random() < .77 ? 'tractor' : 'fallen'
-          : index > 6 && random() < territory * .038 ? 'drift' : pick(types)
-        heavyBlock ||= large
+        const type = selectBlock(territory, row)
         add(type, blocked[i], at, true)
+        if (type === 'rock') {
+          const variant = chooseRock(territory, random, lastVariant)
+          Object.assign(row.entities.at(-1), { variant, turn: Math.floor(random() * rockTurns.length) })
+          heavyBlock ||= ['large', 'cluster'].includes(rocks[variant].size)
+        }
+        heavyBlock ||= type === 'fallen' || type === 'tractor'
       }
-      const alternate = row.entities.find(item => lowHazards.has(item.type))
+      const alternate = row.entities.find(item => lowHazards.has(item.type) ||
+        item.type === 'rock' && rocks[item.variant].size === 'small')
       const risky = alternate && stage.reward && random() < stage.reward
       for (let i = -1; i <= 1; i++) {
         add(i === 0 && (index === 4 || !risky && random() < .12) ? pick(bonuses) : 'treat', lane, at + i * 1.72)
@@ -247,6 +281,12 @@ export function createCourse(seed = 1, rules = director) {
       gap = Math.max(gap, .93)
     }
     if (row.gate) previousGateType = row.entities[0].type
+    const rock = row.entities.find(item => item.type === 'rock')
+    if (rock) {
+      lastRock = index
+      lastVariant = rock.variant
+    }
+    priorTypes = row.entities.filter(item => item.hazard).map(item => item.type)
     previous = { at, lane: row.lane, end: row.end, gate: row.gate ?? previous.gate }
     time += gap
     index++

@@ -2,7 +2,6 @@ import * as T from 'three'
 import { distanceAtTime, speedAtTime } from './difficulty.js'
 import { diveAge, diveWarning } from './dive.js'
 import { hazardFrame, isWaterHazard, obstacleVolumes, playerFrame, playerVolumes, volumeY } from './collision.js'
-import { obstacleSignFace } from './obstacle-signs.js'
 
 export function collisionDebug(scene) {
   const flags = new URLSearchParams(location.search)
@@ -11,7 +10,7 @@ export function collisionDebug(scene) {
   const requested = Number(flags.get('at'))
   const at = flags.has('at') && Number.isFinite(requested) ? Math.min(distanceAtTime(330), Math.max(0, requested)) : 0
   const showVolumes = flags.get('volumes') !== 'off'
-  const showSigns = flags.get('signs') === 'on'
+  const inspectScenery = flags.get('scenery') === 'on'
   const panel = document.createElement('pre')
   panel.id = 'collision-debug'
   panel.setAttribute('aria-label', 'Collision diagnostics')
@@ -30,23 +29,35 @@ export function collisionDebug(scene) {
   let death
   let last = ''
   const corner = new T.Vector3()
+  const rockEdges = new WeakMap()
+  const rockBounds = new T.Box3()
 
-  function inspectSigns(entities, run, camera) {
-    camera.updateMatrixWorld()
-    return entities.filter(entity => entity.type === 'branch' && entity.model?.visible &&
-        entity.distance >= run.distance - 4 && entity.distance <= run.distance + 80)
-      .map(({ model, distance, lane, wide }) => {
-        const face = model.getObjectByName(obstacleSignFace)
-        if (!face?.visible) return { distance, lane, wide, face: false }
-        face.updateWorldMatrix(true, false)
-        const corners = [[-.5, .5], [.5, .5], [.5, -.5], [-.5, -.5]].map(([x, y]) => {
-          corner.set(x, y, 0).applyMatrix4(face.matrixWorld).project(camera)
-          return [(corner.x + 1) * .5, (.5 - corner.y * .5)]
-        })
-        return { distance, lane, wide, face: true, corners, ...face.userData.lettering }
-      })
+  function screen(camera) {
+    corner.project(camera)
+    return [(corner.x + 1) * .5, (.5 - corner.y * .5)]
   }
-  function draw(part, frame, kind, crouch = 0) {
+
+  function inspectSign(face, camera) {
+    face.updateWorldMatrix(true, false)
+    const corners = [[-.5, .5], [.5, .5], [.5, -.5], [-.5, -.5]].map(([x, y]) => {
+      corner.set(x, y, 0).applyMatrix4(face.matrixWorld)
+      return screen(camera)
+    })
+    return { ...face.parent.userData.notice, corners }
+  }
+
+  function inspectRock({ model, distance, lane, variant, turn }, camera) {
+    model.updateWorldMatrix(true, true)
+    const { min, max } = rockBounds.setFromObject(model, true)
+    const points = []
+    for (const x of [min.x, max.x]) for (const y of [min.y, max.y]) for (const z of [min.z, max.z]) {
+      corner.set(x, y, z)
+      points.push(screen(camera))
+    }
+    return { distance, lane, variant, turn, points }
+  }
+
+  function draw(part, frame, kind, crouch = 0, meshGeometry = geometry) {
     if (!showVolumes) return
     let line = lines[count]
     if (!line) {
@@ -56,6 +67,7 @@ export function collisionDebug(scene) {
       lines.push(line)
     }
     count++
+    line.geometry = meshGeometry
     const cos = Math.cos(frame.angle)
     const sin = Math.sin(frame.angle)
     line.material = materials[kind]
@@ -84,7 +96,7 @@ export function collisionDebug(scene) {
       death = { ...details }
       console.info('Retriever Run impact', death)
     },
-    draw(run, entities, mode, timings, camera, obstacleSigns) {
+    draw(run, entities, mode, timings, camera, signs) {
       count = 0
       playerFrame(transform, run, run.distance)
       for (const part of playerVolumes()) draw(part, transform, death?.part === part.name ? 'hit' : 'dog', transform.depth)
@@ -103,7 +115,11 @@ export function collisionDebug(scene) {
         hazardFrame(transform, entity, run.distance, run.distance)
         const wet = isWaterHazard(entity.type)
         const hit = death?.obstacleDistance === entity.distance && death?.obstacleLane === entity.lane && death?.type === entity.type
-        for (const part of parts) draw(part, transform, hit && death.solid === part.name ? 'hit' : wet ? 'water' : 'solid')
+        if (showVolumes && entity.type === 'rock' && entity.model) {
+          const mesh = entity.model.children[0].geometry
+          if (!rockEdges.has(mesh)) rockEdges.set(mesh, new T.EdgesGeometry(mesh, 10))
+          draw({ x: 0, y: 0, z: 0, hx: 1, hy: 1, hz: 1 }, transform, hit ? 'hit' : 'solid', 0, rockEdges.get(mesh))
+        } else for (const part of parts) draw(part, transform, hit && death.solid === part.name ? 'hit' : wet ? 'water' : 'solid')
       }
       for (let i = count; i < lines.length; i++) lines[i].visible = false
       const status = run.jump > 0 ? 'jump' : run.slide > 0 ? 'slide' : 'run'
@@ -120,9 +136,13 @@ export function collisionDebug(scene) {
       window.retrieverDebug = { mode, elapsed: run.elapsed, distance: run.distance, lateral: run.x, lane: run.lane,
         height: run.jump > 0 ? transformPlayerHeight(run) : 0, ticks: timings.ticks, contact: death, power: run.power, flight, speed: run.speed, tiles: timings.tiles,
         drawCalls: timings.drawCalls, geometries: timings.geometries, entities: entities.length }
-      if (showSigns) {
-        window.retrieverDebug.signs = inspectSigns(entities, run, camera)
-        window.retrieverDebug.signCache = obstacleSigns.stats()
+      if (inspectScenery) {
+        camera.updateMatrixWorld()
+        window.retrieverDebug.signs = signs.visible().map(face => inspectSign(face, camera))
+        window.retrieverDebug.rocks = entities.filter(item => item.type === 'rock' && item.model?.visible &&
+          item.distance > run.distance - 3 && item.distance < run.distance + 26).map(item => inspectRock(item, camera))
+        window.retrieverDebug.inLaneSigns = entities.filter(item => item.hazard && item.model)
+          .some(item => item.model.getObjectByName('Trail notice') || item.model.getObjectByName('Obstacle sign face'))
       }
     },
   }

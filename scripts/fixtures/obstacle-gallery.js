@@ -9,7 +9,6 @@ import { createTerrain } from '/src/terrain.js'
 import { laneWidth, segmentLength, trailHeight } from '/src/trail.js'
 import { createDivingFlocks } from '/src/wildlife.js'
 
-const baseline = new URLSearchParams(location.search).has('baseline')
 const renderer = new T.WebGLRenderer({ canvas: document.querySelector('canvas'), antialias: true })
 renderer.setPixelRatio(Math.min(1, devicePixelRatio))
 renderer.setSize(innerWidth, innerHeight, false)
@@ -25,14 +24,6 @@ const actor = new T.Group()
 dog.moveTo(actor)
 scene.add(actor, obstacles)
 const camera = new T.PerspectiveCamera(50, innerWidth / innerHeight, .1, 190)
-let notices
-let posted
-if (!baseline) {
-  const asset = '/src/' + 'obstacle-signs.js'
-  const signs = await import(/* @vite-ignore */ asset)
-  notices = signs.createObstacleSigns()
-}
-
 const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
 const elapsedAt = distance => {
   let low = 0
@@ -46,8 +37,6 @@ const elapsedAt = distance => {
 }
 
 async function cameraScene({ type, variety = 0, shot, elapsed = 246 }) {
-  if (posted) notices.release(posted)
-  posted = null
   obstacles.clear()
   const target = type === 'fallen' ? 6118 : distanceAtTime(elapsed)
   const trees = shot === 'trees'
@@ -77,10 +66,6 @@ async function cameraScene({ type, variety = 0, shot, elapsed = 246 }) {
     hazard.model.position.y = position.y
     hazard.model.rotation.y = position.angle
     if (hazard.span) prepareWashout(hazard.model, hazard)
-  }
-  if (notices && hazard.model && hazard.type === 'branch') {
-    posted = hazard.model
-    notices.bind(posted, hazard, 13861)
   }
   diving(type === 'goose' ? [hazard] : [], origin, vegetationTime, true)
   actor.visible = character || !near && !panorama

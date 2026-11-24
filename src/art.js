@@ -3,7 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { fieldMaterials } from './materials.js'
 import { fallenTimberModel } from './fallen-timber.js'
 import { trailTimber } from './trail-timber.js'
-import { addObstacleSignFace } from './obstacle-signs.js'
+import { rockMesh } from './rock-art.js'
 import { marshWater } from './marsh-water.js'
 import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
 
@@ -20,15 +20,23 @@ const crossingSurface = streamRibbon()
 const soakedGround = new T.CircleGeometry(1, 22).rotateX(-Math.PI / 2)
 const wetShapes = [pondSheet(), depthGeometry(crossingSurface.clone(), true)]
 const bankMaterial = new T.MeshLambertMaterial({ color: 0x645847 })
-const barkCylinder = new T.CylinderGeometry(1, 1, 1, 11, 3)
 const wheel = new T.CylinderGeometry(1, 1, 1, 12).rotateZ(Math.PI / 2)
-const timberPoints = barkCylinder.attributes.position
-for (let i = 0; i < timberPoints.count; i++) {
-  const x = timberPoints.getX(i), y = timberPoints.getY(i), z = timberPoints.getZ(i)
-  const rough = .98 + .047 * Math.sin(Math.atan2(z, x) * 7) + .042 * Math.sin(y * 10 + x * 5)
-  timberPoints.setXYZ(i, x * rough, y, z * rough)
+
+function hangingLimb(width, radius, depth, lift, phase) {
+  const geometry = new T.CylinderGeometry(1, 1, 1, 10, 12)
+  const points = geometry.attributes.position
+  for (let i = 0; i < points.count; i++) {
+    const x = points.getX(i), z = points.getZ(i)
+    const t = points.getY(i) + .5
+    const angle = Math.atan2(z, x)
+    const taper = .78 + .33 * (1 - t) + .14 * Math.sin(t * 17.1 + angle * 3 + phase)
+    const bend = Math.sin(t * 9.7 + phase) * .069 + (t - .5) * lift
+    points.setXYZ(i, (t - .5) * width, bend - x * radius * taper,
+      z * depth * taper + Math.sin(t * 14 + phase) * .048)
+  }
+  geometry.computeVertexNormals()
+  return geometry
 }
-barkCylinder.computeVertexNormals()
 
 function depthGeometry(geometry, ribbon) {
   const uv = geometry.attributes.uv
@@ -145,11 +153,15 @@ function group(parent, x = 0, y = 0, z = 0) {
   return object
 }
 
-export function createHazard(parent, type, x = 0, z = 0, wide = false, variant = 0) {
+export function createHazard(parent, type, x = 0, z = 0, wide = false, variant = 0, turn = 1) {
   const object = group(parent, x, 0, z)
   const key = 'hazard-' + type + (wide ? '-wide' : '')
   if (type === 'puddle' || type === 'stream') return fitWaterHazard(object, type === 'stream')
   if (type === 'washout') return object
+  if (type === 'rock') {
+    object.add(rockMesh(variant, turn))
+    return object
+  }
   if (type === 'fallen') {
     object.add(new T.Mesh(fallenTimberModel(variant), fieldMaterials.material))
     return object
@@ -161,7 +173,6 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
   }
   if (baked.has(key)) {
     object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
-    if (type === 'branch') addObstacleSignFace(object, wide)
     return object
   }
   const bark = 0x514033
@@ -177,13 +188,21 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     const width = wide ? 7.28 : 2.14
     const branchBark = 0x8c7b58
     for (const x of wide ? [-3.56, 3.56] : [1.01]) {
-      mesh(object, cylinder, branchBark, x, .58, 0, .096, 1.17, .105)
+      mesh(object, cylinder, branchBark, x, .60, -.035, .112, 1.39, .122).rotation.z = x > 0 ? .13 : -.10
     }
-    mesh(object, cylinder, branchBark, 0, 1.17, 0, .110, width, .110).rotation.z = Math.PI / 2
-    mesh(object, barkCylinder, branchBark, 0, 1.72, .015, .51, width * .98, .232).rotation.z = Math.PI / 2
-    mesh(object, cylinder, 0x9b825f, 0, 2.10, .015, .14, width * .93, .113).rotation.z = Math.PI / 2
-    mesh(object, leaf, 0x776f46, -.79, 1.94, -.14, .41, .20, .24)
-    mesh(object, leaf, 0x6a6544, -.38, 1.57, -.15, .32, .14, .18)
+    const limbs = [hangingLimb(width, .34, .205, .13, .6), hangingLimb(width * .96, .087, .080, -.073, 2.2),
+      hangingLimb(width * .90, .095, .096, .26, -1.3)]
+    mesh(object, limbs[0], branchBark, 0, 1.65, .012, 1, 1, 1)
+    mesh(object, limbs[1], bark, 0, 1.17, -.032, 1, 1, 1)
+    mesh(object, limbs[2], branchBark, -.075, 2.03, -.044, 1, 1, 1)
+    for (const t of [-.38, -.16, .23, .39]) {
+      const twig = mesh(object, cylinder, bark, t * width, 1.94 + t * .3, -.11, .042, .52, .045)
+      twig.rotation.set(.38, 0, -1.06 + t * .64)
+      mesh(object, leaf, 0x777451, t * width + .12, 2.02 + t * .4, -.24, .34, .14, .22)
+    }
+    compact(object, key, true)
+    for (const limb of limbs) limb.dispose()
+    return object
   } else if (type === 'tractor') {
     mesh(object, box, 0x665b47, 0, .69, -.03, 1.26, .32, 1.90)
     mesh(object, box, 0x8b4534, 0, 1.02, -.47, 1.06, .62, 1.03)
@@ -201,9 +220,7 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     mesh(object, box, 0x58716a, 0, 1.88, -.16, .92, .84, .065)
     mesh(object, cylinder, 0x41362e, .37, 1.51, -.64, .072, .66, .072)
   }
-  compact(object, key, true)
-  if (type === 'branch') addObstacleSignFace(object, wide)
-  return object
+  return compact(object, key, true)
 }
 
 export function createPickup(parent, type, x = 0, z = 0) {
