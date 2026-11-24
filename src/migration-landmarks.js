@@ -1,7 +1,15 @@
-import { BoxGeometry, CylinderGeometry, IcosahedronGeometry } from 'three'
+import { BoxGeometry, BufferGeometry, CylinderGeometry, Float32BufferAttribute, IcosahedronGeometry } from 'three'
 import { segmentLength } from './trail.js'
 
 const plank = new BoxGeometry()
+const gable = new BufferGeometry()
+gable.setAttribute('position', new Float32BufferAttribute([
+  -.5,0,.5, .5,0,.5, 0,1,.5, .5,0,-.5, -.5,0,-.5, 0,1,-.5,
+], 3))
+gable.setAttribute('uv', new Float32BufferAttribute([0,0, 2,0, 1,1, 0,0, 2,0, 1,1], 2))
+gable.computeVertexNormals()
+const hewnLog = new CylinderGeometry(.47,.5,1,8)
+
 const rock = new IcosahedronGeometry(1, 0)
 const pole = new CylinderGeometry(.41, .5, 1, 9)
 const tank = new CylinderGeometry(.5, .5, 1, 14)
@@ -37,6 +45,13 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
       const post = Math.max(.22, y - floor)
       add(pole, 0x584535, a, y - post * .5, b, .27, post, .25, 0, 0, .036, false, 2)
     }
+    if (y - earth(-pz, px) > .78) {
+      for (const side of [-1, 1]) {
+        const h = Math.max(.32, y - earth(-pz + depth * .37, px + side * width * .41))
+        branch(0x584637, px + side * width * .41, y - h * .78, pz - depth * .38,
+          px + side * width * .41, y - .13, pz + depth * .39, .16)
+      }
+    }
     put(oak, px, y, pz, width, .17, depth)
     for (let k = 0; k < 10; k++) {
       put(k % 2 ? trim : oak, px + width * (k / 10 - .45), y + .084, pz, width * .095, .04, depth)
@@ -44,34 +59,98 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
   }
 
   function lodge(width, depth, height, paint, roof, code = 'dry') {
-    const standing = ['bank', 'raised'].includes(code)
+    const standing = code === 'bank' || code === 'raised'
+    const logs = ['snag', 'forestry-cabin', 'cairn', 'aspen-cabin'].includes(role)
+    const barn = role === 'farm' || role === 'pothole-farm'
+    const gallery = role === 'swamp-cabin' || role === 'river-camp'
     const lift = code === 'raised' ? 1.36 : standing ? .82 : .38
     const base = Math.max(waterline + lift, ground + .29)
     pier(x, z, width * 1.12, depth * 1.15, base - .14)
-    // Dark foundation skirts sit below the main sill on drier banks.
-    if (!standing) put(0x5b5445, x, base - .32, z, width * .98, .61, depth * .96, 0, 1)
+    if (!standing) put(0x746b59, x, base - .29, z, width * .98, .59, depth * .96, 0, 6)
     put(paint, x, base + height / 2, z, width, height, depth)
-    for (let line = 0; line < 8; line++) {
-      const y = base + height * (line + .58) / 8
-      put(line % 3 ? paint : oak, x, y, z + depth * .506, width, .057, .053)
+    if (logs) {
+      for (let row = 0; row < 9; row++) {
+        const y = base + height * (row + .5) / 9
+        for (const side of [-1, 1]) {
+          const change = height / 8.4
+          add(hewnLog, row % 4 ? paint : 0x82705c, x, y, z + side * depth * .494,
+            change, width + .39 + row % 2 * .22, change, 0, 0, Math.PI / 2, false, 4)
+          add(hewnLog, paint, x + side * width * .494, y + .05, z,
+            change, depth + .39 + (row + 1) % 2 * .22, change, Math.PI / 2, 0, 0, false, 4)
+        }
+      }
+    } else {
+      const battens = barn ? 16 : 10
+      for (const side of [-1, 1]) {
+        for (let line = 0; line < battens; line++) {
+          const xx = x + width * ((line + .5) / battens - .5)
+          put(line % 3 !== 1 ? paint : trim, xx, base + height * .5, z + side * depth * .505, .047, height, .045)
+        }
+        for (let line = 0; line < 9; line++) {
+          const long = z + depth * ((line + .5) / 9 - .5)
+          put(line % 3 ? paint : oak, x + side * width * .507, base + height * .5, long, .058, height, .044)
+        }
+      }
     }
-    const ridge = base + height
-    const pitch = role === 'cairn' || role === 'forestry-cabin' ? .55 : .43
+    const spring = base + height
+    const rise = width * (logs ? .38 : barn ? .31 : .228)
+    const half = width * .54
+    const pitch = Math.atan2(rise, half)
+    const run = Math.hypot(half, rise)
+    add(gable, paint, x, spring - .015, z, width, rise + .03, depth, 0, 0, 0, false, 2)
     for (const side of [-1, 1]) {
-      put(roof, x + side * width * .26, ridge + width * .135, z, width * .61, .115, depth + .46, -side * pitch)
-      put(trim, x + side * width * .483, base + height * .5, z + depth * .514, .12, height, .14)
+      put(roof, x + side * half * .49, spring + rise * .5, z, run + .24, .115, depth + .74, -side * pitch, 5)
+      for (const end of [-1, 1]) {
+        put(trim, x + side * half * .49, spring + rise * .5, z + end * (depth * .5 + .36),
+          run + .28, .13, .10, -side * pitch, 2)
+        put(trim, x + side * width * .483, base + height * .5, z + end * depth * .516, .12, height, .14)
+      }
+      for (let seam = 0; seam < 8; seam++) {
+        const back = z + (depth + .51) * ((seam + .5) / 8 - .5)
+        put(roof, x + side * half * .49, spring + rise * .5 + .074, back, run + .19, .036, .045, -side * pitch, 5)
+      }
     }
-    for (let band = 0; band < 5; band++) {
-      const w = width * (1 - band * .186)
-      put(paint, x, ridge + width * (.032 + band * .052), z + depth * .493, w, width * .067, .21)
+    put(roof, x, spring + rise + .063, z, .26, .09, depth + .76, 0, 5)
+    const face = z + depth * .5
+    const door = barn ? width * .46 : Math.min(.86, width * .27)
+    const doorX = x - (barn ? 0 : width * .17)
+    const doorY = base + height * .37
+    put(trim, doorX, doorY + .04, face + .057, door + .18, height * .80, .13)
+    put(0x47372a, doorX, doorY, face + .125, door, height * .74, .09)
+    put(0x574637, doorX, doorY, face + .181, .043, height * .74, .045)
+    if (barn || role === 'delta-shed') {
+      put(0x9b886e, doorX, doorY, face + .189, Math.hypot(door, height * .67), .085, .07,
+        Math.atan2(height * .65, door))
+    } else {
+      const paneX = x + width * .26, paneY = base + height * .63
+      put(trim, paneX, paneY, face + .12, width * .26, height * .32, .12)
+      put(0x34424b, paneX, paneY, face + .187, width * .21, height * .25, .08)
+      put(0x988d75, paneX, paneY, face + .24, .044, height * .25, .036)
+      put(0x988d75, paneX, paneY, face + .24, width * .21, .046, .036)
+      put(0x685748, paneX, paneY - height * .155, face + .24, width * .31, .075, .20)
     }
-    const door = Math.min(.86, width * .27)
-    put(0x42382b, x - .21, base + height * .36, z + depth * .52, door, height * .73, .09)
-    put(trim, x - .21, base + height * .745, z + depth * .54, door + .10, .09, .13)
-    put(0x344952, x + width * .27, base + height * .63, z + depth * .519, width * .21, height * .24, .08)
-    put(trim, x + width * .27, base + height * .492, z + depth * .54, width * .25, .075, .14)
-    if (role === 'swamp-cabin' || role === 'fish-shack' || role === 'marsh-dock') {
-      pier(x * .74, z + 2.3, 2.0, 1.38, base - .12)
+    if (gallery || role === 'fish-shack' || role === 'marsh-dock') {
+      const porchWidth = gallery ? width * .98 : width * .64
+      const porchZ = face + .78
+      pier(x, porchZ, porchWidth, 1.57, base - .10)
+      for (const side of [-1, 1]) {
+        const px = x + side * porchWidth * .44
+        put(0x74644e, px, base + .52, porchZ + .63, .13, 1.15, .13)
+        put(0x89745a, px, base + .91, porchZ + .14, .115, .11, 1.17)
+        if (gallery) put(0x645742, px, base + height * .50, porchZ + .51, .14, height + .16, .14)
+      }
+      if (gallery) put(roof, x, spring - .06, porchZ, porchWidth + .27, .11, 1.88, 0, 5)
+      for (let step = 0; step < 5; step++) {
+        const bz = porchZ + .72 + step * .28
+        const floor = earth(-bz, doorX)
+        const y = base - .18 - step * .15
+        if (y > floor) put(oak, doorX, y, bz, .91, .13, .34)
+      }
+    }
+    if (logs || role === 'swamp-cabin') {
+      const flue = Math.max(.67, rise * .85)
+      put(0x807469, x + width * .28, spring + rise * .91, z - depth * .22, .38, flue, .41, 0, logs ? 6 : 5)
+      put(0x534d43, x + width * .28, spring + rise * .91 + flue * .53, z - depth * .22, .48, .11, .52, 0, 5)
     }
   }
 
@@ -103,7 +182,7 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
       const pz = z - i * .46
       const y = earth(-pz, px)
       add(rock, i % 3 ? 0x989183 : 0x786e61, px, y + .20, pz, 1.0 + i % 3 * .34, .36 + i % 4 * .23,
-        .62 + i % 4 * .27, .07, i * 1.6, 0, false, 1)
+        .62 + i % 4 * .27, .07, i * 1.6, 0, false, 6)
     }
     pier(side * 6.6, z + 4.0, 2.3, 2.8, Math.max(waterline + .23, earth(-z - 4, side * 6.6)))
   } else if (role === 'grain-elevator') {
@@ -111,7 +190,7 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     for (let n = 0; n < 2; n++) {
       const sx = x - 3.0 - n * 2.4
       const sy = earth(-z, sx)
-      add(tank, 0x94978e, sx, sy + 1.78, z, 2.13, 3.6, 2.13)
+      add(tank, 0x94978e, sx, sy + 1.78, z, 2.13, 3.6, 2.13, 0, 0, 0, false, 5)
       add(pole, 0x6a706b, sx, sy + 3.87, z, 2.18, .61, 2.18)
       for (let rib = 0; rib < 7; rib++) add(tank, 0x7b8079, sx, sy + .24 + rib * .47, z, 2.15, .039, 2.15)
     }

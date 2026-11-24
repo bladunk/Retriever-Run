@@ -19,13 +19,13 @@ const ridges = [
     [45, 32, 24, 38], [92, 43, 52, 34], [144, 29, 34, 51], [196, 36, 52, 30]],
 ]
 
-function mountainMesh(layer) {
+function mountainMesh(layer, fine) {
   const random = seededRandom(47509 + layer * 491)
   const points = [], heights = [], faces = []
-  const columns = 144
-  const bands = 8
+  const columns = fine ? 168 : 96
+  const bands = fine ? 12 : 7
   for (let i = 0; i <= columns; i++) {
-    const x = (i - columns * .5) * 3.15
+    const x = (i / columns - .5) * 453.6
     let contour = 3 + 1.6 * Math.sin(x * .071 - layer)
     for (const [center, height, left, right] of ridges[layer]) {
       const slope = x < center ? left : right
@@ -35,16 +35,17 @@ function mountainMesh(layer) {
     }
     const fracture = Math.sin(x * .31 + layer * 5.4) * 1.6 + Math.cos(x * .57 - layer * 3.1) * 1.45
       + Math.cos(x * .14 + Math.sin(x * .053) * 2.6) * 2.2
-    const peak = contour + fracture * (.49 + contour * .011)
+    const peak = contour + fracture * (.68 + contour * .013)
     for (let row = 0; row < bands; row++) {
       const t = row / (bands - 1)
       const spur = Math.sin(x * .079 + row * .63) * (1 - t) * .08
       const gully = Math.sin(x * .23 + row * .46) * Math.cos(x * .052 - layer) * Math.sin(t * Math.PI)
-      const y = -8 + (peak + 8) * (t ** 1.18 + spur) + gully * (layer ? 6.5 : 8.1)
+      const buttress = Math.sin(x * .071 + row * .11) * Math.cos(x * .17 + layer) * Math.sin(t * Math.PI)
+      const y = -8 + (peak + 8) * (t ** 1.18 + spur) + gully * (layer ? 8.0 : 9.1) + buttress * 5.3
       const azimuth = (x + 2.7 * Math.sin(row * .60 + x * .09) * (1 - t)) / 157
       const radius = farRadii[layer] + (98 - layer * 24) * (t - .72)
         - (gully * 8.5 + Math.cos(x * .06) * 7) * (1 - t * .40)
-      points.push(Math.sin(azimuth) * radius, y * (layer === 0 ? 2.18 : 2.09), -Math.cos(azimuth) * radius)
+      points.push(Math.sin(azimuth) * radius, y * (layer === 0 ? 2.59 : 2.25), -Math.cos(azimuth) * radius)
       heights.push(y / 65, random())
       if (i && row) {
         const a = i * bands + row
@@ -66,8 +67,9 @@ export function createNorthernHorizon(scene) {
   const frost = { value: 0 }
   const amount = { value: 0 }
   const mountains = [0, 1].map(layer => {
+    const geometries = [mountainMesh(layer, false), mountainMesh(layer, true)]
     const material = new T.ShaderMaterial({
-      uniforms: { haze, frost, amount, layer: { value: layer } },
+      uniforms: { haze, frost, amount, layer: { value: layer }, horizonDetail: { value: 0 } },
       side: T.DoubleSide,
       transparent: true,
       depthWrite: false,
@@ -87,7 +89,7 @@ export function createNorthernHorizon(scene) {
       `,
       fragmentShader: `
         uniform vec3 haze;
-        uniform float frost, amount, layer;
+        uniform float frost, amount, layer, horizonDetail;
         varying vec2 face;
         varying vec3 ridgePoint, ridgeNormal;
         void main() {
@@ -100,6 +102,8 @@ export function createNorthernHorizon(scene) {
           float gullies = sin(stone.x * .100 + stone.y * .028 + erosion * 1.09)
             * sin(stone.x * .038 - stone.y * .072 + ridgePoint.z * .095);
           float bedrock = smoothstep(.12,.77,abs(gullies));
+          float strata = sin(stone.y*.29 + stone.x*.071 + erosion * 1.8 + gullies*.76);
+          if (horizonDetail > .5) bedrock = mix(bedrock, max(bedrock, strata * .64), .43);
           float snowLine = mix(.62,.27,frost) + .10 * erosion;
           float snowfield = smoothstep(snowLine-.12,snowLine+.16,face.x + .23 * gullies);
           snowfield *= 1. - .64 * bedrock * (1. - smoothstep(.22,.86,abs(rockNormal.y)));
@@ -115,22 +119,26 @@ export function createNorthernHorizon(scene) {
         }
       `,
     })
-    const mountain = new T.Mesh(mountainMesh(layer), material)
+    const mountain = new T.Mesh(geometries[0], material)
     mountain.position.y = -9
     mountain.renderOrder = -40 + layer
     mountain.frustumCulled = false
     scene.add(mountain)
-    return mountain
+    return { mountain, geometries }
   })
-  return (distance, northern, snow, color) => {
+  let wasVisible = false
+  return (distance, northern, snow, color, detail) => {
     haze.value.copy(color)
     frost.value = snow
     amount.value = northern
-    for (const [index, ridge] of mountains.entries()) {
+    for (const [index, { mountain: ridge, geometries }] of mountains.entries()) {
+      if (!wasVisible && northern > 0) ridge.geometry = geometries[Number(detail > .80)]
+      ridge.material.uniforms.horizonDetail.value = Number(detail > .80)
       ridge.visible = northern > 0
       const origin = horizonPosition(distance, index)
       ridge.position.x = origin.x
       ridge.position.z = origin.z
     }
+    wasVisible = northern > 0
   }
 }

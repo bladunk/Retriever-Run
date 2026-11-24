@@ -114,7 +114,7 @@ function compact(object, key, hazard) {
     const endGrain = color.getHex() === 0xb18354 && part.geometry === cylinder
     for (let i = 0; i < colors.length; i += 3) color.toArray(colors, i)
     geo.setAttribute('color', new T.BufferAttribute(colors, 3))
-    geo.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(n).fill(endGrain ? 3 : timber ? 2 : 0), 1))
+    geo.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(n).fill(endGrain ? 3 : timber ? 4 : (part.userData.finish ?? 0)), 1))
     return geo
   })
   const geometry = mergeGeometries(parts)
@@ -170,7 +170,7 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
   }
   if (baked.has(key)) {
     object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
-    if (type === 'snowmobile') object.add(contactShadow(type))
+    if (type === 'snowmobile' || type === 'tractor') object.add(contactShadow(type))
     return object
   }
   const bark = 0x514033
@@ -198,6 +198,7 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
       }
       const part = mesh(object, profile, color, x, y, z, w * (rounded ? .50 : 1), h * (rounded ? .50 : 1), d * (rounded ? .50 : 1))
       if (component === 'screen') part.rotation.x = -.34
+      if (component === 'hood' || component === 'frame') part.userData.finish = 5
       if (component === 'ski') {
         mesh(object, box, color, x, .145, z - .49, w, .075, .44).rotation.x = .19
         mesh(object, cylinder, 0x6a6f67, x, .29, z + .16, .055,.46,.08).rotation.z = x * .5
@@ -219,7 +220,7 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     return object.add(contactShadow('snowmobile'))
   } else if (type === 'tractor') {
     mesh(object, box, 0x665b47, 0, .69, -.03, 1.26, .32, 1.90)
-    mesh(object, box, 0x8b4534, 0, 1.02, -.47, 1.06, .62, 1.03)
+    mesh(object, box, 0x9d4c34, 0, 1.02, -.47, 1.06, .62, 1.03).userData.finish = 5
     mesh(object, box, 0x433b2e, 0, 1.0, -.997, .83, .48, .046)
     for (let slat = -2; slat <= 2; slat++) {
       mesh(object, box, 0x766753, slat * .136, .99, -1.025, .062, .38, .036)
@@ -228,13 +229,25 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
       mesh(object, wheel, 0x33312b, side * .72, .51, .37, .46, 1.04, 1.12)
       mesh(object, wheel, 0x927455, side * .958, .51, .37, .031, .48, .52)
       mesh(object, wheel, 0x33312b, side * .62, .31, -.67, .31, .62, .62)
+      mesh(object, wheel, 0x8b7c61, side * .78, .31, -.67, .035, .34, .34)
+      mesh(object, wheel, 0x5c5246, side * .982, .51, .37, .045, .21, .23)
+      for (let lug = 0; lug < 10; lug++) {
+        const angle = lug * Math.PI / 5
+        const tread = mesh(object, box, 0x474137, side * .71, .51 + Math.cos(angle) * .50,
+          .37 + Math.sin(angle) * .53, .45, .07, .095)
+        tread.rotation.x = angle
+      }
+      mesh(object, box, 0x9e6247, side * .68, 1.065, .36, .41, .106, .81).userData.finish = 5
+      mesh(object, box, 0xb8ae93, side * .43, 1.22, .899, .115, .078, .068)
       for (const z of [-.19, .89]) mesh(object, box, 0x82715a, side * .52, 1.83, z, .10, 1.15, .10)
     }
-    mesh(object, box, 0x744336, 0, 2.42, .35, 1.13, .13, 1.15)
+    mesh(object, box, 0x87452f, 0, 2.42, .35, 1.13, .13, 1.15).userData.finish = 5
     mesh(object, box, 0x58716a, 0, 1.88, -.16, .92, .84, .065)
     mesh(object, cylinder, 0x41362e, .37, 1.51, -.64, .072, .66, .072)
   }
-  return compact(object, key, true)
+  compact(object, key, true)
+  if (type === 'tractor') object.add(contactShadow(type))
+  return object
 }
 
 export function createPickup(parent, type, x = 0, z = 0) {

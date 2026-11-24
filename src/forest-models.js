@@ -5,7 +5,7 @@ import { seededRandom } from './trail.js'
 export const forestProfiles = Object.fromEntries(landscapeProfiles.map(region => [region.key, region.species]))
 
 const northernStands = {
-  boreal: [['spruce', 'fir'], ['fir', 'jackPine'], ['spruce', 'snag'], ['fir', 'spruce'], ['jackPine', 'fir']],
+  boreal: [['spruce', 'fir'], ['fir', 'jackPine'], ['spruce', 'snag'], ['fir', 'spruce'], ['jackPine', 'tamarack']],
   mountain: [['fir', 'snowPine'], ['snowPine', 'spruce'], ['snowPine', 'snag'], ['fir', 'snowPine'], ['spruce', 'jackPine']],
 }
 
@@ -27,11 +27,12 @@ const shapes = {
   spruce: [.29, .17, .98, 0x5e5749, [0x496758, 0x587568, 0x425f53]],
   fir: [.24, .23, .97, 0x6c6355, [0x537468, 0x47685b, 0x728481]],
   jackPine: [.30, .34, .99, 0x7c6f5d, [0x546b52, 0x637b54, 0x546451]],
+  tamarack: [.25, .20, .95, 0x756955, [0x9d9253, 0xadb16a, 0x77834d]],
   snowPine: [.28, .21, .98, 0x635d51, [0x718b8c, 0xa3b5b7, 0x59776c]],
 }
 
 const cache = new Map()
-const conifers = new Set(['spruce', 'fir', 'jackPine', 'snowPine'])
+const conifers = new Set(['spruce', 'fir', 'jackPine', 'snowPine', 'tamarack'])
 const up = new T.Vector3(0, 1, 0)
 
 export function forestSurface() {
@@ -104,15 +105,15 @@ export function forestModel(kind, compact = false, form = 0) {
   const tip = [trunkRatio * .20, top, .006]
   const diameter = kind === 'oak' || kind === 'cypress' ? .044 : kind === 'birch' ? .021 : .033
   const root = [0, .125, 0]
-  wood(foot, root, kind === 'cypress' ? diameter * 2.03 : diameter * 1.37, diameter)
+  wood(foot, root, kind === 'cypress' ? diameter * 2.49 : kind === 'tupelo' ? diameter * 1.92 : diameter * 1.37, diameter)
   wood(root, crotch, diameter, diameter * .69)
   wood(crotch, crown, diameter * .69, diameter * .41)
   wood(crown, tip, diameter * .41, .005)
 
-  if (kind === 'cypress' || kind === 'oak') {
+  if (kind === 'cypress' || kind === 'oak' || kind === 'tupelo') {
     for (let n = 0; n < 5; n++) {
       const angle = n * 2.4
-      const reach = .069 + random() * .077
+      const reach = .069 + random() * (kind === 'cypress' ? .131 : .077)
       const x = Math.cos(angle) * reach, z = Math.sin(angle) * reach
       wood(root, [x, .006, z], diameter * .37, .008, bark, 5)
       if (kind === 'cypress' && n % 2 === 0) wood([x * 1.14, -.023, z * 1.14],
@@ -168,7 +169,7 @@ export function forestModel(kind, compact = false, form = 0) {
         const mx = twig[0] + (random() - .5) * .1, mz = twig[2] + (random() - .5) * .06
         const a = vertex(mx, twig[1] + .02, mz, 0x939787, .80)
         const b = vertex(mx + .009, twig[1], mz + .008, 0x939787, .91)
-        const c = vertex(mx + .026, twig[1] - .10 - random() * .058, mz + .02, 0x7d8877, .72)
+        const c = vertex(mx + .026, twig[1] - .14 - random() * .077, mz + .02, 0x7d8877, .72)
         indices.push(a, b, c)
       }
     }

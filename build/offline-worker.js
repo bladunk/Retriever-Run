@@ -13,6 +13,8 @@ const groups = {
   terrain: { label: 'Terrain and vegetation', license: 'terrain-materials' },
   vegetation: { label: 'Territory vegetation', license: 'landscape-vegetation',
     territories: landscapeProfiles.filter(region => region.licensedGrass).map(region => region.key) },
+  'field-surfaces': { label: 'Surface scans and building finishes', license: 'field-surfaces',
+    territories: landscapeProfiles.map(({ key }) => key) },
   dogs: { label: 'Labrador and animations', license: 'labrador' },
   audio: { label: 'Music and wildlife audio', license: 'game-audio' },
   diagnostics: { label: 'Developer diagnostics', license: 'code' },
@@ -26,6 +28,7 @@ function groupFor(file, shell) {
   if (/^collision-debug/.test(key)) return 'diagnostics'
   if (/^lab(?:rador)?\./.test(key)) return 'dogs'
   if (key.endsWith('.mp3')) return 'audio'
+  if (key.startsWith('field-atlas-')) return 'field-surfaces'
   if (key.startsWith('landscape-')) return 'vegetation'
   if (key.endsWith('.webp')) return 'terrain'
   return 'core'
@@ -62,7 +65,7 @@ export function offlineWorker() {
         const references = item?.type === 'chunk' ? [...item.imports, ...(item.viteMetadata?.importedCss ?? []),
           ...(item.viteMetadata?.importedAssets ?? [])] : []
         return { id, path: file, group, sha256: digest(bytes), bytes: bytes.length,
-          required: group !== 'diagnostics', variant: 'universal', dependencies: [...new Set(references)].map(cleanId),
+          required: group !== 'diagnostics', variant: group === 'field-surfaces' ? id.replace('field-atlas-', '').split('.')[0] : 'universal', dependencies: [...new Set(references)].map(cleanId),
           license, cache: group === 'shell' ? 'release' : 'immutable' }
       })
       const version = digest(JSON.stringify({ groups, assets }) + worker).slice(0, 20)

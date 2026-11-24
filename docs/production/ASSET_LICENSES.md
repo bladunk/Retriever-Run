@@ -35,3 +35,16 @@ The editable temporary SVG is `assets/source/temporary-retriever-icon.svg`. Appr
 Use the approved portrait on a deep forest-green background. Export square PNGs with density and crops appropriate to each size. Replace all four files, record owner approval and source, run the manifest/icon test and inspect the mask in installed views. These are stable public paths, and the generated content version changes when their hashes change.
 
 Phase 03 uses original procedural geometry and the earlier licensed texture and foliage files listed above. Habitat references guided the modeling and contribute no downloaded artwork. No supplied scans without documented redistribution rights were included. [Habitat sources](TERRITORIES.md)
+
+## Phase 03B field surfaces and original models
+
+`field-surfaces` includes 20 scans acquired from Poly Haven. Each asset page showed CC0 1.0 Universal when checked on 2026-11-24. The source register lists the author or joint authors, individual download links, raw JPG byte counts and upstream MD5 checksums. Attribution is not required for these CC0 files. Original JPGs remain outside Git. The generated atlases use downsampling, tone equalization, wrapped padding and WebP encoding. Attribution for the earlier CC BY foliage remains under its own license. [CC0 terms](https://creativecommons.org/publicdomain/zero/1.0/) · [Provider terms](https://polyhaven.com/license) · [Individual source register](PHASE_03B_ASSET_SOURCES.json)
+
+| Runtime output | Dimensions | Optimized bytes | In-game use |
+| --- | ---: | ---: | --- |
+| `src/assets/environment/field-surfaces/field-atlas-compact.webp` | 1,280 × 1,024 | 523,592 | Battery Saver, full territory route and structural finishes |
+| `src/assets/environment/field-surfaces/field-atlas-full.webp` | 2,560 × 2,048 | 2,573,034 | Balanced and High, fine trail grain, shallow sediment, buildings, trees and selected hazard finishes |
+
+Run `python scripts/prepare-field-atlases.py /path/to/original-jpgs src/assets/environment/field-surfaces` with Pillow to regenerate both variants. Place the 20 registered originals under their `id.jpg` names. The sources total **16,545,971 bytes** before conversion. WebP encodes raster detail only. Geometry is entirely project-authored and uses the existing optimized indexed/instanced formats.
+
+Phase 03B original artwork includes log-course cabins and roof profiles, raised porches and braces, barn door framing, tractor lugs and fenders, conifer and cypress variants, and mountain buttresses. Their source lives in `src/migration-landmarks.js`, `src/expedition-props.js`, `src/art.js`, `src/forest-models.js` and `src/northern-horizon.js`. No new copy of an existing commercial model, photograph or branded object is bundled.

@@ -49,7 +49,8 @@ function rowsFor(seed, stop) {
 try {
   const viewport = args.includes('wide') ? { width: 844, height: 470 }
     : args.includes('small') ? { width: 320, height: 568 } : { width: 390, height: 844 }
-  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: .70 })
+  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: .70,
+    ...(args.includes('video') ? { recordVideo: { dir: output, size: viewport } } : {}) })
   // Block the external APIs, while letting the same-origin app worker serve
   // an actually verified content pack for the full set of offline checkpoints.
   await context.route(/.*/, route => {
@@ -66,6 +67,7 @@ try {
     const native = window.requestAnimationFrame.bind(window)
     let stamp
     const qa = window.phaseThreeQA = { limit: -1, elapsed: [], rendered: 0 }
+    qa.landmarkFrames = []
     window.requestAnimationFrame = callback => native(ms => {
       const state = window.retrieverDebug
       if (stamp === undefined) stamp = ms
@@ -74,6 +76,12 @@ try {
       else if (qa.limit < 0 && quality === 'low') stamp += .10
       const start = performance.now()
       callback(stamp)
+      if (qa.inspectLandmark && window.retrieverDebug?.mode === 'running') {
+        const frame = window.retrieverDebug
+        const tile = frame.world?.find(t => t.index === qa.inspectLandmark)
+        qa.landmarkFrames.push({ distance: frame.distance, id: tile?.landmark?.id,
+          geometry: tile?.solid, opaque: tile?.solidOpaque })
+      }
       if (state?.mode === 'running' && qa.rendered < 180) {
         qa.elapsed.push({ timestamp: ms, cpu: performance.now() - start })
         qa.rendered++
@@ -96,6 +104,10 @@ try {
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running', null, { timeout: 40_000 })
     if (args.includes('offline')) await context.setOffline(true)
     await settle(distance)
+    await page.waitForFunction(quality => {
+      const surfaces = window.retrieverPerformance()?.surfaces
+      return !surfaces || surfaces.active === (quality === 'low' ? 'compact' : 'full')
+    }, quality, { timeout: 40_000 })
     if (!isPhaseThree) await page.waitForTimeout(730)
   }
 
@@ -131,6 +143,10 @@ try {
 
   async function capture(label, extra = {}) {
     assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running')
+    if (args.includes('landmark-pass')) {
+      const state = await page.evaluate(() => window.retrieverDebug)
+      assert.equal(state.mode, 'running')
+    }
     await page.screenshot({ path: resolve(output, label + '.png'), scale: 'css', timeout: 45_000 })
     results.push(await page.evaluate(({ label, extra }) => ({
       label, ...extra, ...window.retrieverDebug, perf: window.retrieverPerformance(),
@@ -142,16 +158,81 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('presets')) {
+  if (args.includes('landmark-pass')) {
+    const keys = args.filter(a => a.startsWith('only=')).map(a => a.slice(5))
+    const selected = expeditionRegions.filter(r => keys.length ? keys.includes(r.key) : ['gulf','cypress','farm'].includes(r.key))
+    for (const region of selected) {
+      const first = Math.ceil(region.marker / 30)
+      let pair
+      for (let seed = 1; seed <= 96 && !pair; seed++) {
+        const rows = rowsFor(seed, region.seconds + 32)
+        const hazards = rows.flatMap(row => row.entities).filter(item => item.hazard)
+        for (let i = first; i < first + 16; i++) {
+          const tile = buildTile(i, i < 3 ? 0 : seed)
+          if (tile.territory !== region.key || !tile.landmark) continue
+          const marker = tile.landmark.distance
+          const start = marker - 77
+          if (start < region.marker + 1) continue
+          const finish = (i + 2) * 30 + 3
+          const localHazards = hazards.filter(item => item.distance > start - 35 && item.distance < finish + 10)
+          const run = { ...newRun(), distance: start }
+          // Match practice seek's elapsed time so the goose trajectory is also checked.
+          let lo = region.seconds, hi = region.seconds + 33
+          for (let iteration = 0; iteration < 32; iteration++) {
+            const half = (lo + hi) * .5
+            if (distanceAtTime(half) < start) lo = half
+            else hi = half
+          }
+          run.elapsed = hi
+          run.speed = speedAtTime(hi)
+          let hit
+          while (run.distance < finish && !hit) {
+            const previous = { ...run }
+            advance(run, tickSeconds)
+            hit = firstContact(previous, run, localHazards, {})
+          }
+          if (!hit) { pair = { seed, tile, start, finish }; break }
+        }
+      }
+      assert.ok(pair, 'No clear center-lane coast through ' + region.key)
+      const { seed, tile, start, finish } = pair
+      const at = tile.landmark.distance
+      await runAt(start, seed)
+      await page.evaluate(index => { window.phaseThreeQA.inspectLandmark = index }, tile.index)
+      for (const [label, distance] of [['approach',at - 56],['handoff',at - 46],['near',at - 26],['pass',at - 4],
+        ['depart',at + 11],['recycled',finish]]) {
+        await stepTo(distance)
+        await capture(region.key + '-' + label, { landmark: tile.landmark, seed, index: tile.index })
+      }
+      const check = await page.evaluate(() => {
+        const qa = window.phaseThreeQA
+        qa.inspectLandmark = undefined
+        return qa.landmarkFrames
+      })
+      await writeFile(resolve(output, region.key + '-lifetime.json'), JSON.stringify(check))
+      if (tile.landmark.id) {
+        const active = check.filter(frame => frame.distance < (tile.index + 2) * 30 - 1)
+        assert.ok(active.length > 16, region.key)
+        assert.equal(new Set(active.map(frame => frame.geometry)).size, 1, 'geometry replaced in view')
+        assert.ok(active.every(frame => frame.id === tile.landmark.id && frame.opaque), 'landmark split or hidden in view')
+        assert.ok(check.some(frame => frame.distance > (tile.index + 2) * 30 && !frame.id), 'tile never left the render window')
+      }
+    }
+  } else if (args.includes('presets')) {
     await runAt(distanceAtTime(36), 7)
     await capture('balanced-cypress')
     for (const selected of ['high', 'low', 'auto']) {
       await page.locator('#settings').tap()
       await page.locator('#quality').selectOption(selected)
       await page.locator('#close-settings').tap()
+      await page.evaluate(() => { window.phaseThreeQA.limit = window.retrieverDebug.distance + 1.25 })
       await page.locator('#primary').tap()
       await page.waitForFunction(() => window.retrieverDebug?.mode === 'running')
-      await page.waitForTimeout(250)
+      await page.waitForFunction(selected => {
+        const surfaces = window.retrieverPerformance()?.surfaces
+        return !surfaces || selected === 'auto' && !surfaces.pending ||
+          surfaces.active === (selected === 'low' ? 'compact' : 'full')
+      }, selected, { timeout: 40_000 })
       await capture(selected + '-cypress')
     }
   } else if (args.includes('timber')) {
@@ -248,6 +329,7 @@ try {
   }
   assert.deepEqual(errors, [])
   await writeFile(resolve(output, 'report.json'), JSON.stringify({ engine: engine.name(), viewport, quality, offline: args.includes('offline'), results }, null, 2) + '\n')
+  await context.close()
 } finally {
   await browser.close()
   await new Promise(done => server.close(done))

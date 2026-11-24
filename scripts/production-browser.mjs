@@ -10,10 +10,12 @@ const safari = args.includes('webkit')
 const baseline = args.includes('baseline')
 const legacy = args.includes('legacy')
 const phaseTwo = args.includes('from-phase-two')
-const upgrade = phaseTwo || args.includes('from-phase-one')
+const phaseThree = args.includes('from-phase-three')
+const upgrade = phaseThree || phaseTwo || args.includes('from-phase-one')
 const engine = safari ? webkit : chromium
 const root = resolve(process.env.FIELD_BUILD ?? 'dist')
-const original = upgrade ? resolve(phaseTwo ? process.env.FIELD_PHASE_TWO_BUILD ?? 'qa-output/phase-two' :
+const original = upgrade ? resolve(phaseThree ? process.env.FIELD_PHASE_THREE_BUILD ?? 'qa-output/phase-three' :
+  phaseTwo ? process.env.FIELD_PHASE_TWO_BUILD ?? 'qa-output/phase-two' :
   process.env.FIELD_PHASE_ONE_BUILD ?? 'qa-output/phase-one') :
   legacy ? resolve(process.env.FIELD_LEGACY_BUILD ?? 'qa-output/baseline') : root
 const output = resolve(process.env.FIELD_QA_OUTPUT ?? 'qa-output')
@@ -39,7 +41,9 @@ if (next) {
 }
 let newRelease = false
 let legacyActive = legacy
-let blocked = baseline || legacy ? null : openingManifest.assets.find(item => item.id === 'labrador.glb')?.path
+const interruptedAsset = process.env.FIELD_FAULT_ASSET || 'labrador.glb'
+let blocked = baseline || legacy ? null : openingManifest.assets.find(item => item.id === interruptedAsset)?.path
+if (!baseline && !legacy) assert.ok(blocked, 'Missing interruption fixture ' + interruptedAsset)
 const server = createServer(async (request, response) => {
   const path = new URL(request.url, 'http://localhost').pathname
   if (legacy && path === '/qa-worker-boundary') return response.writeHead(200, { 'Content-Type': 'text/html' }).end('Worker boundary')
@@ -49,9 +53,15 @@ const server = createServer(async (request, response) => {
   const file = resolve(serving, name)
   if (!file.startsWith(serving + sep)) return response.writeHead(404).end()
   hits.set(name, (hits.get(name) ?? 0) + 1)
-  if (name === blocked) return response.writeHead(503).end()
+  if (name === blocked && !args.includes('partial')) return response.writeHead(503).end()
   try {
     const body = newRelease && replacements.has(name) ? replacements.get(name) : await readFile(file)
+    if (name === blocked) {
+      response.writeHead(200, { 'Content-Type': types[extname(file)], 'Content-Length': body.length })
+      response.write(body.subarray(0, Math.floor(body.length / 4)))
+      setTimeout(() => response.destroy(), 40)
+      return
+    }
     response.writeHead(200, { 'Content-Type': types[extname(file)] ?? 'application/octet-stream',
       'Cache-Control': 'no-store' }).end(body)
   } catch { response.writeHead(404).end() }
@@ -63,7 +73,7 @@ const browser = await engine.launch(safari ? {} : { executablePath: process.env.
   args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] })
 
 try {
-  const context = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 390, height: 844 },
+  const context = await browser.newContext({ ...devices['iPhone 13'], viewport: args.includes('small') ? { width: 320, height: 568 } : { width: 390, height: 844 },
     deviceScaleFactor: .58 })
   await context.addInitScript(() => {
     let forceHidden = false
@@ -90,9 +100,15 @@ try {
   })
   const page = await context.newPage()
   const errors = []
-  page.on('pageerror', error => { errors.push(error.message); console.error(error.message) })
+  let interruptedPageErrors = 0
+  page.on('pageerror', error => {
+    // WebKit also reports an interrupted Service Worker response as a page
+    // error. Count the intentional error only while the fixture is active.
+    if (safari && blocked && args.includes('partial') && error.message === 'Load failed') interruptedPageErrors++
+    else { errors.push(error.message); console.error(error.message) }
+  })
   page.on('console', message => { if (message.type() === 'error') console.error(message.text()) })
-  const log = { engine: safari ? 'webkit' : 'chromium', baseline, upgrade: phaseTwo ? 'phase-two' : upgrade ? 'phase-one' : false }
+  const log = { engine: safari ? 'webkit' : 'chromium', baseline, upgrade: phaseThree ? 'phase-three' : phaseTwo ? 'phase-two' : upgrade ? 'phase-one' : false }
   const ready = async (tab = page) => {
     await tab.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
       null, { timeout: 65_000 }).catch(async error => {
@@ -175,6 +191,8 @@ try {
     const previouslyVerified = openingManifest.assets.filter(item => item.group === 'audio').find(item => hits.has(item.path))
     assert.ok(previouslyVerified)
     const audioHits = hits.get(previouslyVerified.path)
+    log.interruptedAsset = interruptedAsset
+    log.injectedNetworkErrors = interruptedPageErrors
     log.interruption = await page.locator('#content-status').textContent()
     await page.screenshot({ path: resolve(output, 'interrupted.png'), scale: 'css' })
     blocked = null
@@ -192,7 +210,7 @@ try {
     const before = await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs)
     await page.waitForFunction(() => navigator.serviceWorker.controller)
     if (args.includes('repair')) {
-      const corrupt = openingManifest.assets.find(asset => asset.id === 'mallard.mp3')
+      const corrupt = openingManifest.assets.find(asset => asset.id === (interruptedAsset === 'labrador.glb' ? 'mallard.mp3' : interruptedAsset))
       await page.evaluate(async hash => {
         const path = new URL('./', location.href)
         const cache = await caches.open('retriever-run-content:' + path.href)
@@ -255,15 +273,21 @@ try {
       await preparation.tap()
       await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 60_000 })
       const releaseMarker = phaseTwo ? 'meta[name="course-ruleset"]' : upgrade ? '#swipe' : 'meta[name="qa-release"]'
-      assert.equal(await page.locator(releaseMarker).count(), 0)
+      const migrated = tab => phaseThree
+        ? tab.waitForFunction(() => Boolean(window.retrieverPerformance?.().surfaces), null, { timeout: 55_000 })
+        : tab.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
+      if (phaseThree) assert.equal(await page.evaluate(() => Boolean(window.retrieverPerformance?.().surfaces)), false)
+      else assert.equal(await page.locator(releaseMarker).count(), 0)
       assert.equal(await page.locator('#game').getAttribute('data-mode'), 'paused')
       await page.evaluate(() => window.qaBackground(false))
       await finish(page)
       await idle.getByRole('button', { name: 'Apply update' }).tap()
-      await idle.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
+      await migrated(idle)
       await idle.bringToFront()
       await ready(idle)
-      await page.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
+      await page.bringToFront()
+      await migrated(page)
+      await idle.bringToFront()
       const after = await idle.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs)
       assert.equal(after, before + 2)
       assert.equal(hits.get(previouslyVerified.path), audioHits)

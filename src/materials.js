@@ -1,4 +1,6 @@
 import * as T from 'three'
+import { fieldAtlasShader } from './field-atlas-shader.js'
+import { landscapeMap, landscapeReady } from './landscape-atlas.js'
 import dirtColorUrl from './assets/mud-color.webp?url'
 import dirtSurfaceUrl from './assets/mud-surface.webp?url'
 import woodColorUrl from './assets/wood-color.webp?url'
@@ -14,7 +16,7 @@ export function createFieldMaterial() {
   const uniforms = {
     fieldEarth: { value: fallbackColor }, fieldWood: { value: fallbackColor },
     fieldEarthPbr: { value: fallbackPbr }, fieldWoodPbr: { value: fallbackPbr },
-    fieldDetail: { value: 1 }, fieldWet: { value: 0 }, fieldFrost: { value: 0 },
+    landscapeMap, landscapeReady, fieldDetail: { value: 1 }, fieldWet: { value: 0 }, fieldFrost: { value: 0 },
   }
 
   for (const [key, url, space] of [
@@ -29,24 +31,29 @@ export function createFieldMaterial() {
 
   fieldMaterial.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, uniforms)
-    shader.vertexShader = 'attribute float fieldLayer, landStyle; varying float vFieldLayer, vSnowFace, vLandStyle; varying vec2 vFieldUv;\n'
-      + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvFieldLayer = fieldLayer; vLandStyle = landStyle; vFieldUv = uv; vSnowFace = normalize(mat3(modelMatrix)*normal).y;')
+    shader.vertexShader = 'attribute float fieldLayer, landStyle; attribute vec2 regionalSurface; varying vec2 vRegionalSurface; varying float vFieldLayer, vSnowFace, vLandStyle; varying vec2 vFieldUv;\n'
+      + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvFieldLayer = fieldLayer; vRegionalSurface = regionalSurface; vLandStyle = landStyle; vFieldUv = uv; vSnowFace = normalize(mat3(modelMatrix)*normal).y;')
     shader.fragmentShader = `
       uniform sampler2D fieldEarth, fieldWood, fieldEarthPbr, fieldWoodPbr;
       uniform float fieldDetail, fieldWet, fieldFrost;
       varying float vFieldLayer, vSnowFace, vLandStyle;
-      varying vec2 vFieldUv;
+      varying vec2 vFieldUv, vRegionalSurface;
+      ${fieldAtlasShader}
     ` + shader.fragmentShader
       .replace('#include <color_fragment>', `#include <color_fragment>
         bool onGround = vFieldLayer > .5;
         bool onWood = vFieldLayer > 1.5;
-        bool onCrossCut = vFieldLayer > 2.5;
+        bool onCrossCut = vFieldLayer > 2.5 && vFieldLayer < 3.5;
+        bool onMetal = vFieldLayer > 4.5 && vFieldLayer < 5.5;
+        bool onMasonry = vFieldLayer > 5.5;
+        bool onBark = vFieldLayer > 3.5 && vFieldLayer < 4.5;
         vec4 fieldPbr = vec4(.5, .5, .85, 1.);
         if (onGround) {
           vec2 surfaceUV = vFieldUv;
           if (!onWood) surfaceUV += vec2(sin(vFieldUv.y*.78), sin(vFieldUv.x*1.2 + vFieldUv.y*.39))*.09;
           vec3 grain = onWood ? texture2D(fieldWood, surfaceUV).rgb : texture2D(fieldEarth, surfaceUV).rgb;
-          diffuseColor.rgb *= mix(vec3(.70), grain * (onWood ? 2.75 : 2.40), onWood ? .66 : .88);
+          float inheritMud = (onWood || landscapeReady < .5) ? 1. : .35;
+          diffuseColor.rgb *= mix(vec3(.91), grain * (onWood ? 2.75 : 2.65), (onWood ? .53 : .81) * inheritMud);
           if (fieldDetail > .0) {
             fieldPbr = onWood ? texture2D(fieldWoodPbr, surfaceUV) : texture2D(fieldEarthPbr, surfaceUV);
             diffuseColor.rgb *= mix(.73, 1., fieldPbr.a);
@@ -68,7 +75,8 @@ export function createFieldMaterial() {
             float tracks = abs(abs(vFieldUv.x + .037 * sin(vFieldUv.y * .78)) - .42);
             float rut = (1. - smoothstep(.09,.21,tracks)) * (.28 + .30*smoothstep(-.5,.58,silt));
             float bank = smoothstep(1.26,1.75,abs(vFieldUv.x));
-            float damp = max(rut, bank * (.38 + .27 * silt));
+            float tracksCountry = max(0., 1. - abs(vRegionalSurface.x - 5.) * .82);
+            float damp = max(rut * (.46 + tracksCountry * .59), bank * (.30 + .22 * silt));
             damp = min(.82, damp + fieldWet * .15 * smoothstep(.10,.74,silt) * smoothstep(.62,1.54,abs(vFieldUv.x)));
             diffuseColor.rgb *= mix(vec3(1.15,1.13,1.10), vec3(.56,.66,.67), damp);
             fieldPbr.b -= .34 * damp;
@@ -80,6 +88,40 @@ export function createFieldMaterial() {
             if (fieldFrost > .05) {
               float iceDust = smoothstep(.24,.56,grain.g * .9 + silt * .13) * fieldFrost;
               diffuseColor.rgb = mix(diffuseColor.rgb, vec3(.52,.61,.66), iceDust * .34);
+            }
+          }
+          if (landscapeReady > .5 && !onCrossCut) {
+            vec2 scanUV = surfaceUV;
+            float slot = floor(vRegionalSurface.x);
+            if (onWood) {
+              slot = onMasonry ? 18. : onMetal ? 17. : onBark ? 15. : 16.;
+              scanUV *= onBark ? vec2(1.15,.69) : onMetal ? vec2(2.2,1.) : vec2(1.,.89);
+            } else {
+              // Relief and residue break up the longitudinal repetition on a trail.
+              scanUV = vec2(surfaceUV.x * 1.07 + surfaceUV.y * .12, surfaceUV.y * .91 - surfaceUV.x * .16);
+            }
+            vec2 dx = dFdx(scanUV), dy = dFdy(scanUV);
+            float footprint = max(length(dx), length(dy));
+            float amount = 1. - smoothstep(.075, .265, footprint);
+            if (amount > .005) {
+              vec3 scan = scannedSurface(slot,scanUV,dx,dy);
+              float regionalBlend = smoothstep(0., 1., fract(vRegionalSurface.x));
+              if (!onWood && regionalBlend > .004 && slot < 14.)
+                scan = mix(scan,scannedSurface(slot+1.,scanUV,dx,dy),regionalBlend);
+              float detailShade = dot(scan, vec3(.25,.60,.15));
+              vec3 reliefTone = mix(vec3(.43), vec3(1.96), scan);
+              diffuseColor.rgb *= mix(vec3(1.), reliefTone * (onMetal ? 1.13 : 1.07), amount * (onWood ? .79 : .91));
+              fieldPbr.b += amount * (onMetal ? -.27 : .37 * (detailShade - .51));
+              if (onMetal) fieldPbr.rg = mix(vec2(.5), fieldPbr.rg,.2);
+              if (!onWood) {
+                float woody = max(max(1.-abs(vRegionalSurface.x - 3.), 1.-abs(vRegionalSurface.x - 11.)),
+                  1.-abs(vRegionalSurface.x - 12.));
+                float leafLayer = max(0.,woody)*smoothstep(.49,.79,detailShade) * (.36 + vRegionalSurface.y * .64);
+                diffuseColor.rgb *= mix(vec3(1.), vec3(1.37,1.17,.78), leafLayer*amount);
+                float roadside = smoothstep(.26,.98,vRegionalSurface.y);
+                float bleed = smoothstep(.60,.72, detailShade) * .42 * roadside;
+                diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(.86,1.08,.69), bleed * amount);
+              }
             }
           }
           if (onCrossCut) {

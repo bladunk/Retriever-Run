@@ -4,11 +4,14 @@ import { cornModel } from './corn.js'
 import { environmentAssets } from './environment-assets.js'
 import { landscapeProfiles } from './migration-landscapes.js'
 import { regionAtDistance } from './expedition.js'
+import { fieldAtlasShader } from './field-atlas-shader.js'
+import { landscapeMap, landscapeReady, updateLandscapeQuality, landscapeResidency } from './landscape-atlas.js'
 import { fieldMaterials } from './materials.js'
 import { forestModel, forestProfileAt, forestSurface } from './forest-models.js'
 import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
 import { createBankPlant } from './marsh-plants.js'
 import { marshWater, updateMarshWater } from './marsh-water.js'
+import { replaceTileGeometry } from './tile-mesh.js'
 import { centerAt, segmentLength } from './trail.js'
 
 const vegetation = Array.from({ length: 3 }, (_, type) => [createBankPlant(type, true), createBankPlant(type)])
@@ -25,6 +28,7 @@ const dummy = new T.Object3D()
 
 const { material: terrainMaterial, uniforms: field } = fieldMaterials
 const detailMaterial = terrainMaterial.clone()
+const landmarkMaterial = terrainMaterial.clone()
 const lodRanges = [[43, 57, 71, 87], [69, 86, 99, 117], [69, 86, 126, 145]]
 const lodRange = { value: new T.Vector4() }
 
@@ -34,10 +38,15 @@ function settleTreeHaze(material, wind = false) {
   material.customProgramCacheKey = () => wind ? 'terrain-tree-wind' : 'terrain-tree-haze'
   material.onBeforeCompile = shader => {
     if (wind && shader.vertexShader) {
+      shader.uniforms.landscapeMap = landscapeMap
+      shader.uniforms.landscapeReady = landscapeReady
+      shader.uniforms.forestQuality = field.fieldDetail
       shader.uniforms.windClock = windClock
       shader.uniforms.windStrength = windStrength
-      shader.vertexShader = 'uniform float windClock, windStrength;\n' + shader.vertexShader
+      shader.vertexShader = 'uniform float windClock, windStrength; varying vec3 barkPoint; varying float solidWood;\n' + shader.vertexShader
         .replace('#include <begin_vertex>', `#include <begin_vertex>
+          barkPoint = position;
+          solidWood = 1. - step(.055,uv.x);
           #ifdef USE_INSTANCING
             float crown = smoothstep(.39, .98, position.y);
             float gust = sin(windClock * 1.13 + instanceMatrix[3].x * .46 + instanceMatrix[3].z * .52);
@@ -45,6 +54,19 @@ function settleTreeHaze(material, wind = false) {
             transformed.z += crown * sin(windClock * .81 + instanceMatrix[3].x) * .007;
           #endif
         `)
+      shader.fragmentShader = fieldAtlasShader + `
+        uniform float forestQuality;
+        varying vec3 barkPoint;
+        varying float solidWood;
+      ` + shader.fragmentShader.replace('#include <color_fragment>', `
+        #include <color_fragment>
+        if (landscapeReady > .5 && solidWood > .5 && forestQuality > .0) {
+          vec2 barkUV = vec2((barkPoint.x + barkPoint.z * .83) * 2.8, barkPoint.y * 2.4);
+          vec2 dx = dFdx(barkUV), dy = dFdy(barkUV);
+          float near = 1. - smoothstep(.062, .22, max(length(dx), length(dy)));
+          if (near > .005) diffuseColor.rgb *= mix(vec3(1.), .56 + 1.12 * scannedSurface(15.,barkUV,dx,dy), near);
+        }
+      `)
     }
     shader.fragmentShader = shader.fragmentShader.replace('#include <fog_fragment>', `
       #include <fog_fragment>
@@ -81,6 +103,17 @@ function softenLOD(material, distant, baseShader) {
   }
 }
 softenLOD(detailMaterial, false, terrainMaterial.onBeforeCompile)
+landmarkMaterial.name = 'Opaque landmarks'
+landmarkMaterial.customProgramCacheKey = () => 'field-solid-landmarks'
+landmarkMaterial.onBeforeCompile = shader => {
+  terrainMaterial.onBeforeCompile(shader)
+  shader.fragmentShader = shader.fragmentShader.replace('#include <fog_fragment>', `
+    #include <fog_fragment>
+    #ifdef USE_FOG
+      gl_FragColor.rgb = mix(gl_FragColor.rgb, fogColor, smoothstep(86., 136., vFogDepth));
+    #endif
+  `)
+}
 settleTreeHaze(treeMaterial)
 settleTreeHaze(forestMaterial, true)
 softenLOD(cropMaterial, false)
@@ -99,16 +132,6 @@ reedMaterial.onBeforeCompile = shader => {
       transformed.x += position.y * position.y * (lean * (.056 + windStrength * .24) + windStrength * .18);
       transformed.z += position.y * .13 * lean * windStrength;
     `)
-}
-
-function unpack(data) {
-  const geometry = new T.BufferGeometry()
-  for (const [name, { values, itemSize, normalized }] of Object.entries(data.buffers)) {
-    geometry.setAttribute(name, new T.BufferAttribute(values, itemSize, normalized))
-  }
-  if (data.index) geometry.setIndex(new T.BufferAttribute(data.index, 1))
-  geometry.computeBoundingSphere()
-  return geometry
 }
 
 function batch(geometry, material, capacity) {
@@ -131,6 +154,8 @@ export function createTerrain(scene, showSign) {
     const ground = new T.Mesh(new T.BufferGeometry(), terrainMaterial)
     const water = new T.Mesh(new T.BufferGeometry(), marshWater)
     const detail = new T.Mesh(new T.BufferGeometry(), detailMaterial)
+    const solid = new T.Mesh(new T.BufferGeometry(), landmarkMaterial)
+    solid.name = 'Solid scenery'
     const trees = batch(distantTrees[0], treeMaterial, treeCount)
     const forest = [batch(distantTrees[0], forestMaterial, treeCount), batch(distantTrees[0], forestMaterial, treeCount)]
     trees.name = 'Outer bank trees'
@@ -140,9 +165,9 @@ export function createTerrain(scene, showSign) {
     const reeds = batch(vegetation[0][0], reedMaterial, reedCount)
     const smoke = createChimneySmoke()
     root.visible = false
-    root.add(ground, water, reeds, detail, trees, ...forest, ...crops, tufts, smoke)
+    root.add(ground, water, reeds, detail, solid, trees, ...forest, ...crops, tufts, smoke)
     scene.add(root)
-    return { root, ground, water, detail, trees, forest, crops, tufts, reeds, smoke, hasChimney: false,
+    return { root, ground, water, detail, solid, trees, forest, crops, tufts, reeds, smoke, hasChimney: false,
       plantType: 0, index: null, wanted: null }
   })
   const slot = (index) => tiles[((index % tiles.length) + tiles.length) % tiles.length]
@@ -162,13 +187,11 @@ export function createTerrain(scene, showSign) {
     const tile = slot(packet.index)
     if (tile.wanted !== packet.index || (packet.seed ?? 0) !== seedAt(packet.index)) return
     if (packet.index === 0 || packet.index === -1) openingTiles.set(packet.index, packet)
-    tile.ground.geometry.dispose()
-    tile.water.geometry.dispose()
-    tile.detail.geometry.dispose()
-    tile.ground.geometry = unpack(packet.ground)
-    tile.water.geometry = packet.water ? unpack(packet.water) : new T.BufferGeometry()
-    tile.detail.geometry = unpack(packet.detail)
-    tile.water.visible = Boolean(packet.water)
+    const prepareStart = performance.now()
+    for (const [mesh, data] of [[tile.ground, packet.ground], [tile.water, packet.water],
+      [tile.detail, packet.detail], [tile.solid, packet.solid]]) replaceTileGeometry(mesh, data)
+    tile.solid.visible = Boolean(packet.solid)
+    tile.hasWater = Boolean(packet.water)
     const variants = forestProfileAt(packet.territory, packet.index)
     const cards = coverTypes.has(packet.territory) ? environmentAssets.get('trees') : null
     const grasses = coverTypes.has(packet.territory) ? environmentAssets.get('grass') : null
@@ -182,7 +205,7 @@ export function createTerrain(scene, showSign) {
     tile.trees.material = cards?.material ?? treeMaterial
     tile.trees.count = 0
     for (const [index, mesh] of tile.forest.entries()) {
-      mesh.geometry = forestModel(variants[index], true, Math.abs(packet.index + index) % 2)
+      mesh.geometry = forestModel(variants[index], field.fieldDetail.value < 2, Math.abs(packet.index + index) % 2)
       mesh.count = 0
     }
     for (let n = 0; n < packet.trees.length / 7; n++) {
@@ -261,6 +284,7 @@ export function createTerrain(scene, showSign) {
     tile.seed = packet.seed ?? 0
     tile.landmark = packet.landmark
     tile.habitats = packet.habitats
+    tile.preparation = { buildMs: packet.buildMs, unpackMs: performance.now() - prepareStart }
   }
 
   function pump() {
@@ -275,7 +299,12 @@ export function createTerrain(scene, showSign) {
         try { worker.postMessage(seedAt(index) ? { index, seed: seedAt(index) } : index) } catch { useFallback() }
       }
       else setTimeout(() => {
-        if (tile.wanted === index) load(buildTile(index, seedAt(index)))
+        if (tile.wanted === index) {
+          const start = performance.now()
+          const packet = buildTile(index, seedAt(index))
+          packet.buildMs = performance.now() - start
+          load(packet)
+        }
         building = false
         pump()
       }, 0)
@@ -308,9 +337,14 @@ export function createTerrain(scene, showSign) {
 
   return {
     packCount: environmentAssets.count,
+    landscapeResidency,
+    measurements() {
+      return tiles.filter(tile => tile.root.visible).map(tile => ({ index: tile.index, ...tile.preparation }))
+    },
     setSeed(value) { terrainSeed = value >>> 0 },
     stamps() { return tiles.filter(tile => tile.root.visible).map(tile => ({
-      index: tile.index, landmark: tile.landmark, habitats: tile.habitats?.length ?? 0,
+      index: tile.index, landmark: tile.landmark, solid: tile.solid.visible ? tile.solid.geometry.id : null,
+      solidOpaque: tile.solid.visible && !tile.solid.material.transparent && tile.solid.material.opacity === 1, habitats: tile.habitats?.length ?? 0,
     })) },
     count() { return tiles.reduce((count, tile) => count + Number(tile.index !== null), 0) },
     readyAt(distance) {
@@ -334,6 +368,7 @@ export function createTerrain(scene, showSign) {
       field.fieldWet.value = weather.wet
       field.fieldFrost.value = weather.frost ?? 0
       field.fieldDetail.value = detail
+      updateLandscapeQuality(detail)
       const range = lodRanges[detail]
       lodRange.value.fromArray(range)
       for (let i = center - 1; i < center + 6; i++) {
@@ -341,13 +376,17 @@ export function createTerrain(scene, showSign) {
         tile.wanted = i
         if (tile.index !== i && openingTiles.has(i)) load(openingTiles.get(i))
         const insideDrawDistance = i - center < (detail === 0 ? 4 : detail === 1 ? 5 : 6)
-        tile.root.visible = tile.index === i && tile.seed === seedAt(i) && insideDrawDistance
+        tile.root.visible = tile.index === i && tile.seed === seedAt(i)
         if (!tile.root.visible) continue
+        tile.ground.visible = insideDrawDistance
+        tile.water.visible = tile.hasWater && insideDrawDistance
+        tile.reeds.visible = insideDrawDistance
+        tile.detail.visible = insideDrawDistance
         if (tile.sign) showSign?.(tile.sign, distance)
         tile.root.position.set(centerAt(i * segmentLength) - offset, 0, distance - i * segmentLength)
         const tileStart = i * segmentLength - distance
         // Include a margin for outer tree crowns that reach across tile edges.
-        tile.detail.visible = tileStart < range[1] + 8
+        tile.detail.visible = insideDrawDistance && tileStart < range[1] + 8
         const chimneyZ = tile.root.position.z + tile.smoke.position.z
         tile.smoke.visible = tile.hasChimney && detail > 0 && chimneyZ > -65 && chimneyZ < -6
         tile.trees.visible = tile.trees.count > 0 && tileStart < 113

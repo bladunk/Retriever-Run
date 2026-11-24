@@ -57,7 +57,7 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
     put(red, x, y + 1.61, z, 5.7, 3.05, 4)
     add(gable, red, x, y + 3.13, z, 5.71, 1.37, 4, 0, 0, 0, false, 2)
     for (const side of [-1, 1]) {
-      add(board, 0x504a40, x + side * 1.50, y + 3.83, z, 3.51, .14, 4.6, 0, 0, -side * .44, false, 2)
+      add(board, 0x504a40, x + side * 1.50, y + 3.83, z, 3.51, .14, 4.6, 0, 0, -side * .44, false, 5)
       put(cream, x + side * 2.78, y + 1.67, z + 2.045, .14, 2.88, .12)
       put(cream, x + side * .99, y + 1.16, z + 2.075, .086, 2.10, .10)
       put(0x4d3229, x + side * 1.88, y + 2.19, z + 2.047, .63, .72, .070)
@@ -72,7 +72,7 @@ export function dressNorthernBank({ add, region, index, earth, waterline, random
       put(plank % 2 ? 0x754031 : 0xa25339, xx, y + 1.63, z + 2.006, .045, 2.98, .026)
     }
     const siloBase = earth(-z, x - 5)
-    add(silo, 0xb4aea0, x - 5, siloBase + 2.55, z, 1, 5.1, 1)
+    add(silo, 0xb4aea0, x - 5, siloBase + 2.55, z, 1, 5.1, 1, 0, 0, 0, false, 5)
     add(round, 0xa6a196, x - 5, siloBase + 5.04, z, 1.02, .73, 1.02)
     for (let fence = 0; fence < 7; fence++) {
       const fx = -8 - fence * 2.05
