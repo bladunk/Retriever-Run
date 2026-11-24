@@ -1,7 +1,9 @@
+import { swipeThreshold } from './gesture.js'
+
 export const audioDefaults = { masterVolume: .9, musicVolume: .55, wildlifeVolume: .8, ambientVolume: .8, effectsVolume: .85 }
 
 const defaults = { score: 0, distance: 0, best: 0, farthest: 0, retrieves: 0, streak: 0,
-  outfit: 'field', quality: 'auto', comfort: true, haptics: false, musicRestore: audioDefaults.musicVolume, ...audioDefaults }
+  outfit: 'field', quality: 'auto', swipe: 'standard', comfort: true, haptics: false, musicRestore: audioDefaults.musicVolume, ...audioDefaults }
 
 export const outfits = [
   { id: 'field', name: 'Field collar', hint: 'Standard issue', available: () => true },
@@ -29,6 +31,7 @@ export function normalizeProfile(raw) {
   }
   profile.musicRestore = Number.isFinite(raw.musicRestore) && raw.musicRestore > 0
     ? Math.min(1, raw.musicRestore) : profile.musicVolume || audioDefaults.musicVolume
+  if (Object.hasOwn(swipeThreshold, raw.swipe)) profile.swipe = raw.swipe
   if (['auto', 'low', 'balanced', 'high'].includes(raw.quality)) profile.quality = raw.quality
   if (outfits.some((outfit) => outfit.id === raw.outfit && outfit.available(profile))) profile.outfit = raw.outfit
   return profile

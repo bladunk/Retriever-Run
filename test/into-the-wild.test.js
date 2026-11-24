@@ -58,8 +58,8 @@ test('all 280 notices remain reachable without short repeats and fit in three li
     const length = run < 50 ? 250 : 20
     for (let ordinal = 0; ordinal < length; ordinal++) {
       const anchor = { ordinal, distance: signDistance(ordinal) }
-      const sign = trailSign(anchor, seed)
-      assert.deepEqual(trailSign(anchor, seed), sign)
+      const sign = trailSign(anchor, seed, signMessages)
+      assert.deepEqual(trailSign(anchor, seed, signMessages), sign)
       assert.ok(!recent.includes(sign.line), sign.line)
       recent.push(sign.line)
       if (recent.length > 19) recent.shift()
@@ -76,7 +76,7 @@ test('all 280 notices remain reachable without short repeats and fit in three li
   assert.ok(categories[1].marsh > 20)
   const measure = line => [...line].reduce((n, symbol) => n + (symbol === ' ' ? 29 : 60), 0)
   for (const message of catalog) {
-    const fit = fitSignLettering(message, measure)
+    const fit = fitSignLettering(message, measure, 3)
     assert.equal(fit.lines.join(' '), message)
     assert.ok(fit.lines.length <= 3 && fit.size >= 43)
     assert.ok(fit.lines.every(line => measure(line) * fit.size * fit.scale / 100 <= 450.001))

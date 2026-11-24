@@ -1,7 +1,9 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
+import { contactShadow } from './contact-shadow.js'
 import { fieldMaterials } from './materials.js'
 import { fallenTimberModel } from './fallen-timber.js'
+import { leaningTree } from './leaning-tree.js'
 import { trailTimber } from './trail-timber.js'
 import { rockMesh } from './rock-art.js'
 import { marshWater } from './marsh-water.js'
@@ -162,6 +164,10 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     object.add(rockMesh(variant, turn))
     return object
   }
+  if (type === 'leaning-tree') {
+    object.add(new T.Mesh(leaningTree().geometry, fieldMaterials.material), contactShadow(type))
+    return object
+  }
   if (type === 'fallen') {
     object.add(new T.Mesh(fallenTimberModel(variant), fieldMaterials.material))
     return object
@@ -169,6 +175,7 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
   const timber = trailTimber(type)
   if (timber) {
     object.add(new T.Mesh(timber, fieldMaterials.material))
+    if (type === 'log' || type === 'drift') object.add(contactShadow('log'))
     return object
   }
   if (baked.has(key)) {
@@ -185,11 +192,9 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     for (const y of [.38, .81]) mesh(object, box, 0xb67c45, 0, y, 0, 2, .18, .17)
     mesh(object, box, cut, 0, .62, .1, .81, .17, .06).rotation.z = -.32
   } else if (type === 'branch') {
-    const width = wide ? 7.28 : 2.14
+    const width = 2.14
     const branchBark = 0x8c7b58
-    for (const x of wide ? [-3.56, 3.56] : [1.01]) {
-      mesh(object, cylinder, branchBark, x, .60, -.035, .112, 1.39, .122).rotation.z = x > 0 ? .13 : -.10
-    }
+    mesh(object, cylinder, branchBark, 1.01, .60, -.035, .112, 1.39, .122).rotation.z = .13
     const limbs = [hangingLimb(width, .34, .205, .13, .6), hangingLimb(width * .96, .087, .080, -.073, 2.2),
       hangingLimb(width * .90, .095, .096, .26, -1.3)]
     mesh(object, limbs[0], branchBark, 0, 1.65, .012, 1, 1, 1)

@@ -26,19 +26,27 @@ const progression = [
   [9.57,  .82, 1.0, .77, .94, .77, .32, .080, 8.4],
 ]
 
-export const courseStages = progression.map(([pace, gap, blocks, action, chain, follow, reward, flood, flock], index) => ({
-  level: index + 1, start: index * stageSeconds, territory: Math.floor(index / 2),
-  group: groups[index < 16 ? Math.floor(index / 4) : 4 + Math.floor((index - 16) / 2)],
-  pace, gap, blocks, action, chain, follow, reward, flood, flock,
-}))
+export function defineStages(entries, stagesPerTerritory = 2) {
+  return entries.map(([pace, gap, blocks, action, chain, follow, reward, flood, flock], index) => {
+    const challenge = Math.min(1, index / Math.max(1, entries.length - 1))
+    return {
+      level: index + 1, start: index * stageSeconds, territory: Math.floor(index / stagesPerTerritory),
+      group: groups[Math.min(groups.length - 1, entries.length === 20 ? (index < 16 ? Math.floor(index / 4) : 4 + Math.floor((index - 16) / 2)) : Math.floor(index / Math.max(1, entries.length / groups.length)))],
+      pace, gap, blocks, action, chain, follow, reward, flood, flock, challenge,
+    }
+  })
+}
+
+export const courseStages = defineStages(progression)
 export const difficultyCurve = courseStages.map(({ start, pace }) => [start, pace])
 
-export function stageAt(seconds) {
-  return courseStages[Math.min(courseStages.length - 1, Math.floor(Math.max(0, seconds) / stageSeconds))]
+export function stageAt(seconds, stages = courseStages) {
+  return stages[Math.min(stages.length - 1, Math.floor(Math.max(0, seconds) / stageSeconds))]
 }
 
 export const director = {
   curve: difficultyCurve,
+  stages: courseStages,
   startingSpeed: 11,
   speedGain: 2.36,
   openingTime: 1.64,

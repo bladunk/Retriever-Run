@@ -36,7 +36,7 @@ const belts = [
 ]
 
 export function chooseRock(territory, random, previous) {
-  const choices = belts[territory].filter(variant => variant !== previous)
+  const choices = (belts[territory] ?? belts.at(-1)).filter(variant => variant !== previous)
   return choices[Math.floor(random() * choices.length)]
 }
 

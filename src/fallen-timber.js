@@ -1,5 +1,6 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
+import { hazardHull } from './hazard-hull.js'
 import { seededRandom } from './trail.js'
 
 export const fallenTimbers = [
@@ -104,7 +105,7 @@ function sculptedEarth(mass, palette, random, detail, tone = palette.earth) {
   return shape
 }
 
-export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = false) {
+export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = false, collision) {
   const curve = new T.CatmullRomCurve3(guide.map(point => new T.Vector3(point[0], point[1], point[2])))
   const curveSteps = fractured ? 11 : 6
   const sides = fractured ? 12 : 7
@@ -123,6 +124,7 @@ export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = 
 
   let rim
   let firstRim
+  let previousRim
   for (let segment = 0; segment <= curveSteps; segment++) {
     const t = segment / curveSteps
     const at = curve.getPoint(t)
@@ -142,6 +144,7 @@ export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = 
       const outline = at.clone().add(offset)
       if (segment === curveSteps) outline.addScaledVector(tangent, breakLine[n])
       const ring = point(outline, tint, (.71 + .38 * rib) * (1 + .15 * Math.sin(phi)), j / sides * 1.25, t * 1.4, 2)
+      outline.y = Math.max(-.028, outline.y)
       rim.push(outline)
       if (segment && j) {
         const stride = sides + 1
@@ -149,6 +152,10 @@ export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = 
       }
     }
     if (!segment) firstRim = rim
+    if (collision && previousRim) {
+      collision.push(hazardHull('solid wood', [...previousRim.slice(0, sides), ...rim.slice(0, sides)]))
+    }
+    previousRim = rim
   }
 
   function endGrain(ringPoints, endpoint) {
@@ -166,12 +173,14 @@ export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = 
   return textureGeometry(values, uvs, colors, layers, indices)
 }
 
-export function fallenTimberModel(variant = 0) {
+export function fallenTimber(variant = 0) {
   const type = ((variant % fallenTimbers.length) + fallenTimbers.length) % fallenTimbers.length
   if (cache.has(type)) return cache.get(type)
   const palette = fallenTimbers[type]
   const random = seededRandom(71282 + type * 3779)
   const parts = palette.mass.map((mass, index) => sculptedEarth(mass, palette, random, index === 0 ? 2 : 1))
+  const volumes = parts.map(({ attributes: { position } }) => hazardHull('soil and roots',
+    Array.from({ length: position.count }, (_, i) => new T.Vector3().fromBufferAttribute(position, i))))
   // Soil and pale mineral inclusions ride with a plate of broken ground.
   for (let n = 0; n < 7; n++) {
     const x = -.62 + random() * .77
@@ -180,7 +189,7 @@ export function fallenTimberModel(variant = 0) {
     const size = .027 + random() * .037
     parts.push(sculptedEarth([x, y, z, size, size * 1.4, size * .51], palette, random, 0, n % 2 ? 0x7d7567 : 0x53483c))
   }
-  parts.push(curvedWood(palette.trunk, palette.bark, palette.wood, random, true))
+  parts.push(curvedWood(palette.trunk, palette.bark, palette.wood, random, true, false, volumes))
   for (const [index, root] of palette.roots.entries()) {
     const bark = index % 3 === 1 ? palette.bark : type === 2 ? 0x9c8664 : 0xaf8a68
     parts.push(curvedWood(root, bark, palette.wood, random, false))
@@ -196,6 +205,9 @@ export function fallenTimberModel(variant = 0) {
   for (const part of parts) part.dispose()
   geometry.name = palette.name
   geometry.computeBoundingBox()
-  cache.set(type, geometry)
-  return geometry
+  const timber = { geometry, volumes }
+  cache.set(type, timber)
+  return timber
 }
+
+export const fallenTimberModel = variant => fallenTimber(variant).geometry

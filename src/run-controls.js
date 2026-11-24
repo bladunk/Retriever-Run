@@ -1,5 +1,8 @@
 import { act } from './runner.js'
 
+const moves = new Set(['left', 'right', 'jump', 'slide'])
+const verticalBuffer = .15
+
 export function createRunControls() {
   const queue = []
   let buffered
@@ -7,7 +10,7 @@ export function createRunControls() {
 
   return {
     enqueue(move) {
-      if (queue.length >= 16) return false
+      if (!moves.has(move) || queue.length >= 16) return false
       queue.push(move)
       return true
     },
@@ -16,14 +19,19 @@ export function createRunControls() {
       buffered = undefined
     },
     apply(run, onAction) {
+      let usedVertical = false
       for (const move of queue) {
         const vertical = move === 'jump' || move === 'slide'
+        if (vertical && usedVertical) continue
         if (act(run, move)) {
           onAction(move)
-          if (vertical) buffered = undefined
-        } else if (vertical && Math.max(run.jump, run.slide) < .16) {
+          if (vertical) {
+            usedVertical = true
+            buffered = undefined
+          }
+        } else if (vertical && Math.max(run.jump, run.slide) <= verticalBuffer) {
           buffered = move
-          expires = run.elapsed + .18
+          expires = run.elapsed + verticalBuffer + .02
         }
       }
       queue.length = 0

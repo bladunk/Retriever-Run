@@ -102,7 +102,7 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
         const sign = trailSign(anchor, seed)
         paint(slot.canvas.getContext('2d'), sign, anchor.tile * 5137 + seed)
         slot.texture.needsUpdate = true
-        const frame = sign.style === 'north' ? [2.60, 1.32, 2.10] : [2.76, 1.34, 2.19]
+        const frame = sign.style === 'north' ? [2.73, 1.32, 2.16] : [2.88, 1.38, 2.22]
         const [w, h, y] = frame
         slot.backing.scale.set(w, h, 1)
         slot.plate.scale.set(w - .026, h - .026, 1)

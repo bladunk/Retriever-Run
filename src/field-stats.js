@@ -2,6 +2,7 @@ import { isWaterHazard, laneWidth, traceContact } from './collision.js'
 import { diveWarningLead } from './dive.js'
 import { score } from './runner.js'
 import { regionAt } from './expedition.js'
+import { obstacles } from './obstacles.js'
 import { rocks } from './rocks.js'
 
 export const counters = ['treats', 'logs', 'slidesCleared', 'geese', 'ducks', 'pheasants', 'jumps', 'slides']
@@ -10,27 +11,22 @@ const logTypes = ['log', 'drift']
 const jumpTypes = new Set([...logTypes, 'stream', 'puddle', 'root', 'fence'])
 
 export const causeNames = { water: 'Water', logs: 'Timber', geese: 'Diving geese', other: 'Other hazards' }
-const hazardNames = {
-  stream: 'Creek crossing', puddle: 'Puddle', log: 'Fallen log', drift: 'Driftwood',
-  goose: 'Diving goose', fence: 'Fence', branch: 'Overhead branch', root: 'Exposed root', tree: 'Tree trunk',
-  fallen: 'Uprooted tree', tractor: 'Farm tractor', washout: 'Flooded lane', rock: 'Rock or boulder',
-}
-
 export function deathCause(hazard) {
   if (isWaterHazard(hazard)) return 'water'
-  if (hazard === 'fallen') return 'logs'
+  if (hazard === 'fallen' || hazard === 'leaning-tree') return 'logs'
   if (logTypes.includes(hazard)) return 'logs'
   if (hazard === 'goose') return 'geese'
   return 'other'
 }
 
-export const hazardName = hazard => hazardNames[hazard] ?? 'Trail hazard'
+export const hazardName = hazard => obstacles[hazard]?.name ?? 'Trail hazard'
 
-export function createRunStatistics(runId) {
+export function createRunStatistics(runId, onSkill = () => {}) {
   const stats = Object.fromEntries(counters.map(key => [key, 0]))
   const hazards = new WeakMap()
   const standingBefore = {}
   const standingAfter = {}
+  const recoveredRoutes = new Map()
   let finalized = false
   let jumpClears = 0
 
@@ -51,11 +47,20 @@ export function createRunStatistics(runId) {
       if (!finalized && move === 'jump') stats.jumps++
       if (!finalized && move === 'slide') stats.slides++
     },
-    pickup(type) {
+    pickup(type, entity) {
       if (finalized) return
       if (type === 'treat') stats.treats++
       if (type === 'mallard') stats.ducks++
       if (type === 'pheasant') stats.pheasants++
+      if (entity?.riskRoute && Number.isSafeInteger(entity.rowId)) {
+        const key = entity.rowId * 3 + entity.lane + 1
+        const count = (recoveredRoutes.get(key) ?? 0) + 1
+        recoveredRoutes.set(key, count)
+        // Only a small tail of rows is relevant. Entity removal performs the
+        // primary idempotency check. The route exit can emit only once.
+        if (recoveredRoutes.size > 12) recoveredRoutes.delete(recoveredRoutes.keys().next().value)
+        if (entity.riskExit && count === 3) onSkill({ kind: 'risk-route', rowId: entity.rowId, pattern: entity.pattern, lane: entity.lane })
+      }
     },
     passed(before, after, entity) {
       if (finalized) return false
@@ -63,7 +68,8 @@ export function createRunStatistics(runId) {
       const goose = type === 'goose'
       const rockSize = type === 'rock' ? rocks[entity.variant].size : null
       const jumping = jumpTypes.has(type) || rockSize === 'small' || rockSize === 'medium'
-      const key = goose ? 'geese' : type === 'branch' ? 'slidesCleared' : jumping ? 'jumpClears' : null
+      const signature = type === 'leaning-tree'
+      const key = goose ? 'geese' : type === 'branch' || signature ? 'slidesCleared' : jumping ? 'jumpClears' : null
       if (!key || !entity.hazard) return false
       let state = hazards.get(entity)
       if (!state && goose && distance - after.distance <= entity.flightSpeed * diveWarningLead &&
@@ -73,7 +79,8 @@ export function createRunStatistics(runId) {
       }
       if (state?.cleared || after.distance < distance - 3 || before.distance > distance + 3) return false
       if (!state?.avoided) {
-        const action = goose ? before.jump || after.jump || before.slide || after.slide
+        const vertical = before.jump || after.jump ? 'jump' : before.slide || after.slide ? 'slide' : null
+        const action = goose || signature ? vertical
           : jumping ? before.jump || after.jump : before.slide || after.slide
         // Compare the accepted pose to the existing solver in the absence of the
         // action. For a goose, also check the lane held when the flock approached.
@@ -83,12 +90,14 @@ export function createRunStatistics(runId) {
         if (avoided) {
           state ??= { cleared: false }
           state.avoided = true
+          state.action = vertical
           hazards.set(entity, state)
         }
       }
       if (!state?.avoided || after.distance <= distance + 3) return false
       state.cleared = true
-      if (jumping) {
+      onSkill({ kind: 'obstacle-clear', obstacle: type, action: state.action ?? 'dodge', rowId: entity.rowId, pattern: entity.pattern })
+      if (jumping || (signature && state.action === 'jump')) {
         jumpClears++
         if (logTypes.includes(type)) stats.logs++
       } else stats[key]++

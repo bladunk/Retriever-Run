@@ -19,7 +19,7 @@ export function createFixedClock() {
   }
 }
 
-const fields = ['distance', 'elapsed', 'x', 'jump', 'slide', 'power', 'speed']
+const fields = ['distance', 'elapsed', 'x', 'lateralSpeed', 'jump', 'slide', 'power', 'speed']
 export function samplePose(out, previous, current, fraction) {
   for (const key of fields) out[key] = previous[key] + (current[key] - previous[key]) * fraction
   out.lane = current.lane

@@ -102,7 +102,7 @@ try {
     page.on('console', message => { if (message.type() === 'error') errors.push(message.text()) })
     page.on('request', request => { if (!localAsset(request.url())) offsite.push(request.url()) })
     const rows = courseRows.filter(row => key !== 'preview-loss' && row.time >= start - .35 && row.time < stop + 3)
-      .map(({ at, time, lane, end, gate, entities }) => ({ at, time, lane, end, gate, action: entities[0]?.type === 'branch' ? 'slide' : 'jump' }))
+      .map(({ at, time, lane, end, gate }) => ({ at, time, lane, end, gate, action: gate?.action }))
     await page.addInitScript(({ quality, stop, rows, moving, signTextureWidth, signTextureHeight }) => {
       const original = JSON.stringify({ quality, masterVolume: 0, best: 987, farthest: 654 })
       localStorage.setItem('retriever-run.record', original)

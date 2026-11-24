@@ -28,3 +28,10 @@ The prior worker upgrade uses `FIELD_LEGACY_BUILD=/path/to/5.5.1-dist npm run te
 | Worldwide and unavailable Supabase | Verify an enrolled eligible ticket online, reject a hunt begun offline, preserve local rewards during outage, and audit access controls on an isolated project | Existing adapter/rules regression and isolated offline guest browser. No production database changes |
 
 Owner approval and recorded physical-device evidence are separate from automated acceptance. [Release checklist](RELEASE_CHECKLIST.md)
+
+## Phase 02 additions
+
+- `node --test test/phase-two.test.js` checks the supported tree actions, stable ground hazards, swept contact, aimed inputs, collectible paths, repetition and configurable 30-stage scaffolding.
+- `FIELD_BUILD=dist node scripts/phase-two-browser.mjs` captures the built site with deterministic practice checkpoints. Add `webkit tree low small` for the 320 × 568 WebKit tree action check. The Chromium harness uses browser touch swipes. WebKit uses keyboard movement and taps for the available automation.
+- `node scripts/difficulty-survey.mjs . 512` measures seeded stage distribution. `node scripts/phase-two-profiles.mjs . 128` compares scripted movement profiles. Change the repository path argument to analyze an isolated Phase 01 checkout with the same profile harness.
+- Physical testing is required for touch and display latency, legibility in severe weather, real-world frame-time distribution, and several longer iPhone hunts. See the [Phase 02 report](PHASE_02_REPORT.md) for tested boundaries.

@@ -1,5 +1,6 @@
 import * as T from 'three'
 import { distanceAtTime, speedAtTime } from './difficulty.js'
+import { centerAt, laneWidth } from './trail.js'
 import { diveAge, diveWarning } from './dive.js'
 import { hazardFrame, isWaterHazard, obstacleVolumes, playerFrame, playerVolumes, volumeY } from './collision.js'
 
@@ -26,10 +27,35 @@ export function collisionDebug(scene) {
   const lines = []
   const transform = {}
   let count = 0
+  const skillEvents = []
   let death
   let last = ''
   const corner = new T.Vector3()
-  const rockEdges = new WeakMap()
+  const hullEdges = new WeakMap()
+  const marker = new T.Mesh(new T.SphereGeometry(.10, 8, 6), new T.MeshBasicMaterial({ color: 0xff543d, depthTest: false }))
+  marker.renderOrder = 16
+  marker.visible = false
+  scene.add(marker)
+
+  function wireHull(part) {
+    if (!hullEdges.has(part)) {
+      const points = []
+      for (const face of part.hull.faces) {
+        const first = face.edge
+        let edge = first
+        do {
+          for (const vertex of [edge.head(), edge.tail()]) {
+            const { x, y, z } = vertex.point
+            points.push(x, y, z)
+          }
+          edge = edge.next
+        } while (edge !== first)
+      }
+      hullEdges.set(part, new T.BufferGeometry().setAttribute('position', new T.Float32BufferAttribute(points, 3)))
+    }
+    return hullEdges.get(part)
+  }
+  const absoluteHull = { x: 0, y: 0, z: 0, hx: 1, hy: 1, hz: 1 }
   const rockBounds = new T.Box3()
 
   function screen(camera) {
@@ -79,7 +105,11 @@ export function collisionDebug(scene) {
   }
   return {
     seed: flags.has('seed') && Number.isSafeInteger(seed) ? seed >>> 0 : null,
-    reset() { death = undefined },
+    reset() { death = undefined; skillEvents.length = 0 },
+    skill(event) {
+      skillEvents.push(event)
+      if (skillEvents.length > 16) skillEvents.shift()
+    },
     depart(run) {
       if (!at) return
       let low = 0, high = at / 10
@@ -98,6 +128,8 @@ export function collisionDebug(scene) {
     },
     draw(run, entities, mode, timings, camera, signs) {
       count = 0
+      marker.visible = showVolumes && Boolean(death)
+      if (marker.visible) marker.position.set(death.contactX + centerAt(death.origin) - centerAt(run.distance), death.contactY, death.contactZ + run.distance - death.origin)
       playerFrame(transform, run, run.distance)
       for (const part of playerVolumes()) draw(part, transform, death?.part === part.name ? 'hit' : 'dog', transform.depth)
       for (const part of playerVolumes(true)) draw(part, transform, death?.part === part.name ? 'hit' : 'water', transform.depth)
@@ -115,28 +147,31 @@ export function collisionDebug(scene) {
         hazardFrame(transform, entity, run.distance, run.distance)
         const wet = isWaterHazard(entity.type)
         const hit = death?.obstacleDistance === entity.distance && death?.obstacleLane === entity.lane && death?.type === entity.type
-        if (showVolumes && entity.type === 'rock' && entity.model) {
-          const mesh = entity.model.children[0].geometry
-          if (!rockEdges.has(mesh)) rockEdges.set(mesh, new T.EdgesGeometry(mesh, 10))
-          draw({ x: 0, y: 0, z: 0, hx: 1, hy: 1, hz: 1 }, transform, hit ? 'hit' : 'solid', 0, rockEdges.get(mesh))
-        } else for (const part of parts) draw(part, transform, hit && death.solid === part.name ? 'hit' : wet ? 'water' : 'solid')
+        if (showVolumes) for (const part of parts) {
+          const kind = hit && death.solid === part.name ? 'hit' : wet ? 'water' : 'solid'
+          if (part.hull) draw(absoluteHull, transform, kind, 0, wireHull(part))
+          else draw(part, transform, kind)
+        }
       }
       for (let i = count; i < lines.length; i++) lines[i].visible = false
       const status = run.jump > 0 ? 'jump' : run.slide > 0 ? 'slide' : 'run'
       const text = [
-        'Collision debug · ' + mode + ' · ' + status + ' · lane ' + (run.lane + 2),
+        'Collision debug · ' + mode + ' · ' + status + ' · lane ' + (Math.round(run.x / laneWidth) + 2) + ' → ' + (run.lane + 2),
         's ' + run.distance.toFixed(2) + ' m · x ' + run.x.toFixed(2) + ' m · ' + timings.drawCalls + ' draws',
         death ? 'Impact at ' + death.distance.toFixed(3) + ' m · ' + death.part + ' → ' + death.type + ' ' + death.solid
           : closest ? closest.type + ' · ' + (closest.distance - run.distance).toFixed(2) + ' m ahead (center)' : 'No nearby hazard',
         flight ? 'Swoop in ' + (-flight.age).toFixed(2) + ' s · ' + (flight.warning ?? 'watch flock') : '',
+        'Jump ' + run.jump.toFixed(2) + ' s · slide ' + run.slide.toFixed(2) + ' s',
         'Tiles ' + timings.tiles + ' · geometries ' + timings.geometries,
       ].join('\n')
       if (text !== last) { panel.textContent = text; last = text }
       // Exposed only when the diagnostics query is enabled.
-      window.retrieverDebug = { mode, elapsed: run.elapsed, distance: run.distance, lateral: run.x, lane: run.lane,
+      window.retrieverDebug = { mode, elapsed: run.elapsed, distance: run.distance, lateral: run.x, lane: run.lane, jump: run.jump, slide: run.slide,
         height: run.jump > 0 ? transformPlayerHeight(run) : 0, ticks: timings.ticks, contact: death, power: run.power, flight, speed: run.speed, tiles: timings.tiles,
         drawCalls: timings.drawCalls, geometries: timings.geometries, entities: entities.length }
       if (inspectScenery) {
+        window.retrieverDebug.skill = [...skillEvents]
+        window.retrieverDebug.upcoming = closest?.pattern
         camera.updateMatrixWorld()
         window.retrieverDebug.signs = signs.visible().map(face => inspectSign(face, camera))
         window.retrieverDebug.rocks = entities.filter(item => item.type === 'rock' && item.model?.visible &&

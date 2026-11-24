@@ -68,7 +68,7 @@ test('short and diagonal gestures wait for intent while cardinal swipes respond 
   assert.equal(swipeDirection(4, -18, 390), 'jump')
   assert.equal(swipeDirection(4, 19, 390), 'slide')
   assert.equal(swipeDirection(20, 19, 390), null)
-  assert.equal(swipeDirection(20, 19, 390, true), 'right')
+  assert.equal(swipeDirection(20, 19, 390, true), null)
 })
 
 test('quality caps resolution and adapts down and up after sustained frame pressure', () => {
@@ -87,7 +87,7 @@ test('prior profiles retain records, cosmetics and settings with comfort enabled
     outfit: 'copper', quality: 'high', sfx: false, soundtrack: true }
   const { sfx, soundtrack, ...progress } = old
   assert.deepEqual(normalizeProfile(old), {
-    ...progress, comfort: true, haptics: false, masterVolume: .9, musicVolume: .55,
+    ...progress, swipe: 'standard', comfort: true, haptics: false, masterVolume: .9, musicVolume: .55,
     musicRestore: .55, wildlifeVolume: 0, ambientVolume: 0, effectsVolume: 0,
   })
   assert.equal(normalizeProfile({ ...old, comfort: false, quality: 'balanced' }).comfort, false)

@@ -103,7 +103,7 @@ test('the skinned Labrador clears the terrain and overhead envelope through real
   rig.root.traverse(node => { if (node.isSkinnedMesh && node.name !== 'WorkingDogVest') skin = node })
   const point = new Vector3()
   const frame = {}
-  const beam = obstacleVolumes({ type: 'branch', wide: true })[0]
+  const beam = obstacleVolumes({ type: 'branch' })[0]
   const head = playerVolumes().find(part => part.name === 'head')
   const collisionTop = volumeY(head, 1) + head.hy * .58
 
@@ -153,10 +153,10 @@ test('at full speed a swept crouch clears overhead timber and still hits ground 
     speed: speedAtTime(120) }
   const end = { ...start, distance: 608.3 }
   const obstacle = { distance: 606, lane: -1, hazard: true }
-  assert.ok(traceContact(start, end, { ...obstacle, type: 'branch', wide: true }))
+  assert.ok(traceContact(start, end, { ...obstacle, type: 'branch' }))
   const sliding = { ...start, slide: .62 }
   const slidingEnd = { ...end, slide: .45 }
-  assert.equal(traceContact(sliding, slidingEnd, { ...obstacle, type: 'branch', wide: true }), false)
+  assert.equal(traceContact(sliding, slidingEnd, { ...obstacle, type: 'branch' }), false)
   for (const type of ['log', 'root', 'tree', 'fence', 'puddle', 'stream']) {
     assert.ok(traceContact(sliding, slidingEnd, { ...obstacle, type }), type)
   }

@@ -3,7 +3,7 @@ import { campfireLines } from './campfire-lines.js'
 export const heckleHistoryKey = 'retriever-run.heckles'
 export const recentHeckleLimit = 24
 const byHazard = {
-  tree: 'tree', fallen: 'tree', log: 'log', root: 'log', drift: 'log',
+  tree: 'tree', 'leaning-tree': 'tree', fallen: 'tree', log: 'log', root: 'log', drift: 'log',
   stream: 'water', puddle: 'water', washout: 'water', tractor: 'tractor', goose: 'goose', branch: 'slide',
 }
 const catalog = Object.fromEntries(Object.entries(campfireLines).map(([category, lines]) =>

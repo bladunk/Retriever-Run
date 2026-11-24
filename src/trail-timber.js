@@ -4,7 +4,7 @@ import { seededRandom } from './trail.js'
 
 const profiles = {
   log: {
-    bark: 0x9a7651, cut: 0xe0b771, seed: 21,
+    bark: 0xa18463, cut: 0xf0cd91, seed: 21,
     stem: [[-.96, .29, .015, .235], [-.45, .34, .030, .305], [.25, .35, -.025, .285], [.87, .291, -.045, .23]],
     shoots: [
       [[.27, .43, .12, .09], [.19, .55, .225, .055], [.28, .65, .27, .026]],
@@ -38,18 +38,22 @@ const profiles = {
 }
 const cache = new Map()
 
-export function trailTimber(kind) {
+export function timberProfile(kind) {
   const profile = profiles[kind]
   if (!profile) return undefined
   if (cache.has(kind)) return cache.get(kind)
   const { bark, cut, stem, shoots } = profile
   const random = seededRandom(profile.seed)
-  const parts = [curvedWood(stem, bark, cut, random, true, kind === 'log' || kind === 'drift')]
+  const volumes = []
+  const parts = [curvedWood(stem, bark, cut, random, true, kind === 'log' || kind === 'drift', volumes)]
   for (const shoot of shoots) parts.push(curvedWood(shoot, bark, cut, random, false))
   const geometry = mergeGeometries(parts)
   for (const part of parts) part.dispose()
   geometry.name = kind
   geometry.computeBoundingBox()
-  cache.set(kind, geometry)
-  return geometry
+  const timber = { geometry, volumes }
+  cache.set(kind, timber)
+  return timber
 }
+
+export const trailTimber = kind => timberProfile(kind)?.geometry
