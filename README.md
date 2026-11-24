@@ -21,6 +21,12 @@ Jump streams and low ground hazards, slide under branches, and steer around drif
 
 Choose a nickname in Retriever Camp on your first visit. Join Worldwide with an anonymous browser identity or play in Guest Camp. The Lodge has the Working Dog Career, the Kennel, earned patches, the Field Journal, personal records, and both Camp boards. Equip earned collars, hunting vests, and coats in the Kennel. Your Field Report records XP and local results. Worldwide members can see their next ranked rival when standings are available. The browser also saves your audio and render settings. [Operation Top Dog](TOP-DOG.md)
 
+## Retriever Run 1.0 development
+
+The ten-phase production program starts from the existing playable build. The [production roadmap](docs/production/PRODUCTION_ROADMAP.md), [progress checkpoint](docs/production/PRODUCTION_PROGRESS.md), [player-first charter](docs/production/PLAYER_FIRST_CHARTER.md) and [release checklist](docs/production/RELEASE_CHECKLIST.md) govern upcoming changes.
+
+Choose **Download & play** to save the trail for offline solo hunts. **Play online** opens a local hunt without completing the download. Open **Settings → Game downloads** to check content or prepare an update between hunts.
+
 ## Local development
 
 Use Node.js 22.12 or later.

@@ -1,0 +1,290 @@
+{
+  "environment": "Linux, software WebGL, mobile-size viewports. Real callback intervals are distinct from the accelerated simulation timestamps.",
+  "build": {
+    "version": "2c623bc2daf7e510e5d2",
+    "files": 30,
+    "buildBytes": 2456551,
+    "requiredFiles": 27,
+    "requiredBytes": 2428822,
+    "uniqueRequiredBytes": 2403499,
+    "shellBytes": 91074,
+    "uniqueShellBytes": 65751
+  },
+  "baseline": {
+    "buildBytes": 2352943,
+    "initialReferenceBytes": 897695
+  },
+  "browsers": {
+    "baseline-perf": {
+      "engine": "chromium",
+      "baseline": true,
+      "coldReadyMs": 4649,
+      "restartMs": 328
+    },
+    "baseline-final": {
+      "engine": "chromium",
+      "baseline": true,
+      "coldReadyMs": 10018,
+      "restartMs": 2507,
+      "wallFrameIntervals": {
+        "observations": 3,
+        "median": 16.69999999999709,
+        "p95": 183.3000000000029,
+        "slow": 1
+      }
+    },
+    "chromium-publish": {
+      "engine": "chromium",
+      "baseline": false,
+      "disclosure": "2.35 MB to download \u00b7 2.43 MB total",
+      "interruption": "The download stopped. Retry to resume from your verified files.",
+      "coldReadyMsIncludingRetry": 7609,
+      "restartMs": 1892,
+      "wallFrameIntervals": {
+        "observations": 3,
+        "median": 33.30000000000291,
+        "p95": 50.099999999998545,
+        "slow": 1
+      },
+      "renderer": {
+        "ready": 6894.5,
+        "restart": 77.80000001192093,
+        "frames": 26,
+        "discarded": 0,
+        "draws": 57,
+        "triangles": 84646,
+        "textures": 9,
+        "geometries": 45,
+        "residentTiles": 7,
+        "residentPacks": 0,
+        "territory": "gulf",
+        "transitions": [
+          {
+            "territory": "gulf",
+            "wall": 0,
+            "at": 13642.600000023842
+          }
+        ],
+        "framesMs": {
+          "samples": 26,
+          "median": 130,
+          "p95": 130,
+          "p99": 130,
+          "max": 130,
+          "slow": 24,
+          "average": 121.92
+        },
+        "cpuMs": {
+          "samples": 26,
+          "median": 4.7,
+          "p95": 40.6,
+          "p99": 3578.1,
+          "max": 3578.1,
+          "slow": 4,
+          "average": 146.33
+        }
+      },
+      "corruptFileRepaired": true,
+      "offlineReadyMs": 4806,
+      "update": {
+        "busyHuntProtected": true,
+        "preservedRuns": 4,
+        "unchangedAudioRequests": 1
+      }
+    },
+    "webkit-update": {
+      "engine": "webkit",
+      "baseline": false,
+      "disclosure": "2.41 MB to download \u00b7 2.43 MB total",
+      "interruption": "The download stopped. Retry to resume from your verified files.",
+      "coldReadyMsIncludingRetry": 9659,
+      "restartMs": 630,
+      "wallFrameIntervals": {
+        "observations": 7,
+        "median": 99,
+        "p95": 152,
+        "slow": 6
+      },
+      "renderer": {
+        "ready": 6570,
+        "restart": 23,
+        "frames": 31,
+        "discarded": 0,
+        "draws": 56,
+        "triangles": 85112,
+        "textures": 8,
+        "geometries": 42,
+        "residentTiles": 7,
+        "residentPacks": 0,
+        "territory": "gulf",
+        "transitions": [
+          {
+            "territory": "gulf",
+            "wall": 0,
+            "at": 12758
+          }
+        ],
+        "framesMs": {
+          "samples": 31,
+          "median": 130,
+          "p95": 130,
+          "p99": 130,
+          "max": 130,
+          "slow": 31,
+          "average": 122.1
+        },
+        "cpuMs": {
+          "samples": 31,
+          "median": 18,
+          "p95": 58,
+          "p99": 298,
+          "max": 298,
+          "slow": 6,
+          "average": 31.42
+        }
+      },
+      "offlineReadyMs": 4701,
+      "update": {
+        "busyHuntProtected": true,
+        "preservedRuns": 4,
+        "unchangedAudioRequests": 1
+      }
+    },
+    "webkit-repair": {
+      "engine": "webkit",
+      "baseline": false,
+      "disclosure": "2.36 MB to download \u00b7 2.43 MB total",
+      "interruption": "The download stopped. Retry to resume from your verified files.",
+      "coldReadyMsIncludingRetry": 9224,
+      "restartMs": 504,
+      "wallFrameIntervals": {
+        "observations": 8,
+        "median": 79,
+        "p95": 163,
+        "slow": 7
+      },
+      "renderer": {
+        "ready": 5641,
+        "restart": 51,
+        "frames": 31,
+        "discarded": 0,
+        "draws": 56,
+        "triangles": 84319,
+        "textures": 8,
+        "geometries": 44,
+        "residentTiles": 7,
+        "residentPacks": 0,
+        "territory": "gulf",
+        "transitions": [
+          {
+            "territory": "gulf",
+            "wall": 0,
+            "at": 12111
+          }
+        ],
+        "framesMs": {
+          "samples": 31,
+          "median": 130,
+          "p95": 130,
+          "p99": 130,
+          "max": 130,
+          "slow": 31,
+          "average": 118.97
+        },
+        "cpuMs": {
+          "samples": 31,
+          "median": 15,
+          "p95": 60,
+          "p99": 226,
+          "max": 226,
+          "slow": 9,
+          "average": 29.42
+        }
+      },
+      "corruptFileRepaired": true,
+      "offlineReadyMs": 4146
+    },
+    "chromium-update": {
+      "engine": "chromium",
+      "baseline": false,
+      "disclosure": "2.35 MB to download \u00b7 2.43 MB total",
+      "interruption": "The download stopped. Retry to resume from your verified files.",
+      "coldReadyMsIncludingRetry": 6588,
+      "restartMs": 1050,
+      "wallFrameIntervals": {
+        "observations": 4,
+        "median": 100,
+        "p95": 416.6000000000022,
+        "slow": 3
+      },
+      "renderer": {
+        "ready": 6093.200000017881,
+        "restart": 177,
+        "frames": 27,
+        "discarded": 0,
+        "draws": 55,
+        "triangles": 83815,
+        "textures": 9,
+        "geometries": 45,
+        "residentTiles": 7,
+        "residentPacks": 0,
+        "territory": "gulf",
+        "transitions": [
+          {
+            "territory": "gulf",
+            "wall": 0,
+            "at": 12098.800000011921
+          }
+        ],
+        "framesMs": {
+          "samples": 27,
+          "median": 130,
+          "p95": 130,
+          "p99": 130,
+          "max": 130,
+          "slow": 26,
+          "average": 123.21
+        },
+        "cpuMs": {
+          "samples": 27,
+          "median": 3.3,
+          "p95": 39.3,
+          "p99": 485.6,
+          "max": 485.6,
+          "slow": 2,
+          "average": 23.5
+        }
+      },
+      "corruptFileRepaired": true,
+      "offlineReadyMs": 3137,
+      "update": {
+        "busyHuntProtected": true,
+        "preservedRuns": 4,
+        "unchangedAudioRequests": 1
+      }
+    },
+    "legacy-verified": {
+      "engine": "chromium",
+      "baseline": false,
+      "legacyUpgrade": {
+        "preservedRuns": 1,
+        "unchangedAudioRequests": 2
+      }
+    }
+  },
+  "restartSoak": {
+    "engine": "chromium",
+    "width": 390,
+    "height": 844,
+    "runs": 14,
+    "audioContexts": 1,
+    "failureRecovery": false,
+    "rosterAndKennel": true
+  },
+  "procedure": {
+    "seededFieldSessions": 10000,
+    "fixedTicks": 31838356,
+    "difficultyWindows": 100000,
+    "windowTicks": 69251140
+  }
+}

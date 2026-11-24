@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "Retriever Run",
+  "short_name": "Retriever Run",
+  "description": "Follow a working Labrador through the wetlands of North America.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#202d23",
+  "background_color": "#172820",
+  "icons": [
+    { "src": "icons/retriever-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/retriever-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/retriever-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

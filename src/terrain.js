@@ -2,7 +2,7 @@ import * as T from 'three'
 import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
 import { cornModel } from './corn.js'
 import { environmentAssets } from './environment-assets.js'
-import { expeditionRegions } from './expedition.js'
+import { regionAtDistance } from './expedition.js'
 import { fieldMaterials } from './materials.js'
 import { forestModel, forestProfileAt, forestSurface } from './forest-models.js'
 import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
@@ -169,6 +169,7 @@ export function createTerrain(scene, showSign) {
     const variants = forestProfileAt(packet.territory, packet.index)
     const cards = coverTypes.has(packet.territory) ? environmentAssets.get('trees') : null
     const grasses = coverTypes.has(packet.territory) ? environmentAssets.get('grass') : null
+    tile.usesEnvironmentPack = Boolean(cards || grasses)
     if (cards && !cardsReady.has(cards)) {
       settleTreeHaze(cards.material)
       cardsReady.add(cards)
@@ -217,6 +218,8 @@ export function createTerrain(scene, showSign) {
       updateBatch(mesh)
     }
     tile.tufts.count = 0
+    tile.tufts.geometry = vegetation[packet.plantType][0]
+    tile.tufts.material = reedMaterial
     if (grasses) {
       tile.tufts.geometry = grasses.models[packet.territory === 'farm' || packet.territory === 'prairie' ? 0 : 1]
       tile.tufts.material = grasses.material
@@ -297,13 +300,16 @@ export function createTerrain(scene, showSign) {
   pump()
 
   return {
+    packCount: environmentAssets.count,
     count() { return tiles.reduce((count, tile) => count + Number(tile.index !== null), 0) },
     readyAt(distance) {
       const index = Math.floor(distance / segmentLength)
       return slot(index).index === index
     },
     update(distance, time, weather, detail) {
-      if (!requestedEnvironment && distance >= expeditionRegions[2].marker - 320 && distance <= expeditionRegions[7].marker + 120) {
+      const usesHabitatPack = coverTypes.has(regionAtDistance(distance).key) ||
+        coverTypes.has(regionAtDistance(distance + 320).key)
+      if (!requestedEnvironment && usesHabitatPack) {
         requestedEnvironment = true
         environmentAssets.request('trees')
         environmentAssets.request('grass')
@@ -342,6 +348,11 @@ export function createTerrain(scene, showSign) {
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
         tile.reeds.geometry = vegetation[tile.plantType][richPlants]
         tile.reeds.count = i - center < 2 ? nearCount[detail] : farCount[detail]
+      }
+      if (requestedEnvironment && !usesHabitatPack && tiles.every(tile => !tile.usesEnvironmentPack)) {
+        environmentAssets.release('trees')
+        environmentAssets.release('grass')
+        requestedEnvironment = false
       }
       pump()
     },

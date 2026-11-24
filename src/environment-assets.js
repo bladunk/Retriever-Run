@@ -1,5 +1,6 @@
 import * as T from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { createResourcePool } from './resource-pool.js'
 
 const descriptors = {
   trees: {
@@ -14,22 +15,7 @@ const descriptors = {
   },
 }
 
-export function createEnvironmentCache(load) {
-  const pending = new Map()
-  const ready = new Map()
-  return {
-    request(key) {
-      if (!pending.has(key)) {
-        pending.set(key, Promise.resolve().then(() => load(key)).then(value => {
-          ready.set(key, value)
-          return value
-        }, () => null))
-      }
-      return pending.get(key)
-    },
-    get(key) { return ready.get(key) ?? null },
-  }
-}
+export const createEnvironmentCache = createResourcePool
 
 async function loadPack(key) {
   const descriptor = descriptors[key]
@@ -59,4 +45,8 @@ async function loadPack(key) {
   return { models: descriptor.names.map(name => geometries.get(name)), material }
 }
 
-export const environmentAssets = createEnvironmentCache(loadPack)
+export const environmentAssets = createEnvironmentCache(loadPack, pack => {
+  for (const model of pack.models) model.dispose()
+  pack.material.map.dispose()
+  pack.material.dispose()
+})

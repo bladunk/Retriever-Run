@@ -2,14 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <link rel="icon" href="data:,">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/retriever-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Retriever Run">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#20251c">
+  <meta name="theme-color" content="#202d23">
   <meta name="description" content="Follow a yellow Labrador into the Wildlands.">
   <title>Retriever Run | The Outfitter’s Lodge</title>
 </head>
 <body>
-  <main id="game" aria-label="Retriever Run">
+  <dialog id="content-screen" open aria-labelledby="content-title">
+    <section class="content-card">
+      <p class="content-brand">Retriever Run</p>
+      <h1 id="content-title">Download the trail</h1>
+      <p id="content-description">Save the terrain, Labrador and sounds on this device so you can hunt offline.</p>
+      <p id="content-size"></p>
+      <div id="content-progress" hidden>
+        <label id="content-step" for="content-meter">Checking trail files…</label>
+        <progress id="content-meter" aria-label="Game content download"></progress>
+        <p id="content-count"></p>
+      </div>
+      <p id="content-status" role="status" aria-live="polite"></p>
+      <div class="content-actions">
+        <button class="content-primary" id="content-download" type="button" disabled>Download &amp; play</button>
+        <button id="content-online" type="button">Play online</button>
+        <button id="content-close" type="button" hidden>Back to camp</button>
+      </div>
+      <aside id="content-note" hidden>
+        <p id="content-note-category"></p>
+        <p id="content-note-copy"></p>
+        <a id="content-note-source" target="_blank" rel="noopener noreferrer"></a>
+      </aside>
+    </section>
+  </dialog>
+  <main id="game" aria-label="Retriever Run" hidden>
     <canvas id="trail" aria-label="3D wetlands trail"></canvas>
     <div class="vignette" aria-hidden="true"></div>
     <header>
@@ -51,6 +80,7 @@
         <p id="record" class="record" hidden></p>
         <button id="primary" class="primary" type="button" disabled>Preparing trail…</button>
         <button id="open-lodge" class="lodge-entry" type="button">Outfitter’s Lodge</button>
+        <p id="local-status" class="control-hint" hidden></p>
         <p class="control-hint" id="hint">Swipe or use arrows to steer, jump, and duck.</p>
       </div>
     </section>
@@ -84,14 +114,22 @@
       </div>
       <label class="setting-row">Master volume <input id="masterVolume" type="range" min="0" max="100" step="1"></label>
       <label class="setting-row">Music <input id="musicVolume" type="range" min="0" max="100" step="1"></label>
-      <label class="setting-row">Wildlife &amp; ambience <input id="wildlifeVolume" type="range" min="0" max="100" step="1"></label>
+      <label class="setting-row">Wildlife calls <input id="wildlifeVolume" type="range" min="0" max="100" step="1"></label>
+      <label class="setting-row">Environmental ambience <input id="ambientVolume" type="range" min="0" max="100" step="1"></label>
       <label class="setting-row">Gameplay effects <input id="effectsVolume" type="range" min="0" max="100" step="1"></label>
+      <label class="setting-row">Touch haptics <input id="haptics" type="checkbox"></label>
       <label class="setting-row">Comfort mode <input id="comfort" type="checkbox"></label>
       <label class="setting-row">Graphics quality
         <select id="quality">
           <option value="auto">Adaptive</option><option value="low">Battery Saver</option><option value="balanced">Balanced</option><option value="high">High</option>
         </select>
       </label>
+      <div class="application-actions">
+        <button id="content-open" type="button" hidden>Game downloads</button>
+        <button id="install-app" type="button" hidden>Install Retriever Run</button>
+        <button id="full-screen" type="button" hidden>Full screen</button>
+      </div>
+      <p class="control-hint" id="install-help" hidden>In Safari, tap Share, then Add to Home Screen.</p>
       <a class="asset-credits" href="https://github.com/bladunk/Retriever-Run/blob/main/PORTRAIT.md#asset-credits" target="_blank" rel="noopener">Art and animation credits</a>
       <a class="asset-credits" href="https://github.com/bladunk/Retriever-Run/blob/main/AUDIO.md#recording-credits" target="_blank" rel="noopener">Audio credits</a>
     </dialog>
@@ -181,6 +219,6 @@
       <div id="lodge-panel" class="lodge-panel" role="tabpanel" aria-labelledby="tab-trophies" tabindex="0"></div>
     </div>
     </dialog>
-  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/production-entry.js"></script>
 </body>
 </html>
