@@ -186,6 +186,16 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     for (const [, component, color, x, y, z, w, h, d] of snowmobileParts) {
       const rounded = component === 'hood' || component === 'seat'
       const profile = rounded ? sphere : box
+      if (component === 'track') {
+        mesh(object, box, 0x393837, x, y, z, w, h, d - h)
+        for (const end of [-1, 1]) {
+          mesh(object, wheel, 0x464640, x, y, z + end * (d - h) * .50, w, h, h)
+        }
+        for (let tread = 0; tread < 9; tread++) {
+          mesh(object, box, 0x514e48, x, y + h * .49, z - .65 + tread * .161, w + .037, .036, .049)
+        }
+        continue
+      }
       const part = mesh(object, profile, color, x, y, z, w * (rounded ? .50 : 1), h * (rounded ? .50 : 1), d * (rounded ? .50 : 1))
       if (component === 'screen') part.rotation.x = -.34
       if (component === 'ski') {
@@ -194,10 +204,16 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
       }
     }
     mesh(object, box, 0xd8cdb0, 0,.86,-1.052,.49,.18,.075)
-    mesh(object, box, 0x313735, 0,1.15,-.16,.69,.085,.085)
+    mesh(object, cylinder, 0x5c5e58, 0, 1.10, -.24, .075, .42, .075).rotation.x = -.30
+    mesh(object, box, 0x766b58, 0, 1.30, -.13, .98, .064, .082)
+    mesh(object, box, 0x9e4531, 0, .64, 1.112, .42, .14, .065)
+    mesh(object, box, 0x4c4b43, 0, .45, 1.145, .53, .10, .046)
     for (const side of [-1, 1]) {
-      mesh(object, box, 0x613b31, side * .19,.67,1.00,.16,.12,.055)
-      for (let i = 0; i < 5; i++) mesh(object, box, 0x524b44, side * .466,.31,-.22 + i*.25,.065,.145,.060)
+      mesh(object, box, 0x333532, side * .45, 1.30, -.10, .19, .083, .090).rotation.y = -side * .17
+      const flank = mesh(object, box, 0x7c4332, side * .45, .65, .25, .14, .21, 1.09)
+      flank.rotation.z = side * .19
+      mesh(object, cylinder, 0x888275, side * .27, .51, 1.03, .105, .34, .105).rotation.x = 1.57
+      for (let i = 0; i < 5; i++) mesh(object, box, 0x6a6457, side * .466, .31, -.22 + i * .25, .065, .145, .060)
     }
     compact(object, key, true)
     return object.add(contactShadow('snowmobile'))

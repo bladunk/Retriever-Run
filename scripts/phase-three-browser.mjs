@@ -11,7 +11,9 @@ const source = process.env.FIELD_SOURCE ?? '.'
 const fromSource = name => import(pathToFileURL(resolve(source, 'src', name + '.js')).href)
 const { expeditionRegions } = await fromSource('expedition')
 const { distanceAtTime, speedAtTime, courseStages, stageAt } = await fromSource('difficulty')
-const { createCourse } = await fromSource('runner')
+const { advance, createCourse, newRun } = await fromSource('runner')
+const { firstContact } = await fromSource('collision')
+const { tickSeconds } = await fromSource('timing')
 const { buildTile } = await fromSource('terrain-geometry')
 const isPhaseThree = expeditionRegions.length === 15
 const root = resolve(process.env.FIELD_BUILD ?? 'dist')
@@ -45,8 +47,9 @@ function rowsFor(seed, stop) {
 }
 
 try {
-  const portrait = args.includes('small') ? { width: 320, height: 568 } : { width: 390, height: 844 }
-  const context = await browser.newContext({ ...devices['iPhone 13'], viewport: portrait, deviceScaleFactor: .70 })
+  const viewport = args.includes('wide') ? { width: 844, height: 470 }
+    : args.includes('small') ? { width: 320, height: 568 } : { width: 390, height: 844 }
+  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: .70 })
   // Block the external APIs, while letting the same-origin app worker serve
   // an actually verified content pack for the full set of offline checkpoints.
   await context.route(/.*/, route => {
@@ -61,29 +64,14 @@ try {
     localStorage.setItem('retriever-run.record.practice', JSON.stringify({ quality, masterVolume: 0 }))
     Object.defineProperty(document, 'hidden', { get: () => false })
     const native = window.requestAnimationFrame.bind(window)
-    let stamp, index = 0, sent = false, nextSwipe = 0
-    const qa = window.phaseThreeQA = { limit: -1, rows: [], elapsed: [], rendered: 0 }
-    const press = key => window.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }))
+    let stamp
+    const qa = window.phaseThreeQA = { limit: -1, elapsed: [], rendered: 0 }
     window.requestAnimationFrame = callback => native(ms => {
       const state = window.retrieverDebug
       if (stamp === undefined) stamp = ms
       if (state?.mode !== 'running') stamp += 40
-      else if (state.distance < qa.limit) {
-        if (qa.rows[index] && state.distance > (qa.rows[index].end ?? qa.rows[index].at) + 1.58) {
-          index++
-          sent = false
-        }
-        const row = qa.rows[index]
-        if (row && state.lane !== row.lane && state.elapsed >= nextSwipe) {
-          press(state.lane < row.lane ? 'ArrowRight' : 'ArrowLeft')
-          nextSwipe = state.elapsed + .17
-        }
-        if (row?.gate && !sent && row.at - state.distance <= state.speed * (row.gate.duration / 2 + .019)) {
-          press(row.action === 'slide' ? 'ArrowDown' : 'ArrowUp')
-          sent = true
-        }
-        stamp += 25
-      } else if (qa.limit < 0) stamp += .64
+      else if (state.distance < qa.limit) stamp += 25
+      else if (qa.limit < 0 && quality === 'low') stamp += .10
       const start = performance.now()
       callback(stamp)
       if (state?.mode === 'running' && qa.rendered < 180) {
@@ -93,7 +81,7 @@ try {
     })
   }, quality)
 
-  async function runAt(distance, seed, rows = []) {
+  async function runAt(distance, seed) {
     await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance,
       { waitUntil: 'domcontentloaded' })
     if (await page.locator('#content-screen').isVisible()) {
@@ -103,8 +91,7 @@ try {
     }
     await page.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
       null, { timeout: 60_000 })
-    await page.addStyleTag({ content: '#collision-debug, #game[data-practice] .practice-status { display: none }' })
-    await page.evaluate(rows => { window.phaseThreeQA.rows = rows }, rows)
+    await page.addStyleTag({ content: '#collision-debug, #game[data-practice] .practice-status, #callout { display: none }' })
     await page.locator('#primary').tap()
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running', null, { timeout: 40_000 })
     if (args.includes('offline')) await context.setOffline(true)
@@ -124,22 +111,26 @@ try {
   }
 
   async function stepTo(distance) {
-    await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, distance)
+    await page.evaluate(distance => { window.phaseThreeQA.limit = distance + .9 }, distance)
     await page.waitForFunction(distance => {
       const s = window.retrieverDebug
-      return s?.mode === 'over' || s?.distance >= distance
+      return s?.mode === 'over' || s?.distance >= distance - .76
     }, distance, { timeout: 75_000 }).catch(async error => {
       console.error(await page.evaluate(() => ({ state: window.retrieverDebug,
-        input: { limit: window.phaseThreeQA.limit, rows: window.phaseThreeQA.rows.length },
+        limit: window.phaseThreeQA.limit,
         mode: document.querySelector('#game')?.dataset.mode })))
       throw error
     })
-    const state = await page.evaluate(() => window.retrieverDebug)
+    const state = await page.evaluate(() => {
+      window.phaseThreeQA.limit = window.retrieverDebug.distance
+      return window.retrieverDebug
+    })
     assert.equal(state.mode, 'running', JSON.stringify(state.contact))
     return state
   }
 
   async function capture(label, extra = {}) {
+    assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running')
     await page.screenshot({ path: resolve(output, label + '.png'), scale: 'css', timeout: 45_000 })
     results.push(await page.evaluate(({ label, extra }) => ({
       label, ...extra, ...window.retrieverDebug, perf: window.retrieverPerformance(),
@@ -147,10 +138,23 @@ try {
       hud: document.querySelector('#habitat')?.textContent,
       stageLabel: document.querySelector('#difficulty-stage')?.textContent,
     }), { label, extra }))
+    assert.equal(results.at(-1).mode, 'running', label)
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('timber')) {
+  if (args.includes('presets')) {
+    await runAt(distanceAtTime(36), 7)
+    await capture('balanced-cypress')
+    for (const selected of ['high', 'low', 'auto']) {
+      await page.locator('#settings').tap()
+      await page.locator('#quality').selectOption(selected)
+      await page.locator('#close-settings').tap()
+      await page.locator('#primary').tap()
+      await page.waitForFunction(() => window.retrieverDebug?.mode === 'running')
+      await page.waitForTimeout(250)
+      await capture(selected + '-cypress')
+    }
+  } else if (args.includes('timber')) {
     const targets = isPhaseThree ? ['branch','leaning-tree','fallen','drift','snowmobile'] : ['branch','leaning-tree','fallen','drift']
     for (const type of targets) {
       if (args.some(arg => arg.startsWith('only=')) && !args.includes('only=' + type)) continue
@@ -159,54 +163,91 @@ try {
         const rows = rowsFor(seed, type === 'snowmobile' ? 465 : 62)
         for (const row of rows) {
           if (type !== 'snowmobile' && (row.time < 33 || row.time > 58.9)) continue
-          const item = row.entities.find(item => item.type === type && item.hazard && (type !== 'branch' || item.lane === 0))
+          const item = row.entities.find(item => item.type === type && item.hazard && (type !== 'branch' || item.lane === 0) &&
+            (type !== 'snowmobile' || item.lane !== 0))
           if (item) samples.push({ seed, item })
         }
       }
       samples.sort((a, b) => Math.abs(a.item.distance - 851) - Math.abs(b.item.distance - 851))
       const { seed, item } = samples[0]
-      await runAt(item.distance - 9.5, seed)
+      await runAt(item.distance - (type === 'snowmobile' ? 5.9 : 9.5), seed)
       await capture('obstacle-' + type, { seed, target: item.distance, lane: item.lane })
     }
   } else if (args.includes('transitions')) {
-    const seed = 7
     const duration = courseStages.length * 15
-    const rows = rowsFor(seed, duration + 30)
+    const courses = new Map()
     const boundaries = [...expeditionRegions.slice(1).map(region => region.seconds), duration]
+
+    // Select a center-lane coast with the actual collision solver. This
+    // isolates each visual seam. The stress suite tests timed actions
+    // and lane changes over the same boundaries in separate runs.
+    function crossingSeed(seconds) {
+      const elapsed = seconds - .55
+      const distance = distanceAtTime(elapsed)
+      const end = distanceAtTime(seconds + .63)
+      for (let seed = 1; seed <= 128; seed++) {
+        if (!courses.has(seed)) courses.set(seed, rowsFor(seed, duration + 30))
+        const hazards = courses.get(seed).flatMap(row => row.entities)
+          .filter(item => item.hazard && item.distance >= distance - 3 && item.distance <= end + 3)
+        const run = { ...newRun(), elapsed, distance, speed: speedAtTime(elapsed) }
+        const previous = {}
+        let hit
+        while (run.distance < end && !hit) {
+          Object.assign(previous, run)
+          advance(run, tickSeconds)
+          hit = firstContact(previous, run, hazards, {})
+        }
+        if (!hit) return seed
+      }
+      throw new Error('No center-lane coast around ' + seconds + ' s')
+    }
+
     for (const seconds of boundaries) {
       const key = seconds === duration ? 'endless' : expeditionRegions[seconds / 30].key
       if (args.some(arg => arg.startsWith('only=')) && !args.includes('only=' + key)) continue
-      const start = distanceAtTime(seconds - 1.45)
-      const guide = rows.filter(row => (row.end ?? row.at) + 1.35 > start && row.time < seconds + 8)
-        .map(({ lane, at, end, gate, entities }) => ({ lane, at, end, gate, action: gate?.action ?? (entities[0]?.type === 'branch' ? 'slide' : 'jump') }))
-      await runAt(start, seed, guide)
-      await stepTo(distanceAtTime(seconds - .30))
-      await capture('transition-' + key + '-before', { seconds })
-      await stepTo(distanceAtTime(seconds + .49))
-      await capture('transition-' + key + '-after', { seconds, expectedStage: stageAt(seconds).level })
+      const start = distanceAtTime(seconds - .55)
+      const seed = crossingSeed(seconds)
+      await runAt(start, seed)
+      await stepTo(distanceAtTime(seconds - .28))
+      await capture('transition-' + key + '-before', { seconds, seed })
+      await stepTo(distanceAtTime(seconds + .46))
+      await capture('transition-' + key + '-after', { seconds, seed, expectedStage: stageAt(seconds).level })
       assert.equal(results.at(-1).stageLabel, stageAt(seconds).level + ' / ' + courseStages.length)
       assert.equal(results.at(-1).hud, expeditionRegions[Math.min(expeditionRegions.length - 1, seconds / 30)].name)
     }
   } else {
     const seed = 7
+    const end = courseStages.length * 15 + 10
+    const hazards = rowsFor(seed, end).flatMap(row => row.entities).filter(item => item.hazard)
+    const safeView = (desired, minimum) => {
+      for (const offset of [0, 1.75, -1.75, 3.5, -3.5, 5.25, -5.25, 7.0, -7.0, 10]) {
+        if (desired + offset < minimum) continue
+        const pose = { ...newRun(), distance: desired + offset }
+        if (!firstContact(pose, pose, hazards, {})) return pose.distance
+      }
+      throw new Error('No clear approach view near ' + desired)
+    }
     for (const region of expeditionRegions) {
       if (args.some(arg => arg.startsWith('only=')) && !args.includes('only=' + region.key)) continue
-      const start = region.seconds === 0 ? 3 : distanceAtTime(region.seconds + 6)
-      await runAt(start, seed)
-      await capture(region.key + '-approach', { region: region.name, seed })
+      if (!args.includes('landmarks-only')) {
+        const start = region.seconds === 0 ? 3 : distanceAtTime(region.seconds + 6)
+        await runAt(safeView(start, region.marker), seed)
+        await capture(region.key + '-approach', { region: region.name, seed })
+      }
       if (!isPhaseThree || args.includes('approaches')) continue
       const low = Math.ceil(region.marker / 30)
       const lookahead = Math.ceil(distanceAtTime(region.seconds + 26) / 30)
       let marker
       for (let i = low; i <= lookahead && !marker; i++) marker = buildTile(i, i < 3 ? 0 : seed).landmark
       assert.ok(marker, region.key + ' landmark placement')
-      await runAt(Math.max(region.marker + 2, marker.distance - (region.key === 'gulf' || region.key === 'farm' ? 8 : 13)), seed)
+      const view = Math.max(region.marker + 2, marker.distance - (region.key === 'gulf' || region.key === 'farm' ? 8 : 13))
+      await runAt(safeView(view, region.marker + 1), seed)
       assert.ok(await page.evaluate(role => window.retrieverDebug.world.some(t => t.landmark?.role === role), marker.role))
       await capture(region.key + '-landmark', { region: region.name, marker, seed })
     }
   }
   assert.deepEqual(errors, [])
-  await writeFile(resolve(output, 'report.json'), JSON.stringify({ engine: engine.name(), viewport: portrait, quality, offline: args.includes('offline'), results }, null, 2) + '\n')
+  await writeFile(resolve(output, 'report.json'), JSON.stringify({ engine: engine.name(), viewport, quality, offline: args.includes('offline'), results }, null, 2) + '\n')
 } finally {
   await browser.close()
   await new Promise(done => server.close(done))

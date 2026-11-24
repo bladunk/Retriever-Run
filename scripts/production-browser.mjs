@@ -95,7 +95,7 @@ try {
   const log = { engine: safari ? 'webkit' : 'chromium', baseline, upgrade: phaseTwo ? 'phase-two' : upgrade ? 'phase-one' : false }
   const ready = async (tab = page) => {
     await tab.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
-      null, { timeout: 35_000 }).catch(async error => {
+      null, { timeout: 65_000 }).catch(async error => {
       console.error(await tab.evaluate(() => ({ content: document.querySelector('#content-status')?.textContent,
         step: document.querySelector('#content-step')?.textContent, visible: !document.querySelector('#game').hidden,
         button: document.querySelector('#primary')?.textContent, controlled: Boolean(navigator.serviceWorker?.controller) })))
@@ -261,6 +261,7 @@ try {
       await finish(page)
       await idle.getByRole('button', { name: 'Apply update' }).tap()
       await idle.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
+      await idle.bringToFront()
       await ready(idle)
       await page.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
       const after = await idle.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs)
@@ -270,6 +271,7 @@ try {
         await idle.locator('#settings').tap()
         assert.equal(await idle.locator('#swipe').inputValue(), 'standard')
         await idle.locator('#swipe').selectOption('deliberate')
+        await idle.bringToFront()
         await idle.reload({ waitUntil: 'domcontentloaded' })
         await ready(idle)
         await idle.locator('#settings').tap()

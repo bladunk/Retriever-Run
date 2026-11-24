@@ -48,7 +48,52 @@ FIELD_PHASE_TWO_BUILD=/path/to/phase-two FIELD_BUILD=dist npm run test:productio
 
 Build the baseline from the SHA above in an isolated directory. For comparable rendered software benchmarks point `FIELD_SOURCE` and `FIELD_BUILD` to that baseline source and distributable. Use the same emulated viewport and preset. Chromium accepts `FIELD_CHROMIUM` to use the local system browser. Playback takes real rendered frames from the built game and uses practice checkpoints to reach specific times. The automated simulation clock is independent of wall FPS.
 
-<!-- phase-three-results -->
+## Verification and performance
+
+| Built file bytes | Phase 02 | Phase 03 |
+| --- | ---: | ---: |
+| Total artifact | 2,465,533 | 2,487,534 |
+| Required download, duplicate bytes included | 2,437,117 | 2,458,841 |
+| Unique required content | 2,411,794 | 2,433,518 |
+| Unique shell | 66,135 | 66,202 |
+
+Hash verification covered 30 files with 27 required. No external runtime asset dependency or binary model download was introduced. Unique offline content grew by 21,724 bytes. The guided references and screenshots live in the repository outside the deployed artifact.
+
+- `npm test` passed **131** tests, including the thirty-stage clock, terrain seams, rooted timber, snowmobile, seed variation and save archive.
+- `npm run stress` passed **10,000** hunts and **31,865,525** fixed steps. The longest seeded hunts reached 465, 600, 1,200 and 1,800 active seconds. Coverage included all fifteen active hazards and the parked snowmobile.
+- The 512-seed survey recorded 29.3 lane switches and 6.0 switch-and-slide encounters per minute in Stage 20. Stage 30 rises to 34.9 switches and 11.2 switch-and-slide encounters per minute. Top pace remains 28.995 m/s. The survey is about authored route demand, and human completion rates remain unknown.
+- Chromium and WebKit passed the real Phase 02 update with the current save and a paused second tab. The waiting release re-used cached audio, deferred activation until the hunt ended and preserved four runs. The late Mountain Wilderness rendered offline after content download at 10.9 km.
+- The draft branch build and test workflow passed. PR jobs skip publication.
+
+- `npm run stress:master` passed **100,020 windows** and **69,147,728 fixed ticks** across thirty stages, all fifteen hazards and northern overtime. Center-lane render windows use a clear-seed fixture so the actual tile seam stays visible. The stress suite independently exercises lane changes and timed hazards at the same progression boundaries.
+- The built Pages subpath rendered fifteen portrait approaches and fifteen wider landmark or terrain views in WebKit. Chromium also rendered Cypress, Platte River, Sandhills and Mountain Wilderness. The WebKit crossing suite played across all 14 territory boundaries and across 450 seconds into endless play. Screenshots used the normal runner camera and exclude the diagnostics overlay. [Approaches](evidence/phase-03-approaches.webp) · [Landmarks and terrain](evidence/phase-03-landmarks.webp) · [Before and after](evidence/phase-03-environment-comparison.webp) · [Cypress timber and snowmobile](evidence/phase-03-timber-comparison.webp) · [Transition windows](evidence/phase-03-transitions.webp)
+- A fresh Phase 03 WebKit installation recovered an interrupted file and a corrupt cache entry. The software host reached Play in 17.0 s including the fault and 13.5 s on cached offline startup. Eight consecutive WebKit replays stayed at 43 geometries, seven textures and seven tiles, with internal restart markers of 50–156 ms. These markers exclude the user's tap and do not measure native-device restart latency. [Measurement records](evidence/phase-03-measurements.json)
+
+### Render measurements
+
+The following counters use software WebGL in mobile-sized WebKit at Balanced. The matched scenes use the same seed and relative territory time. Route distance changes for farm and the Rockies. Opening and forest screenshots exclude the collision-volume overlay. Draw and triangle totals include the remaining scene, dog and HUD-related 3D elements.
+
+| Checkpoint | Phase 02 draws / triangles | Phase 03 draws / triangles | Phase 03 geometry count |
+| --- | ---: | ---: | ---: |
+| Gulf opening | 59 / 108,464 | 53 / 105,242 | 38 |
+| Cypress interior | 51 / 122,658 | 58 / 139,994 | 45 |
+| Platte approach | — | 65 / 115,323 | 55 |
+| Sandhills approach | — | 46 / 85,475 | 48 |
+| Mountain Wilderness approach | 49 / 109,820 | 53 / 102,023 | 50 |
+
+Cypress adds about 17,000 submitted triangles in that scene. The largest sampled Balanced landmark was Farm Country near mature corn, at 70 draws and 179,937 submitted triangles. The largest sampled transition approached that same farm belt at 69 draws and 176,903 triangles. At a fixed Cypress pose, changing graphics in Settings produced 108,268 triangles and 52 draws on Battery Saver, 139,994 and 58 on Balanced, and 154,366 and 61 on High. Adaptive matched Balanced during the stationary observation. [Preset captures](evidence/phase-03-presets.webp) Seven terrain slots cap active packets across the route, and the optional vegetation residency is at most two packs. Texture and geometry figures are renderer object counts, not measured VRAM. The upgrade harness's WebKit start and reload times on the Phase 02 side were 37.1 s with an injected failure and 18.0 s cached on a heavily shared software host. The final Chromium upgrade rehearsal recorded 10.0 s with an injected Phase 02 transfer fault and 2.4 s cached. These individual measurements use different host loads. These timings stress recovery and cannot establish native load speed. The visually advancing tests use an injected simulation clock. Their software WebGL intervals cannot establish phone FPS.
+
+### Acceptance and owner review
+
+| Requested areas | Status |
+| --- | --- |
+| Territory order, timing, stage HUD, and endless course | Fifteen implemented terrain definitions and thirty primary stages. All stage and terrain seams have automated coverage and all 15 boundary windows have WebKit captures |
+| Wetlands, farming, plains, forests and mountains | Distinct silhouettes, landforms and landmark families. Cypress branch defect has a reproduced baseline and replacement. Water reflections are approximate and gallery lighting is reviewed in emulation |
+| Movement, content, offline saves and competitive restrictions | Preserved and tested within the recorded cases. Camp remains local for the new ruleset. Existing historic entries are archived with route metadata |
+| Resource and performance limits | Tile and pack bounds are implemented and instrumented. Long rendered soak, native iPhone thermals and battery data remain open |
+| Publication readiness | Review the evidence, verify readability and transitions on the owner’s device, and calibrate late-course response. Current physical phone status is the owner’s earlier Phase 02 report |
+
+The same porch and roof construction is shared across some original landmarks, and sprays still use cached cutout silhouettes. The landscape is geographically inspired with authored scale. Full seasonal swaps, asset-grade photorealistic vehicles, detailed forest reflections and geographically exhaustive ecology remain outside the demonstrated scope.
 
 ## Release readiness
 

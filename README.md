@@ -23,7 +23,7 @@ Choose a nickname in Retriever Camp on your first visit. Join Worldwide with an 
 
 ## Retriever Run 1.0 development
 
-The ten-phase production program starts from the existing playable build. The [production roadmap](docs/production/PRODUCTION_ROADMAP.md), [progress checkpoint](docs/production/PRODUCTION_PROGRESS.md), [player-first charter](docs/production/PLAYER_FIRST_CHARTER.md) and [release checklist](docs/production/RELEASE_CHECKLIST.md) govern upcoming changes. The [Phase 02 report](docs/production/PHASE_02_REPORT.md) covers the supported tree, collision and controls, procedural testing, and the temporary local-hunt boundary.
+The ten-phase production program starts from the existing playable build. The [production roadmap](docs/production/PRODUCTION_ROADMAP.md), [progress checkpoint](docs/production/PRODUCTION_PROGRESS.md), [player-first charter](docs/production/PLAYER_FIRST_CHARTER.md) and [release checklist](docs/production/RELEASE_CHECKLIST.md) govern upcoming changes. The [Phase 03 report](docs/production/PHASE_03_REPORT.md) and [territory registry](docs/production/TERRITORIES.md) cover the expanded route and rendered evidence. The [Phase 02 report](docs/production/PHASE_02_REPORT.md) covers the supported tree, collision and controls, procedural testing, and the temporary local-hunt boundary.
 
 Choose **Download & play** to save the trail for offline solo hunts. **Play online** opens a local hunt without completing the download. Open **Settings → Game downloads** to check content or prepare an update between hunts.
 
