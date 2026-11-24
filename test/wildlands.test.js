@@ -72,8 +72,7 @@ test('a timed lane, jump and slide policy can clear 80 seeded courses through fu
         laneAction = run.elapsed + .16
       }
       if (gate && !gateAction && gate.distance - run.distance <= run.speed * gate.duration / 2) {
-        const branch = row.entities.some((entity) => entity.type === 'branch' && entity.wide)
-        gateAction = act(run, branch ? 'slide' : 'jump')
+        gateAction = act(run, gate.action)
       }
       Object.assign(prev, run)
       advance(run, tickSeconds)
@@ -89,7 +88,7 @@ test('a timed lane, jump and slide policy can clear 80 seeded courses through fu
       }
     }
   }
-  for (const type of ['stream-wide', 'branch-wide', 'drift', 'fence', 'root', 'puddle', 'log', 'tree', 'goose']) assert.ok(encountered.has(type))
+  for (const type of ['stream-wide', 'leaning-tree-wide', 'branch', 'drift', 'fence', 'root', 'puddle', 'log', 'tree', 'goose']) assert.ok(encountered.has(type))
 })
 
 test('combos, rare retrieves, power and old local records remain consistent', () => {

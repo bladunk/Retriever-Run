@@ -44,7 +44,7 @@ function safeRoute() {
       actions.push([row.time - .69, right ? 'ArrowRight' : 'ArrowLeft'])
       lane += right ? 1 : -1
     }
-    if (row.gate) actions.push([row.time - .49, row.entities[0].type === 'branch' ? 'ArrowDown' : 'ArrowUp'])
+    if (row.gate) actions.push([row.time - .49, row.gate.action === 'slide' ? 'ArrowDown' : 'ArrowUp'])
     if (duck) {
       dove = true
       actions.push([row.time - .51, 'ArrowDown'])

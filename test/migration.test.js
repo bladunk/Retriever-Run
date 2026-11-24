@@ -130,7 +130,7 @@ test('late sets add action chains while preserving a delayed swept route and Cam
         nextSwipe = run.elapsed + .16
       }
       if (row.gate && !usedGate && run.distance >= row.at - run.speed * (row.gate.duration / 2 + (seed % 3 - 1) * .047)) {
-        controls.enqueue(row.entities[0].type === 'branch' ? 'slide' : 'jump')
+        controls.enqueue(row.gate.action)
         usedGate = true
       }
       controls.apply(run, () => {})

@@ -7,7 +7,7 @@ const { createCourse, speedAtTime } = await import(pathToFileURL(resolve(source,
 const { laneWidth } = await import(pathToFileURL(resolve(source, 'src/trail.js')))
 const { expeditionRegions, territorySeconds } = await import(pathToFileURL(resolve(source, 'src/expedition.js')))
 const totals = Array.from({ length: 20 }, (_, index) => ({
-  stage: index + 1, start: index * 15, encounters: 0, crowded: 0, switches: 0, jumps: 0, slides: 0,
+  stage: index + 1, start: index * 15, switchSlides: 0, repeated: 0, recovery: 0, encounters: 0, crowded: 0, switches: 0, jumps: 0, slides: 0,
   chains: 0, guaranteedFree: 0, gearRisk: 0, reaction: [], gaps: [], patterns: new Set(),
 }))
 const regions = expeditionRegions.map(({ name }) => ({ territory: name, hazards: {}, rocks: 0 }))
@@ -19,6 +19,7 @@ for (let seed = 0; seed < numberOfCourses; seed++) {
   for (let row = next(); row.time < 300; row = next()) {
     const stage = totals[Math.floor(row.time / 15)]
     const hazards = row.entities.filter(item => item.hazard)
+    if (!hazards.length && previous) stage.recovery++
     if (hazards.length) {
       const mix = regions[Math.floor(row.time / territorySeconds)]
       for (const item of hazards) mix.hazards[item.type] = (mix.hazards[item.type] ?? 0) + 1
@@ -28,7 +29,9 @@ for (let seed = 0; seed < numberOfCourses; seed++) {
       const occupied = new Set(hazards.map(item => item.lane)).size
       const delta = previous ? Math.abs(row.lane - previous.lane) : 0
       if (wide?.type === 'stream') stage.jumps++
-      if (wide?.type === 'branch') stage.slides++
+      if (wide?.type === 'branch' || row.gate?.action === 'slide') stage.slides++
+      if (delta && row.gate?.action === 'slide') stage.switchSlides++
+      if (previous?.pattern && previous.pattern === row.pattern) stage.repeated++
       if (occupied >= 2 || wide) stage.crowded++
       if (!wide && occupied < 2) stage.guaranteedFree++
       if (delta) stage.switches++
@@ -56,10 +59,11 @@ const territories = regions.map(({ territory, hazards, rocks }) => {
   return { territory, hazards, rockShare: +(100 * rocks / instances).toFixed(1),
     secondsPerRock: rocks ? +(territorySeconds * numberOfCourses / rocks).toFixed(1) : null }
 })
-console.log(JSON.stringify({ seeds: numberOfCourses, territories, stages: totals.map(({ start, stage, encounters, crowded, switches, jumps,
+console.log(JSON.stringify({ seeds: numberOfCourses, territories, stages: totals.map(({ start, stage, switchSlides, repeated, recovery, encounters, crowded, switches, jumps,
   slides, chains, guaranteedFree, gearRisk, reaction, gaps, patterns }) => ({
     stage, speed: +speedAtTime(start + 7.5).toFixed(2), encounters: rate(encounters), crowded: rate(crowded),
     switches: rate(switches), jumps: rate(jumps), slides: rate(slides), chains: rate(chains),
+    switchSlides: rate(switchSlides), repeated: rate(repeated), recovery: rate(recovery),
     singleLane: rate(guaranteedFree), riskRoutes: rate(gearRisk), reactionP10: pickNumber(reaction, .10),
     medianGap: pickNumber(gaps, .50), pairFamilies: patterns.size,
   })) }, null, 2))

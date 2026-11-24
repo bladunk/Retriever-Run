@@ -4,7 +4,7 @@ const width = signTextureWidth
 const height = signTextureHeight
 const padding = 31
 
-export function fitSignLettering(message, measure) {
+export function fitSignLettering(message, measure, maxLines = 2) {
   const words = message.split(' ')
   let best
   let bestScore = -Infinity
@@ -27,6 +27,7 @@ export function fitSignLettering(message, measure) {
   for (let a = 1; a < words.length; a++) {
     const first = words.slice(0, a).join(' ')
     consider([first, words.slice(a).join(' ')])
+    if (maxLines < 3) continue
     for (let b = a + 1; b < words.length; b++) {
       consider([first, words.slice(a, b).join(' '), words.slice(b).join(' ')])
     }

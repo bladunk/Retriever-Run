@@ -126,7 +126,7 @@ function simulate(entity, { lane = 0, start = 95, elapsed = 0, command } = {}) {
 
 test('only genuine timed jumps and slides get clearance credit', () => {
   const log = { type: 'log', distance: 100, lane: 0, hazard: true }
-  const branch = { type: 'branch', distance: 100, lane: 0, hazard: true, wide: true }
+  const branch = { type: 'branch', distance: 100, lane: 0, hazard: true }
   const jumped = simulate(log, { command: [95, 'jump'] })
   assert.equal(jumped.dead, false)
   assert.equal(jumped.logs, 1)

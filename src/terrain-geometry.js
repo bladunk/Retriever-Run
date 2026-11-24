@@ -173,6 +173,7 @@ export function buildTile(index) {
     const amount = T.MathUtils.smoothstep(edge, 3.08, 3.08 + width)
     return floor + (basin - floor) * amount
   }
+  const sign = signAnchor(index, earth)
   const soil = new T.Color()
   const olive = new T.Color()
   const vegetationTint = new T.Color(colors.grass)
@@ -397,7 +398,9 @@ export function buildTile(index) {
     const patch = Math.floor(i / 2) * 5.381
     const at = start + .55 + ((patch + between(.06, 1.63)) % (segmentLength - 1.1))
     const shore = .5 + .5 * Math.sin(at * .17 + side)
-    const x = side * (3.51 + (i % 4 ? random() ** 1.4 * 1.85 : between(1.8, 5.2)) + shore * .38)
+    let x = side * (3.51 + (i % 4 ? random() ** 1.4 * 1.85 : between(1.8, 5.2)) + shore * .38)
+    if (sign && Math.abs(at - sign.distance) < 6 && Math.sign(sign.width) === side &&
+      Math.abs(x) < Math.abs(sign.width) + 1.0) x += side * 2.4
     const heading = headingAt(at)
     const n = i * 6
     reeds[n] = centerAt(at) - base + Math.cos(heading) * x
@@ -407,7 +410,7 @@ export function buildTile(index) {
   }
   return { index, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds,
     plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
-      : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign: signAnchor(index, earth) }
+      : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign }
 }
 
 function pack(geometry) {

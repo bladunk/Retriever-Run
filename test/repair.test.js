@@ -36,14 +36,14 @@ test('scenery is physics-free and passing a hazard clears it for good', () => {
 
 test('branch contact follows the visible overhead timbers, supports and crouch envelope', () => {
   const standing = { ...newRun(), distance: 100 }
-  const beam = fixture('branch', 100, 0, true)
+  const beam = fixture('branch', 100, 0)
   assert.ok(traceContact(standing, standing, beam))
   const jumping = { ...standing, jump: jumpDuration / 2 }
   assert.ok(traceContact(jumping, jumping, beam))
   const sliding = { ...standing, slide: slideDuration / 2 }
   assert.equal(traceContact(sliding, sliding, beam), false)
   assert.ok(traceContact({ ...standing, slide: slideDuration }, { ...standing, slide: slideDuration }, beam))
-  assert.notDeepEqual(obstacleVolumes(beam), obstacleVolumes({ ...beam, wide: false }))
+  assert.equal(obstacleVolumes({ ...beam, wide: true }), undefined, 'retired wide branch has no playable volume')
 })
 
 test('sweep reports the same earliest contact during a Good Boy scoring bonus', () => {

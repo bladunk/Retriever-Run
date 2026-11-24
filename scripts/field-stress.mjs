@@ -70,7 +70,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
         }
         if (!usedGate && next.gate && next.at - run.distance <= run.speed * (next.gate.duration / 2 - policy)) {
           usedGate = true
-          controls.enqueue(next.entities[0].type === 'branch' ? 'slide' : 'jump')
+          controls.enqueue(next.gate.action)
         }
       }
     } else if (run.elapsed >= nextInput) {
@@ -120,7 +120,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
         totals.pickups++
         active.splice(index--, 1)
       } else if (ahead < (item.type === 'treat' ? -1 : -8 - (item.span ?? 0) * .5)) {
-        if (item.type === 'treat') run.streak = 0
+        if (item.type === 'treat' && !item.comboOptional) run.streak = 0
         active.splice(index--, 1)
       }
     }

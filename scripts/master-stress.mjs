@@ -32,7 +32,7 @@ function replay(rows, pivot, seed, stage) {
   const lane = last?.lane ?? 0
   const run = { ...newRun(), lane, x: lane * laneWidth, distance, elapsed, speed: speedAtTime(elapsed) }
   if (last?.gate) {
-    const move = last.entities[0].type === 'branch' ? 'slide' : 'jump'
+    const move = last.gate.action
     run[move] = Math.max(0, last.gate.duration / 2 - (elapsed - last.time))
   }
   const previous = {}
@@ -56,7 +56,7 @@ function replay(rows, pivot, seed, stage) {
       nextInput = run.elapsed + .16
     }
     if (row?.gate && !usedGate && row.gate.distance - run.distance <= run.speed * (row.gate.duration / 2 + timingError)) {
-      controls.enqueue(row.entities[0].type === 'branch' ? 'slide' : 'jump')
+      controls.enqueue(row.gate.action)
       usedGate = true
     }
     controls.apply(run, () => {})
@@ -87,7 +87,7 @@ for (let trial = 0; trial < seeds; trial++) {
     stageStats[stage].generated++
     for (const item of row.entities) if (item.hazard) {
       assert.ok(obstacleVolumes(item)?.length, item.type)
-      assert.ok(item.wide || item.lane !== row.lane)
+      assert.ok(item.wide || item.lane !== row.lane || (row.gate?.action === 'slide' && item.type === 'branch'))
       types.add(item.type)
     }
     rows.push(row)

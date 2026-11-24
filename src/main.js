@@ -29,7 +29,7 @@ import { createOnboarding, restoreEnrollment } from './camp-onboarding.js'
 import { createReportRival } from './rival-ui.js'
 import { createKennelView } from './kennel-view.js'
 import {
-  advance, collect, createCourse, getHeight, laneWidth, multiplier, newRun, touchesPickup,
+  advance, collect, courseRuleset, createCourse, getHeight, laneWidth, multiplier, newRun, pickupElevation, touchesPickup,
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
 import { journalIssues } from './career-integrity.js'
@@ -93,7 +93,9 @@ const previewRegion = import.meta.env.DEV || import.meta.env.MODE === 'migration
   ? expeditionRegions[Number(flags.get('preview')) - 1] : undefined
 const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
   Math.min(previewRegion.index === 9 ? 180 : 29.95, Number(flags.get('offset')) || 0)) : 0
-const diagnosticsRequested = Boolean(previewRegion) || flags.get('debug') === 'collision'
+const collisionRequested = flags.get('debug') === 'collision' &&
+  (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
+const diagnosticsRequested = Boolean(previewRegion) || collisionRequested
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
 const campfire = createCampfire(diagnosticsRequested ? () => undefined : undefined)
 const camp = createWorldwideCamp(diagnosticsRequested ? null : createCampTransport())
@@ -442,7 +444,7 @@ function positionEntities(time, distance) {
     entity.model.rotation.y = pose.angle
     if (!entity.hazard) {
       entity.model.rotation.y += time * 1.45 + entity.distance
-      entity.model.position.y += .58 + Math.sin(time * 5 + entity.distance * .27) * .11
+      entity.model.position.y += pickupElevation(entity, time)
       if (entity.type !== 'treat') entity.model.scale.setScalar(1.18)
     }
   }
@@ -485,6 +487,10 @@ function step(dt) {
     for (const entity of entities) {
       if (entity.hazard && entity !== impacted) runStatistics.passed(previous, run, entity)
     }
+    contact.seed = signSeed
+    contact.ruleset = courseRuleset
+    contact.territory = regionAt(contact.elapsed).key
+    contact.stage = stageAt(contact.elapsed).level
     debug?.hit(contact)
     frozen = true
     sound.play('hit', isWaterHazard(impacted.type) ? 'splash' : runningSurface())
@@ -545,7 +551,7 @@ function step(dt) {
       }
       if (entity.wide && !entity.cued && ahead > 0 && ahead < run.speed * 1.05) {
         if (coaching && run.elapsed < 60 && !introduced.has(entity.type)) {
-          announce(entity.type === 'stream' ? '↑  Jump the crossing' : '↓  Slide under the timber', 4)
+          announce(entity.type === 'stream' ? '↑  Jump the crossing' : 'Fallen tree · Right lane clear', 4)
           introduced.add(entity.type)
         }
         entity.cued = true
@@ -556,7 +562,7 @@ function step(dt) {
     }
     if (touchesPickup(run, entity)) {
       const result = collect(run, entity.type)
-      runStatistics.pickup(entity.type)
+      runStatistics.pickup(entity.type, entity)
       const treat = entity.type === 'treat'
       if (treat) lastTreat = run.elapsed
       const retrieve = entity.type === 'mallard' || entity.type === 'pheasant'
@@ -572,7 +578,7 @@ function step(dt) {
       effects.push(entity)
       entities.splice(index--, 1)
     } else if (ahead < (entity.type === 'treat' ? -1 : -8 - (entity.span ?? 0) * .5)) {
-      if (entity.type === 'treat') run.streak = 0
+      if (entity.type === 'treat' && !entity.comboOptional) run.streak = 0
       release(entity)
       entities.splice(index--, 1)
     }
@@ -752,6 +758,7 @@ function setMode(value, options = {}) {
         bestStreak: run.bestStreak,
         recentTreat: run.elapsed - lastTreat < .65,
       })
+      report.impact = { ...contact }
       fillReport(ui, report, { heckle: line, previousBest, player: previewRegion ? undefined : runner })
       fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
       const posting = diagnosticsRequested ? null : connectedRun ? camp.record(runPlayer, report, runPermit) :
@@ -760,7 +767,7 @@ function setMode(value, options = {}) {
       worldwide.dataset.run = String(report.id)
       worldwide.hidden = !posting
       if (posting) {
-        worldwide.textContent = submissionMessages[posting.status]
+        worldwide.textContent = !productionSession.rankedRulesetAvailable ? 'Local result · This course is awaiting a new Camp ruleset.' : submissionMessages[posting.status]
         posting.done?.then(status => {
           if (worldwide.dataset.run === String(report.id)) {
             worldwide.hidden = status === 'none'
@@ -865,7 +872,8 @@ function start() {
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
   coaching = lodge.current().stats.runs < 3
-  runStatistics = previewRegion ? createRunStatistics() : lodge.beginRun()
+  const onSkill = debug ? event => debug.skill(event) : undefined
+  runStatistics = previewRegion ? createRunStatistics(undefined, onSkill) : lodge.beginRun(onSkill)
   connectedRun = navigator.onLine && !productionSession.gateRanked()
   runPermit = connectedRun ? camp.beginRun(runPlayer) : null
   runMetric = lodgeUI.rivalMetric()
@@ -897,6 +905,7 @@ function openSettings() {
   else if (mode !== 'paused') engageMusic()
   for (const key of volumeKeys) ui[key].value = Math.round(profile[key] * 100)
   ui.quality.value = profile.quality
+  ui.swipe.value = profile.swipe
   ui.comfort.checked = profile.comfort
   ui.haptics.checked = profile.haptics
   ui.haptics.closest('label').hidden = typeof navigator.vibrate !== 'function'
@@ -939,9 +948,9 @@ function bindInput() {
       saveProfile()
     })
   }
-  for (const key of ['quality', 'comfort', 'haptics']) {
+  for (const key of ['quality', 'swipe', 'comfort', 'haptics']) {
     ui[key].addEventListener('change', () => {
-      profile[key] = key === 'quality' ? ui[key].value : ui[key].checked
+      profile[key] = key === 'quality' || key === 'swipe' ? ui[key].value : ui[key].checked
       if (key === 'quality') resize()
       saveProfile()
     })
@@ -978,7 +987,7 @@ function bindInput() {
   })
   function sendSwipe(event, finished) {
     if (gesture?.id !== event.pointerId || gesture.moved) return
-    const direction = swipeDirection(event.clientX - gesture.x, event.clientY - gesture.y, viewWidth, finished)
+    const direction = swipeDirection(event.clientX - gesture.x, event.clientY - gesture.y, viewWidth, finished, profile.swipe)
     if (direction) {
       gesture.moved = true
       move(direction)

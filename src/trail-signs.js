@@ -20,6 +20,9 @@ const starts = expeditionRegions.map(region => {
   while (signDistance(ordinal) < region.marker) ordinal++
   return ordinal
 })
+export const shortSignMessages = Object.fromEntries(Object.entries(signMessages).map(([key, lines]) =>
+  [key, lines.filter(line => line.split(' ').length <= 7 && line.length <= 31)]))
+
 const surfaces = {
   marsh: 'plank', property: 'posted', ducks: 'crossing', geese: 'crossing', labrador: 'oldPaint',
   camp: 'direction', farm: 'farm', warning: 'posted', north: 'north', canada: 'north',
@@ -44,7 +47,7 @@ function occurrencesOf(category, plan, phase, length) {
   return matches
 }
 
-export function trailSign(anchor, seed) {
+export function trailSign(anchor, seed, messages = shortSignMessages) {
   const region = regionAtDistance(anchor.distance).index
   const plan = plans[region]
   const local = anchor.ordinal - starts[region]
@@ -56,8 +59,9 @@ export function trailSign(anchor, seed) {
   }
   // A coprime stride visits the whole category before repeating. Tile
   // rebuilds, reversals and territory seams need no mutable message history.
-  const lines = signMessages[category]
+  const lines = messages[category]
   const salt = signRoll((seed ^ 0x4c71571) + category.charCodeAt(0) * 8191 + category.length)
-  const index = (occurrences * 7 + Math.floor(salt * lines.length)) % lines.length
+  const stride = lines.length % 7 ? 7 : lines.length - 1
+  const index = (occurrences * stride + Math.floor(salt * lines.length)) % lines.length
   return { line: lines[index], category, style: surfaces[category], region }
 }

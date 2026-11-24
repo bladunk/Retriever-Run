@@ -27,3 +27,11 @@ Terrain already uses seven streaming tile slots and a worker with a main-thread 
 Battery Saver, Balanced, High and Adaptive use the existing framebuffer limits, geometry and particle detail, and frame-time hysteresis. Fixed-step simulation and content reach are shared. Background and WebGL loss pause the game. The fixed clock resets on suspension, context restore and page return. Wake Lock is opportunistic and released outside active, visible hunts. The viewport uses safe-area offsets and supports scaling in menus. Additional haptics are opt-in. Environmental audio, wildlife calls, music and gameplay effects use independent controls.
 
 The localhost-only `?perf=1` probe uses a bounded frame ring, actual renderer counters and territory records. Collision practice remains the existing isolated developer path. Local test measurements are software-renderer observations. [Performance budget](PERFORMANCE_BUDGET.md)
+
+## Phase 02 gameplay contract
+
+Course rows have stable per-seed ordinal and pattern IDs. The planner reserves reaction and movement setup from every advertised exit. It samples action timing with the same swept solver used at 120 Hz in play. It substitutes a recovery row when a candidate misses the budget. A handcrafted route references its required action and clearance geometry. Replay campaigns supplement the local per-row solver, which is a guaranteed-route test with bounded timing variation.
+
+Collision poses and the Labrador rig share analytic jump height and a smoothed slide depth. Lateral steering uses the same critically damped spring in the game and the lane budget calculation. The breed and equipment are presentation choices. Sources for the supported tree, roots and ground timber produce both the artwork and swept hulls; smaller scenic remnants remain cosmetic.
+
+Phase 02 plays locally because the live Camp course contract predates the new risk routes. The older standings and previously granted receipt paths remain available. Eligibility now checks the release ruleset before requesting a permit. Keep future ruleset identifiers aligned with a reviewed and isolated server season. [Obstacle reference](OBSTACLES.md) · [Phase 02 report](PHASE_02_REPORT.md)

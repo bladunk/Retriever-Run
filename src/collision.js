@@ -1,5 +1,8 @@
 import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
 import { diveFrame, diveScale } from './dive.js'
+import { leaningTree } from './leaning-tree.js'
+import { timberProfile } from './trail-timber.js'
+import { fallenTimber, fallenVariant } from './fallen-timber.js'
 import { rockShape } from './rocks.js'
 
 export { laneWidth } from './trail.js'
@@ -16,24 +19,11 @@ const overhang = (width) => [
   volume('overhanging trunk', 0, 1.67, .015, width * .98, .41, .174),
   volume('raised timber', 0, 2.08, .015, width * .93, .16, .109),
 ]
-const log = (scale = 1) => [
-  volume('log core', 0, .32 * scale, 0, .96, .23 * scale, .255),
-  volume('log crown', 0, .561 * scale, 0, .96, .083 * scale, .162),
-  volume('log base', 0, .088 * scale, 0, .92, .069 * scale, .165),
-]
-
 const solids = {
   goose: [
     volume('goose body', 0, 0, 0, .211 * diveScale, .166 * diveScale, .285 * diveScale),
     volume('goose neck', 0, .147 * diveScale, -.326 * diveScale, .071 * diveScale, .162 * diveScale, .143 * diveScale),
     volume('goose head', 0, .22 * diveScale, -.46 * diveScale, .086 * diveScale, .095 * diveScale, .127 * diveScale),
-  ],
-  tree: [volume('tree trunk', 0, .64, 0, .27, .64, .27)],
-  fallen: [
-    volume('soil and lower roots', -.18, .64, .01, .67, .63, .43),
-    volume('split root crown', -.17, 1.44, .10, .52, .48, .32),
-    volume('raised roots', -.16, 2.02, .10, .34, .32, .20),
-    volume('downed trunk', .29, .65, .17, .66, .48, .42),
   ],
   tractor: [
     volume('engine and frame', 0, .94, 0, .63, .46, .98),
@@ -48,10 +38,6 @@ const solids = {
     volume('lower rail', 0, .38, 0, .987, .08, .074),
   ],
   branch: [...overhang(1.055), post(1.01)],
-  'branch-wide': [...overhang(3.62), post(-3.56), post(3.56)],
-  log: log(),
-  root: log(.7).concat(volume('outlying root', -.41, .13, -.31, .28, .08, .13)),
-  drift: log().concat(volume('caught timber', -.31, .39, .064, .245, .055, .26)),
 }
 const water = {
   stream: [volume('wet channel', 0, .008, 0, 3.54, .095, .73)],
@@ -76,14 +62,17 @@ const paws = [
 
 export function obstacleVolumes(entity) {
   if (entity.type === 'rock') return rockShape(entity.variant, entity.turn)
+  if (entity.type === 'leaning-tree') return leaningTree().volumes
+  if (entity.type === 'fallen') return fallenTimber(fallenVariant(entity.distance, entity.lane)).volumes
+  const timber = timberProfile(entity.type)
+  if (timber) return timber.volumes
   return water[entity.type] ?? solids[entity.wide ? entity.type + '-wide' : entity.type]
 }
 
 export const isWaterHazard = type => Object.hasOwn(water, type)
 
-export function obstacleOffset(entity, distance) {
-  const sweep = entity.type === 'drift' ? (entity.sweep ?? 1) * .69 * Math.sin((distance - entity.distance) * .32) : 0
-  return entity.lane * laneWidth + sweep
+export function obstacleOffset(entity) {
+  return entity.lane * laneWidth
 }
 
 export function jumpHeight(jump) {
@@ -106,7 +95,7 @@ export function playerFrame(frame, run, origin = 0) {
 
 export function hazardFrame(frame, entity, distance, origin = 0) {
   if (entity.type === 'goose') return diveFrame(frame, entity, distance, origin)
-  const offset = obstacleOffset(entity, distance)
+  const offset = obstacleOffset(entity)
   frame.angle = placeOnTrail(frame, entity.distance, offset, origin)
   frame.y = trailHeight(entity.distance, offset)
   return frame
@@ -186,7 +175,7 @@ function sweptBox(a, b, solid, dog, maxTime) {
   return interval.enter
 }
 
-function sweptRock(a, b, solid, startTime, maxTime) {
+function sweptHull(a, b, solid, startTime, maxTime) {
   interval.enter = startTime
   interval.exit = maxTime
   // The renderer and solver use the same convex faces. Expand each plane by
@@ -209,8 +198,9 @@ function sweptRock(a, b, solid, startTime, maxTime) {
 // Sweep endpoint poses relative to the same visible obstacle. Only playable hazards have volumes.
 // The fixed step keeps the endpoint sweep local, including when a goose moves toward the dog.
 export function traceContact(previous, current, entity, witness) {
+  if (!entity.hazard || entity.distance < previous.distance - 3 || entity.distance > current.distance + 3) return false
   const bounds = obstacleVolumes(entity)
-  if (!entity.hazard || !bounds || entity.distance < previous.distance - 3 || entity.distance > current.distance + 3) return false
+  if (!bounds) return false
   playerFrame(dogStart, previous, previous.distance)
   playerFrame(dogEnd, current, previous.distance)
   hazardFrame(hazardStart, entity, previous.distance, previous.distance)
@@ -219,17 +209,23 @@ export function traceContact(previous, current, entity, witness) {
   let time = Infinity
   let hitPart
   let hitSolid
+  let contactX, contactY, contactZ
   for (const part of playerVolumes(Boolean(water[entity.type]))) {
     relative(from, dogStart, hazardStart, part)
     relative(to, dogEnd, hazardEnd, part)
     for (const solid of bounds) {
       const until = Math.min(1, time)
       let sample = sweptBox(from, to, solid, part, until)
-      if (solid.planes && sample < Infinity) sample = sweptRock(from, to, solid, sample, interval.exit)
+      if (solid.planes && sample < Infinity) sample = sweptHull(from, to, solid, sample, interval.exit)
       if (sample < time) {
         time = sample
         hitPart = part
         hitSolid = solid
+        if (witness) {
+          contactX = from.x + (to.x - from.x) * time
+          contactY = from.y + (to.y - from.y) * time
+          contactZ = from.z + (to.z - from.z) * time
+        }
       }
     }
   }
@@ -243,6 +239,19 @@ export function traceContact(previous, current, entity, witness) {
     witness.obstacleLane = entity.lane
     witness.distance = previous.distance + (current.distance - previous.distance) * time
     witness.lateral = previous.x + (current.x - previous.x) * time
+    witness.targetLane = current.lane
+    witness.lane = Math.max(-1, Math.min(1, Math.round(witness.lateral / laneWidth)))
+    witness.jumpRemaining = previous.jump + (current.jump - previous.jump) * time
+    witness.slideRemaining = previous.slide + (current.slide - previous.slide) * time
+    witness.action = witness.jumpRemaining > 0 ? 'jump' : witness.slideRemaining > 0 ? 'slide' : 'run'
+    witness.elapsed = previous.elapsed + (current.elapsed - previous.elapsed) * time
+    witness.pattern = entity.pattern
+    witness.origin = previous.distance
+    const yaw = hazardStart.angle + (hazardEnd.angle - hazardStart.angle) * time
+    const cos = Math.cos(yaw), sin = Math.sin(yaw)
+    witness.contactX = hazardStart.x + (hazardEnd.x - hazardStart.x) * time + contactX * cos + contactZ * sin
+    witness.contactY = hazardStart.y + (hazardEnd.y - hazardStart.y) * time + contactY
+    witness.contactZ = hazardStart.z + (hazardEnd.z - hazardStart.z) * time - contactX * sin + contactZ * cos
     witness.height = jumpHeight(previous.jump + (current.jump - previous.jump) * time)
   }
   return true

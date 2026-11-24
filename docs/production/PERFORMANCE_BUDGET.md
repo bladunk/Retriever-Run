@@ -21,6 +21,8 @@ Use `npm run verify:production` to validate final SHA-256 and decoded bytes. For
 
 The [Phase 01 report](PRODUCTION_REPORT.md) records actual build totals, cold and cached playability, restart, and rendered observations. Results use Linux software WebGL and mobile-sized viewports. Physical frame rate, thermal load, decoded GPU residency and battery consumption need device measurements.
 
+Phase 02 adds no downloaded model or texture files. Timber geometry, hulls and soft ground contact shadows share bounded caches and the Lab's existing 64 × 64 shadow texture. The [Phase 02 report](PHASE_02_REPORT.md) has comparable startup and restart samples, measured course and collision cost, and the current required download size. Native latency, frame rate and GPU residency measurements remain open.
+
 ## Hosting
 
 GitHub documents a 1 GB maximum published Pages site, a 100 GB/month **soft** bandwidth limit, and a ten-minute Pages deployment timeout. Its ordinary Git upload guidance warns above 50 MiB and blocks files larger than 100 MiB. No Git LFS or new host is required for this phase. [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits) · [GitHub large-file policy](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github)
