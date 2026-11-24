@@ -9,9 +9,11 @@ const args = process.argv.slice(2)
 const safari = args.includes('webkit')
 const baseline = args.includes('baseline')
 const legacy = args.includes('legacy')
+const upgrade = args.includes('from-phase-one')
 const engine = safari ? webkit : chromium
 const root = resolve(process.env.FIELD_BUILD ?? 'dist')
-const original = legacy ? resolve(process.env.FIELD_LEGACY_BUILD ?? 'qa-output/baseline') : root
+const original = upgrade ? resolve(process.env.FIELD_PHASE_ONE_BUILD ?? 'qa-output/phase-one') :
+  legacy ? resolve(process.env.FIELD_LEGACY_BUILD ?? 'qa-output/baseline') : root
 const output = resolve(process.env.FIELD_QA_OUTPUT ?? 'qa-output')
 const prefix = '/Retriever-Run/'
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.webmanifest': 'application/manifest+json',
@@ -19,7 +21,8 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.webmanifest': 
   '.png': 'image/png' }
 const hits = new Map()
 const manifest = baseline ? null : JSON.parse(await readFile(resolve(root, 'content-manifest.json'), 'utf8'))
-const next = manifest && structuredClone(manifest)
+const openingManifest = upgrade ? JSON.parse(await readFile(resolve(original, 'content-manifest.json'), 'utf8')) : manifest
+const next = manifest && !upgrade && structuredClone(manifest)
 const replacements = new Map()
 if (next) {
   const index = (await readFile(resolve(root, 'index.html'), 'utf8')).replace('</head>', '<meta name="qa-release" content="second"></head>')
@@ -34,13 +37,13 @@ if (next) {
 }
 let newRelease = false
 let legacyActive = legacy
-let blocked = baseline || legacy ? null : manifest.assets.find(item => item.id === 'labrador.glb')?.path
+let blocked = baseline || legacy ? null : openingManifest.assets.find(item => item.id === 'labrador.glb')?.path
 const server = createServer(async (request, response) => {
   const path = new URL(request.url, 'http://localhost').pathname
   if (legacy && path === '/qa-worker-boundary') return response.writeHead(200, { 'Content-Type': 'text/html' }).end('Worker boundary')
   if (!path.startsWith(prefix)) return response.writeHead(404).end()
   const name = path.slice(prefix.length) || 'index.html'
-  const serving = legacyActive ? original : root
+  const serving = legacyActive || (upgrade && !newRelease) ? original : root
   const file = resolve(serving, name)
   if (!file.startsWith(serving + sep)) return response.writeHead(404).end()
   hits.set(name, (hits.get(name) ?? 0) + 1)
@@ -87,7 +90,7 @@ try {
   const errors = []
   page.on('pageerror', error => { errors.push(error.message); console.error(error.message) })
   page.on('console', message => { if (message.type() === 'error') console.error(message.text()) })
-  const log = { engine: safari ? 'webkit' : 'chromium', baseline }
+  const log = { engine: safari ? 'webkit' : 'chromium', baseline, phaseOneUpgrade: upgrade }
   const ready = async (tab = page) => {
     await tab.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
       null, { timeout: 35_000 }).catch(async error => {
@@ -167,7 +170,7 @@ try {
     await page.screenshot({ path: resolve(output, 'first-download.png'), scale: 'css' })
     await page.locator('#content-download').tap()
     await page.getByRole('button', { name: 'Retry download' }).waitFor({ timeout: 35_000 })
-    const previouslyVerified = manifest.assets.filter(item => item.group === 'audio').find(item => hits.has(item.path))
+    const previouslyVerified = openingManifest.assets.filter(item => item.group === 'audio').find(item => hits.has(item.path))
     assert.ok(previouslyVerified)
     const audioHits = hits.get(previouslyVerified.path)
     log.interruption = await page.locator('#content-status').textContent()
@@ -187,7 +190,7 @@ try {
     const before = await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs)
     await page.waitForFunction(() => navigator.serviceWorker.controller)
     if (args.includes('repair')) {
-      const corrupt = manifest.assets.find(asset => asset.id === 'mallard.mp3')
+      const corrupt = openingManifest.assets.find(asset => asset.id === 'mallard.mp3')
       await page.evaluate(async hash => {
         const path = new URL('./', location.href)
         const cache = await caches.open('retriever-run-content:' + path.href)
@@ -246,19 +249,31 @@ try {
       await idle.locator('#content-open').filter({ hasText: 'Game update available' }).waitFor({ state: 'attached', timeout: 35_000 })
       await idle.locator('#settings').tap()
       await idle.getByRole('button', { name: 'Game update available' }).tap()
-      await idle.getByRole('button', { name: 'Apply update' }).tap()
-      await idle.getByText('Finish or leave any open hunt').waitFor()
-      assert.equal(await page.locator('meta[name="qa-release"]').count(), 0)
+      const preparation = idle.getByRole('button', { name: /^(Download|Apply) update$/ })
+      await preparation.tap()
+      await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 60_000 })
+      const releaseMarker = upgrade ? '#swipe' : 'meta[name="qa-release"]'
+      assert.equal(await page.locator(releaseMarker).count(), 0)
       assert.equal(await page.locator('#game').getAttribute('data-mode'), 'paused')
       await page.evaluate(() => window.qaBackground(false))
       await finish(page)
       await idle.getByRole('button', { name: 'Apply update' }).tap()
-      await idle.waitForFunction(() => Boolean(document.querySelector('meta[name="qa-release"]')), null, { timeout: 25_000 })
+      await idle.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
       await ready(idle)
-      await page.waitForFunction(() => Boolean(document.querySelector('meta[name="qa-release"]')), null, { timeout: 25_000 })
+      await page.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
       const after = await idle.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs)
       assert.equal(after, before + 2)
       assert.equal(hits.get(previouslyVerified.path), audioHits)
+      if (upgrade) {
+        await idle.locator('#settings').tap()
+        assert.equal(await idle.locator('#swipe').inputValue(), 'standard')
+        await idle.locator('#swipe').selectOption('deliberate')
+        await idle.reload({ waitUntil: 'domcontentloaded' })
+        await ready(idle)
+        await idle.locator('#settings').tap()
+        assert.equal(await idle.locator('#swipe').inputValue(), 'deliberate')
+        log.updateVersions = [openingManifest.version, manifest.version]
+      }
       log.update = { busyHuntProtected: true, preservedRuns: after, unchangedAudioRequests: audioHits }
     }
   }

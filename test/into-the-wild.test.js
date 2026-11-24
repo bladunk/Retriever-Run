@@ -103,7 +103,7 @@ test('notice placement stays off the outside lanes and unclustered through the s
     assert.equal(anchor.distance, distance)
     assert.equal(anchor.ordinal, ordinal)
     assert.equal(anchor.y, -.17)
-    assert.ok(Math.abs(anchor.width) - 2.76 / 2 > laneWidth + .55)
+    assert.ok(Math.abs(anchor.width) - 2.88 / 2 > laneWidth + .55)
     sides.add(Math.sign(anchor.width))
     const time = timeAt(distance)
     assert.ok(time - previous >= 15 && time - previous <= 29)

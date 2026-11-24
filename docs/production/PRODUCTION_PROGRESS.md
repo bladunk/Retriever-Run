@@ -23,6 +23,8 @@
 - Twenty shipped stages preserve the ten-territory sequence and timing. Timed chutes, narrow switch-and-slide routes, validated high-value branches, multi-route recovery, deterministic pattern IDs and a configurable stage table provide the gameplay contracts for the next territory pass.
 - Ruleset `gameplay-phase-02` is local-only. Camp keeps previous standings, authentication, and valid old permit receipts. Bind a future ranked season to its own reviewed ruleset before re-enabling new ranked hunts.
 
+The Phase 02 review build passed 126 Node tests, 10,000 fixed-step runs and 100,000 difficulty windows. Independent Chromium and WebKit checks cover rendered obstacle actions and the Phase 01 offline/update path. Follow the report for actual evidence, approximate collision bounds, and native-device work.
+
 ## Carry forward
 
 1. Reproduce the supported tree and chase camera on a physical iPhone. Record glare, low light and fog, touch timing, texture residency, thermals, and restart on minimum and recent supported devices. The owner previously reported passing Phase 01 downloading, play, installation, offline hunts, restart, Kennel scrolling and reconnect. That evidence does not cover Phase 02.

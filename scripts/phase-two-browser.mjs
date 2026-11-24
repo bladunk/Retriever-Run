@@ -80,7 +80,7 @@ try {
       await page.locator('#content-online').click()
     }
     await page.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled)
-    if (!volumes) await page.addStyleTag({ content: '#collision-debug { display: none }' })
+    if (!volumes) await page.addStyleTag({ content: '#collision-debug, #game[data-practice] .practice-status { display: none }' })
     await page.locator('#primary').tap()
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running')
     startedAt = await page.evaluate(() => window.retrieverDebug.distance)
@@ -101,7 +101,21 @@ try {
       ({ name, ...window.retrieverDebug, performance: window.retrieverPerformance() }), name))
   }
 
-  if (!args.includes('scenery')) {
+  if (args.includes('restarts')) {
+    await launch(0)
+    for (let i = 0; i < 8; i++) {
+      await page.evaluate(() => { window.playback.advance = 125 })
+      assert.equal((await advanceTo(85)).mode, 'over')
+      await page.evaluate(() => { window.playback.limit = -1 })
+      await page.locator('#run-again').tap()
+      await page.waitForFunction(() => window.retrieverDebug?.mode === 'running')
+      const state = await advanceTo(12)
+      assert.equal(state.mode, 'running')
+      results.push(await page.evaluate(i => ({ name: 'restart-' + (i + 1), performance: window.retrieverPerformance() }), i))
+    }
+  }
+
+  if (!args.includes('scenery') && !args.includes('restarts') && !args.includes('notice') && !args.includes('weather')) {
     const cases = [
       ['approach', 0, null], ['left-jump', -1, 'jump'], ['middle-slide', 0, 'slide'],
       ['right-run', 1, null], ['mistimed', 0, null], ['bounds', 0, 'slide'],
@@ -135,24 +149,38 @@ try {
     }
   }
 
-  if (!args.includes('tree')) {
-    for (const [name, match] of [['ground-log', typeIn('log')], ['root-plate', typeIn('fallen')],
+  if (!args.includes('tree') && !args.includes('restarts')) {
+    const scenery = [['ground-log', typeIn('log')], ['root-plate', typeIn('fallen')],
       ['farm-tractor', typeIn('tractor')], ['small-rock', row => row.entities.some(it => it.type === 'rock' && it.variant < 4)],
       ['large-rock', row => row.entities.some(it => it.type === 'rock' && [7, 8, 9, 10, 11].includes(it.variant))],
       ['risk-retrieve', row => row.pattern?.endsWith('retrieve-choice')],
-      ['late-compound', row => row.time > 280 && row.pattern?.endsWith('and-slide-followup')]]) {
+      ['late-compound', row => row.time > 280 && row.pattern?.endsWith('and-slide-followup')]]
+    const conditions = [
+      ['overcast', 47, 66], ['fog', 81, 100], ['rain', 147, 166], ['snow', 219, 236],
+    ].map(([name, start, stop]) => [name, row => row.time >= start && row.time < stop && typeIn('log')(row)])
+    const selected = args.includes('notice') ? [] : args.includes('weather') ? conditions : scenery
+    for (const [name, match] of selected) {
       const target = first(match)
       if (!target) continue
-      await launch(target.at - 8)
+      await launch(target.at - 8, false, args.includes('weather') ? 'high' : 'balanced')
       const result = await advanceTo(target.at - 5)
       assert.equal(result.mode, 'running', JSON.stringify(result.contact))
+      // A diagnostic seek changes the entire tile window in one step. Let
+      // the actual streamed ground arrive before recording the scenery.
+      await page.waitForFunction(() => window.retrieverDebug?.tiles === 7, null, { timeout: 25_000 })
+      await page.waitForTimeout(450)
       await snapshot(name)
     }
-    const notice = signDistance(0)
-    await launch(notice - 10)
-    const result = await advanceTo(notice - 7)
-    assert.ok(result.signs.length && !result.inLaneSigns)
-    await snapshot('trail-notice')
+    if (!args.includes('weather')) {
+      const notice = signDistance(0)
+      await launch(notice - 26)
+      assert.equal((await advanceTo(notice - 18)).mode, 'running')
+      await page.waitForFunction(() => window.retrieverDebug?.tiles === 7 && window.retrieverDebug.signs.length)
+      const current = await page.evaluate(() => window.retrieverDebug)
+      assert.equal(current.inLaneSigns, false)
+      assert.ok(current.signs[0].corners.every(([x, y]) => x >= 0 && x <= 1 && y >= 0 && y <= 1))
+      await snapshot('trail-notice')
+    }
   }
   assert.deepEqual(errors, [])
   await writeFile(resolve(output, 'report.json'), JSON.stringify({ engine: engine.name(), results }, null, 2) + '\n')
