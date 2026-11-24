@@ -92,7 +92,7 @@ const wakeLock = createWakeLock(navigator.wakeLock && (() => navigator.wakeLock.
 const previewRegion = import.meta.env.DEV || import.meta.env.MODE === 'migration-qa'
   ? expeditionRegions[Number(flags.get('preview')) - 1] : undefined
 const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
-  Math.min(previewRegion.index === 9 ? 180 : 29.95, Number(flags.get('offset')) || 0)) : 0
+  Math.min(previewRegion === expeditionRegions.at(-1) ? 180 : 29.95, Number(flags.get('offset')) || 0)) : 0
 const collisionRequested = flags.get('debug') === 'collision' &&
   (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
 const diagnosticsRequested = Boolean(previewRegion) || collisionRequested
@@ -121,6 +121,8 @@ let coaching = false
 let lastShift = -Infinity
 let lastTreat = -Infinity
 let signSeed = 7
+let setTerrainSeed = () => {}
+let currentTerritory = null
 let audioGesture = false
 let nextPatchCheck = 0
 let toastUntil = 0
@@ -212,6 +214,7 @@ function initialize() {
   const atmosphere = createAtmosphere(scene)
   const signs = createTrailSigns(scene)
   const terrain = createTerrain(scene, (anchor, distance) => signs.show(anchor, distance, signSeed))
+  setTerrainSeed = terrain.setSeed
   const leaves = createDriftingLeaves(scene)
   const wildlife = createWildlife(scene, sound.bird)
   const diving = createDivingFlocks(scene)
@@ -368,7 +371,7 @@ function initialize() {
     }
     if (mode === 'title' || mode === 'running' || needsRedraw) {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
-        ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(),
+        ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps,
       }, camera, signs)
       renderer.render(scene, camera)
       if (mode === 'running' && performanceProbe) performanceProbe.frame(wall * 1000, performance.now() - renderStart,
@@ -460,7 +463,7 @@ function runningSurface() {
   if (splashUntil > run.distance) return 'splash'
   const { kind, snow } = regionAt(run.elapsed)
   if (snow > .32) return 'snow'
-  return kind === 'field' || kind === 'pothole' ? 'grass' : kind === 'river' || kind === 'alpine' ? 'dirt' : 'mud'
+  return ['field', 'pothole', 'dunes', 'parkland'].includes(kind) ? 'grass' : ['braids', 'limestone', 'foothills', 'alpine'].includes(kind) ? 'dirt' : 'mud'
 }
 
 function onAction(move) {
@@ -620,7 +623,13 @@ function announce(message, priority) {
 }
 
 function updateConditions(weather) {
-  const habitat = regionAt(run.elapsed).name
+  const region = regionAt(run.elapsed)
+  const habitat = region.name
+  if (currentTerritory !== null && currentTerritory !== region.key && !frozen) {
+    runStatistics?.discover(region, run.elapsed)
+    announce(region.key === 'manitoba' ? 'Canada · Manitoba Marshlands' : region.name, 2)
+  }
+  currentTerritory = region.key
   if (ui.habitat.textContent !== habitat) {
     ui.habitat.textContent = habitat
     if (!reducedMotion.matches) ui.habitat.animate([{ color: '#ffe4a2' }, { color: '#fff3de' }], 1800)
@@ -836,6 +845,8 @@ function resetTrail(seed) {
   effects.length = 0
   run = newRun()
   signSeed = seed
+  setTerrainSeed(seed)
+  currentTerritory = null
   nextRow = createCourse(seed)
   row = nextRow()
   if (previewRegion) {

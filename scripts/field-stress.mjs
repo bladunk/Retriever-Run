@@ -1,3 +1,4 @@
+import { primaryDuration } from '../src/difficulty.js'
 import assert from 'node:assert/strict'
 import { createCourse, newRun, advance, collect, reactionWindow, score, touchesPickup } from '../src/runner.js'
 import { firstContact, isWaterHazard, obstacleVolumes, playerVolumes } from '../src/collision.js'
@@ -182,7 +183,7 @@ assert.ok(Number.isSafeInteger(fromSeed))
 const time = performance.now()
 for (let i = 0; i < count; i++) {
   const seed = (i + fromSeed) >>> 0
-  const long = i < 4 ? [300, 600, 1200, 1800][i] : 0
+  const long = i < 4 ? [primaryDuration + 15, 600, 1200, 1800][i] : 0
   const guided = Boolean(long || i % 5 < 3)
   const duration = long || (guided ? 21 + seed % 41 : 17 + seed % 44)
   const wind = wallPatterns[i % wallPatterns.length]

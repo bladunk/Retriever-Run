@@ -6,7 +6,7 @@ const numberOfCourses = Number(process.argv[3] ?? 512)
 const { createCourse, speedAtTime } = await import(pathToFileURL(resolve(source, 'src/runner.js')))
 const { laneWidth } = await import(pathToFileURL(resolve(source, 'src/trail.js')))
 const { expeditionRegions, territorySeconds } = await import(pathToFileURL(resolve(source, 'src/expedition.js')))
-const totals = Array.from({ length: 20 }, (_, index) => ({
+const totals = Array.from({ length: expeditionRegions.length * 2 }, (_, index) => ({
   stage: index + 1, start: index * 15, switchSlides: 0, repeated: 0, recovery: 0, encounters: 0, crowded: 0, switches: 0, jumps: 0, slides: 0,
   chains: 0, guaranteedFree: 0, gearRisk: 0, reaction: [], gaps: [], patterns: new Set(),
 }))
@@ -16,7 +16,7 @@ const rate = count => Number((count * 4 / numberOfCourses).toFixed(1))
 for (let seed = 0; seed < numberOfCourses; seed++) {
   const next = createCourse(Math.imul(seed + 1, 0x53d72d91) >>> 0)
   let previous
-  for (let row = next(); row.time < 300; row = next()) {
+  for (let row = next(); row.time < totals.length * 15; row = next()) {
     const stage = totals[Math.floor(row.time / 15)]
     const hazards = row.entities.filter(item => item.hazard)
     if (!hazards.length && previous) stage.recovery++

@@ -23,6 +23,8 @@ The [Phase 01 report](PRODUCTION_REPORT.md) records actual build totals, cold an
 
 Phase 02 adds no downloaded model or texture files. Timber geometry, hulls and soft ground contact shadows share bounded caches and the Lab's existing 64 × 64 shadow texture. The [Phase 02 report](PHASE_02_REPORT.md) has comparable startup and restart samples, measured course and collision cost, and the current required download size. Native latency, frame rate and GPU residency measurements remain open.
 
+Phase 03 keeps seven recycling terrain slots. Wider shore meshes and tree staging are bounded, and water uses shader approximations instead of a second rendered scene. Test Battery Saver, Balanced and High in Cypress, Farm Country, Boreal and the Rockies. See the [Phase 03 report](PHASE_03_REPORT.md) for actual counts and remaining device checks.
+
 ## Hosting
 
 GitHub documents a 1 GB maximum published Pages site, a 100 GB/month **soft** bandwidth limit, and a ten-minute Pages deployment timeout. Its ordinary Git upload guidance warns above 50 MiB and blocks files larger than 100 MiB. No Git LFS or new host is required for this phase. [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits) · [GitHub large-file policy](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github)

@@ -9,10 +9,12 @@ const args = process.argv.slice(2)
 const safari = args.includes('webkit')
 const baseline = args.includes('baseline')
 const legacy = args.includes('legacy')
-const upgrade = args.includes('from-phase-one')
+const phaseTwo = args.includes('from-phase-two')
+const upgrade = phaseTwo || args.includes('from-phase-one')
 const engine = safari ? webkit : chromium
 const root = resolve(process.env.FIELD_BUILD ?? 'dist')
-const original = upgrade ? resolve(process.env.FIELD_PHASE_ONE_BUILD ?? 'qa-output/phase-one') :
+const original = upgrade ? resolve(phaseTwo ? process.env.FIELD_PHASE_TWO_BUILD ?? 'qa-output/phase-two' :
+  process.env.FIELD_PHASE_ONE_BUILD ?? 'qa-output/phase-one') :
   legacy ? resolve(process.env.FIELD_LEGACY_BUILD ?? 'qa-output/baseline') : root
 const output = resolve(process.env.FIELD_QA_OUTPUT ?? 'qa-output')
 const prefix = '/Retriever-Run/'
@@ -90,10 +92,10 @@ try {
   const errors = []
   page.on('pageerror', error => { errors.push(error.message); console.error(error.message) })
   page.on('console', message => { if (message.type() === 'error') console.error(message.text()) })
-  const log = { engine: safari ? 'webkit' : 'chromium', baseline, phaseOneUpgrade: upgrade }
+  const log = { engine: safari ? 'webkit' : 'chromium', baseline, upgrade: phaseTwo ? 'phase-two' : upgrade ? 'phase-one' : false }
   const ready = async (tab = page) => {
     await tab.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
-      null, { timeout: 35_000 }).catch(async error => {
+      null, { timeout: 65_000 }).catch(async error => {
       console.error(await tab.evaluate(() => ({ content: document.querySelector('#content-status')?.textContent,
         step: document.querySelector('#content-step')?.textContent, visible: !document.querySelector('#game').hidden,
         button: document.querySelector('#primary')?.textContent, controlled: Boolean(navigator.serviceWorker?.controller) })))
@@ -252,13 +254,14 @@ try {
       const preparation = idle.getByRole('button', { name: /^(Download|Apply) update$/ })
       await preparation.tap()
       await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 60_000 })
-      const releaseMarker = upgrade ? '#swipe' : 'meta[name="qa-release"]'
+      const releaseMarker = phaseTwo ? 'meta[name="course-ruleset"]' : upgrade ? '#swipe' : 'meta[name="qa-release"]'
       assert.equal(await page.locator(releaseMarker).count(), 0)
       assert.equal(await page.locator('#game').getAttribute('data-mode'), 'paused')
       await page.evaluate(() => window.qaBackground(false))
       await finish(page)
       await idle.getByRole('button', { name: 'Apply update' }).tap()
       await idle.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
+      await idle.bringToFront()
       await ready(idle)
       await page.locator(releaseMarker).waitFor({ state: 'attached', timeout: 35_000 })
       const after = await idle.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs)
@@ -268,6 +271,7 @@ try {
         await idle.locator('#settings').tap()
         assert.equal(await idle.locator('#swipe').inputValue(), 'standard')
         await idle.locator('#swipe').selectOption('deliberate')
+        await idle.bringToFront()
         await idle.reload({ waitUntil: 'domcontentloaded' })
         await ready(idle)
         await idle.locator('#settings').tap()

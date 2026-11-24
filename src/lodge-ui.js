@@ -1,5 +1,6 @@
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, honorProgress, medals, patches } from './honors.js'
+import { legacyTerritoryNames } from './lodge-save.js'
 import { expeditionRegions } from './expedition.js'
 import { stageAt } from './difficulty.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
@@ -138,9 +139,14 @@ function journal(player) {
   const migration = node('dl', null, 'field-list')
   migration.append(...rows(expeditionRegions.map(region =>
     [region.name, duration(player.migration?.seconds[region.index] ?? 0)])))
+  const archive = []
+  if (player.legacyMigration) {
+    const ten = node('dl', null, 'field-list')
+    ten.append(...rows(legacyTerritoryNames.map((name, index) => [name, duration(player.legacyMigration.seconds[index])])))
+    archive.push(node('h3', 'Earlier ten-territory course', 'section-title section-break'), ten)
+  }
   return [node('h3', 'Lifetime Field Journal', 'section-title'),
-    node('p', 'Territory tracking starts in 5.2. Earlier saved records are included below.', 'room-note'),
-    grid, node('h3', 'Territory time since 5.2', 'section-title section-break'), migration,
+    grid, node('h3', 'The Great Migration · territory time', 'section-title section-break'), migration, ...archive,
     node('h3', 'Field breakdown', 'section-title section-break'), breakdown, ...personalRecords(player)]
 }
 
@@ -166,7 +172,8 @@ function leaderboard(lodge, metric, selectMetric) {
     const detail = node('p', [
       number(entry.score) + ' pts', meters(entry.distance), number(entry.retrieves) + ' retrieves',
       number(entry.treats) + ' treats', number(entry.logs) + ' logs', number(entry.geese) + ' geese',
-    ].join(' · '), 'board-detail')
+      entry.course && (entry.course === 'legacy-10' ? 'Earlier course' : 'Great Migration'),
+    ].filter(Boolean).join(' · '), 'board-detail')
     row.append(rank, who, highlight, detail)
     list.append(row)
   })

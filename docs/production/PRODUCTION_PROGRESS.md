@@ -2,9 +2,9 @@
 
 ## Resume here
 
-- Program target is Retriever Run 1.0 — The Great Migration. Phase 02 development version is `1.0.0-phase.2`.
-- Development baseline and rollback point are the deployed Phase 01 merge `3fb4c4f9e8eb300e622149a297ff2bbfa26446e8`. Development branch `codex/retriever-run-production-phase-02`. [Successful Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45423302775)
-- Read the [charter](PLAYER_FIRST_CHARTER.md), [architecture](ARCHITECTURE.md), [obstacle reference](OBSTACLES.md), [test matrix](PRODUCTION_TEST_MATRIX.md), and the [Phase 02 report](PHASE_02_REPORT.md) before changing course rules.
+- Program target is Retriever Run 1.0 — The Great Migration. Phase 03 development version is `1.0.0-phase.3`.
+- Development and rollback baseline is deployed Phase 02 `6ced9492d1f330bca91f4461dc068a035b8c6152`. Branch `codex/retriever-run-production-phase-03`. [Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45453881715)
+- Read the [charter](PLAYER_FIRST_CHARTER.md), [architecture](ARCHITECTURE.md), [obstacle reference](OBSTACLES.md), [territory registry](TERRITORIES.md), [test matrix](PRODUCTION_TEST_MATRIX.md) and [Phase 03 report](PHASE_03_REPORT.md).
 - Restore dependencies with `npm ci`. Run `npm test`, `npm run build`, `npm run verify:production`, `npm run stress`, and `npm run stress:master`. Use the report for browser and survey reproductions.
 
 ## Implemented in Phase 01
@@ -25,10 +25,17 @@
 
 The Phase 02 review build passed 126 Node tests, 10,000 fixed-step runs and 100,000 difficulty windows. Independent Chromium and WebKit checks cover rendered obstacle actions and the Phase 01 offline/update path. Follow the report for actual evidence, approximate collision bounds, and native-device work.
 
+## Implemented in Phase 03
+
+- Fifteen habitats, thirty stages, 7:30 primary duration and endless northern wilderness. Stage, territory, and record labels use the new route. Phase 03 hunts remain local, and the version-4 save preserves Phase 02 and earlier history.
+- Curved Cypress slide timber with a rooted support and shared swept volume. Existing signature route remains left jump, center slide and right run. Parked snowmobile is eligible in the final two territories.
+- Geo-specific landforms, foliage, water and landmarks. Bounded streamed terrain recycles generated assets and shares existing decoded cards and atlases. Future habitat spawning can consume `migration-landscapes.js` and tile packet metadata.
+
+Phase 03 passed 131 Node tests, 10,000 full stress sessions, and 100,020 route windows. The report links rendered views of all 15 territories, the 14 boundaries, endless entry, and the Phase 02/Cypress comparison. The installed-device retest remains open.
+
 ## Carry forward
 
-1. Reproduce the supported tree and chase camera on a physical iPhone. Record glare, low light and fog, touch timing, texture residency, thermals, and restart on minimum and recent supported devices. The owner previously reported passing Phase 01 downloading, play, installation, offline hunts, restart, Kennel scrolling and reconnect. That evidence does not cover Phase 02.
-2. Gather human difficulty feedback using the report's first-run and practiced cohorts. Review density, timing, risky-route value and short failing replays. Preserve readable route choice across Phase 03 scenery and weather.
-3. Use the registry's eligibility hooks for 15 territories and the configurable stage table. Re-run sequential coverage across every new region, watch forward sightlines and shared GPU residency, and keep barn, crop and tractor regressions.
-4. Record the approved Boyd portrait when available and replace the four icons using the existing pipeline. [Application icons](ASSET_LICENSES.md#application-icons)
-5. Keep both rollback references and all saves. The final ranked migration and reset require reviewed backups and separate explicit approval. [Release checklist](RELEASE_CHECKLIST.md)
+1. Use the Phase 03 report to reproduce the review build and its rendered scenes. Gather native Phase 03 device readings and resolve warnings from an extended hunt before publication.
+2. Start Phase 04 with `migration-landscapes.js`, `landforms.js` and the terrain worker habitat packet. Add wildlife placement keyed by biome, water depth and cover. Keep active collision hazards separate from background, collectible and encounter wildlife.
+3. Preserve the staged recovery checks, terrain slot limits, offline hydration, historic leaderboard restriction and local record compatibility. Run all thirty stage windows whenever gameplay changes.
+4. Record the approved Boyd portrait when available. Keep both rollback references and retain all saves. [Artwork pipeline](ASSET_LICENSES.md#application-icons) · [Release checklist](RELEASE_CHECKLIST.md)

@@ -73,11 +73,11 @@ test('rocks block running and sliding, clear by lane change, and only low silhou
 
 test('seeded routes limit rock repetition and keep a reachable lane with regional scale', () => {
   const visited = new Set()
-  const hazards = Array.from({ length: 10 }, () => new Map())
+  const hazards = Array.from({ length: 15 }, () => new Map())
   for (let seed = 1; seed <= 110; seed++) {
     const next = createCourse(Math.imul(seed, 0x43f15ec7))
     let rowIndex = 0, previous = -Infinity, variant
-    for (let row = next(); row.time < 330; row = next()) {
+    for (let row = next(); row.time < 480; row = next()) {
       const territory = stageAt(row.time).territory
       const rock = row.entities.filter(item => item.type === 'rock')
       for (const entity of row.entities) if (entity.hazard) {

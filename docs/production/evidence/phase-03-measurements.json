@@ -1,0 +1,4157 @@
+{
+  "baseline": "6ced9492d1f330bca91f4461dc068a035b8c6152",
+  "builds": {
+    "phaseTwo": {
+      "version": "0aaee50951860f573ad9",
+      "files": 30,
+      "buildBytes": 2465533,
+      "requiredFiles": 27,
+      "requiredBytes": 2437117,
+      "uniqueRequiredBytes": 2411794,
+      "shellBytes": 91458,
+      "uniqueShellBytes": 66135
+    },
+    "renderedRevision": {
+      "version": "93f6886d35e3354587c2",
+      "files": 30,
+      "buildBytes": 2487037,
+      "requiredFiles": 27,
+      "requiredBytes": 2458344,
+      "uniqueRequiredBytes": 2433021,
+      "shellBytes": 91525,
+      "uniqueShellBytes": 66202
+    },
+    "final": {
+      "version": "cc1d196faa43033b5da0",
+      "files": 30,
+      "buildBytes": 2487534,
+      "requiredFiles": 27,
+      "requiredBytes": 2458841,
+      "uniqueRequiredBytes": 2433518,
+      "shellBytes": 91525,
+      "uniqueShellBytes": 66202
+    }
+  },
+  "simulation": {
+    "field": {
+      "sessions": 10000,
+      "guided": 6001,
+      "freePlay": 3999,
+      "deaths": 3998,
+      "survived": 6002,
+      "ticks": 31865525,
+      "pickups": 431143,
+      "jumps": 23046,
+      "slides": 11540,
+      "pauses": 30638,
+      "longest": [
+        {
+          "seed": 0,
+          "seconds": 465,
+          "distance": 12023
+        },
+        {
+          "seed": 1,
+          "seconds": 600,
+          "distance": 15938
+        },
+        {
+          "seed": 2,
+          "seconds": 1200,
+          "distance": 33335
+        },
+        {
+          "seed": 3,
+          "seconds": 1800,
+          "distance": 50732
+        }
+      ],
+      "fromSeed": 0,
+      "hazards": [
+        "branch",
+        "drift",
+        "fallen",
+        "fence",
+        "goose",
+        "leaning-tree",
+        "log",
+        "puddle",
+        "rock",
+        "root",
+        "snowmobile",
+        "stream",
+        "tractor",
+        "tree",
+        "washout"
+      ],
+      "deathsBy": {
+        "stream": 3398,
+        "drift": 43,
+        "log": 134,
+        "puddle": 79,
+        "tree": 50,
+        "fence": 71,
+        "fallen": 25,
+        "leaning-tree": 36,
+        "branch": 29,
+        "root": 68,
+        "rock": 65
+      },
+      "wallSeconds": 314.09
+    },
+    "master": {
+      "scenarios": 100020,
+      "seeds": 3334,
+      "ticks": 69147728,
+      "reactions": [
+        0.32,
+        0.38,
+        0.42,
+        0.45,
+        0.47
+      ],
+      "stageStats": [
+        {
+          "level": 1,
+          "territory": "Gulf Coast Marsh",
+          "scenarios": 3334,
+          "generated": 30006,
+          "transitions": 851
+        },
+        {
+          "level": 2,
+          "territory": "Gulf Coast Marsh",
+          "scenarios": 3334,
+          "generated": 30393,
+          "transitions": 1238
+        },
+        {
+          "level": 3,
+          "territory": "Southern Cypress Swamp",
+          "scenarios": 3334,
+          "generated": 35312,
+          "transitions": 974
+        },
+        {
+          "level": 4,
+          "territory": "Southern Cypress Swamp",
+          "scenarios": 3334,
+          "generated": 34379,
+          "transitions": 1034
+        },
+        {
+          "level": 5,
+          "territory": "Mississippi Delta",
+          "scenarios": 3334,
+          "generated": 36831,
+          "transitions": 997
+        },
+        {
+          "level": 6,
+          "territory": "Mississippi Delta",
+          "scenarios": 3334,
+          "generated": 38676,
+          "transitions": 993
+        },
+        {
+          "level": 7,
+          "territory": "Arkansas Flooded Timber",
+          "scenarios": 3334,
+          "generated": 39062,
+          "transitions": 1015
+        },
+        {
+          "level": 8,
+          "territory": "Arkansas Flooded Timber",
+          "scenarios": 3334,
+          "generated": 40562,
+          "transitions": 984
+        },
+        {
+          "level": 9,
+          "territory": "Ozark River Country",
+          "scenarios": 3334,
+          "generated": 41517,
+          "transitions": 1017
+        },
+        {
+          "level": 10,
+          "territory": "Ozark River Country",
+          "scenarios": 3334,
+          "generated": 42085,
+          "transitions": 978
+        },
+        {
+          "level": 11,
+          "territory": "Midwest Farm Country",
+          "scenarios": 3334,
+          "generated": 42376,
+          "transitions": 980
+        },
+        {
+          "level": 12,
+          "territory": "Midwest Farm Country",
+          "scenarios": 3334,
+          "generated": 42779,
+          "transitions": 957
+        },
+        {
+          "level": 13,
+          "territory": "Platte River Valley",
+          "scenarios": 3334,
+          "generated": 43444,
+          "transitions": 978
+        },
+        {
+          "level": 14,
+          "territory": "Platte River Valley",
+          "scenarios": 3334,
+          "generated": 44024,
+          "transitions": 985
+        },
+        {
+          "level": 15,
+          "territory": "Nebraska Sandhills",
+          "scenarios": 3334,
+          "generated": 44546,
+          "transitions": 972
+        },
+        {
+          "level": 16,
+          "territory": "Nebraska Sandhills",
+          "scenarios": 3334,
+          "generated": 44564,
+          "transitions": 972
+        },
+        {
+          "level": 17,
+          "territory": "Dakota Prairie Potholes",
+          "scenarios": 3334,
+          "generated": 44532,
+          "transitions": 981
+        },
+        {
+          "level": 18,
+          "territory": "Dakota Prairie Potholes",
+          "scenarios": 3334,
+          "generated": 44393,
+          "transitions": 996
+        },
+        {
+          "level": 19,
+          "territory": "Northern Dakota Wetlands",
+          "scenarios": 3334,
+          "generated": 44409,
+          "transitions": 980
+        },
+        {
+          "level": 20,
+          "territory": "Northern Dakota Wetlands",
+          "scenarios": 3334,
+          "generated": 44586,
+          "transitions": 983
+        },
+        {
+          "level": 21,
+          "territory": "Manitoba Marshlands",
+          "scenarios": 3334,
+          "generated": 44356,
+          "transitions": 959
+        },
+        {
+          "level": 22,
+          "territory": "Manitoba Marshlands",
+          "scenarios": 3334,
+          "generated": 44484,
+          "transitions": 971
+        },
+        {
+          "level": 23,
+          "territory": "Saskatchewan Parklands",
+          "scenarios": 3334,
+          "generated": 44513,
+          "transitions": 990
+        },
+        {
+          "level": 24,
+          "territory": "Saskatchewan Parklands",
+          "scenarios": 3334,
+          "generated": 44600,
+          "transitions": 993
+        },
+        {
+          "level": 25,
+          "territory": "Canadian Boreal Forest",
+          "scenarios": 3334,
+          "generated": 44593,
+          "transitions": 986
+        },
+        {
+          "level": 26,
+          "territory": "Canadian Boreal Forest",
+          "scenarios": 3334,
+          "generated": 44712,
+          "transitions": 964
+        },
+        {
+          "level": 27,
+          "territory": "Rocky Mountain Foothills",
+          "scenarios": 3334,
+          "generated": 45177,
+          "transitions": 992
+        },
+        {
+          "level": 28,
+          "territory": "Rocky Mountain Foothills",
+          "scenarios": 3334,
+          "generated": 45512,
+          "transitions": 963
+        },
+        {
+          "level": 29,
+          "territory": "Canadian Mountain Wilderness",
+          "scenarios": 3334,
+          "generated": 45604,
+          "transitions": 958
+        },
+        {
+          "level": 30,
+          "territory": "Canadian Mountain Wilderness",
+          "scenarios": 3334,
+          "generated": 136752,
+          "transitions": 106
+        }
+      ],
+      "types": [
+        "branch",
+        "drift",
+        "fallen",
+        "fence",
+        "goose",
+        "leaning-tree",
+        "log",
+        "puddle",
+        "rock",
+        "root",
+        "snowmobile",
+        "stream",
+        "tractor",
+        "tree",
+        "washout"
+      ],
+      "wallSeconds": 646.96
+    }
+  },
+  "difficulty": {
+    "seeds": 512,
+    "territories": [
+      {
+        "territory": "Gulf Coast Marsh",
+        "hazards": {
+          "stream": 1027,
+          "root": 1322,
+          "drift": 602,
+          "log": 1730,
+          "puddle": 1254,
+          "leaning-tree": 470,
+          "rock": 942,
+          "branch": 879,
+          "fence": 1101,
+          "tree": 834,
+          "fallen": 582
+        },
+        "rockShare": 8.8,
+        "secondsPerRock": 16.3
+      },
+      {
+        "territory": "Southern Cypress Swamp",
+        "hazards": {
+          "branch": 1678,
+          "tree": 1895,
+          "fallen": 1383,
+          "root": 2053,
+          "puddle": 1568,
+          "log": 1731,
+          "stream": 1532,
+          "drift": 662,
+          "rock": 1278,
+          "leaning-tree": 261,
+          "goose": 512,
+          "fence": 623
+        },
+        "rockShare": 8.4,
+        "secondsPerRock": 12
+      },
+      {
+        "territory": "Mississippi Delta",
+        "hazards": {
+          "root": 1375,
+          "stream": 1952,
+          "branch": 1894,
+          "tree": 1992,
+          "fallen": 2147,
+          "fence": 1104,
+          "puddle": 1992,
+          "log": 1869,
+          "drift": 1344,
+          "rock": 1453,
+          "goose": 561,
+          "leaning-tree": 227,
+          "tractor": 147
+        },
+        "rockShare": 8,
+        "secondsPerRock": 10.6
+      },
+      {
+        "territory": "Arkansas Flooded Timber",
+        "hazards": {
+          "tree": 2704,
+          "rock": 1496,
+          "goose": 1760,
+          "branch": 2364,
+          "fallen": 2770,
+          "stream": 2026,
+          "root": 2011,
+          "drift": 1068,
+          "puddle": 1591,
+          "leaning-tree": 332,
+          "log": 1609,
+          "fence": 655
+        },
+        "rockShare": 7.3,
+        "secondsPerRock": 10.3
+      },
+      {
+        "territory": "Ozark River Country",
+        "hazards": {
+          "fence": 975,
+          "log": 2360,
+          "branch": 3026,
+          "tree": 3534,
+          "fallen": 3842,
+          "puddle": 1084,
+          "root": 2013,
+          "rock": 2074,
+          "goose": 1664,
+          "stream": 2389,
+          "drift": 846,
+          "leaning-tree": 293
+        },
+        "rockShare": 8.6,
+        "secondsPerRock": 7.4
+      },
+      {
+        "territory": "Midwest Farm Country",
+        "hazards": {
+          "tree": 2941,
+          "log": 1726,
+          "branch": 2637,
+          "fallen": 3353,
+          "stream": 2651,
+          "fence": 1936,
+          "tractor": 2262,
+          "goose": 2030,
+          "washout": 4147,
+          "puddle": 1467,
+          "root": 1727,
+          "drift": 375,
+          "rock": 1807,
+          "leaning-tree": 63
+        },
+        "rockShare": 6.2,
+        "secondsPerRock": 8.5
+      },
+      {
+        "territory": "Platte River Valley",
+        "hazards": {
+          "washout": 4550,
+          "fallen": 3318,
+          "stream": 2711,
+          "tractor": 373,
+          "drift": 2375,
+          "log": 2073,
+          "puddle": 2242,
+          "rock": 1665,
+          "branch": 2778,
+          "root": 1496,
+          "tree": 2934,
+          "goose": 2300,
+          "leaning-tree": 262,
+          "fence": 1251
+        },
+        "rockShare": 5.5,
+        "secondsPerRock": 9.2
+      },
+      {
+        "territory": "Nebraska Sandhills",
+        "hazards": {
+          "branch": 2673,
+          "tree": 3186,
+          "stream": 2901,
+          "log": 2272,
+          "fence": 2939,
+          "rock": 2006,
+          "root": 1950,
+          "fallen": 3017,
+          "drift": 640,
+          "puddle": 2043,
+          "goose": 2582,
+          "tractor": 219,
+          "washout": 5122,
+          "leaning-tree": 76
+        },
+        "rockShare": 6.3,
+        "secondsPerRock": 7.7
+      },
+      {
+        "territory": "Dakota Prairie Potholes",
+        "hazards": {
+          "stream": 3085,
+          "branch": 3218,
+          "tree": 3366,
+          "fallen": 4454,
+          "drift": 535,
+          "log": 2044,
+          "puddle": 1724,
+          "fence": 1534,
+          "root": 1654,
+          "goose": 2756,
+          "rock": 1840,
+          "tractor": 274,
+          "washout": 5460,
+          "leaning-tree": 63
+        },
+        "rockShare": 5.7,
+        "secondsPerRock": 8.3
+      },
+      {
+        "territory": "Northern Dakota Wetlands",
+        "hazards": {
+          "stream": 3105,
+          "branch": 3366,
+          "fallen": 4522,
+          "log": 1580,
+          "puddle": 1597,
+          "rock": 1696,
+          "drift": 675,
+          "tree": 3505,
+          "root": 1595,
+          "goose": 3012,
+          "fence": 1296,
+          "tractor": 463,
+          "washout": 5668,
+          "leaning-tree": 128
+        },
+        "rockShare": 5.3,
+        "secondsPerRock": 9.1
+      },
+      {
+        "territory": "Manitoba Marshlands",
+        "hazards": {
+          "root": 1600,
+          "fallen": 4632,
+          "stream": 2999,
+          "tree": 3898,
+          "rock": 1824,
+          "drift": 771,
+          "log": 1701,
+          "fence": 991,
+          "goose": 3178,
+          "branch": 3370,
+          "puddle": 1204,
+          "leaning-tree": 214,
+          "washout": 6253
+        },
+        "rockShare": 5.6,
+        "secondsPerRock": 8.4
+      },
+      {
+        "territory": "Saskatchewan Parklands",
+        "hazards": {
+          "stream": 3040,
+          "log": 1678,
+          "puddle": 1279,
+          "branch": 3507,
+          "tree": 3924,
+          "fallen": 4692,
+          "goose": 3292,
+          "fence": 961,
+          "drift": 784,
+          "root": 1519,
+          "rock": 1804,
+          "washout": 5603,
+          "leaning-tree": 190
+        },
+        "rockShare": 5.6,
+        "secondsPerRock": 8.5
+      },
+      {
+        "territory": "Canadian Boreal Forest",
+        "hazards": {
+          "rock": 1843,
+          "root": 1634,
+          "tree": 4038,
+          "branch": 3629,
+          "stream": 3052,
+          "fence": 717,
+          "goose": 3372,
+          "fallen": 4754,
+          "log": 1942,
+          "puddle": 893,
+          "drift": 645,
+          "washout": 5421,
+          "leaning-tree": 206
+        },
+        "rockShare": 5.7,
+        "secondsPerRock": 8.3
+      },
+      {
+        "territory": "Rocky Mountain Foothills",
+        "hazards": {
+          "log": 1805,
+          "root": 1668,
+          "stream": 3207,
+          "tree": 3990,
+          "snowmobile": 643,
+          "goose": 3434,
+          "branch": 3549,
+          "fallen": 4620,
+          "rock": 2078,
+          "puddle": 1037,
+          "fence": 600,
+          "washout": 3458,
+          "leaning-tree": 179,
+          "drift": 394
+        },
+        "rockShare": 6.8,
+        "secondsPerRock": 7.4
+      },
+      {
+        "territory": "Canadian Mountain Wilderness",
+        "hazards": {
+          "goose": 3646,
+          "branch": 3510,
+          "fallen": 4453,
+          "stream": 3254,
+          "root": 1561,
+          "drift": 410,
+          "rock": 2009,
+          "puddle": 1051,
+          "tree": 3956,
+          "fence": 592,
+          "log": 1681,
+          "snowmobile": 1126,
+          "leaning-tree": 164,
+          "washout": 2977
+        },
+        "rockShare": 6.6,
+        "secondsPerRock": 7.6
+      }
+    ],
+    "stages": [
+      {
+        "stage": 1,
+        "speed": 12.65,
+        "encounters": 32,
+        "crowded": 7.7,
+        "switches": 18.2,
+        "jumps": 4.3,
+        "slides": 0.2,
+        "chains": 14.4,
+        "switchSlides": 0,
+        "repeated": 14.8,
+        "recovery": 0,
+        "singleLane": 24.3,
+        "riskRoutes": 3.5,
+        "reactionP10": 0.853,
+        "medianGap": 1.63,
+        "pairFamilies": 381
+      },
+      {
+        "stage": 2,
+        "speed": 16.31,
+        "encounters": 36.4,
+        "crowded": 13.4,
+        "switches": 20.1,
+        "jumps": 3.7,
+        "slides": 2.2,
+        "chains": 25.9,
+        "switchSlides": 0,
+        "repeated": 14.7,
+        "recovery": 0,
+        "singleLane": 23,
+        "riskRoutes": 0.1,
+        "reactionP10": 0.832,
+        "medianGap": 1.556,
+        "pairFamilies": 720
+      },
+      {
+        "stage": 3,
+        "speed": 18.95,
+        "encounters": 42.3,
+        "crowded": 20,
+        "switches": 21.9,
+        "jumps": 6.3,
+        "slides": 3.5,
+        "chains": 33.6,
+        "switchSlides": 0.2,
+        "repeated": 15.1,
+        "recovery": 0,
+        "singleLane": 22.3,
+        "riskRoutes": 0.6,
+        "reactionP10": 0.797,
+        "medianGap": 1.477,
+        "pairFamilies": 913
+      },
+      {
+        "stage": 4,
+        "speed": 20.2,
+        "encounters": 41.3,
+        "crowded": 20.3,
+        "switches": 22,
+        "jumps": 5.7,
+        "slides": 3.1,
+        "chains": 32.3,
+        "switchSlides": 0.2,
+        "repeated": 9.5,
+        "recovery": 0,
+        "singleLane": 20.9,
+        "riskRoutes": 1.6,
+        "reactionP10": 0.739,
+        "medianGap": 1.416,
+        "pairFamilies": 1008
+      },
+      {
+        "stage": 5,
+        "speed": 21.28,
+        "encounters": 43.5,
+        "crowded": 27.4,
+        "switches": 22.1,
+        "jumps": 7.4,
+        "slides": 4.9,
+        "chains": 35.2,
+        "switchSlides": 0.5,
+        "repeated": 9.1,
+        "recovery": 0.6,
+        "singleLane": 16.1,
+        "riskRoutes": 1.2,
+        "reactionP10": 0.691,
+        "medianGap": 1.354,
+        "pairFamilies": 1201
+      },
+      {
+        "stage": 6,
+        "speed": 22.16,
+        "encounters": 44.5,
+        "crowded": 30.5,
+        "switches": 22.3,
+        "jumps": 7.8,
+        "slides": 5.5,
+        "chains": 34.7,
+        "switchSlides": 0.8,
+        "repeated": 7.9,
+        "recovery": 1.9,
+        "singleLane": 14,
+        "riskRoutes": 1.8,
+        "reactionP10": 0.648,
+        "medianGap": 1.304,
+        "pairFamilies": 1212
+      },
+      {
+        "stage": 7,
+        "speed": 22.99,
+        "encounters": 44.2,
+        "crowded": 34.7,
+        "switches": 23,
+        "jumps": 7.3,
+        "slides": 5.3,
+        "chains": 33.2,
+        "switchSlides": 1,
+        "repeated": 6.7,
+        "recovery": 2.5,
+        "singleLane": 9.5,
+        "riskRoutes": 2.4,
+        "reactionP10": 0.592,
+        "medianGap": 1.251,
+        "pairFamilies": 1155
+      },
+      {
+        "stage": 8,
+        "speed": 23.77,
+        "encounters": 45.9,
+        "crowded": 38.8,
+        "switches": 23.1,
+        "jumps": 8.5,
+        "slides": 6.2,
+        "chains": 35.4,
+        "switchSlides": 1.2,
+        "repeated": 7.1,
+        "recovery": 2.9,
+        "singleLane": 7.1,
+        "riskRoutes": 2.4,
+        "reactionP10": 0.56,
+        "medianGap": 1.214,
+        "pairFamilies": 1159
+      },
+      {
+        "stage": 9,
+        "speed": 24.48,
+        "encounters": 49.5,
+        "crowded": 45,
+        "switches": 27.7,
+        "jumps": 9.3,
+        "slides": 7,
+        "chains": 41.5,
+        "switchSlides": 1.6,
+        "repeated": 4.8,
+        "recovery": 0.2,
+        "singleLane": 4.5,
+        "riskRoutes": 2.5,
+        "reactionP10": 0.532,
+        "medianGap": 1.174,
+        "pairFamilies": 1093
+      },
+      {
+        "stage": 10,
+        "speed": 25.1,
+        "encounters": 50.7,
+        "crowded": 47.2,
+        "switches": 28.4,
+        "jumps": 9.3,
+        "slides": 7.6,
+        "chains": 42.5,
+        "switchSlides": 1.8,
+        "repeated": 4.8,
+        "recovery": 0,
+        "singleLane": 3.5,
+        "riskRoutes": 3.1,
+        "reactionP10": 0.532,
+        "medianGap": 1.142,
+        "pairFamilies": 1056
+      },
+      {
+        "stage": 11,
+        "speed": 25.68,
+        "encounters": 50.6,
+        "crowded": 49.1,
+        "switches": 28.1,
+        "jumps": 10.1,
+        "slides": 8.3,
+        "chains": 43.3,
+        "switchSlides": 2.1,
+        "repeated": 3.9,
+        "recovery": 0,
+        "singleLane": 1.4,
+        "riskRoutes": 2.1,
+        "reactionP10": 0.52,
+        "medianGap": 1.14,
+        "pairFamilies": 1115
+      },
+      {
+        "stage": 12,
+        "speed": 26.21,
+        "encounters": 51.3,
+        "crowded": 50.4,
+        "switches": 28.8,
+        "jumps": 10.6,
+        "slides": 8.6,
+        "chains": 44.3,
+        "switchSlides": 2.4,
+        "repeated": 3.4,
+        "recovery": 0,
+        "singleLane": 0.9,
+        "riskRoutes": 2.5,
+        "reactionP10": 0.493,
+        "medianGap": 1.14,
+        "pairFamilies": 1031
+      },
+      {
+        "stage": 13,
+        "speed": 26.68,
+        "encounters": 52.1,
+        "crowded": 50.8,
+        "switches": 29.5,
+        "jumps": 10.4,
+        "slides": 8.6,
+        "chains": 43.6,
+        "switchSlides": 3,
+        "repeated": 3.8,
+        "recovery": 0,
+        "singleLane": 1.3,
+        "riskRoutes": 4.3,
+        "reactionP10": 0.423,
+        "medianGap": 1.057,
+        "pairFamilies": 957
+      },
+      {
+        "stage": 14,
+        "speed": 27.11,
+        "encounters": 52.9,
+        "crowded": 51.9,
+        "switches": 29.9,
+        "jumps": 10.8,
+        "slides": 9,
+        "chains": 44.5,
+        "switchSlides": 3.1,
+        "repeated": 3.5,
+        "recovery": 0,
+        "singleLane": 1,
+        "riskRoutes": 4.2,
+        "reactionP10": 0.423,
+        "medianGap": 1.024,
+        "pairFamilies": 952
+      },
+      {
+        "stage": 15,
+        "speed": 27.48,
+        "encounters": 53.4,
+        "crowded": 53.1,
+        "switches": 29.7,
+        "jumps": 11.2,
+        "slides": 9.5,
+        "chains": 45.2,
+        "switchSlides": 3.6,
+        "repeated": 3.2,
+        "recovery": 0,
+        "singleLane": 0.3,
+        "riskRoutes": 4.1,
+        "reactionP10": 0.398,
+        "medianGap": 1.02,
+        "pairFamilies": 723
+      },
+      {
+        "stage": 16,
+        "speed": 27.83,
+        "encounters": 53.5,
+        "crowded": 53.2,
+        "switches": 30.4,
+        "jumps": 11.4,
+        "slides": 10,
+        "chains": 46,
+        "switchSlides": 4.2,
+        "repeated": 2.8,
+        "recovery": 0,
+        "singleLane": 0.3,
+        "riskRoutes": 4.3,
+        "reactionP10": 0.388,
+        "medianGap": 1.02,
+        "pairFamilies": 697
+      },
+      {
+        "stage": 17,
+        "speed": 28.15,
+        "encounters": 53.5,
+        "crowded": 53.2,
+        "switches": 29.9,
+        "jumps": 11.7,
+        "slides": 10.7,
+        "chains": 46.1,
+        "switchSlides": 4.6,
+        "repeated": 2.4,
+        "recovery": 0,
+        "singleLane": 0.3,
+        "riskRoutes": 3.9,
+        "reactionP10": 0.389,
+        "medianGap": 1.02,
+        "pairFamilies": 861
+      },
+      {
+        "stage": 18,
+        "speed": 28.44,
+        "encounters": 53.3,
+        "crowded": 53.1,
+        "switches": 29.1,
+        "jumps": 12.4,
+        "slides": 11.1,
+        "chains": 45.8,
+        "switchSlides": 5.1,
+        "repeated": 1.8,
+        "recovery": 0,
+        "singleLane": 0.2,
+        "riskRoutes": 4,
+        "reactionP10": 0.43,
+        "medianGap": 1.02,
+        "pairFamilies": 794
+      },
+      {
+        "stage": 19,
+        "speed": 28.72,
+        "encounters": 53.1,
+        "crowded": 52.6,
+        "switches": 29.7,
+        "jumps": 11.9,
+        "slides": 11.4,
+        "chains": 45.6,
+        "switchSlides": 5.8,
+        "repeated": 1.8,
+        "recovery": 0,
+        "singleLane": 0.5,
+        "riskRoutes": 4.1,
+        "reactionP10": 0.431,
+        "medianGap": 1.02,
+        "pairFamilies": 836
+      },
+      {
+        "stage": 20,
+        "speed": 28.87,
+        "encounters": 53.4,
+        "crowded": 52.9,
+        "switches": 29.3,
+        "jumps": 12.3,
+        "slides": 11.7,
+        "chains": 45.9,
+        "switchSlides": 6,
+        "repeated": 1.5,
+        "recovery": 0,
+        "singleLane": 0.5,
+        "riskRoutes": 4.2,
+        "reactionP10": 0.432,
+        "medianGap": 1.02,
+        "pairFamilies": 826
+      },
+      {
+        "stage": 21,
+        "speed": 28.89,
+        "encounters": 53.1,
+        "crowded": 52.3,
+        "switches": 30,
+        "jumps": 11.6,
+        "slides": 10.9,
+        "chains": 44.6,
+        "switchSlides": 6.1,
+        "repeated": 1.9,
+        "recovery": 0,
+        "singleLane": 0.8,
+        "riskRoutes": 4.7,
+        "reactionP10": 0.424,
+        "medianGap": 1.02,
+        "pairFamilies": 769
+      },
+      {
+        "stage": 22,
+        "speed": 28.91,
+        "encounters": 53.4,
+        "crowded": 52.5,
+        "switches": 30.7,
+        "jumps": 11.8,
+        "slides": 11,
+        "chains": 45.2,
+        "switchSlides": 6.7,
+        "repeated": 2,
+        "recovery": 0,
+        "singleLane": 0.8,
+        "riskRoutes": 4.8,
+        "reactionP10": 0.423,
+        "medianGap": 1.02,
+        "pairFamilies": 773
+      },
+      {
+        "stage": 23,
+        "speed": 28.92,
+        "encounters": 53.5,
+        "crowded": 52.7,
+        "switches": 30.8,
+        "jumps": 11.8,
+        "slides": 11.3,
+        "chains": 44.8,
+        "switchSlides": 7.5,
+        "repeated": 1.8,
+        "recovery": 0,
+        "singleLane": 0.8,
+        "riskRoutes": 4.5,
+        "reactionP10": 0.419,
+        "medianGap": 1.02,
+        "pairFamilies": 745
+      },
+      {
+        "stage": 24,
+        "speed": 28.94,
+        "encounters": 53.6,
+        "crowded": 52.9,
+        "switches": 31.2,
+        "jumps": 12,
+        "slides": 11.4,
+        "chains": 45.1,
+        "switchSlides": 7.9,
+        "repeated": 1.6,
+        "recovery": 0,
+        "singleLane": 0.7,
+        "riskRoutes": 4.4,
+        "reactionP10": 0.414,
+        "medianGap": 1.02,
+        "pairFamilies": 733
+      },
+      {
+        "stage": 25,
+        "speed": 28.95,
+        "encounters": 53.8,
+        "crowded": 53,
+        "switches": 32,
+        "jumps": 12,
+        "slides": 11.4,
+        "chains": 45.4,
+        "switchSlides": 8.5,
+        "repeated": 1.8,
+        "recovery": 0,
+        "singleLane": 0.8,
+        "riskRoutes": 4.8,
+        "reactionP10": 0.405,
+        "medianGap": 1.02,
+        "pairFamilies": 715
+      },
+      {
+        "stage": 26,
+        "speed": 28.97,
+        "encounters": 53.6,
+        "crowded": 52.8,
+        "switches": 32.3,
+        "jumps": 11.9,
+        "slides": 11.4,
+        "chains": 45,
+        "switchSlides": 8.9,
+        "repeated": 1.7,
+        "recovery": 0,
+        "singleLane": 0.8,
+        "riskRoutes": 5.1,
+        "reactionP10": 0.395,
+        "medianGap": 1.02,
+        "pairFamilies": 699
+      },
+      {
+        "stage": 27,
+        "speed": 28.98,
+        "encounters": 54.3,
+        "crowded": 53.5,
+        "switches": 32.9,
+        "jumps": 12.5,
+        "slides": 11.7,
+        "chains": 46.2,
+        "switchSlides": 9.7,
+        "repeated": 1.7,
+        "recovery": 0,
+        "singleLane": 0.7,
+        "riskRoutes": 4.7,
+        "reactionP10": 0.39,
+        "medianGap": 1.02,
+        "pairFamilies": 781
+      },
+      {
+        "stage": 28,
+        "speed": 28.99,
+        "encounters": 54.5,
+        "crowded": 53.8,
+        "switches": 33.6,
+        "jumps": 12.5,
+        "slides": 11.9,
+        "chains": 46.9,
+        "switchSlides": 10.2,
+        "repeated": 1.5,
+        "recovery": 0,
+        "singleLane": 0.7,
+        "riskRoutes": 5.1,
+        "reactionP10": 0.375,
+        "medianGap": 1.02,
+        "pairFamilies": 777
+      },
+      {
+        "stage": 29,
+        "speed": 28.99,
+        "encounters": 54.8,
+        "crowded": 54.2,
+        "switches": 34.3,
+        "jumps": 12.9,
+        "slides": 11.6,
+        "chains": 47.5,
+        "switchSlides": 10.6,
+        "repeated": 1.5,
+        "recovery": 0,
+        "singleLane": 0.6,
+        "riskRoutes": 5.1,
+        "reactionP10": 0.364,
+        "medianGap": 1.02,
+        "pairFamilies": 806
+      },
+      {
+        "stage": 30,
+        "speed": 28.99,
+        "encounters": 54.8,
+        "crowded": 54.1,
+        "switches": 34.9,
+        "jumps": 12.5,
+        "slides": 11.9,
+        "chains": 47.1,
+        "switchSlides": 11.2,
+        "repeated": 1.5,
+        "recovery": 0,
+        "singleLane": 0.7,
+        "riskRoutes": 5,
+        "reactionP10": 0.356,
+        "medianGap": 1.02,
+        "pairFamilies": 816
+      }
+    ]
+  },
+  "rendered": {
+    "baseline": {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "quality": "balanced",
+      "offline": false,
+      "results": [
+        {
+          "label": "gulf-approach",
+          "elapsed": 0.272,
+          "distance": 3,
+          "hud": "Gulf Coast Marsh",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "1 / 20",
+          "seed": 7,
+          "draws": 59,
+          "triangles": 108464,
+          "textures": 8,
+          "geometries": 37,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 1,
+            "median": 152,
+            "p95": 152,
+            "p99": 152,
+            "max": 152,
+            "slow": 1,
+            "average": 152
+          }
+        },
+        {
+          "label": "cypress-approach",
+          "elapsed": 36,
+          "distance": 545.86,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "3 / 20",
+          "seed": 7,
+          "draws": 51,
+          "triangles": 122658,
+          "textures": 9,
+          "geometries": 43,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 4,
+            "median": 108,
+            "p95": 224,
+            "p99": 224,
+            "max": 224,
+            "slow": 4,
+            "average": 148.75
+          }
+        },
+        {
+          "label": "farm-approach",
+          "elapsed": 126,
+          "distance": 2520.41,
+          "hud": "Midwest Farm Country",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "9 / 20",
+          "seed": 7,
+          "draws": 49,
+          "triangles": 106090,
+          "textures": 11,
+          "geometries": 52,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 6,
+            "median": 191,
+            "p95": 883,
+            "p99": 883,
+            "max": 883,
+            "slow": 5,
+            "average": 418.5
+          }
+        },
+        {
+          "label": "mountain-approach",
+          "elapsed": 276,
+          "distance": 6553.86,
+          "hud": "Canadian Mountain Wilderness",
+          "mode": "running",
+          "weather": "High-country snow",
+          "stageLabel": "19 / 20",
+          "seed": 7,
+          "draws": 49,
+          "triangles": 109820,
+          "textures": 9,
+          "geometries": 52,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 5,
+            "median": 70,
+            "p95": 113,
+            "p99": 113,
+            "max": 113,
+            "slow": 3,
+            "average": 67
+          }
+        }
+      ]
+    },
+    "territories": {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "quality": "balanced",
+      "offline": false,
+      "results": [
+        {
+          "label": "gulf-approach",
+          "elapsed": 0.272,
+          "distance": 3,
+          "hud": "Gulf Coast Marsh",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "1 / 30",
+          "seed": 7,
+          "draws": 53,
+          "triangles": 106778,
+          "textures": 8,
+          "geometries": 38,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 2,
+            "median": 21,
+            "p95": 394,
+            "p99": 394,
+            "max": 394,
+            "slow": 1,
+            "average": 207.5
+          },
+          "landmarks": [
+            "fish-shack"
+          ]
+        },
+        {
+          "label": "gulf-landmark",
+          "elapsed": 0.631,
+          "distance": 6.99,
+          "hud": "Gulf Coast Marsh",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "1 / 30",
+          "seed": 7,
+          "draws": 53,
+          "triangles": 106778,
+          "textures": 9,
+          "geometries": 42,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 5,
+            "median": 174,
+            "p95": 295,
+            "p99": 295,
+            "max": 295,
+            "slow": 5,
+            "average": 187.8
+          },
+          "landmarks": [
+            "fish-shack"
+          ]
+        },
+        {
+          "label": "cypress-approach",
+          "elapsed": 36,
+          "distance": 545.86,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "3 / 30",
+          "seed": 7,
+          "draws": 58,
+          "triangles": 139994,
+          "textures": 11,
+          "geometries": 45,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 5,
+            "median": 227,
+            "p95": 886,
+            "p99": 886,
+            "max": 886,
+            "slow": 5,
+            "average": 336.2
+          },
+          "landmarks": []
+        },
+        {
+          "label": "cypress-landmark",
+          "elapsed": 32.741,
+          "distance": 484.96,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "3 / 30",
+          "seed": 7,
+          "draws": 60,
+          "triangles": 143521,
+          "textures": 9,
+          "geometries": 45,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 9,
+            "median": 116,
+            "p95": 515,
+            "p99": 515,
+            "max": 515,
+            "slow": 6,
+            "average": 168
+          },
+          "landmarks": [
+            "swamp-cabin"
+          ]
+        },
+        {
+          "label": "flyway-approach",
+          "elapsed": 66.007,
+          "distance": 1147.95,
+          "hud": "Mississippi Delta",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "5 / 30",
+          "seed": 7,
+          "draws": 59,
+          "triangles": 108645,
+          "textures": 11,
+          "geometries": 51,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 20,
+            "median": 133,
+            "p95": 458,
+            "p99": 1087,
+            "max": 1087,
+            "slow": 14,
+            "average": 227.9
+          },
+          "landmarks": []
+        },
+        {
+          "label": "flyway-landmark",
+          "elapsed": 62.895,
+          "distance": 1082.31,
+          "hud": "Mississippi Delta",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "5 / 30",
+          "seed": 7,
+          "draws": 62,
+          "triangles": 106446,
+          "textures": 12,
+          "geometries": 55,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 15,
+            "median": 233,
+            "p95": 3099,
+            "p99": 3099,
+            "max": 3099,
+            "slow": 13,
+            "average": 409.33
+          },
+          "landmarks": [
+            "delta-shed"
+          ]
+        },
+        {
+          "label": "timber-approach",
+          "elapsed": 96,
+          "distance": 1809.89,
+          "hud": "Arkansas Flooded Timber",
+          "mode": "running",
+          "weather": "Morning fog",
+          "stageLabel": "7 / 30",
+          "seed": 7,
+          "draws": 62,
+          "triangles": 145432,
+          "textures": 11,
+          "geometries": 47,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 6,
+            "median": 391,
+            "p95": 888,
+            "p99": 888,
+            "max": 888,
+            "slow": 6,
+            "average": 464.33
+          },
+          "landmarks": [
+            "blind"
+          ]
+        },
+        {
+          "label": "timber-landmark",
+          "elapsed": 91.854,
+          "distance": 1715.36,
+          "hud": "Arkansas Flooded Timber",
+          "mode": "running",
+          "weather": "Morning fog",
+          "stageLabel": "7 / 30",
+          "seed": 7,
+          "draws": 60,
+          "triangles": 144306,
+          "textures": 11,
+          "geometries": 53,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 9,
+            "median": 209,
+            "p95": 453,
+            "p99": 453,
+            "max": 453,
+            "slow": 8,
+            "average": 233.89
+          },
+          "landmarks": [
+            "blind"
+          ]
+        },
+        {
+          "label": "ozark-approach",
+          "elapsed": 126.003,
+          "distance": 2520.48,
+          "hud": "Ozark River Country",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "9 / 30",
+          "seed": 7,
+          "draws": 58,
+          "triangles": 101834,
+          "textures": 9,
+          "geometries": 49,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 14,
+            "median": 18,
+            "p95": 254,
+            "p99": 254,
+            "max": 254,
+            "slow": 4,
+            "average": 42.57
+          },
+          "landmarks": [
+            "limestone-crossing"
+          ]
+        },
+        {
+          "label": "ozark-landmark",
+          "elapsed": 122.499,
+          "distance": 2435.21,
+          "hud": "Ozark River Country",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "9 / 30",
+          "seed": 7,
+          "draws": 55,
+          "triangles": 98346,
+          "textures": 9,
+          "geometries": 50,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 15,
+            "median": 34,
+            "p95": 298,
+            "p99": 298,
+            "max": 298,
+            "slow": 8,
+            "average": 59.4
+          },
+          "landmarks": [
+            "limestone-crossing"
+          ]
+        },
+        {
+          "label": "farm-approach",
+          "elapsed": 156,
+          "distance": 3271.45,
+          "hud": "Midwest Farm Country",
+          "mode": "running",
+          "weather": "Heavy rain",
+          "stageLabel": "11 / 30",
+          "seed": 7,
+          "draws": 65,
+          "triangles": 119134,
+          "textures": 11,
+          "geometries": 60,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": null,
+          "landmarks": [
+            "farm"
+          ]
+        },
+        {
+          "label": "farm-landmark",
+          "elapsed": 150.382,
+          "distance": 3128.08,
+          "hud": "Midwest Farm Country",
+          "mode": "running",
+          "weather": "Heavy rain",
+          "stageLabel": "11 / 30",
+          "seed": 7,
+          "draws": 67,
+          "triangles": 179429,
+          "textures": 11,
+          "geometries": 58,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": null,
+          "landmarks": [
+            "farm"
+          ]
+        },
+        {
+          "label": "platte-approach",
+          "elapsed": 186.001,
+          "distance": 4056.05,
+          "hud": "Platte River Valley",
+          "mode": "running",
+          "weather": "Windy",
+          "stageLabel": "13 / 30",
+          "seed": 7,
+          "draws": 66,
+          "triangles": 116203,
+          "textures": 10,
+          "geometries": 51,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 10,
+            "median": 298,
+            "p95": 502,
+            "p99": 502,
+            "max": 502,
+            "slow": 8,
+            "average": 284
+          },
+          "landmarks": [
+            "river-camp"
+          ]
+        },
+        {
+          "label": "platte-landmark",
+          "elapsed": 181.323,
+          "distance": 3931.77,
+          "hud": "Platte River Valley",
+          "mode": "running",
+          "weather": "Windy",
+          "stageLabel": "13 / 30",
+          "seed": 7,
+          "draws": 66,
+          "triangles": 117397,
+          "textures": 11,
+          "geometries": 57,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 14,
+            "median": 281,
+            "p95": 586,
+            "p99": 586,
+            "max": 586,
+            "slow": 12,
+            "average": 263.07
+          },
+          "landmarks": [
+            "river-camp"
+          ]
+        },
+        {
+          "label": "sandhills-approach",
+          "elapsed": 216.003,
+          "distance": 4867.91,
+          "hud": "Nebraska Sandhills",
+          "mode": "running",
+          "weather": "Snow",
+          "stageLabel": "15 / 30",
+          "seed": 7,
+          "draws": 45,
+          "triangles": 84791,
+          "textures": 10,
+          "geometries": 48,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 11,
+            "median": 196,
+            "p95": 586,
+            "p99": 586,
+            "max": 586,
+            "slow": 9,
+            "average": 205.73
+          },
+          "landmarks": [
+            "windmill"
+          ]
+        },
+        {
+          "label": "sandhills-landmark",
+          "elapsed": 211.476,
+          "distance": 4743.91,
+          "hud": "Nebraska Sandhills",
+          "mode": "running",
+          "weather": "Snow",
+          "stageLabel": "15 / 30",
+          "seed": 7,
+          "draws": 47,
+          "triangles": 89375,
+          "textures": 10,
+          "geometries": 48,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 14,
+            "median": 209,
+            "p95": 843,
+            "p99": 843,
+            "max": 843,
+            "slow": 12,
+            "average": 220.57
+          },
+          "landmarks": [
+            "windmill"
+          ]
+        },
+        {
+          "label": "prairie-approach",
+          "elapsed": 246,
+          "distance": 5701.56,
+          "hud": "Dakota Prairie Potholes",
+          "mode": "running",
+          "weather": "Sleet",
+          "stageLabel": "17 / 30",
+          "seed": 7,
+          "draws": 51,
+          "triangles": 102500,
+          "textures": 10,
+          "geometries": 47,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 8,
+            "median": 109,
+            "p95": 676,
+            "p99": 676,
+            "max": 676,
+            "slow": 7,
+            "average": 184.25
+          },
+          "landmarks": []
+        },
+        {
+          "label": "prairie-landmark",
+          "elapsed": 241.776,
+          "distance": 5582.98,
+          "hud": "Dakota Prairie Potholes",
+          "mode": "running",
+          "weather": "Snow",
+          "stageLabel": "17 / 30",
+          "seed": 7,
+          "draws": 55,
+          "triangles": 107010,
+          "textures": 10,
+          "geometries": 52,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 10,
+            "median": 113,
+            "p95": 253,
+            "p99": 253,
+            "max": 253,
+            "slow": 7,
+            "average": 123.6
+          },
+          "landmarks": [
+            "pothole-farm"
+          ]
+        },
+        {
+          "label": "dakota-approach",
+          "elapsed": 276.061,
+          "distance": 6555.61,
+          "hud": "Northern Dakota Wetlands",
+          "mode": "running",
+          "weather": "Sleet",
+          "stageLabel": "19 / 30",
+          "seed": 7,
+          "draws": 57,
+          "triangles": 91773,
+          "textures": 11,
+          "geometries": 52,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": null,
+          "landmarks": []
+        },
+        {
+          "label": "dakota-landmark",
+          "elapsed": 271.41,
+          "distance": 6422.35,
+          "hud": "Northern Dakota Wetlands",
+          "mode": "running",
+          "weather": "Sleet",
+          "stageLabel": "19 / 30",
+          "seed": 7,
+          "draws": 51,
+          "triangles": 101873,
+          "textures": 11,
+          "geometries": 48,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": null,
+          "landmarks": [
+            "grain-elevator"
+          ]
+        },
+        {
+          "label": "manitoba-approach",
+          "elapsed": 306,
+          "distance": 7419.33,
+          "hud": "Manitoba Marshlands",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "21 / 30",
+          "seed": 7,
+          "draws": 53,
+          "triangles": 101274,
+          "textures": 10,
+          "geometries": 51,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 8,
+            "median": 23,
+            "p95": 721,
+            "p99": 721,
+            "max": 721,
+            "slow": 2,
+            "average": 110.25
+          },
+          "landmarks": [
+            "marsh-dock"
+          ]
+        },
+        {
+          "label": "manitoba-landmark",
+          "elapsed": 301.576,
+          "distance": 7291.54,
+          "hud": "Manitoba Marshlands",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "21 / 30",
+          "seed": 7,
+          "draws": 52,
+          "triangles": 99781,
+          "textures": 9,
+          "geometries": 46,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 15,
+            "median": 16,
+            "p95": 73,
+            "p99": 73,
+            "max": 73,
+            "slow": 4,
+            "average": 26.53
+          },
+          "landmarks": [
+            "marsh-dock"
+          ]
+        },
+        {
+          "label": "parklands-approach",
+          "elapsed": 336.003,
+          "distance": 8286.58,
+          "hud": "Saskatchewan Parklands",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "23 / 30",
+          "seed": 7,
+          "draws": 63,
+          "triangles": 112958,
+          "textures": 11,
+          "geometries": 54,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 11,
+            "median": 204,
+            "p95": 815,
+            "p99": 815,
+            "max": 815,
+            "slow": 9,
+            "average": 232.82
+          },
+          "landmarks": []
+        },
+        {
+          "label": "parklands-landmark",
+          "elapsed": 331.686,
+          "distance": 8161.74,
+          "hud": "Saskatchewan Parklands",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "23 / 30",
+          "seed": 7,
+          "draws": 56,
+          "triangles": 100432,
+          "textures": 11,
+          "geometries": 48,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 11,
+            "median": 106,
+            "p95": 827,
+            "p99": 827,
+            "max": 827,
+            "slow": 8,
+            "average": 156.64
+          },
+          "landmarks": [
+            "aspen-cabin"
+          ]
+        },
+        {
+          "label": "boreal-approach",
+          "elapsed": 365.94,
+          "distance": 9152.8,
+          "hud": "Canadian Boreal Forest",
+          "mode": "running",
+          "weather": "Morning fog",
+          "stageLabel": "25 / 30",
+          "seed": 7,
+          "draws": 66,
+          "triangles": 120861,
+          "textures": 10,
+          "geometries": 59,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": null,
+          "landmarks": []
+        },
+        {
+          "label": "boreal-landmark",
+          "elapsed": 361.832,
+          "distance": 9033.88,
+          "hud": "Canadian Boreal Forest",
+          "mode": "running",
+          "weather": "Morning fog",
+          "stageLabel": "25 / 30",
+          "seed": 7,
+          "draws": 51,
+          "triangles": 109038,
+          "textures": 9,
+          "geometries": 48,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": null,
+          "landmarks": [
+            "snag"
+          ]
+        },
+        {
+          "label": "foothills-approach",
+          "elapsed": 396.005,
+          "distance": 10023.61,
+          "hud": "Rocky Mountain Foothills",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "27 / 30",
+          "seed": 7,
+          "draws": 67,
+          "triangles": 117544,
+          "textures": 9,
+          "geometries": 58,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 15,
+            "median": 26,
+            "p95": 491,
+            "p99": 491,
+            "max": 491,
+            "slow": 5,
+            "average": 60.47
+          },
+          "landmarks": [
+            "forestry-cabin"
+          ]
+        },
+        {
+          "label": "foothills-landmark",
+          "elapsed": 391.912,
+          "distance": 9904.99,
+          "hud": "Rocky Mountain Foothills",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "27 / 30",
+          "seed": 7,
+          "draws": 61,
+          "triangles": 129409,
+          "textures": 9,
+          "geometries": 54,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 12,
+            "median": 11,
+            "p95": 180,
+            "p99": 180,
+            "max": 180,
+            "slow": 4,
+            "average": 43.58
+          },
+          "landmarks": [
+            "forestry-cabin"
+          ]
+        },
+        {
+          "label": "mountain-approach",
+          "elapsed": 426.006,
+          "distance": 10893.23,
+          "hud": "Canadian Mountain Wilderness",
+          "mode": "running",
+          "weather": "High-country snow",
+          "stageLabel": "29 / 30",
+          "seed": 7,
+          "draws": 53,
+          "triangles": 102744,
+          "textures": 9,
+          "geometries": 50,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 12,
+            "median": 24,
+            "p95": 353,
+            "p99": 353,
+            "max": 353,
+            "slow": 5,
+            "average": 60.25
+          },
+          "landmarks": []
+        },
+        {
+          "label": "mountain-landmark",
+          "elapsed": 421.867,
+          "distance": 10773.24,
+          "hud": "Canadian Mountain Wilderness",
+          "mode": "running",
+          "weather": "Heavy rain",
+          "stageLabel": "29 / 30",
+          "seed": 7,
+          "draws": 71,
+          "triangles": 109048,
+          "textures": 9,
+          "geometries": 58,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 10,
+            "median": 33,
+            "p95": 307,
+            "p99": 307,
+            "max": 307,
+            "slow": 5,
+            "average": 91.7
+          },
+          "landmarks": [
+            "cairn"
+          ]
+        }
+      ]
+    },
+    "transitionWindows": {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "quality": "balanced",
+      "offline": false,
+      "results": [
+        {
+          "label": "transition-cypress-before",
+          "elapsed": 29.746,
+          "distance": 429.78,
+          "hud": "Gulf Coast Marsh",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "2 / 30",
+          "seed": 2,
+          "draws": 59,
+          "triangles": 137613,
+          "textures": 8,
+          "geometries": 40,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 10,
+            "median": 128,
+            "p95": 1081,
+            "p99": 1081,
+            "max": 1081,
+            "slow": 9,
+            "average": 270.7
+          },
+          "landmarks": [
+            "swamp-cabin"
+          ]
+        },
+        {
+          "label": "transition-cypress-after",
+          "elapsed": 30.471,
+          "distance": 443.06,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "3 / 30",
+          "seed": 2,
+          "expectedStage": 3,
+          "draws": 53,
+          "triangles": 125289,
+          "textures": 8,
+          "geometries": 40,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 26,
+            "median": 78,
+            "p95": 718,
+            "p99": 1081,
+            "max": 1081,
+            "slow": 19,
+            "average": 150.58
+          },
+          "landmarks": [
+            "swamp-cabin"
+          ]
+        },
+        {
+          "label": "transition-flyway-before",
+          "elapsed": 59.753,
+          "distance": 1016.64,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "4 / 30",
+          "seed": 1,
+          "draws": 60,
+          "triangles": 107248,
+          "textures": 11,
+          "geometries": 53,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 17,
+            "median": 194,
+            "p95": 1027,
+            "p99": 1027,
+            "max": 1027,
+            "slow": 12,
+            "average": 242.59
+          },
+          "landmarks": [
+            "delta-shed"
+          ]
+        },
+        {
+          "label": "transition-flyway-after",
+          "elapsed": 60.453,
+          "distance": 1031.22,
+          "hud": "Mississippi Delta",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "5 / 30",
+          "seed": 1,
+          "expectedStage": 5,
+          "draws": 65,
+          "triangles": 113666,
+          "textures": 12,
+          "geometries": 57,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 32,
+            "median": 192,
+            "p95": 1027,
+            "p99": 1137,
+            "max": 1137,
+            "slow": 27,
+            "average": 272.31
+          },
+          "landmarks": [
+            "delta-shed"
+          ]
+        },
+        {
+          "label": "transition-timber-before",
+          "elapsed": 89.749,
+          "distance": 1667.74,
+          "hud": "Mississippi Delta",
+          "mode": "running",
+          "weather": "Morning fog",
+          "stageLabel": "6 / 30",
+          "seed": 5,
+          "draws": 59,
+          "triangles": 116605,
+          "textures": 11,
+          "geometries": 56,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 14,
+            "median": 211,
+            "p95": 497,
+            "p99": 497,
+            "max": 497,
+            "slow": 13,
+            "average": 262.36
+          },
+          "landmarks": [
+            "blind",
+            "delta-shed"
+          ]
+        },
+        {
+          "label": "transition-timber-after",
+          "elapsed": 90.474,
+          "distance": 1684.12,
+          "hud": "Arkansas Flooded Timber",
+          "mode": "running",
+          "weather": "Morning fog",
+          "stageLabel": "7 / 30",
+          "seed": 5,
+          "expectedStage": 7,
+          "draws": 64,
+          "triangles": 138607,
+          "textures": 11,
+          "geometries": 56,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 30,
+            "median": 250,
+            "p95": 454,
+            "p99": 497,
+            "max": 497,
+            "slow": 29,
+            "average": 273.5
+          },
+          "landmarks": [
+            "blind"
+          ]
+        },
+        {
+          "label": "transition-ozark-before",
+          "elapsed": 119.75,
+          "distance": 2368.71,
+          "hud": "Arkansas Flooded Timber",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "8 / 30",
+          "seed": 3,
+          "draws": 59,
+          "triangles": 100011,
+          "textures": 11,
+          "geometries": 50,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 17,
+            "median": 227,
+            "p95": 992,
+            "p99": 992,
+            "max": 992,
+            "slow": 15,
+            "average": 279.06
+          },
+          "landmarks": [
+            "blind",
+            "limestone-crossing"
+          ]
+        },
+        {
+          "label": "transition-ozark-after",
+          "elapsed": 120.475,
+          "distance": 2386.22,
+          "hud": "Ozark River Country",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "9 / 30",
+          "seed": 3,
+          "expectedStage": 9,
+          "draws": 55,
+          "triangles": 93876,
+          "textures": 11,
+          "geometries": 50,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 33,
+            "median": 248,
+            "p95": 731,
+            "p99": 992,
+            "max": 992,
+            "slow": 31,
+            "average": 281.18
+          },
+          "landmarks": [
+            "blind",
+            "limestone-crossing"
+          ]
+        },
+        {
+          "label": "transition-farm-before",
+          "elapsed": 149.726,
+          "distance": 3111.44,
+          "hud": "Ozark River Country",
+          "mode": "running",
+          "weather": "Heavy rain",
+          "stageLabel": "10 / 30",
+          "seed": 2,
+          "draws": 64,
+          "triangles": 153689,
+          "textures": 11,
+          "geometries": 58,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 17,
+            "median": 253,
+            "p95": 664,
+            "p99": 664,
+            "max": 664,
+            "slow": 14,
+            "average": 253.06
+          },
+          "landmarks": [
+            "limestone-crossing",
+            "farm"
+          ]
+        },
+        {
+          "label": "transition-farm-after",
+          "elapsed": 150.476,
+          "distance": 3130.49,
+          "hud": "Midwest Farm Country",
+          "mode": "running",
+          "weather": "Heavy rain",
+          "stageLabel": "11 / 30",
+          "seed": 2,
+          "expectedStage": 11,
+          "draws": 69,
+          "triangles": 176903,
+          "textures": 11,
+          "geometries": 59,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 33,
+            "median": 266,
+            "p95": 561,
+            "p99": 664,
+            "max": 664,
+            "slow": 30,
+            "average": 269.91
+          },
+          "landmarks": [
+            "farm"
+          ]
+        },
+        {
+          "label": "transition-platte-before",
+          "elapsed": 179.751,
+          "distance": 3890.15,
+          "hud": "Midwest Farm Country",
+          "mode": "running",
+          "weather": "Windy",
+          "stageLabel": "12 / 30",
+          "seed": 2,
+          "draws": 60,
+          "triangles": 122621,
+          "textures": 11,
+          "geometries": 61,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 17,
+            "median": 185,
+            "p95": 489,
+            "p99": 489,
+            "max": 489,
+            "slow": 15,
+            "average": 203.59
+          },
+          "landmarks": [
+            "river-camp"
+          ]
+        },
+        {
+          "label": "transition-platte-after",
+          "elapsed": 180.501,
+          "distance": 3910,
+          "hud": "Platte River Valley",
+          "mode": "running",
+          "weather": "Windy",
+          "stageLabel": "13 / 30",
+          "seed": 2,
+          "expectedStage": 13,
+          "draws": 63,
+          "triangles": 119871,
+          "textures": 11,
+          "geometries": 61,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 33,
+            "median": 199,
+            "p95": 443,
+            "p99": 489,
+            "max": 489,
+            "slow": 31,
+            "average": 208.61
+          },
+          "landmarks": [
+            "river-camp"
+          ]
+        },
+        {
+          "label": "transition-sandhills-before",
+          "elapsed": 209.751,
+          "distance": 4696.78,
+          "hud": "Platte River Valley",
+          "mode": "running",
+          "weather": "Windy",
+          "stageLabel": "14 / 30",
+          "seed": 1,
+          "draws": 56,
+          "triangles": 85901,
+          "textures": 11,
+          "geometries": 56,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 17,
+            "median": 148,
+            "p95": 520,
+            "p99": 520,
+            "max": 520,
+            "slow": 14,
+            "average": 156.71
+          },
+          "landmarks": [
+            "river-camp",
+            "windmill"
+          ]
+        },
+        {
+          "label": "transition-sandhills-after",
+          "elapsed": 210.501,
+          "distance": 4717.26,
+          "hud": "Nebraska Sandhills",
+          "mode": "running",
+          "weather": "Snow",
+          "stageLabel": "15 / 30",
+          "seed": 1,
+          "expectedStage": 15,
+          "draws": 51,
+          "triangles": 91010,
+          "textures": 11,
+          "geometries": 56,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 33,
+            "median": 180,
+            "p95": 299,
+            "p99": 520,
+            "max": 520,
+            "slow": 30,
+            "average": 175.48
+          },
+          "landmarks": [
+            "windmill"
+          ]
+        },
+        {
+          "label": "transition-prairie-before",
+          "elapsed": 239.751,
+          "distance": 5526.26,
+          "hud": "Nebraska Sandhills",
+          "mode": "running",
+          "weather": "Snow",
+          "stageLabel": "16 / 30",
+          "seed": 2,
+          "draws": 60,
+          "triangles": 107332,
+          "textures": 10,
+          "geometries": 54,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 16,
+            "median": 141,
+            "p95": 416,
+            "p99": 416,
+            "max": 416,
+            "slow": 15,
+            "average": 155.13
+          },
+          "landmarks": [
+            "pothole-farm"
+          ]
+        },
+        {
+          "label": "transition-prairie-after",
+          "elapsed": 240.476,
+          "distance": 5546.56,
+          "hud": "Dakota Prairie Potholes",
+          "mode": "running",
+          "weather": "Snow",
+          "stageLabel": "17 / 30",
+          "seed": 2,
+          "expectedStage": 17,
+          "draws": 56,
+          "triangles": 104674,
+          "textures": 10,
+          "geometries": 56,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 32,
+            "median": 161,
+            "p95": 311,
+            "p99": 416,
+            "max": 416,
+            "slow": 31,
+            "average": 167.34
+          },
+          "landmarks": [
+            "pothole-farm"
+          ]
+        },
+        {
+          "label": "transition-dakota-before",
+          "elapsed": 269.751,
+          "distance": 6374.92,
+          "hud": "Dakota Prairie Potholes",
+          "mode": "running",
+          "weather": "Sleet",
+          "stageLabel": "18 / 30",
+          "seed": 2,
+          "draws": 57,
+          "triangles": 96883,
+          "textures": 11,
+          "geometries": 55,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 18,
+            "median": 239,
+            "p95": 408,
+            "p99": 408,
+            "max": 408,
+            "slow": 14,
+            "average": 203.83
+          },
+          "landmarks": [
+            "grain-elevator"
+          ]
+        },
+        {
+          "label": "transition-dakota-after",
+          "elapsed": 270.501,
+          "distance": 6396.36,
+          "hud": "Northern Dakota Wetlands",
+          "mode": "running",
+          "weather": "Sleet",
+          "stageLabel": "19 / 30",
+          "seed": 2,
+          "expectedStage": 19,
+          "draws": 55,
+          "triangles": 106237,
+          "textures": 11,
+          "geometries": 55,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 34,
+            "median": 233,
+            "p95": 408,
+            "p99": 498,
+            "max": 498,
+            "slow": 30,
+            "average": 227.85
+          },
+          "landmarks": [
+            "grain-elevator"
+          ]
+        },
+        {
+          "label": "transition-manitoba-before",
+          "elapsed": 299.751,
+          "distance": 7238.82,
+          "hud": "Northern Dakota Wetlands",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "20 / 30",
+          "seed": 4,
+          "draws": 47,
+          "triangles": 99519,
+          "textures": 10,
+          "geometries": 43,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 18,
+            "median": 199,
+            "p95": 707,
+            "p99": 707,
+            "max": 707,
+            "slow": 15,
+            "average": 217.72
+          },
+          "landmarks": [
+            "marsh-dock"
+          ]
+        },
+        {
+          "label": "transition-manitoba-after",
+          "elapsed": 300.501,
+          "distance": 7260.48,
+          "hud": "Manitoba Marshlands",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "21 / 30",
+          "seed": 4,
+          "expectedStage": 21,
+          "draws": 51,
+          "triangles": 102139,
+          "textures": 10,
+          "geometries": 49,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 34,
+            "median": 203,
+            "p95": 494,
+            "p99": 707,
+            "max": 707,
+            "slow": 31,
+            "average": 228.06
+          },
+          "landmarks": [
+            "marsh-dock"
+          ]
+        },
+        {
+          "label": "transition-parklands-before",
+          "elapsed": 329.725,
+          "distance": 8105.05,
+          "hud": "Manitoba Marshlands",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "22 / 30",
+          "seed": 4,
+          "draws": 52,
+          "triangles": 102689,
+          "textures": 12,
+          "geometries": 51,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 16,
+            "median": 128,
+            "p95": 772,
+            "p99": 772,
+            "max": 772,
+            "slow": 13,
+            "average": 192.19
+          },
+          "landmarks": [
+            "aspen-cabin"
+          ]
+        },
+        {
+          "label": "transition-parklands-after",
+          "elapsed": 330.475,
+          "distance": 8126.74,
+          "hud": "Saskatchewan Parklands",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "23 / 30",
+          "seed": 4,
+          "expectedStage": 23,
+          "draws": 55,
+          "triangles": 97770,
+          "textures": 12,
+          "geometries": 54,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 32,
+            "median": 158,
+            "p95": 494,
+            "p99": 772,
+            "max": 772,
+            "slow": 29,
+            "average": 182.63
+          },
+          "landmarks": [
+            "aspen-cabin"
+          ]
+        },
+        {
+          "label": "transition-boreal-before",
+          "elapsed": 359.75,
+          "distance": 8973.63,
+          "hud": "Saskatchewan Parklands",
+          "mode": "running",
+          "weather": "Morning fog",
+          "stageLabel": "24 / 30",
+          "seed": 1,
+          "draws": 57,
+          "triangles": 118495,
+          "textures": 11,
+          "geometries": 57,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 16,
+            "median": 114,
+            "p95": 403,
+            "p99": 403,
+            "max": 403,
+            "slow": 13,
+            "average": 131.88
+          },
+          "landmarks": [
+            "snag"
+          ]
+        },
+        {
+          "label": "transition-boreal-after",
+          "elapsed": 360.5,
+          "distance": 8995.34,
+          "hud": "Canadian Boreal Forest",
+          "mode": "running",
+          "weather": "Morning fog",
+          "stageLabel": "25 / 30",
+          "seed": 1,
+          "expectedStage": 25,
+          "draws": 50,
+          "triangles": 106928,
+          "textures": 11,
+          "geometries": 58,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 32,
+            "median": 123,
+            "p95": 285,
+            "p99": 403,
+            "max": 403,
+            "slow": 29,
+            "average": 139.63
+          },
+          "landmarks": [
+            "snag"
+          ]
+        },
+        {
+          "label": "transition-foothills-before",
+          "elapsed": 389.75,
+          "distance": 9842.36,
+          "hud": "Canadian Boreal Forest",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "26 / 30",
+          "seed": 24,
+          "draws": 63,
+          "triangles": 114406,
+          "textures": 10,
+          "geometries": 59,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 16,
+            "median": 58,
+            "p95": 883,
+            "p99": 883,
+            "max": 883,
+            "slow": 13,
+            "average": 133.25
+          },
+          "landmarks": [
+            "forestry-cabin"
+          ]
+        },
+        {
+          "label": "transition-foothills-after",
+          "elapsed": 390.475,
+          "distance": 9863.37,
+          "hud": "Rocky Mountain Foothills",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "27 / 30",
+          "seed": 24,
+          "expectedStage": 27,
+          "draws": 63,
+          "triangles": 115000,
+          "textures": 10,
+          "geometries": 64,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 32,
+            "median": 64,
+            "p95": 469,
+            "p99": 883,
+            "max": 883,
+            "slow": 26,
+            "average": 100.72
+          },
+          "landmarks": [
+            "forestry-cabin"
+          ]
+        },
+        {
+          "label": "transition-mountain-before",
+          "elapsed": 419.75,
+          "distance": 10711.87,
+          "hud": "Rocky Mountain Foothills",
+          "mode": "running",
+          "weather": "Heavy rain",
+          "stageLabel": "28 / 30",
+          "seed": 5,
+          "draws": 57,
+          "triangles": 106305,
+          "textures": 9,
+          "geometries": 56,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 14,
+            "median": 20,
+            "p95": 211,
+            "p99": 211,
+            "max": 211,
+            "slow": 4,
+            "average": 39.36
+          },
+          "landmarks": [
+            "cairn"
+          ]
+        },
+        {
+          "label": "transition-mountain-after",
+          "elapsed": 420.5,
+          "distance": 10733.61,
+          "hud": "Canadian Mountain Wilderness",
+          "mode": "running",
+          "weather": "Heavy rain",
+          "stageLabel": "29 / 30",
+          "seed": 5,
+          "expectedStage": 29,
+          "draws": 60,
+          "triangles": 98916,
+          "textures": 9,
+          "geometries": 59,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 30,
+            "median": 20,
+            "p95": 238,
+            "p99": 263,
+            "max": 263,
+            "slow": 11,
+            "average": 49.1
+          },
+          "landmarks": [
+            "cairn"
+          ]
+        },
+        {
+          "label": "transition-endless-before",
+          "elapsed": 449.726,
+          "distance": 11581,
+          "hud": "Canadian Mountain Wilderness",
+          "mode": "running",
+          "weather": "High-country snow",
+          "stageLabel": "30 / 30",
+          "seed": 8,
+          "draws": 53,
+          "triangles": 103016,
+          "textures": 9,
+          "geometries": 49,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 15,
+            "median": 30,
+            "p95": 303,
+            "p99": 303,
+            "max": 303,
+            "slow": 6,
+            "average": 52.4
+          },
+          "landmarks": [
+            "cairn"
+          ]
+        },
+        {
+          "label": "transition-endless-after",
+          "elapsed": 450.476,
+          "distance": 11602.74,
+          "hud": "Canadian Mountain Wilderness",
+          "mode": "running",
+          "weather": "High-country snow",
+          "stageLabel": "30 / 30",
+          "seed": 8,
+          "expectedStage": 30,
+          "draws": 57,
+          "triangles": 99093,
+          "textures": 9,
+          "geometries": 52,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 31,
+            "median": 30,
+            "p95": 87,
+            "p99": 303,
+            "max": 303,
+            "slow": 10,
+            "average": 42.52
+          },
+          "landmarks": [
+            "cairn"
+          ]
+        }
+      ]
+    },
+    "chromiumViews": {
+      "engine": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "quality": "balanced",
+      "offline": false,
+      "results": [
+        {
+          "label": "cypress-approach",
+          "elapsed": 36,
+          "distance": 545.86,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Autumn sunrise",
+          "stageLabel": "3 / 30",
+          "seed": 7,
+          "draws": 58,
+          "triangles": 139994,
+          "textures": 9,
+          "geometries": 45,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 7,
+            "median": 12.3,
+            "p95": 594.4,
+            "p99": 594.4,
+            "max": 594.4,
+            "slow": 1,
+            "average": 93.99
+          },
+          "landmarks": []
+        },
+        {
+          "label": "platte-approach",
+          "elapsed": 186,
+          "distance": 4056.02,
+          "hud": "Platte River Valley",
+          "mode": "running",
+          "weather": "Windy",
+          "stageLabel": "13 / 30",
+          "seed": 7,
+          "draws": 65,
+          "triangles": 115323,
+          "textures": 11,
+          "geometries": 55,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 8,
+            "median": 3.3,
+            "p95": 1504,
+            "p99": 1504,
+            "max": 1504,
+            "slow": 1,
+            "average": 192.94
+          },
+          "landmarks": [
+            "river-camp"
+          ]
+        },
+        {
+          "label": "sandhills-approach",
+          "elapsed": 216,
+          "distance": 4867.84,
+          "hud": "Nebraska Sandhills",
+          "mode": "running",
+          "weather": "Snow",
+          "stageLabel": "15 / 30",
+          "seed": 7,
+          "draws": 45,
+          "triangles": 84195,
+          "textures": 10,
+          "geometries": 48,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 8,
+            "median": 9.1,
+            "p95": 2791.7,
+            "p99": 2791.7,
+            "max": 2791.7,
+            "slow": 1,
+            "average": 360.1
+          },
+          "landmarks": [
+            "windmill"
+          ]
+        },
+        {
+          "label": "mountain-approach",
+          "elapsed": 426,
+          "distance": 10893.07,
+          "hud": "Canadian Mountain Wilderness",
+          "mode": "running",
+          "weather": "High-country snow",
+          "stageLabel": "29 / 30",
+          "seed": 7,
+          "draws": 53,
+          "triangles": 102744,
+          "textures": 9,
+          "geometries": 50,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 9,
+            "median": 7.9,
+            "p95": 392.9,
+            "p99": 392.9,
+            "max": 392.9,
+            "slow": 4,
+            "average": 66.39
+          },
+          "landmarks": []
+        }
+      ]
+    },
+    "offlineMountain": {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "quality": "balanced",
+      "offline": true,
+      "results": [
+        {
+          "label": "mountain-approach",
+          "elapsed": 426,
+          "distance": 10893.07,
+          "hud": "Canadian Mountain Wilderness",
+          "mode": "running",
+          "weather": "High-country snow",
+          "stageLabel": "29 / 30",
+          "seed": 7,
+          "draws": 53,
+          "triangles": 102744,
+          "textures": 8,
+          "geometries": 46,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 6,
+            "median": 48,
+            "p95": 1392,
+            "p99": 1392,
+            "max": 1392,
+            "slow": 4,
+            "average": 297.17
+          },
+          "landmarks": []
+        }
+      ]
+    },
+    "cypressBefore": {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "quality": "balanced",
+      "offline": false,
+      "results": [
+        {
+          "label": "obstacle-branch",
+          "elapsed": 51.176,
+          "distance": 841.29,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "4 / 20",
+          "seed": 1,
+          "draws": 49,
+          "triangles": 123966,
+          "textures": 8,
+          "geometries": 36,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 7,
+            "median": 84,
+            "p95": 269,
+            "p99": 269,
+            "max": 269,
+            "slow": 6,
+            "average": 115.14
+          }
+        }
+      ]
+    },
+    "timber": {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "quality": "balanced",
+      "offline": false,
+      "results": [
+        {
+          "label": "obstacle-branch",
+          "elapsed": 51.263,
+          "distance": 843.02,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "4 / 30",
+          "seed": 1,
+          "draws": 55,
+          "triangles": 132536,
+          "textures": 8,
+          "geometries": 39,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 4,
+            "median": 210,
+            "p95": 729,
+            "p99": 729,
+            "max": 729,
+            "slow": 4,
+            "average": 329
+          },
+          "landmarks": []
+        },
+        {
+          "label": "obstacle-leaning-tree",
+          "elapsed": 51.742,
+          "distance": 852.67,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "4 / 30",
+          "seed": 13,
+          "draws": 59,
+          "triangles": 135936,
+          "textures": 9,
+          "geometries": 43,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 9,
+            "median": 184,
+            "p95": 979,
+            "p99": 979,
+            "max": 979,
+            "slow": 8,
+            "average": 261.22
+          },
+          "landmarks": []
+        },
+        {
+          "label": "obstacle-fallen",
+          "elapsed": 51.509,
+          "distance": 847.97,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "4 / 30",
+          "seed": 12,
+          "draws": 60,
+          "triangles": 141368,
+          "textures": 11,
+          "geometries": 46,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 9,
+            "median": 72,
+            "p95": 606,
+            "p99": 606,
+            "max": 606,
+            "slow": 9,
+            "average": 131
+          },
+          "landmarks": []
+        },
+        {
+          "label": "obstacle-drift",
+          "elapsed": 51.513,
+          "distance": 848.05,
+          "hud": "Southern Cypress Swamp",
+          "mode": "running",
+          "weather": "Overcast",
+          "stageLabel": "4 / 30",
+          "seed": 8,
+          "draws": 57,
+          "triangles": 138677,
+          "textures": 9,
+          "geometries": 45,
+          "tiles": 7,
+          "packs": 2,
+          "cpuMs": {
+            "samples": 12,
+            "median": 42,
+            "p95": 456,
+            "p99": 456,
+            "max": 456,
+            "slow": 8,
+            "average": 111.33
+          },
+          "landmarks": []
+        },
+        {
+          "label": "obstacle-snowmobile",
+          "elapsed": 390.88,
+          "distance": 9875.09,
+          "hud": "Rocky Mountain Foothills",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "27 / 30",
+          "seed": 2,
+          "draws": 73,
+          "triangles": 134965,
+          "textures": 9,
+          "geometries": 58,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": {
+            "samples": 13,
+            "median": 55,
+            "p95": 587,
+            "p99": 587,
+            "max": 587,
+            "slow": 11,
+            "average": 122.85
+          },
+          "landmarks": [
+            "forestry-cabin"
+          ]
+        }
+      ]
+    },
+    "snowmobileFinal": {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "quality": "balanced",
+      "offline": false,
+      "results": [
+        {
+          "label": "obstacle-snowmobile",
+          "elapsed": 391.099,
+          "distance": 9881.46,
+          "hud": "Rocky Mountain Foothills",
+          "mode": "running",
+          "weather": "Light rain",
+          "stageLabel": "27 / 30",
+          "seed": 6,
+          "draws": 64,
+          "triangles": 134394,
+          "textures": 8,
+          "geometries": 52,
+          "tiles": 7,
+          "packs": 0,
+          "cpuMs": null,
+          "landmarks": [
+            "forestry-cabin"
+          ]
+        }
+      ]
+    },
+    "landmarksWide": [
+      {
+        "label": "gulf-landmark",
+        "elapsed": 0.6314314111683604,
+        "distance": 6.9896560960449285,
+        "hud": "Gulf Coast Marsh",
+        "marker": {
+          "role": "fish-shack",
+          "distance": 14.989656096044929,
+          "x": 8.839141185069456,
+          "ground": -0.5285875751811393
+        },
+        "draws": 53,
+        "triangles": 97874,
+        "geometries": 38,
+        "textures": 8,
+        "tiles": 7,
+        "packs": 0
+      },
+      {
+        "label": "cypress-landmark",
+        "elapsed": 32.74121907086982,
+        "distance": 484.9573660649359,
+        "hud": "Southern Cypress Swamp",
+        "marker": {
+          "role": "swamp-cabin",
+          "distance": 497.9573660649359,
+          "x": -10.38378721292829,
+          "ground": -0.9544523579768001
+        },
+        "draws": 60,
+        "triangles": 143521,
+        "geometries": 45,
+        "textures": 9,
+        "tiles": 7,
+        "packs": 0
+      },
+      {
+        "label": "flyway-landmark",
+        "elapsed": 62.89041390061177,
+        "distance": 1082.2157585430891,
+        "hud": "Mississippi Delta",
+        "marker": {
+          "role": "delta-shed",
+          "distance": 1095.2157585430891,
+          "x": -11.674009186204058,
+          "ground": -0.7074198977714298
+        },
+        "draws": 63,
+        "triangles": 106470,
+        "geometries": 55,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 2
+      },
+      {
+        "label": "timber-landmark",
+        "elapsed": 91.85380240391197,
+        "distance": 1715.3616770313122,
+        "hud": "Arkansas Flooded Timber",
+        "marker": {
+          "role": "blind",
+          "distance": 1728.3616770313122,
+          "x": 7.615930196968839,
+          "ground": -0.8075484159434604
+        },
+        "draws": 60,
+        "triangles": 144306,
+        "geometries": 53,
+        "textures": 11,
+        "tiles": 7,
+        "packs": 2
+      },
+      {
+        "label": "ozark-landmark",
+        "elapsed": 122.49216584157544,
+        "distance": 2435.05349999601,
+        "hud": "Ozark River Country",
+        "marker": {
+          "role": "limestone-crossing",
+          "distance": 2448.05349999601,
+          "x": -7.840418252116069,
+          "ground": -0.7871231316758118
+        },
+        "draws": 57,
+        "triangles": 99480,
+        "geometries": 51,
+        "textures": 9,
+        "tiles": 7,
+        "packs": 0
+      },
+      {
+        "label": "farm-landmark",
+        "elapsed": 150.38156245135258,
+        "distance": 3128.0847329076378,
+        "hud": "Midwest Farm Country",
+        "marker": {
+          "role": "farm",
+          "distance": 3137.8347329076378,
+          "x": 12.210978584468831,
+          "ground": 0.10047246183798142
+        },
+        "draws": 70,
+        "triangles": 179937,
+        "geometries": 60,
+        "textures": 11,
+        "tiles": 7,
+        "packs": 2
+      },
+      {
+        "label": "platte-landmark",
+        "elapsed": 181.32086162950742,
+        "distance": 3931.706046546716,
+        "hud": "Platte River Valley",
+        "marker": {
+          "role": "river-camp",
+          "distance": 3944.706046546716,
+          "x": 9.466198267415166,
+          "ground": -0.7881529482002568
+        },
+        "draws": 66,
+        "triangles": 116297,
+        "geometries": 59,
+        "textures": 11,
+        "tiles": 7,
+        "packs": 2
+      },
+      {
+        "label": "sandhills-landmark",
+        "elapsed": 211.47240034990645,
+        "distance": 4743.804116894491,
+        "hud": "Nebraska Sandhills",
+        "marker": {
+          "role": "windmill",
+          "distance": 4756.804116894491,
+          "x": -8.66544130888069,
+          "ground": 0.8388059840183492
+        },
+        "draws": 47,
+        "triangles": 89375,
+        "geometries": 49,
+        "textures": 10,
+        "tiles": 7,
+        "packs": 2
+      },
+      {
+        "label": "prairie-landmark",
+        "elapsed": 241.77501056489376,
+        "distance": 5582.959594161995,
+        "hud": "Dakota Prairie Potholes",
+        "marker": {
+          "role": "pothole-farm",
+          "distance": 5595.959594161995,
+          "x": 15.660257414763329,
+          "ground": 0.09064678111457114
+        },
+        "draws": 56,
+        "triangles": 107518,
+        "geometries": 52,
+        "textures": 10,
+        "tiles": 7,
+        "packs": 2
+      },
+      {
+        "label": "dakota-landmark",
+        "elapsed": 271.40999339385985,
+        "distance": 6422.347469528764,
+        "hud": "Northern Dakota Wetlands",
+        "marker": {
+          "role": "grain-elevator",
+          "distance": 6435.347469528764,
+          "x": -12.575188526732381,
+          "ground": -0.5268250525890221
+        },
+        "draws": 51,
+        "triangles": 101873,
+        "geometries": 48,
+        "textures": 11,
+        "tiles": 7,
+        "packs": 2
+      },
+      {
+        "label": "manitoba-landmark",
+        "elapsed": 301.5725512417223,
+        "distance": 7291.425456746947,
+        "hud": "Manitoba Marshlands",
+        "marker": {
+          "role": "marsh-dock",
+          "distance": 7304.425456746947,
+          "x": -7.6053863353794435,
+          "ground": -0.9054047862490207
+        },
+        "draws": 52,
+        "triangles": 99781,
+        "geometries": 46,
+        "textures": 9,
+        "tiles": 7,
+        "packs": 0
+      },
+      {
+        "label": "parklands-landmark",
+        "elapsed": 331.6849803289591,
+        "distance": 8161.72491148524,
+        "hud": "Saskatchewan Parklands",
+        "marker": {
+          "role": "aspen-cabin",
+          "distance": 8174.72491148524,
+          "x": 9.764724419929552,
+          "ground": -0.021484298778060254
+        },
+        "draws": 57,
+        "triangles": 100940,
+        "geometries": 49,
+        "textures": 11,
+        "tiles": 7,
+        "packs": 2
+      },
+      {
+        "label": "boreal-landmark",
+        "elapsed": 361.8315626147657,
+        "distance": 9033.882876569685,
+        "hud": "Canadian Boreal Forest",
+        "marker": {
+          "role": "snag",
+          "distance": 9045.132876569685,
+          "x": -10.336835592356511,
+          "ground": -0.18454682428895422
+        },
+        "draws": 53,
+        "triangles": 110724,
+        "geometries": 50,
+        "textures": 9,
+        "tiles": 7,
+        "packs": 0
+      },
+      {
+        "label": "foothills-landmark",
+        "elapsed": 391.9071697997165,
+        "distance": 9904.864056614973,
+        "hud": "Rocky Mountain Foothills",
+        "marker": {
+          "role": "forestry-cabin",
+          "distance": 9917.864056614973,
+          "x": 11.672994319105054,
+          "ground": -1.307475086287656
+        },
+        "draws": 62,
+        "triangles": 130280,
+        "geometries": 54,
+        "textures": 9,
+        "tiles": 7,
+        "packs": 0
+      },
+      {
+        "label": "mountain-landmark",
+        "elapsed": 421.8656384573842,
+        "distance": 10773.203779102023,
+        "hud": "Canadian Mountain Wilderness",
+        "marker": {
+          "role": "cairn",
+          "distance": 10786.203779102023,
+          "x": -9.264663134631702,
+          "ground": -0.4281115854677346
+        },
+        "draws": 73,
+        "triangles": 110935,
+        "geometries": 59,
+        "textures": 9,
+        "tiles": 7,
+        "packs": 0
+      }
+    ],
+    "presets": [
+      {
+        "label": "balanced-cypress",
+        "draws": 58,
+        "triangles": 139994,
+        "geometries": 41,
+        "textures": 8,
+        "tiles": 7
+      },
+      {
+        "label": "high-cypress",
+        "draws": 61,
+        "triangles": 154366,
+        "geometries": 43,
+        "textures": 8,
+        "tiles": 7
+      },
+      {
+        "label": "low-cypress",
+        "draws": 52,
+        "triangles": 108268,
+        "geometries": 43,
+        "textures": 8,
+        "tiles": 7
+      },
+      {
+        "label": "auto-cypress",
+        "draws": 58,
+        "triangles": 139994,
+        "geometries": 43,
+        "textures": 8,
+        "tiles": 7
+      }
+    ]
+  },
+  "content": [
+    {
+      "engine": "webkit",
+      "baseline": false,
+      "upgrade": "phase-two",
+      "disclosure": "2.35 MB to download · 2.44 MB total",
+      "interruption": "The download stopped. Retry to resume from your verified files.",
+      "coldReadyMsIncludingRetry": 37105,
+      "restartMs": 2588,
+      "wallFrameIntervals": {
+        "observations": 3,
+        "median": 329,
+        "p95": 478,
+        "slow": 3
+      },
+      "renderer": {
+        "ready": 23202,
+        "restart": 198,
+        "frames": 26,
+        "discarded": 0,
+        "draws": 55,
+        "triangles": 85118,
+        "textures": 8,
+        "geometries": 42,
+        "residentTiles": 7,
+        "residentPacks": 0,
+        "territory": "gulf",
+        "transitions": [
+          {
+            "territory": "gulf",
+            "wall": 0,
+            "at": 48910
+          }
+        ],
+        "framesMs": {
+          "samples": 26,
+          "median": 130,
+          "p95": 130,
+          "p99": 130,
+          "max": 130,
+          "slow": 26,
+          "average": 127.31
+        },
+        "cpuMs": {
+          "samples": 26,
+          "median": 115,
+          "p95": 474,
+          "p99": 1477,
+          "max": 1477,
+          "slow": 25,
+          "average": 186
+        }
+      },
+      "corruptFileRepaired": true,
+      "offlineReadyMs": 18031,
+      "updateVersions": [
+        "0aaee50951860f573ad9",
+        "93f6886d35e3354587c2"
+      ],
+      "update": {
+        "busyHuntProtected": true,
+        "preservedRuns": 4,
+        "unchangedAudioRequests": 1
+      }
+    },
+    {
+      "engine": "webkit",
+      "baseline": false,
+      "upgrade": false,
+      "disclosure": "2.4 MB to download · 2.46 MB total",
+      "interruption": "The download stopped. Retry to resume from your verified files.",
+      "coldReadyMsIncludingRetry": 17029,
+      "restartMs": 1508,
+      "wallFrameIntervals": {
+        "observations": 4,
+        "median": 382,
+        "p95": 401,
+        "slow": 4
+      },
+      "renderer": {
+        "ready": 9443,
+        "restart": 202,
+        "frames": 27,
+        "discarded": 0,
+        "draws": 48,
+        "triangles": 76390,
+        "textures": 8,
+        "geometries": 40,
+        "residentTiles": 7,
+        "residentPacks": 0,
+        "territory": "gulf",
+        "transitions": [
+          {
+            "territory": "gulf",
+            "wall": 0,
+            "at": 23185
+          }
+        ],
+        "framesMs": {
+          "samples": 27,
+          "median": 130,
+          "p95": 130,
+          "p99": 130,
+          "max": 130,
+          "slow": 27,
+          "average": 126.11
+        },
+        "cpuMs": {
+          "samples": 27,
+          "median": 79,
+          "p95": 105,
+          "p99": 586,
+          "max": 586,
+          "slow": 26,
+          "average": 95
+        }
+      },
+      "corruptFileRepaired": true,
+      "offlineReadyMs": 13519
+    },
+    {
+      "engine": "chromium",
+      "baseline": false,
+      "upgrade": "phase-two",
+      "disclosure": "2.35 MB to download · 2.44 MB total",
+      "interruption": "The download stopped. Retry to resume from your verified files.",
+      "coldReadyMsIncludingRetry": 9987,
+      "restartMs": 1319,
+      "wallFrameIntervals": {
+        "observations": 4,
+        "median": 49.89999999999418,
+        "p95": 433.29999999999563,
+        "slow": 2
+      },
+      "renderer": {
+        "ready": 8554,
+        "restart": 6.300000011920929,
+        "frames": 27,
+        "discarded": 0,
+        "draws": 55,
+        "triangles": 83821,
+        "textures": 9,
+        "geometries": 44,
+        "residentTiles": 7,
+        "residentPacks": 0,
+        "territory": "gulf",
+        "transitions": [
+          {
+            "territory": "gulf",
+            "wall": 0,
+            "at": 25576.40000000596
+          }
+        ],
+        "framesMs": {
+          "samples": 27,
+          "median": 130,
+          "p95": 130,
+          "p99": 130,
+          "max": 130,
+          "slow": 26,
+          "average": 121.54
+        },
+        "cpuMs": {
+          "samples": 27,
+          "median": 2.6,
+          "p95": 12.2,
+          "p99": 5318.5,
+          "max": 5318.5,
+          "slow": 1,
+          "average": 200.34
+        }
+      },
+      "corruptFileRepaired": true,
+      "offlineReadyMs": 2425,
+      "updateVersions": [
+        "0aaee50951860f573ad9",
+        "cc1d196faa43033b5da0"
+      ],
+      "update": {
+        "busyHuntProtected": true,
+        "preservedRuns": 4,
+        "unchangedAudioRequests": 1
+      }
+    }
+  ],
+  "restarts": {
+    "engine": "webkit",
+    "results": [
+      {
+        "name": "restart-1",
+        "performance": {
+          "ready": 5587,
+          "restart": 66,
+          "frames": 19,
+          "discarded": 0,
+          "draws": 53,
+          "triangles": 97366,
+          "textures": 7,
+          "geometries": 43,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "territory": "gulf",
+          "transitions": [
+            {
+              "territory": "gulf",
+              "wall": 0,
+              "at": 14957
+            }
+          ],
+          "framesMs": {
+            "samples": 19,
+            "median": 250,
+            "p95": 250,
+            "p99": 250,
+            "max": 250,
+            "slow": 19,
+            "average": 236.84
+          },
+          "cpuMs": {
+            "samples": 19,
+            "median": 54,
+            "p95": 445,
+            "p99": 445,
+            "max": 445,
+            "slow": 14,
+            "average": 82.89
+          }
+        }
+      },
+      {
+        "name": "restart-2",
+        "performance": {
+          "ready": 5587,
+          "restart": 108,
+          "frames": 33,
+          "discarded": 0,
+          "draws": 53,
+          "triangles": 97366,
+          "textures": 7,
+          "geometries": 43,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "territory": "gulf",
+          "transitions": [
+            {
+              "territory": "gulf",
+              "wall": 0,
+              "at": 14957
+            }
+          ],
+          "framesMs": {
+            "samples": 33,
+            "median": 250,
+            "p95": 250,
+            "p99": 250,
+            "max": 250,
+            "slow": 33,
+            "average": 234.85
+          },
+          "cpuMs": {
+            "samples": 33,
+            "median": 68,
+            "p95": 284,
+            "p99": 445,
+            "max": 445,
+            "slow": 28,
+            "average": 79.09
+          }
+        }
+      },
+      {
+        "name": "restart-3",
+        "performance": {
+          "ready": 5587,
+          "restart": 113,
+          "frames": 47,
+          "discarded": 0,
+          "draws": 53,
+          "triangles": 97366,
+          "textures": 7,
+          "geometries": 43,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "territory": "gulf",
+          "transitions": [
+            {
+              "territory": "gulf",
+              "wall": 0,
+              "at": 14957
+            }
+          ],
+          "framesMs": {
+            "samples": 47,
+            "median": 250,
+            "p95": 250,
+            "p99": 250,
+            "max": 250,
+            "slow": 47,
+            "average": 234.04
+          },
+          "cpuMs": {
+            "samples": 47,
+            "median": 62,
+            "p95": 118,
+            "p99": 445,
+            "max": 445,
+            "slow": 37,
+            "average": 70.81
+          }
+        }
+      },
+      {
+        "name": "restart-4",
+        "performance": {
+          "ready": 5587,
+          "restart": 118,
+          "frames": 61,
+          "discarded": 0,
+          "draws": 53,
+          "triangles": 97366,
+          "textures": 7,
+          "geometries": 43,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "territory": "gulf",
+          "transitions": [
+            {
+              "territory": "gulf",
+              "wall": 0,
+              "at": 14957
+            }
+          ],
+          "framesMs": {
+            "samples": 61,
+            "median": 250,
+            "p95": 250,
+            "p99": 250,
+            "max": 250,
+            "slow": 61,
+            "average": 233.61
+          },
+          "cpuMs": {
+            "samples": 61,
+            "median": 62,
+            "p95": 111,
+            "p99": 445,
+            "max": 445,
+            "slow": 50,
+            "average": 68.48
+          }
+        }
+      },
+      {
+        "name": "restart-5",
+        "performance": {
+          "ready": 5587,
+          "restart": 50,
+          "frames": 75,
+          "discarded": 0,
+          "draws": 53,
+          "triangles": 97366,
+          "textures": 7,
+          "geometries": 43,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "territory": "gulf",
+          "transitions": [
+            {
+              "territory": "gulf",
+              "wall": 0,
+              "at": 14957
+            }
+          ],
+          "framesMs": {
+            "samples": 75,
+            "median": 250,
+            "p95": 250,
+            "p99": 250,
+            "max": 250,
+            "slow": 75,
+            "average": 233.33
+          },
+          "cpuMs": {
+            "samples": 75,
+            "median": 62,
+            "p95": 111,
+            "p99": 445,
+            "max": 445,
+            "slow": 61,
+            "average": 67.03
+          }
+        }
+      },
+      {
+        "name": "restart-6",
+        "performance": {
+          "ready": 5587,
+          "restart": 92,
+          "frames": 89,
+          "discarded": 0,
+          "draws": 53,
+          "triangles": 97366,
+          "textures": 7,
+          "geometries": 43,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "territory": "gulf",
+          "transitions": [
+            {
+              "territory": "gulf",
+              "wall": 0,
+              "at": 14957
+            }
+          ],
+          "framesMs": {
+            "samples": 89,
+            "median": 250,
+            "p95": 250,
+            "p99": 250,
+            "max": 250,
+            "slow": 89,
+            "average": 233.15
+          },
+          "cpuMs": {
+            "samples": 89,
+            "median": 67,
+            "p95": 111,
+            "p99": 445,
+            "max": 445,
+            "slow": 73,
+            "average": 68.47
+          }
+        }
+      },
+      {
+        "name": "restart-7",
+        "performance": {
+          "ready": 5587,
+          "restart": 156,
+          "frames": 103,
+          "discarded": 0,
+          "draws": 53,
+          "triangles": 97366,
+          "textures": 7,
+          "geometries": 43,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "territory": "gulf",
+          "transitions": [
+            {
+              "territory": "gulf",
+              "wall": 0,
+              "at": 14957
+            }
+          ],
+          "framesMs": {
+            "samples": 103,
+            "median": 250,
+            "p95": 250,
+            "p99": 250,
+            "max": 250,
+            "slow": 103,
+            "average": 233.01
+          },
+          "cpuMs": {
+            "samples": 103,
+            "median": 68,
+            "p95": 111,
+            "p99": 284,
+            "max": 445,
+            "slow": 84,
+            "average": 70.44
+          }
+        }
+      },
+      {
+        "name": "restart-8",
+        "performance": {
+          "ready": 5587,
+          "restart": 103,
+          "frames": 117,
+          "discarded": 0,
+          "draws": 53,
+          "triangles": 97366,
+          "textures": 7,
+          "geometries": 43,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "territory": "gulf",
+          "transitions": [
+            {
+              "territory": "gulf",
+              "wall": 0,
+              "at": 14957
+            }
+          ],
+          "framesMs": {
+            "samples": 117,
+            "median": 250,
+            "p95": 250,
+            "p99": 250,
+            "max": 250,
+            "slow": 117,
+            "average": 232.91
+          },
+          "cpuMs": {
+            "samples": 117,
+            "median": 67,
+            "p95": 118,
+            "p99": 284,
+            "max": 445,
+            "slow": 94,
+            "average": 70.58
+          }
+        }
+      }
+    ]
+  }
+}

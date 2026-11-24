@@ -1,5 +1,6 @@
 import { isWaterHazard, laneWidth, traceContact } from './collision.js'
 import { diveWarningLead } from './dive.js'
+import { courseRuleset } from './ruleset.js'
 import { score } from './runner.js'
 import { regionAt } from './expedition.js'
 import { obstacles } from './obstacles.js'
@@ -26,6 +27,7 @@ export function createRunStatistics(runId, onSkill = () => {}) {
   const hazards = new WeakMap()
   const standingBefore = {}
   const standingAfter = {}
+  const discovered = new Set()
   const recoveredRoutes = new Map()
   let finalized = false
   let jumpClears = 0
@@ -46,6 +48,11 @@ export function createRunStatistics(runId, onSkill = () => {}) {
     action(move) {
       if (!finalized && move === 'jump') stats.jumps++
       if (!finalized && move === 'slide') stats.slides++
+    },
+    discover(region, elapsed) {
+      if (finalized || discovered.has(region.key)) return
+      discovered.add(region.key)
+      onSkill({ kind: 'territory', territory: region.key, elapsed })
     },
     pickup(type, entity) {
       if (finalized) return
@@ -104,8 +111,9 @@ export function createRunStatistics(runId, onSkill = () => {}) {
       return true
     },
     preview(run) {
-      return { ...stats, jumpClears, distance: run.distance, duration: run.elapsed, score: score(run),
-        retrieves: run.retrieves, territory: regionAt(run.elapsed).index + 1 }
+      const territory = regionAt(run.elapsed)
+      return { ...stats, jumpClears, course: courseRuleset, territoryKey: territory.key, distance: run.distance, duration: run.elapsed, score: score(run),
+        retrieves: run.retrieves, territory: territory.index + 1 }
     },
     finish(run, hazard) {
       if (finalized) return null

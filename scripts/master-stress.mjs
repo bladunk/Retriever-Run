@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict'
 import { firstContact, laneWidth, obstacleVolumes } from '../src/collision.js'
-import { courseStages, distanceAtTime, speedAtTime, stageAt, stageSeconds } from '../src/difficulty.js'
+import { courseStages, distanceAtTime, primaryDuration, speedAtTime, stageAt, stageSeconds } from '../src/difficulty.js'
 import { expeditionRegions } from '../src/expedition.js'
 import { createRunControls } from '../src/run-controls.js'
 import { advance, createCourse, newRun, reactionWindow } from '../src/runner.js'
 import { tickSeconds } from '../src/timing.js'
 
-const seeds = Number(process.argv[2] ?? 5000)
+const seeds = Number(process.argv[2] ?? Math.ceil(100_000 / courseStages.length))
 assert.ok(Number.isSafeInteger(seeds) && seeds > 0)
 const stageStats = courseStages.map(stage => ({ level: stage.level, territory: expeditionRegions[stage.territory].name,
   scenarios: 0, generated: 0, transitions: 0 }))
@@ -80,7 +80,7 @@ for (let trial = 0; trial < seeds; trial++) {
   const seed = Math.imul(trial + 1, 0x53d72d91) >>> 0
   const generate = createCourse(seed)
   const rows = []
-  for (let row = generate(); row.time < 330; row = generate()) {
+  for (let row = generate(); row.time < primaryDuration + 30; row = generate()) {
     assert.ok(row.at > (rows.at(-1)?.at ?? 0) && row.lane >= -1 && row.lane <= 1)
     assert.ok(speedAtTime(row.time) < 29)
     const stage = stageAt(row.time).level - 1

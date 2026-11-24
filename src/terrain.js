@@ -2,6 +2,7 @@ import * as T from 'three'
 import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
 import { cornModel } from './corn.js'
 import { environmentAssets } from './environment-assets.js'
+import { landscapeProfiles } from './migration-landscapes.js'
 import { regionAtDistance } from './expedition.js'
 import { fieldMaterials } from './materials.js'
 import { forestModel, forestProfileAt, forestSurface } from './forest-models.js'
@@ -16,7 +17,7 @@ const treeMaterial = new T.MeshLambertMaterial({ vertexColors: true })
 const forestMaterial = forestSurface()
 const cropMaterial = new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide })
 const fieldTints = [0xf6e4c9, 0xfff5de, 0xe0dfc3]
-const coverTypes = new Set(['flyway', 'timber', 'farm', 'prairie', 'dakota'])
+const coverTypes = new Set(landscapeProfiles.filter(region => region.licensedGrass).map(region => region.key))
 const cropGeometries = [cornModel(), cornModel(false, true), cornModel(true)]
 const cropFarMaterial = cropMaterial.clone()
 const cardsReady = new WeakSet()
@@ -152,12 +153,14 @@ export function createTerrain(scene, showSign) {
   let worker
   let workerDeadline
   let center = 0
+  let terrainSeed = 0
+  const seedAt = index => index < 3 ? 0 : terrainSeed
   let requestedEnvironment = false
   const openingTiles = new Map()
 
   function load(packet) {
     const tile = slot(packet.index)
-    if (tile.wanted !== packet.index) return
+    if (tile.wanted !== packet.index || (packet.seed ?? 0) !== seedAt(packet.index)) return
     if (packet.index === 0 || packet.index === -1) openingTiles.set(packet.index, packet)
     tile.ground.geometry.dispose()
     tile.water.geometry.dispose()
@@ -179,7 +182,7 @@ export function createTerrain(scene, showSign) {
     tile.trees.material = cards?.material ?? treeMaterial
     tile.trees.count = 0
     for (const [index, mesh] of tile.forest.entries()) {
-      mesh.geometry = forestModel(variants[index], true)
+      mesh.geometry = forestModel(variants[index], true, Math.abs(packet.index + index) % 2)
       mesh.count = 0
     }
     for (let n = 0; n < packet.trees.length / 7; n++) {
@@ -190,7 +193,7 @@ export function createTerrain(scene, showSign) {
       const width = height * (.80 + n % 5 * .087)
       // Outer-bank trees use a single lighter silhouette at every distance.
       // They never share a pivot or fade against a near-bank tree.
-      const outer = Math.abs(packet.trees[at]) > 23 && n % 3 !== 0
+      const outer = Math.abs(packet.trees[at]) > 26
       const batch = outer ? tile.trees : tile.forest[variants[0] === variants[1] ? 0 : packet.trees[at + 6]]
       dummy.scale.set(width, height, width)
       if (outer && cards) {
@@ -223,7 +226,7 @@ export function createTerrain(scene, showSign) {
     if (grasses) {
       tile.tufts.geometry = grasses.models[packet.territory === 'farm' || packet.territory === 'prairie' ? 0 : 1]
       tile.tufts.material = grasses.material
-      tile.tufts.count = 16
+      tile.tufts.count = Math.min(16, Math.floor(packet.reeds.length / 24))
       for (let n = 0; n < tile.tufts.count; n++) {
         dummy.position.fromArray(packet.reeds, (n * 4 + 2) * 6)
         dummy.rotation.set(0, n * 2.39996, 0)
@@ -235,7 +238,8 @@ export function createTerrain(scene, showSign) {
       updateBatch(tile.tufts)
     }
     tile.plantType = packet.plantType
-    for (let n = 0; n < reedCount; n++) {
+    tile.reedTotal = packet.reeds.length / 6
+    for (let n = 0; n < tile.reedTotal; n++) {
       const at = n * 6
       dummy.position.fromArray(packet.reeds, at)
       dummy.rotation.set(.06, n * 2.39996, 0)
@@ -247,13 +251,16 @@ export function createTerrain(scene, showSign) {
     tile.reeds.instanceMatrix.needsUpdate = true
     tile.reeds.instanceColor.needsUpdate = true
     tile.reeds.geometry = vegetation[tile.plantType][1]
-    tile.reeds.count = reedCount
+    tile.reeds.count = tile.reedTotal
     tile.reeds.computeBoundingSphere()
     tile.reeds.boundingSphere.radius += .65
     tile.hasChimney = Boolean(packet.chimney)
     if (packet.chimney) tile.smoke.position.fromArray(packet.chimney)
     tile.sign = packet.sign
     tile.index = packet.index
+    tile.seed = packet.seed ?? 0
+    tile.landmark = packet.landmark
+    tile.habitats = packet.habitats
   }
 
   function pump() {
@@ -261,14 +268,14 @@ export function createTerrain(scene, showSign) {
     for (const offset of order) {
       const index = center + offset
       const tile = slot(index)
-      if (tile.wanted !== index || tile.index === index) continue
+      if (tile.wanted !== index || tile.index === index && tile.seed === seedAt(index)) continue
       building = true
       if (worker) {
         workerDeadline = setTimeout(useFallback, 4500)
-        try { worker.postMessage(index) } catch { useFallback() }
+        try { worker.postMessage(seedAt(index) ? { index, seed: seedAt(index) } : index) } catch { useFallback() }
       }
       else setTimeout(() => {
-        if (tile.wanted === index) load(buildTile(index))
+        if (tile.wanted === index) load(buildTile(index, seedAt(index)))
         building = false
         pump()
       }, 0)
@@ -301,10 +308,14 @@ export function createTerrain(scene, showSign) {
 
   return {
     packCount: environmentAssets.count,
+    setSeed(value) { terrainSeed = value >>> 0 },
+    stamps() { return tiles.filter(tile => tile.root.visible).map(tile => ({
+      index: tile.index, landmark: tile.landmark, habitats: tile.habitats?.length ?? 0,
+    })) },
     count() { return tiles.reduce((count, tile) => count + Number(tile.index !== null), 0) },
     readyAt(distance) {
       const index = Math.floor(distance / segmentLength)
-      return slot(index).index === index
+      return slot(index).index === index && slot(index).seed === seedAt(index)
     },
     update(distance, time, weather, detail) {
       const usesHabitatPack = coverTypes.has(regionAtDistance(distance).key) ||
@@ -330,7 +341,7 @@ export function createTerrain(scene, showSign) {
         tile.wanted = i
         if (tile.index !== i && openingTiles.has(i)) load(openingTiles.get(i))
         const insideDrawDistance = i - center < (detail === 0 ? 4 : detail === 1 ? 5 : 6)
-        tile.root.visible = tile.index === i && insideDrawDistance
+        tile.root.visible = tile.index === i && tile.seed === seedAt(i) && insideDrawDistance
         if (!tile.root.visible) continue
         if (tile.sign) showSign?.(tile.sign, distance)
         tile.root.position.set(centerAt(i * segmentLength) - offset, 0, distance - i * segmentLength)
@@ -340,14 +351,14 @@ export function createTerrain(scene, showSign) {
         const chimneyZ = tile.root.position.z + tile.smoke.position.z
         tile.smoke.visible = tile.hasChimney && detail > 0 && chimneyZ > -65 && chimneyZ < -6
         tile.trees.visible = tile.trees.count > 0 && tileStart < 113
-        for (const grove of tile.forest) grove.visible = grove.count > 0 && tileStart < 103
+        for (const grove of tile.forest) grove.visible = grove.count > 0 && tileStart < (detail === 0 ? 64 : detail === 1 ? 86 : 106)
         tile.crops[0].visible = tile.crops[0].count > 0 && tileStart < range[1] + 2
         tile.crops[1].visible = tile.crops[1].count > 0 &&
           tileStart + segmentLength + 2 > range[0] && tileStart < range[3] + 2
         tile.tufts.visible = detail > 0 && tile.tufts.count > 0 && tileStart < 38
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
         tile.reeds.geometry = vegetation[tile.plantType][richPlants]
-        tile.reeds.count = i - center < 2 ? nearCount[detail] : farCount[detail]
+        tile.reeds.count = Math.min(tile.reedTotal, i - center < 2 ? nearCount[detail] : farCount[detail])
       }
       if (requestedEnvironment && !usesHabitatPack && tiles.every(tile => !tile.usesEnvironmentPack)) {
         environmentAssets.release('trees')

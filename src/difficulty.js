@@ -24,6 +24,16 @@ const progression = [
   [9.33,  .86, .99, .70, .86, .69, .28, .070, 9.2],
   [9.45,  .84, 1.0, .73, .90, .73, .30, .075, 8.8],
   [9.57,  .82, 1.0, .77, .94, .77, .32, .080, 8.4],
+  [9.578, .82, 1.0, .74, .91, .79, .33, .092, 8.2],
+  [9.585, .81, 1.0, .76, .92, .80, .34, .094, 8.0],
+  [9.591, .81, 1.0, .78, .93, .82, .36, .089, 7.9],
+  [9.597, .80, 1.0, .80, .94, .84, .37, .090, 7.8],
+  [9.603, .79, 1.0, .82, .94, .86, .39, .084, 7.7],
+  [9.609, .78, 1.0, .83, .95, .88, .40, .089, 7.6],
+  [9.616, .77, 1.0, .85, .96, .90, .41, .055, 7.5],
+  [9.621, .76, 1.0, .86, .96, .92, .42, .060, 7.3],
+  [9.623, .75, 1.0, .88, .97, .94, .43, .053, 7.2],
+  [9.625, .74, 1.0, .91, .98, .96, .45, .060, 7.0],
 ]
 
 export function defineStages(entries, stagesPerTerritory = 2) {
@@ -38,6 +48,7 @@ export function defineStages(entries, stagesPerTerritory = 2) {
 }
 
 export const courseStages = defineStages(progression)
+export const primaryDuration = courseStages.length * stageSeconds
 export const difficultyCurve = courseStages.map(({ start, pace }) => [start, pace])
 
 export function stageAt(seconds, stages = courseStages) {

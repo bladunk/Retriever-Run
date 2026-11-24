@@ -15,6 +15,9 @@ const plans = [
   ['canada', 'north', 'weather', 'veteran', 'canada', 'ducks', 'north', 'warning', 'camp'],
   ['canada', 'north', 'veteran', 'weather', 'canada', 'warning', 'north', 'trail', 'labrador'],
 ]
+const previousPlans = plans.splice(0)
+const regionalPlans = [0, 1, 2, 3, 2, 4, 2, 4, 5, 6, 7, 7, 8, 8, 9]
+for (const index of regionalPlans) plans.push(previousPlans[index])
 let ordinal = 0
 const starts = expeditionRegions.map(region => {
   while (signDistance(ordinal) < region.marker) ordinal++

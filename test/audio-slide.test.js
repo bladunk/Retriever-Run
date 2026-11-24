@@ -103,7 +103,8 @@ test('the skinned Labrador clears the terrain and overhead envelope through real
   rig.root.traverse(node => { if (node.isSkinnedMesh && node.name !== 'WorkingDogVest') skin = node })
   const point = new Vector3()
   const frame = {}
-  const beam = obstacleVolumes({ type: 'branch' })[0]
+  const overhead = obstacleVolumes({ type: 'branch' }).filter(part => Math.abs(part.x) < .43 && part.y < 1.8)
+  const soffit = Math.min(...overhead.map(part => part.y - part.hy))
   const head = playerVolumes().find(part => part.name === 'head')
   const collisionTop = volumeY(head, 1) + head.hy * .58
 
@@ -139,7 +140,7 @@ test('the skinned Labrador clears the terrain and overhead envelope through real
       lastMax = max
       assert.equal(player.position.y, floor)
       if (frame.depth === 1) {
-        assert.ok(max < beam.y - beam.hy, 'mesh clears the overhead timber')
+        assert.ok(max < soffit, 'mesh clears the overhead timber')
         assert.ok(Math.abs(max - collisionTop) < .08, 'crouched mesh and collision head agree')
         checkedFullSlide = true
       }

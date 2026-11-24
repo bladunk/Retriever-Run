@@ -1,7 +1,8 @@
 import { buildTile } from './terrain-geometry.js'
 
-self.onmessage = ({ data: index }) => {
-  const packet = buildTile(index)
+self.onmessage = ({ data }) => {
+  const index = typeof data === 'number' ? data : data.index
+  const packet = buildTile(index, data.seed)
   const transfer = [packet.reeds.buffer, packet.trees.buffer, packet.crops.buffer]
   for (const geometry of [packet.ground, packet.detail, packet.water]) {
     if (!geometry) continue

@@ -20,6 +20,10 @@ Phase 01 remains the last verified live version. Preserve SHA `3fb4c4f9e8eb300e6
 
 New Phase 02 scores remain local. Before enabling Worldwide posting, review a dedicated, separately identified season, course ruleset matching and the score/retrieve envelopes against that course. Preserve historical boards and eligible receipts. The draft does not apply migrations.
 
+## Phase 03 rollback
+
+Phase 02 `6ced9492d1f330bca91f4461dc068a035b8c6152` is the verified Pages baseline. The owner can optionally tag it as `retriever-run-phase-02` before Phase 03 publication. Deployment rollback does not downgrade a version-4 save. Export the active snapshot first and retain the older backup for an intentional rollback rehearsal. Automatic rollback to earlier builds must never delete the version-4 save. [Phase 02 deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45453881715)
+
 ## Before any publication
 
 - Confirm a clean reviewed commit, passing Node and rendered browser suites, verified asset records, and a fresh download and upgrade rehearsal. [Test matrix](PRODUCTION_TEST_MATRIX.md)

@@ -30,13 +30,13 @@ export const medals = ['Bronze', 'Silver', 'Gold']
 export function honorProgress(patch, player) {
   const earned = player.patches[patch.id] ?? []
   const goal = patch.goals[Math.min(earned.length, patch.goals.length - 1)]
-  const records = { ...player.records, score: player.profile.best, territory: player.migration?.farthest }
+  const records = { ...player.records, score: player.profile.best, territory: Math.max(player.migration?.farthest ?? 0, player.legacyMigration?.farthest ?? 0) }
   return { earned, goal, value: Math.min(goal, patch.measure(player.stats, records)) }
 }
 
 export function awardPatches(player, date) {
   const earned = []
-  const records = { ...player.records, score: player.profile.best, territory: player.migration?.farthest }
+  const records = { ...player.records, score: player.profile.best, territory: Math.max(player.migration?.farthest ?? 0, player.legacyMigration?.farthest ?? 0) }
   for (const patch of patches) {
     const value = patch.measure(player.stats, records)
     const dates = player.patches[patch.id] ?? []
@@ -56,7 +56,7 @@ export function pendingPatches(player, snapshot, seen) {
   for (const patch of fieldHonors) {
     const level = Math.max(player.patches[patch.id]?.length ?? 0, seen.get(patch.id) ?? 0)
     const value = patch.measure(projected,
-      { ...player.records, score: player.profile.best, territory: player.migration?.farthest }, snapshot)
+      { ...player.records, score: player.profile.best, territory: Math.max(player.migration?.farthest ?? 0, player.legacyMigration?.farthest ?? 0) }, snapshot)
     if (level < patch.goals.length && value >= patch.goals[level]) {
       seen.set(patch.id, level + 1)
       pending.push({ patch, level })
