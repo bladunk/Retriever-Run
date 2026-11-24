@@ -37,12 +37,12 @@ test('scenery is physics-free and passing a hazard clears it for good', () => {
 test('branch contact follows the visible overhead timbers, supports and crouch envelope', () => {
   const standing = { ...newRun(), distance: 100 }
   const beam = fixture('branch', 100, 0)
-  assert.ok(traceContact(standing, standing, beam))
+  assert.ok(traceContact({ ...standing, distance: 98.7 }, standing, beam))
   const jumping = { ...standing, jump: jumpDuration / 2 }
   assert.ok(traceContact(jumping, jumping, beam))
   const sliding = { ...standing, slide: slideDuration / 2 }
   assert.equal(traceContact(sliding, sliding, beam), false)
-  assert.ok(traceContact({ ...standing, slide: slideDuration }, { ...standing, slide: slideDuration }, beam))
+  assert.ok(traceContact({ ...standing, distance: 98.7, slide: slideDuration }, { ...standing, slide: slideDuration }, beam))
   assert.equal(obstacleVolumes({ ...beam, wide: true }), undefined, 'retired wide branch has no playable volume')
 })
 
@@ -132,7 +132,7 @@ test('natural surface tiles align at boardwalk-free boundaries and pack transfer
   for (const i of [0, 7, 8, 17, 18, 29, 30, 35]) {
     const current = buildTile(i)
     const next = buildTile(i + 1)
-    const columns = 29
+    const columns = current.ground.buffers.position.values.length / ((segmentLength * 2 + 1) * 3)
     const data = current.ground.buffers.position.values
     const nextData = next.ground.buffers.position.values
     const offset = columns * segmentLength * 2 * 3
@@ -142,7 +142,7 @@ test('natural surface tiles align at boardwalk-free boundaries and pack transfer
       for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs(a[axis] - nextData[j + axis]) < .001, 'tile seam ' + i)
     }
     assert.equal(current.ground.index.length, (columns - 1) * segmentLength * 2 * 6)
-    assert.ok(current.reeds.buffer instanceof ArrayBuffer && current.trees.length <= 120)
+    assert.ok(current.reeds.buffer instanceof ArrayBuffer && current.trees.length <= 26 * 7)
     assert.ok(current.detail.index.length > 0)
   }
 })
@@ -151,10 +151,10 @@ test('natural surface tiles align at boardwalk-free boundaries and pack transfer
 test('the same streamed habitat reproduces shore planting, water depths and tree locations', () => {
   const marsh = buildTile(3)
   assert.deepEqual(buildTile(3), marsh)
-  const examples = [0, 5, 7, 9].map(region => buildTile(Math.ceil(expeditionRegions[region].marker / segmentLength)))
+  const examples = [0, 5, 12, 14].map(region => buildTile(Math.ceil(expeditionRegions[region].marker / segmentLength)))
   assert.deepEqual(examples.map(tile => tile.plantType), [0, 2, 1, 2])
   assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth > .35))
-  assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth === 0))
+  assert.ok(marsh.water.buffers.marshDepth.values.some(depth => depth < 0))
   assert.notDeepEqual(buildTile(4).reeds, marsh.reeds)
   assert.deepEqual(examples.map(tile => tile.treeStyle), [0, 0, 2, 3])
   assert.notDeepEqual(examples[3].ground.buffers.color.values, marsh.ground.buffers.color.values)

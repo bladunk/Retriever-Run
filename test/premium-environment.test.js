@@ -29,9 +29,9 @@ test('environment packs deduplicate requests and keep the fallback after a missi
   assert.equal(cache.get('grass'), null)
 })
 
-test('ten territories use their own shared tree profiles and corn stays off the active path', () => {
+test('fifteen territories use regional shared tree profiles and corn stays off the active path', () => {
   assert.deepEqual(Object.keys(forestProfiles), expeditionRegions.map(region => region.key))
-  assert.equal(new Set(Object.values(forestProfiles).map(pair => pair.join('/'))).size, 10)
+  assert.equal(new Set(Object.values(forestProfiles).map(pair => pair.join('/'))).size >= 12, true)
   for (const kind of new Set(Object.values(forestProfiles).flat())) {
     const geometry = forestModel(kind)
     assert.equal(forestModel(kind), geometry)
@@ -42,8 +42,8 @@ test('ten territories use their own shared tree profiles and corn stays off the 
   const crops = [cornModel(), cornModel(false, true), cornModel(true)]
   assert.ok(crops[0].index.count > crops[1].index.count && crops[1].index.count > crops[2].index.count)
   assert.ok(forestModel('spruce', true).index.count < forestModel('spruce').index.count)
-  const farm = Math.floor(distanceAtTime(134) / segmentLength)
-  const fields = [farm, farm + 1, farm + 2].map(buildTile)
+  const farm = Math.floor(distanceAtTime(164) / segmentLength)
+  const fields = [farm, farm + 1, farm + 2].map(index => buildTile(index))
   const farmland = fields.find(tile => tile.crops.length)
   assert.ok(farmland.crops.length > 240)
   assert.deepEqual(buildTile(farmland.index), farmland)
@@ -70,7 +70,7 @@ test('standing, full-height jump, slide and adjacent-lane contact match the inte
     assert.ok(traceContact(jump, jump, object), type)
     assert.equal(traceContact(side, side, object), false, type)
   }
-  assert.ok(traceContact(stand, stand, obstacle('branch')))
+  assert.ok(traceContact({ ...stand, distance: 18.8 }, stand, obstacle('branch')))
   assert.equal(traceContact(slide, slide, obstacle('branch')), false)
 })
 

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { landscapeProfiles } from '../src/migration-landscapes.js'
 import { createContentManifest, installation } from '../src/content-manifest.js'
 
 const worker = readFileSync(new URL('./offline-runtime.js', import.meta.url), 'utf8')
@@ -11,7 +12,7 @@ const groups = {
   core: { label: 'Game engine and trail', license: 'code' },
   terrain: { label: 'Terrain and vegetation', license: 'terrain-materials' },
   vegetation: { label: 'Territory vegetation', license: 'landscape-vegetation',
-    territories: ['flyway', 'timber', 'farm', 'prairie', 'dakota'] },
+    territories: landscapeProfiles.filter(region => region.licensedGrass).map(region => region.key) },
   dogs: { label: 'Labrador and animations', license: 'labrador' },
   audio: { label: 'Music and wildlife audio', license: 'game-audio' },
   diagnostics: { label: 'Developer diagnostics', license: 'code' },

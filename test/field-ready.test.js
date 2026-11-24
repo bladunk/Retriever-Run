@@ -181,7 +181,7 @@ test('spawn terrain is streamed off the main thread and obsolete packets cannot 
       terrain.update(meters, 2, weather, detail)
       assert.equal(grove.geometry, model)
       assert.equal(grove.material, material)
-      assert.equal(grove.visible, true)
+      assert.equal(grove.visible, 300 - meters < (detail === 0 ? 64 : detail === 1 ? 86 : 106))
     }
     assert.equal(terrain.readyAt(0), false)
     terrain.update(0, 3, weather, 1)

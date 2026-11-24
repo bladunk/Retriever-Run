@@ -13,12 +13,13 @@ Object.assign(uniforms, {
 export const marshWater = new T.ShaderMaterial({
   uniforms, fog: true,
   vertexShader: `
-    attribute float marshDepth;
-    varying float bedDepth;
+    attribute float marshDepth, marshCanopy;
+    varying float bedDepth, bankCanopy;
     varying vec3 waterPoint;
     #include <fog_pars_vertex>
     void main() {
       bedDepth = marshDepth;
+      bankCanopy = marshCanopy;
       waterPoint = (modelMatrix * vec4(position, 1.)).xyz;
       vec4 mvPosition = modelViewMatrix * vec4(position, 1.);
       gl_Position = projectionMatrix * mvPosition;
@@ -29,11 +30,12 @@ export const marshWater = new T.ShaderMaterial({
     uniform float waterClock, waterDetail, waterWeather, waterFrost;
     uniform vec2 worldOrigin;
     uniform vec3 waterSky, waterHorizon, waterSun, waterLight, waterTint;
-    varying float bedDepth;
+    varying float bedDepth, bankCanopy;
     varying vec3 waterPoint;
     #include <fog_pars_fragment>
 
     void main() {
+      if (bedDepth <= 0.) discard;
       vec2 p = waterPoint.xz + worldOrigin;
       float broad = sin(dot(p, vec2(.65, 2.12)) - waterClock * 1.84);
       float crossWave = sin(dot(p, vec2(-2.1, 3.8)) + waterClock * 2.6 + broad * .48);
@@ -47,12 +49,15 @@ export const marshWater = new T.ShaderMaterial({
       vec3 eye = normalize(cameraPosition - waterPoint);
       vec3 reflected = reflect(-eye, normal);
       float graze = 1. - max(0., dot(eye, normal));
-      float fresnel = .065 + .89 * graze * graze * graze;
+      float fresnel = .055 + .73 * graze * graze * graze;
       float crossing = step(1., bedDepth);
       float depth = max(0., bedDepth - crossing + .012 * broad);
       float deep = smoothstep(.02, .64, depth);
       float strand = .5 + .5 * sin(p.x * 1.43 + p.y * .57 + .48 * broad);
-      vec3 mud = mix(vec3(.12,.084,.046), vec3(.190,.137,.071), strand);
+      float sediment = sin(p.x * 2.1 + sin(p.y * 1.54) * 1.31)
+        * sin(p.y * 1.6 - p.x * 2.35);
+      vec3 mud = mix(vec3(.12,.084,.046), vec3(.245,.193,.126), strand);
+      mud *= 1. + sediment * .15 * (1. - smoothstep(.18,.55,length(fwidth(p))));
       vec3 lake = mix(mud, waterTint, deep);
       lake = mix(lake, vec3(.081,.163,.181) * (.85 + deep*.22 + crossWave*.055), crossing * .86);
       lake *= 1. - .26 * (1. - smoothstep(.012, .095, depth));
@@ -64,8 +69,11 @@ export const marshWater = new T.ShaderMaterial({
       float facingSun = max(0., dot(reflected, waterSun));
       float shine = pow(facingSun, 26.) * (.18 + .45 * smoothstep(-.2,.84, crossWave + .32 * ripple));
       float shimmer = pow(facingSun, 115.) * .36;
+      float seam = sin(p.x * 1.23 + ripple*.27) * cos(p.x * .60 - .8 + sin(p.y * .32) * .44);
+      float foliage = smoothstep(-.05,.65, seam + .20*crossWave) * clamp(bankCanopy,0.,1.);
+      mirrored *= 1. - foliage * (.39 + .41 * graze);
       vec3 reflectedLight = mirrored + waterLight * (shine + shimmer) * (1. - waterWeather * .76);
-      float reflectivity = fresnel * mix(.80, 1., deep) * mix(1., .64, crossing);
+      float reflectivity = fresnel * mix(.54, .85, deep) * mix(1., .64, crossing);
       vec3 color = mix(lake, reflectedLight, reflectivity);
       color += crossing * rim * vec3(.025,.036,.036);
       if (waterDetail > .5 && waterWeather > .40) {

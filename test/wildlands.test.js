@@ -14,7 +14,7 @@ test('difficulty follows the requested time curve and saturates', () => {
   for (const [seconds, level] of difficultyCurve) assert.equal(difficultyAt(seconds), level)
   assert.equal(difficultyAt(7.5), 2.7)
   assert.ok(difficultyAt(240) < difficultyAt(270))
-  assert.equal(difficultyAt(300), difficultyCurve.at(-1)[1])
+  assert.equal(difficultyAt(450), difficultyCurve.at(-1)[1])
   const run = newRun()
   for (let i = 0; i < 60; i++) advance(run, .5)
   assert.equal(run.elapsed, 30)

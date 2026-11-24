@@ -29,12 +29,12 @@ export function createFieldMaterial() {
 
   fieldMaterial.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, uniforms)
-    shader.vertexShader = 'attribute float fieldLayer; varying float vFieldLayer, vSnowFace; varying vec2 vFieldUv;\n'
-      + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvFieldLayer = fieldLayer; vFieldUv = uv; vSnowFace = normalize(mat3(modelMatrix)*normal).y;')
+    shader.vertexShader = 'attribute float fieldLayer, landStyle; varying float vFieldLayer, vSnowFace, vLandStyle; varying vec2 vFieldUv;\n'
+      + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvFieldLayer = fieldLayer; vLandStyle = landStyle; vFieldUv = uv; vSnowFace = normalize(mat3(modelMatrix)*normal).y;')
     shader.fragmentShader = `
       uniform sampler2D fieldEarth, fieldWood, fieldEarthPbr, fieldWoodPbr;
       uniform float fieldDetail, fieldWet, fieldFrost;
-      varying float vFieldLayer, vSnowFace;
+      varying float vFieldLayer, vSnowFace, vLandStyle;
       varying vec2 vFieldUv;
     ` + shader.fragmentShader
       .replace('#include <color_fragment>', `#include <color_fragment>
@@ -52,6 +52,17 @@ export function createFieldMaterial() {
             diffuseColor.rgb *= mix(.73, 1., fieldPbr.a);
           }
           if (!onWood) {
+            float sand = max(0., 1. - abs(vLandStyle - 1.));
+            float stone = max(0., 1. - abs(vLandStyle - 2.));
+            float litter = max(0., 1. - abs(vLandStyle - 3.));
+            float patternScale = 1. - smoothstep(.10, .32, length(fwidth(surfaceUV)));
+            float ripples = sin(surfaceUV.y * 58. + sin(surfaceUV.x * 5.2) * 1.8);
+            float shale = sin(surfaceUV.x * 73. - surfaceUV.y * 48.) * cos(surfaceUV.y * 92. + grain.r * 7.2);
+            float leaves = smoothstep(.44,.82, sin(surfaceUV.x * 76. + grain.r * 18.) * cos(surfaceUV.y * 104.));
+            diffuseColor.rgb *= mix(vec3(1.), vec3(1.24, 1.17, 1.02) * (1. + ripples * .094 * patternScale), sand * .82);
+            diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * (1.15 + shale * .31 * patternScale), stone * .74);
+            diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.42,1.07,.72),
+              litter * (.16 + leaves * .64 * patternScale));
             float silt = sin(vFieldUv.y * 1.07 + sin(vFieldUv.x * 3.17)) *
               sin(vFieldUv.x * 4.71 + vFieldUv.y * .38);
             float tracks = abs(abs(vFieldUv.x + .037 * sin(vFieldUv.y * .78)) - .42);

@@ -1,5 +1,5 @@
 import * as T from 'three'
-import { distanceAtTime, speedAtTime } from './difficulty.js'
+import { distanceAtTime, primaryDuration, speedAtTime } from './difficulty.js'
 import { centerAt, laneWidth } from './trail.js'
 import { diveAge, diveWarning } from './dive.js'
 import { hazardFrame, isWaterHazard, obstacleVolumes, playerFrame, playerVolumes, volumeY } from './collision.js'
@@ -9,7 +9,7 @@ export function collisionDebug(scene) {
   if (flags.get('debug') !== 'collision') return null
   const seed = Number(flags.get('seed'))
   const requested = Number(flags.get('at'))
-  const at = flags.has('at') && Number.isFinite(requested) ? Math.min(distanceAtTime(330), Math.max(0, requested)) : 0
+  const at = flags.has('at') && Number.isFinite(requested) ? Math.min(distanceAtTime(primaryDuration + 32), Math.max(0, requested)) : 0
   const showVolumes = flags.get('volumes') !== 'off'
   const inspectScenery = flags.get('scenery') === 'on'
   const panel = document.createElement('pre')
@@ -172,6 +172,9 @@ export function collisionDebug(scene) {
       if (inspectScenery) {
         window.retrieverDebug.skill = [...skillEvents]
         window.retrieverDebug.upcoming = closest?.pattern
+        window.retrieverDebug.hazards = entities.filter(item => item.hazard && item.distance > run.distance - 1 && item.distance < run.distance + 38)
+          .map(({ type, lane, distance }) => ({ type, lane, distance }))
+        window.retrieverDebug.world = timings.world?.()
         camera.updateMatrixWorld()
         window.retrieverDebug.signs = signs.visible().map(face => inspectSign(face, camera))
         window.retrieverDebug.rocks = entities.filter(item => item.type === 'rock' && item.model?.visible &&

@@ -3,7 +3,7 @@ import { expeditionRegions } from './expedition.js'
 import { centerAt, seededRandom } from './trail.js'
 
 const farRadii = [510, 345]
-const borderDistance = expeditionRegions[7].marker
+const borderDistance = expeditionRegions.find(region => region.key === 'foothills').marker
 
 export function horizonPosition(distance, layer) {
   return {

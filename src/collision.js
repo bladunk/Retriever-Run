@@ -1,5 +1,7 @@
 import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
 import { diveFrame, diveScale } from './dive.js'
+import { lowTimber } from './low-timber.js'
+import { snowmobileVolumes } from './snowmobile.js'
 import { leaningTree } from './leaning-tree.js'
 import { timberProfile } from './trail-timber.js'
 import { fallenTimber, fallenVariant } from './fallen-timber.js'
@@ -13,12 +15,6 @@ export const washoutSpacing = 2.25
 
 const volume = (name, x, y, z, hx, hy, hz) => ({ name, x, y, z, hx, hy, hz })
 const post = (x) => volume('upright', x, .58, 0, .076, .58, .089)
-const beam = (width) => volume('overhead timber', 0, 1.17, 0, width, .091, .095)
-const overhang = (width) => [
-  beam(width),
-  volume('overhanging trunk', 0, 1.67, .015, width * .98, .41, .174),
-  volume('raised timber', 0, 2.08, .015, width * .93, .16, .109),
-]
 const solids = {
   goose: [
     volume('goose body', 0, 0, 0, .211 * diveScale, .166 * diveScale, .285 * diveScale),
@@ -37,7 +33,7 @@ const solids = {
     volume('upper rail', 0, .81, 0, .987, .08, .074),
     volume('lower rail', 0, .38, 0, .987, .08, .074),
   ],
-  branch: [...overhang(1.055), post(1.01)],
+  snowmobile: snowmobileVolumes,
 }
 const water = {
   stream: [volume('wet channel', 0, .008, 0, 3.54, .095, .73)],
@@ -62,6 +58,7 @@ const paws = [
 
 export function obstacleVolumes(entity) {
   if (entity.type === 'rock') return rockShape(entity.variant, entity.turn)
+  if (entity.type === 'branch' && !entity.wide) return lowTimber().volumes
   if (entity.type === 'leaning-tree') return leaningTree().volumes
   if (entity.type === 'fallen') return fallenTimber(fallenVariant(entity.distance, entity.lane)).volumes
   const timber = timberProfile(entity.type)

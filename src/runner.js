@@ -1,5 +1,5 @@
 import { seededRandom } from './trail.js'
-import { director, distanceAtTime, speedAtTime, stageAt } from './difficulty.js'
+import { director, distanceAtTime, speedAtTime, stageAt, stageSeconds } from './difficulty.js'
 import { fallTreeRoutes, obstacles, obstaclePool } from './obstacles.js'
 import { tickSeconds } from './timing.js'
 import { chooseRock, rocks, rockTurns } from './rocks.js'
@@ -229,8 +229,9 @@ export function createCourse(seed = 1, rules = director) {
   let lastRock = -Infinity
   let lastVariant
 
-  function selectBlock(territory, row) {
+  function selectBlock(territory, row, stage) {
     const values = obstaclePool.map(type => {
+      if (stage < (obstacles[type].minimumStage ?? 1)) return 0
       if ((type === 'rock' && index - lastRock < 3) || row.entities.some(item => item.type === type)) return 0
       const last = priorTypes.findIndex(types => types.includes(type))
       return territoryWeight(obstacles[type], territory) * (last === 0 ? .20 : last < 0 ? 1 : .64)
@@ -260,7 +261,7 @@ export function createCourse(seed = 1, rules = director) {
     const overhead = previousGateType === 'branch' ? .24 : .43 + Math.min(10, territory) * .024
     const gateType = gate ? pairPending || (index > 5 && random() < overhead ? 'branch' : 'stream') : null
     const adjacent = reachable.filter(slot => Math.abs(slot - previous.lane) === 1)
-    const chuteSwitch = gateType === 'branch' && index > 10 && adjacent.length && random() < .80 * progress
+    const chuteSwitch = gateType === 'branch' && index > 10 && adjacent.length && random() < Math.min(.96, .80 * progress + Math.max(0, stage.level - 20) * .015)
     const nextLanes = requiredLane ? reachable.filter(slot => slot !== previous.lane) : reachable
     const lane = signature ? 1 : chuteSwitch ? pick(adjacent) : index < 2 || gate ? previous.lane :
       pick(nextLanes.length ? nextLanes : reachable.length ? reachable : [previous.lane])
@@ -328,14 +329,14 @@ export function createCourse(seed = 1, rules = director) {
       const count = requiredLane && row.lane !== previous.lane || random() < Math.min(1, stage.blocks + progress * .23) ? 2 : 1
       row.pattern = count === 2 ? requiredLane ? 'committed-switch' : 'two-lane-block' : 'single'
       for (let i = 0; i < count; i++) {
-        const type = selectBlock(territory, row)
+        const type = selectBlock(territory, row, stage.level)
         add(type, blocked[i], at, true)
         if (type === 'rock') {
           const variant = chooseRock(territory, random, lastVariant)
           Object.assign(row.entities.at(-1), { variant, turn: Math.floor(random() * rockTurns.length) })
           heavyBlock ||= ['large', 'cluster'].includes(rocks[variant].size)
         }
-        heavyBlock ||= type === 'fallen' || type === 'tractor'
+        heavyBlock ||= type === 'fallen' || type === 'tractor' || type === 'snowmobile'
       }
       const alternate = row.entities.find(item => lowHazards.has(item.type) ||
         item.type === 'rock' && rocks[item.variant].size === 'small')
@@ -361,7 +362,8 @@ export function createCourse(seed = 1, rules = director) {
       (rules.earlyGap - director.earlyGap) * (1 - progress) + (rules.lateGap - director.lateGap) * progress +
       random() * rules.spacingVariation * (1 - progress * .38)
     if (!row.gate && row.exits.length === 1) gap -= .04 * progress
-    if (time > 300) gap -= .055 * (1 - Math.exp(-(time - 300) / 90))
+    const overtime = Math.max(0, time - rules.stages.length * stageSeconds)
+    gap -= .075 * (1 - Math.exp(-overtime / 95))
     const wasPaired = Boolean(pairPending)
     pairPending = undefined
     requiredLane = false

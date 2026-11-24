@@ -35,7 +35,6 @@ const mountainWeather = [
   { ...states[2], name: 'Cold river mist', fog: .020, cloud: .57, snow: .08 },
 ]
 const mountainArrival = expeditionRegions.at(-1).seconds
-const waters = [0x33534a, 0x253e32, 0x314e48, 0x2a4038, 0x385247, 0x385855, 0x374e54, 0x354e57, 0x304d5c, 0x315666]
 
 export function routeWeatherAt(time) {
   if (time < mountainArrival) return weatherAt(time)
@@ -180,11 +179,14 @@ export function createAtmosphere(scene) {
       result.sky.copy(uniforms.horizon.value)
       result.zenith.copy(uniforms.zenith.value)
       result.light.copy(uniforms.sunColor.value)
-      result.waterTint.setHex(waters[region.from.index]).lerp(tone.setHex(waters[region.to.index]), region.blend)
+      result.waterTint.setHex(region.from.waterTint).lerp(tone.setHex(region.to.waterTint), region.blend)
       fog.density = T.MathUtils.lerp(lerp('fog'), blendProperty(region, 'fog'), .72)
       sun.color.copy(uniforms.sunColor.value)
       sun.intensity = lerp('light') * 1.12
-      fill.intensity = 1.45 - lerp('cloud') * .17
+      const shade = (region.from.treesPerSide + (region.to.treesPerSide - region.from.treesPerSide) * region.blend) / 12
+      fill.intensity = 1.61 - lerp('cloud') * .19 - shade * .17
+      fill.groundColor.setHex(region.from.bank).lerp(tone.setHex(region.to.bank), region.blend).multiplyScalar(.71)
+      sun.intensity *= 1.08 - shade * .10
       result.rain = lerp('rain') * (1 - result.frost)
       result.wind = lerp('wind')
       result.wet = Math.min(1, result.rain + lerp('snow') * .24)

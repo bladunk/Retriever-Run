@@ -4,10 +4,15 @@ import { awardPatches, patches } from './honors.js'
 import { applyRunXP, careerStanding, legacyLevel, normalizeCareer, serviceCredit } from './career.js'
 import { journalIssues, reviewSavedRank } from './career-integrity.js'
 import { expeditionRegions, migrationSecondsByTerritory, regionAt, territorySeconds } from './expedition.js'
+import { courseRuleset } from './ruleset.js'
 import { classicGear, kennelCatalog, legacyGear, newGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 
 export const saveKey = 'retriever-run.record'
-export const saveVersion = 3
+export const saveVersion = 4
+
+export const legacyTerritoryNames = ['Gulf Coast Marsh', 'Southern Cypress Swamp', 'Mississippi Flyway',
+  'Arkansas Flooded Timber', 'Midwest Farm Country', 'Prairie Potholes', 'Dakota Wetlands',
+  'Northern Borderlands', 'Canadian Boreal Forest', 'Canadian Mountain Wilderness']
 export const practiceSaveKey = saveKey + '.practice'
 export const boardLimit = 20
 export const categories = { score: 'Highest Score', distance: 'Longest Distance', retrieves: 'Most Retrieves' }
@@ -45,12 +50,24 @@ function normalizePlayer(raw, id, schema) {
       return Array.isArray(dates) ? [[patch.id, dates.filter(validDate).slice(0, patch.goals.length)]] : []
     })),
   }
-  const migrationDuration = player.stats.runs ? Math.min(measure(raw?.migration?.duration), player.records.duration) : 0
+  const oldMigration = schema === 3 ? raw?.migration : raw?.legacyMigration
+  const playtime = player.stats.playtime
+  const total = player.stats.runs * territorySeconds
+  const trackedDuration = progress => player.stats.runs ?
+    Math.min(measure(progress?.duration), player.records.duration) : 0
+  if (oldMigration && trackedDuration(oldMigration) > 0) {
+    const duration = trackedDuration(oldMigration)
+    player.legacyMigration = { duration, farthest: Math.min(10, Math.floor(duration / territorySeconds) + 1),
+      seconds: legacyTerritoryNames.map((_, index) => Math.min(measure(oldMigration.seconds?.[index]),
+        playtime, index < 9 ? total : Infinity)) }
+  }
+  const progress = schema === saveVersion ? raw?.migration : null
+  const migrationDuration = trackedDuration(progress)
   player.migration = {
     duration: migrationDuration,
     farthest: migrationDuration > 0 ? regionAt(migrationDuration).index + 1 : 0,
-    seconds: expeditionRegions.map((region, index) => Math.min(measure(raw?.migration?.seconds?.[index]),
-      player.stats.playtime, index < expeditionRegions.length - 1 ? player.stats.runs * territorySeconds : Infinity)),
+    seconds: expeditionRegions.map((region, index) => Math.min(measure(progress?.seconds?.[index]),
+      playtime, index < expeditionRegions.length - 1 ? total : Infinity)),
   }
   player.enrollment = ['guest', 'worldwide', 'returning'].includes(raw?.enrollment)
     ? raw.enrollment : legacy ? 'returning' : null
@@ -92,7 +109,13 @@ function normalizeSave(raw) {
   for (const item of Array.isArray(raw?.entries) ? raw.entries : []) {
     if (!count(item?.id) || !known.has(item.player) || !validDate(item.date)) continue
     const fields = Object.fromEntries([...metrics, 'duration', ...counters].map(key => [key, measure(item[key])]))
-    if (count(item.territory) === regionAt(fields.duration).index + 1) fields.territory = item.territory
+    const current = item.course === courseRuleset
+    const place = current ? regionAt(fields.duration).index + 1 : Math.min(10, Math.floor(fields.duration / territorySeconds) + 1)
+    if (count(item.territory) === place) {
+      fields.territory = place
+      fields.course = current ? courseRuleset : 'legacy-10'
+      fields.territoryKey = current ? regionAt(fields.duration).key : undefined
+    }
     entries.set(item.id, { id: item.id, player: item.player, date: item.date, ...fields })
   }
   const nextPlayer = Math.max(count(raw?.nextPlayer), Math.max(...known) + 1)
@@ -109,7 +132,7 @@ function readSave(serialized) {
     const raw = JSON.parse(serialized)
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null
     if (raw.version == null || raw.version > saveVersion) return raw
-    if (![1, 2, 3].includes(raw.version) || !Array.isArray(raw.players) ||
+    if (![1, 2, 3, saveVersion].includes(raw.version) || !Array.isArray(raw.players) ||
         !raw.players.some(player => count(player?.id) > 0)) return null
     return raw
   } catch { return null }

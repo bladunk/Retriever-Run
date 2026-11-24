@@ -3,6 +3,8 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { contactShadow } from './contact-shadow.js'
 import { fieldMaterials } from './materials.js'
 import { fallenTimberModel } from './fallen-timber.js'
+import { lowTimber } from './low-timber.js'
+import { snowmobileParts } from './snowmobile.js'
 import { leaningTree } from './leaning-tree.js'
 import { trailTimber } from './trail-timber.js'
 import { rockMesh } from './rock-art.js'
@@ -23,22 +25,6 @@ const soakedGround = new T.CircleGeometry(1, 22).rotateX(-Math.PI / 2)
 const wetShapes = [pondSheet(), depthGeometry(crossingSurface.clone(), true)]
 const bankMaterial = new T.MeshLambertMaterial({ color: 0x645847 })
 const wheel = new T.CylinderGeometry(1, 1, 1, 12).rotateZ(Math.PI / 2)
-
-function hangingLimb(width, radius, depth, lift, phase) {
-  const geometry = new T.CylinderGeometry(1, 1, 1, 10, 12)
-  const points = geometry.attributes.position
-  for (let i = 0; i < points.count; i++) {
-    const x = points.getX(i), z = points.getZ(i)
-    const t = points.getY(i) + .5
-    const angle = Math.atan2(z, x)
-    const taper = .78 + .33 * (1 - t) + .14 * Math.sin(t * 17.1 + angle * 3 + phase)
-    const bend = Math.sin(t * 9.7 + phase) * .069 + (t - .5) * lift
-    points.setXYZ(i, (t - .5) * width, bend - x * radius * taper,
-      z * depth * taper + Math.sin(t * 14 + phase) * .048)
-  }
-  geometry.computeVertexNormals()
-  return geometry
-}
 
 function depthGeometry(geometry, ribbon) {
   const uv = geometry.attributes.uv
@@ -168,8 +154,12 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     object.add(new T.Mesh(leaningTree().geometry, fieldMaterials.material), contactShadow(type))
     return object
   }
+  if (type === 'branch') {
+    object.add(new T.Mesh(lowTimber().geometry, fieldMaterials.material), contactShadow('branch'))
+    return object
+  }
   if (type === 'fallen') {
-    object.add(new T.Mesh(fallenTimberModel(variant), fieldMaterials.material))
+    object.add(new T.Mesh(fallenTimberModel(variant), fieldMaterials.material), contactShadow('log'))
     return object
   }
   const timber = trailTimber(type)
@@ -180,6 +170,7 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
   }
   if (baked.has(key)) {
     object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
+    if (type === 'snowmobile') object.add(contactShadow(type))
     return object
   }
   const bark = 0x514033
@@ -191,23 +182,25 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     }
     for (const y of [.38, .81]) mesh(object, box, 0xb67c45, 0, y, 0, 2, .18, .17)
     mesh(object, box, cut, 0, .62, .1, .81, .17, .06).rotation.z = -.32
-  } else if (type === 'branch') {
-    const width = 2.14
-    const branchBark = 0x8c7b58
-    mesh(object, cylinder, branchBark, 1.01, .60, -.035, .112, 1.39, .122).rotation.z = .13
-    const limbs = [hangingLimb(width, .34, .205, .13, .6), hangingLimb(width * .96, .087, .080, -.073, 2.2),
-      hangingLimb(width * .90, .095, .096, .26, -1.3)]
-    mesh(object, limbs[0], branchBark, 0, 1.65, .012, 1, 1, 1)
-    mesh(object, limbs[1], bark, 0, 1.17, -.032, 1, 1, 1)
-    mesh(object, limbs[2], branchBark, -.075, 2.03, -.044, 1, 1, 1)
-    for (const t of [-.38, -.16, .23, .39]) {
-      const twig = mesh(object, cylinder, bark, t * width, 1.94 + t * .3, -.11, .042, .52, .045)
-      twig.rotation.set(.38, 0, -1.06 + t * .64)
-      mesh(object, leaf, 0x777451, t * width + .12, 2.02 + t * .4, -.24, .34, .14, .22)
+  } else if (type === 'snowmobile') {
+    for (const [, component, color, x, y, z, w, h, d] of snowmobileParts) {
+      const rounded = component === 'hood' || component === 'seat'
+      const profile = rounded ? sphere : box
+      const part = mesh(object, profile, color, x, y, z, w * (rounded ? .50 : 1), h * (rounded ? .50 : 1), d * (rounded ? .50 : 1))
+      if (component === 'screen') part.rotation.x = -.34
+      if (component === 'ski') {
+        mesh(object, box, color, x, .145, z - .49, w, .075, .44).rotation.x = .19
+        mesh(object, cylinder, 0x6a6f67, x, .29, z + .16, .055,.46,.08).rotation.z = x * .5
+      }
+    }
+    mesh(object, box, 0xd8cdb0, 0,.86,-1.052,.49,.18,.075)
+    mesh(object, box, 0x313735, 0,1.15,-.16,.69,.085,.085)
+    for (const side of [-1, 1]) {
+      mesh(object, box, 0x613b31, side * .19,.67,1.00,.16,.12,.055)
+      for (let i = 0; i < 5; i++) mesh(object, box, 0x524b44, side * .466,.31,-.22 + i*.25,.065,.145,.060)
     }
     compact(object, key, true)
-    for (const limb of limbs) limb.dispose()
-    return object
+    return object.add(contactShadow('snowmobile'))
   } else if (type === 'tractor') {
     mesh(object, box, 0x665b47, 0, .69, -.03, 1.26, .32, 1.90)
     mesh(object, box, 0x8b4534, 0, 1.02, -.47, 1.06, .62, 1.03)

@@ -1,12 +1,8 @@
+import { landscapeProfiles } from './migration-landscapes.js'
 import * as T from 'three'
 import { seededRandom } from './trail.js'
 
-export const forestProfiles = {
-  gulf: ['cypress', 'tupelo'], cypress: ['cypress', 'cypress'], flyway: ['cottonwood', 'oak'],
-  timber: ['oak', 'snag'], farm: ['maple', 'oak'], prairie: ['cottonwood', 'aspen'],
-  dakota: ['aspen', 'birch'], border: ['birch', 'spruce'], boreal: ['spruce', 'fir'],
-  mountain: ['fir', 'snowPine'],
-}
+export const forestProfiles = Object.fromEntries(landscapeProfiles.map(region => [region.key, region.species]))
 
 const northernStands = {
   boreal: [['spruce', 'fir'], ['fir', 'jackPine'], ['spruce', 'snag'], ['fir', 'spruce'], ['jackPine', 'fir']],
@@ -19,6 +15,7 @@ export function forestProfileAt(territory, tile) {
 }
 
 const shapes = {
+  willow: [.38, .28, .86, 0x645e4b, [0x788755, 0x6a8050, 0x929b5a]],
   cypress: [.25, .29, .89, 0x69614b, [0x647549, 0x717845, 0x82804a]],
   tupelo: [.30, .20, .90, 0x615347, [0x587044, 0x71794a, 0x8b8149]],
   cottonwood: [.37, .21, .87, 0x696452, [0x8a8c50, 0xa49850, 0xb59a50]],
@@ -45,13 +42,14 @@ export function forestSurface() {
     transparent: false, depthWrite: true })
 }
 
-export function forestModel(kind, compact = false) {
-  const [spread, trunkRatio, top, bark, foliage] = shapes[kind]
+export function forestModel(kind, compact = false, form = 0) {
+  const [baseSpread, trunkRatio, top, bark, foliage] = shapes[kind]
+  const spread = baseSpread * (form ? 1.12 : .97)
   const conifer = conifers.has(kind)
   const mobile = compact
-  const cacheKey = mobile ? kind + ':mobile' : kind
+  const cacheKey = kind + ':' + Number(mobile) + ':' + form
   if (cache.has(cacheKey)) return cache.get(cacheKey)
-  const random = seededRandom([...kind].reduce((key, char) => key * 31 + char.charCodeAt(0), 917))
+  const random = seededRandom([...kind].reduce((key, char) => key * 31 + char.charCodeAt(0), 917 + form * 671))
   const positions = [], colors = [], indices = [], uv = []
   const color = new T.Color()
   const rotate = new T.Quaternion()
@@ -101,7 +99,7 @@ export function forestModel(kind, compact = false) {
   }
 
   const foot = [0, -.025, 0]
-  const crotch = [trunkRatio * .10, .48, -.025]
+  const crotch = [trunkRatio * (form ? .22 : .10), .48, -.025]
   const crown = [trunkRatio * .16, .79, -.019]
   const tip = [trunkRatio * .20, top, .006]
   const diameter = kind === 'oak' || kind === 'cypress' ? .044 : kind === 'birch' ? .021 : .033
@@ -126,10 +124,11 @@ export function forestModel(kind, compact = false) {
     const t = n / branches
     const angle = n * 2.39996 + random() * (conifer ? .63 : .45)
     const x = Math.cos(angle), z = Math.sin(angle)
+    const willow = kind === 'willow'
     const roundCrown = !conifer && !['cypress', 'snag'].includes(kind)
     const y = conifer ? trunkRatio + t * (.935 - trunkRatio) + Math.sin(n * 2.7) * .025 : roundCrown
       ? .52 + Math.sin(n * 1.69) * .14 + random() * .19 : trunkRatio + t * (.89 - trunkRatio)
-    const h = conifer ? (kind === 'spruce' ? -.063 : kind === 'jackPine' ? .018 : -.029) * (1 - t)
+    const h = willow ? .045 - t * .082 : conifer ? (kind === 'spruce' ? -.063 : kind === 'jackPine' ? .018 : -.029) * (1 - t)
       + .067 * t : .080 + random() * .089
     const radius = spread * (conifer ? (1 - t) ** (kind === 'fir' ? 1.05 : .78) + .10 : roundCrown
       ? Math.sqrt(Math.max(.14, 1 - ((y + h - .73) / .36) ** 2)) : .71 + Math.sin(t * Math.PI) * .29) *
@@ -153,7 +152,7 @@ export function forestModel(kind, compact = false) {
     for (let j = 0; j < (mobile ? 4 : 5); j++) {
       const along = .52 + j * (conifer ? .175 : .111)
       const bend = (j % 2 ? 1 : -1) * width * (conifer ? .46 + random() * .31 : .56 + random() * .34)
-      const lift = conifer ? -.015 + j * .016 + random() * .021 : .017 + j * .018 + random() * .018
+      const lift = willow ? -.021 * j : conifer ? -.015 + j * .016 + random() * .021 : .017 + j * .018 + random() * .018
       const stem = conifer ? Math.min(1.02, along) : along
       spray(twig[0] * stem + z * bend, twig[1] + lift, twig[2] * stem - x * bend,
         width * (conifer ? 1.43 : 1.19), width * (.53 + random() * .31), angle + (conifer ? (j % 2 ? .8 : -.5) + j * .16 : j * 1.05),

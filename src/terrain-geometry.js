@@ -2,6 +2,8 @@ import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { createLeafSpray } from './marsh-plants.js'
 import { expeditionBlend, regionAtDistance, snowLevel } from './expedition.js'
+import { shoreHeight, vegetationPocket } from './landforms.js'
+import { dressMigrationLandmark } from './migration-landmarks.js'
 import { dressNorthernBank } from './expedition-props.js'
 import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
 import { signAnchor } from './sign-placement.js'
@@ -19,7 +21,7 @@ const branchVector = new T.Vector3()
 const branchRotation = new T.Quaternion()
 
 export const reedCount = 70
-export const treeCount = 20
+export const treeCount = 26
 
 function weatheredBank() {
   const geom = new T.IcosahedronGeometry(1, 1)
@@ -37,56 +39,19 @@ function weatheredBank() {
 const snowTint = new T.Color(0xe7e5d7)
 const otherTint = new T.Color()
 const waterline = -.55
+const bedStyles = { braids: 1, dunes: 1, limestone: 2, foothills: 2, alpine: 2, hardwood: 3, boreal: 3, parkland: 3 }
 
-function shoreHeight(region, distance, x) {
-  const edge = Math.abs(x)
-  const cross = x < 0 ? 1 : 4
-  const ripple = .13 * Math.sin(distance * .29 + x * .53) + .12 * Math.sin(distance * .11 - x * .51)
-  const wet = region.water + ripple
-  const width = 2.43 + Math.sin(distance * .061 + cross) * .88
-  const bank = Math.sin(distance * .076 + cross + x * .098)
-  if (region.kind === 'tidal') {
-    const tidalCreek = Math.sin((edge + 1.8 * Math.sin(distance * .053 + cross)) * .61)
-    return [wet + tidalCreek * .37, width * .79]
-  }
-  if (region.kind === 'swamp') return [wet + bank * (region.key === 'cypress' ? .17 : .07), width]
-  if (region.kind === 'channel') {
-    const sand = Math.max(0, 1 - Math.abs(edge - 12 - bank * 4) / 4.8)
-    return [wet + sand * .91 + Math.max(0, edge - 23) * .023, width * .86]
-  }
-  if (region.kind === 'field') {
-    const slope = Math.min(1, Math.max(0, (edge - 5) / 10))
-    return [wet + slope * (.95 + .38 * bank + .11 * Math.cos(edge * 1.1)), width * 1.42]
-  }
-  if (region.kind === 'slough') {
-    const meadow = Math.sin(edge * .39 + distance * .041 + cross)
-    return [wet + Math.max(0, meadow) ** 2 * .78 + Math.max(0, edge - 21) * .034, width + .28]
-  }
-  if (region.kind === 'pothole') {
-    const pothole = Math.cos(distance * .048 + cross) * .57 + Math.sin(edge * .29 + distance * .046) * .53
-    const blindTile = Math.round((distance - 14) / 150)
-    const pondSide = blindTile * 5 % 14 === 0 ? 1 : -1
-    const pond = Math.max(0, 1 - Math.hypot((x - pondSide * 12) / 8, (distance - blindTile * 150 - 16) / 20))
-    const basin = region.water + .82 * pothole + ripple - .78 * pond
-    const ridge = Math.max(0, (edge - 16) / 35) * (1.56 + .53 * Math.sin(distance * .043 + cross))
-    return [basin + ridge, width + .44 + .43 * bank]
-  }
-  const bar = .58 * Math.sin(edge * .43 - .65 + bank * .88)
-  const upland = Math.min(1, Math.max(0, (edge - 12) / 30))
-  const bluff = region.kind === 'alpine' ? 1.3 + Math.sin(distance * .048) * .43 : region.key === 'boreal' ? 1.75 : 1.28
-  return [wet + bar * .72 + upland * bluff, width + .31 * bank]
-}
-
-export function buildTile(index) {
+export function buildTile(index, seed = 0) {
   const start = index * segmentLength
   const colors = regionAtDistance(start + segmentLength * .5)
   const { key } = colors
   const winter = colors.snow > .6
-  const random = seededRandom((index + 77) * 4871)
+  const random = seededRandom(((index + 77) * 4871) ^ Math.imul(seed, 0x6cd15b9d))
   const between = (min, max) => min + random() * (max - min)
   const tint = new T.Color()
   const list = []
   const trees = []
+  const habitats = []
   const plantType = colors.plant
   const base = centerAt(start)
 
@@ -183,8 +148,9 @@ export function buildTile(index) {
   const values = []
   const uvs = []
   const indices = []
-  const offsets = [-51, -35, -23, -15, -10, -8, -6, -5.2, -4.3, -3.6, -3.2, -2.45, -1.6, -.8, 0,
-    .8, 1.6, 2.45, 3.2, 3.6, 4.3, 5.2, 6, 8, 10, 15, 23, 35, 51]
+  const terrainStyle = []
+  const offsets = [-78, -62, -48, -35, -23, -15, -10, -8, -6, -5.2, -4.3, -3.6, -3.2, -2.45, -1.6, -.8, 0,
+    .8, 1.6, 2.45, 3.2, 3.6, 4.3, 5.2, 6, 8, 10, 15, 23, 35, 48, 62, 78]
   for (let row = 0; row <= segmentLength * 2; row++) {
     const z = -row / 2
     const distance = start - z
@@ -198,6 +164,7 @@ export function buildTile(index) {
       const y = earth(distance, x, zone)
       const edgeFade = Math.min(1, Math.max(0, (edge - trailEdge(distance, x) + .44) / .88))
       uvs.push(x / 2.5, -distance / 2.5)
+      terrainStyle.push(T.MathUtils.lerp(bedStyles[zone.from.kind] ?? 0, bedStyles[zone.to.kind] ?? 0, zone.blend))
       positions.push(x, y, z)
       const rut = Math.sin(x * 5.5 + Math.sin(distance * .42) * .9) * .032
       const drift = Math.cos(distance * .18 + x * .63) * .044 + Math.sin(distance * .41 - x * 1.7) * .024
@@ -220,23 +187,30 @@ export function buildTile(index) {
   land.setAttribute('color', new T.Float32BufferAttribute(values, 3))
   land.setAttribute('uv', new T.Float32BufferAttribute(uvs, 2))
   land.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(positions.length / 3).fill(1), 1))
+  land.setAttribute('landStyle', new T.Float32BufferAttribute(terrainStyle, 1))
   land.setIndex(indices)
   land.computeVertexNormals()
 
   let water = null
   if (colors.water < 0) {
-    const plane = new T.PlaneGeometry(99, segmentLength, 28, 30)
+    const plane = new T.PlaneGeometry(156, segmentLength, offsets.length - 1, 30)
     plane.rotateX(-Math.PI / 2)
     plane.translate(0, -.55, -segmentLength / 2)
     const points = plane.attributes.position
     const depth = new Float32Array(points.count)
+    const canopy = new Float32Array(points.count)
     for (let i = 0; i < depth.length; i++) {
       const x = offsets[i % offsets.length]
       points.setX(i, x)
-      depth[i] = Math.max(0, -.55 - earth(start - points.getZ(i), x))
+      const at = start - points.getZ(i)
+      depth[i] = Math.min(.98, -.55 - earth(at, x))
+      const zone = expeditionBlend(at)
+      const density = T.MathUtils.lerp(zone.from.treesPerSide, zone.to.treesPerSide, zone.blend) / 12
+      canopy[i] = density * (.5 + vegetationPocket(colors.kind, at, x) * .43)
     }
     warp(points.array)
     plane.setAttribute('marshDepth', new T.BufferAttribute(depth, 1))
+    plane.setAttribute('marshCanopy', new T.BufferAttribute(canopy, 1))
     water = plane
   }
 
@@ -272,24 +246,39 @@ export function buildTile(index) {
       add(stone, i % 3 ? 0x655345 : 0x9a6638, side * between(.2, 3.03), -.005,
         between(-29.6, -.4), between(.035, .085), .014, between(.043, .10), 0, i)
     }
+    // Repeatable groves sample off-trail pockets. Cypress and flooded
+    // hardwood take shallow water, while upland species need a dry root.
     for (let i = 0; i < colors.treesPerSide; i++) {
-      const z = between(-29.1, -.8)
-      const northern = colors.conifers > .80
-      const x = side * (i === 0 ? between(7.2, 10.8) : northern && i === 1 ? between(9.5, 14.6) : between(10 + i * .57, 38))
-      const tall = colors.treesPerSide > 3
-      const height = colors.treeScale * (northern && i % 5 === 3 ? between(3.4, 5.8) : tall ? between(5.8, 10.5) : between(4.2, 7.3))
-      const ground = earth(start - z, x)
+      const z = between(-29.12, -.86)
+      const nearBank = i < Math.ceil(colors.treesPerSide * .58)
+      const x = side * (nearBank ? between(5.7, 14.0) : between(16, 51))
       const at = start - z
+      const ground = earth(at, x)
+      const wetRoots = ['swamp', 'hardwood'].includes(colors.kind)
+      const shoreTree = ['willow', 'cottonwood'].includes(colors.species[i % 2])
+      const lowest = wetRoots ? -1.53 : shoreTree ? -.62 : -.38
+      if (ground < lowest || i > 1 && vegetationPocket(colors.kind, at, x) < -.39) continue
+      const height = colors.treeScale * (i % 5 === 3 ? between(4.1, 6.3) : between(6.0, 11.9))
       const heading = headingAt(at)
-      const kind = (i + index + Number(side === 1)) % 4 === 0 ? 1 : 0
+      const kind = (i + index + Number(side === 1)) % 3 === 0 ? 1 : 0
       trees.push(centerAt(at) - base + Math.cos(heading) * x, ground, z - Math.sin(heading) * x, height,
         between(0, Math.PI * 2), i % 3, kind)
+      if (wetRoots && i % 2 === 0 && Math.abs(x) < 12) {
+        for (let knee = 0; knee < 3; knee++) {
+          const foot = x + side * between(.28, 1.45)
+          const depth = z + between(-1.2, .9)
+          const y = earth(start - depth, foot)
+          const h = Math.max(.44, waterline - y + between(.29, .72))
+          add(twig, colors.key === 'cypress' ? 0x645947 : 0x756048, foot, y + h * .39, depth,
+            .11 + knee * .026, h, .17, 0, knee, side * .18, false, 2)
+        }
+      }
     }
   }
 
   const crops = []
-  const harvested = index % 7 === 4
-  if (key === 'farm' || key === 'prairie' && index % 6 === 1) {
+  const harvested = key === 'dakota' || (index + (seed >>> 4)) % 8 > 4
+  if (key === 'farm' || key === 'platte' && index % 3 === 1 || key === 'dakota' && index % 5 === 1) {
     const side = Math.floor(index / 5) % 2 ? -1 : 1
     for (let plant = 0; plant < 16; plant++) {
       for (let row = 0; row < 7; row++) {
@@ -305,7 +294,7 @@ export function buildTile(index) {
   }
 
   // Weathered blinds and floating decoys sit outside the playable lanes.
-  if (colors.landmark === 'blind' && index % 5 === 0 || key === 'gulf' && index % 7 === 1) {
+  if ((key === 'gulf' || key === 'prairie' || key === 'manitoba') && index % 7 === 1) {
     const side = index % 14 === 0 ? 1 : -1
     const x = side * 7.1
     const z = -13.5
@@ -362,6 +351,8 @@ export function buildTile(index) {
   }
 
   const chimney = dressNorthernBank({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline, random })
+  const landmark = dressMigrationLandmark({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x),
+    waterline, random, branch })
   dressWildBanks({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline })
   if (chimney) {
     const at = start - chimney[2]
@@ -391,7 +382,7 @@ export function buildTile(index) {
 
   const merged = mergeGeometries(list)
   for (const geometry of list) geometry.dispose()
-  const reeds = new Float32Array(reedCount * 6)
+  const reeds = []
   const bankBias = random() < .5 ? -1 : 1
   for (let i = 0; i < reedCount; i++) {
     const side = i % 3 === 0 ? -bankBias : bankBias
@@ -401,14 +392,17 @@ export function buildTile(index) {
     let x = side * (3.51 + (i % 4 ? random() ** 1.4 * 1.85 : between(1.8, 5.2)) + shore * .38)
     if (sign && Math.abs(at - sign.distance) < 6 && Math.sign(sign.width) === side &&
       Math.abs(x) < Math.abs(sign.width) + 1.0) x += side * 2.4
+    if (i % 4 === 0 && ['dunes', 'swamp', 'hardwood', 'tidal', 'lacustrine'].includes(colors.kind)) x += side * between(2.0, 8.5)
+    const y = earth(at, x)
+    const marsh = ['tidal', 'swamp', 'hardwood', 'lacustrine', 'slough', 'pothole'].includes(colors.kind)
+    if (y < (marsh ? -1.06 : -.72) || marsh && y > .38 && i % 3) continue
     const heading = headingAt(at)
-    const n = i * 6
-    reeds[n] = centerAt(at) - base + Math.cos(heading) * x
-    reeds[n + 1] = Math.max(earth(at, x) - .045, -.83)
-    reeds[n + 2] = start - at - Math.sin(heading) * x
-    tint.setHex(0xf4e6c3).lerp(vegetationTint, .28 + random() * .33).toArray(reeds, n + 3)
+    reeds.push(centerAt(at) - base + Math.cos(heading) * x, y - .020, start - at - Math.sin(heading) * x)
+    tint.setHex(0xf4e6c3).lerp(vegetationTint, .42 + random() * .32).toArray(reeds, reeds.length)
+    if (i % 7 === 0) habitats.push({ distance: at, side, lateral: x, depth: waterline - y,
+      kind: y < waterline ? 'shallow-water' : colors.habitats[1] })
   }
-  return { index, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds,
+  return { index, seed, ground: pack(land), detail: pack(merged), water: water ? pack(water) : null, reeds: new Float32Array(reeds), habitats, landmark,
     plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
       : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign }
 }

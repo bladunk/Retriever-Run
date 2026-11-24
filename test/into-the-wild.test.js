@@ -19,7 +19,7 @@ import { createFixedClock, tickSeconds } from '../src/timing.js'
 import { centerAt, headingAt, segmentLength, laneWidth } from '../src/trail.js'
 
 test('every 15-second stage changes on active time and its travel fits current Camp rules', () => {
-  assert.equal(courseStages.length, 20)
+  assert.equal(courseStages.length, 30)
   for (const { start, level, territory, pace } of courseStages) {
     assert.equal(stageAt(start).level, level)
     assert.equal(regionAt(start).index, territory)
@@ -28,7 +28,7 @@ test('every 15-second stage changes on active time and its travel fits current C
       assert.ok(courseStages[level - 2].pace < pace)
     }
   }
-  assert.equal(stageAt(14_400).level, 20)
+  assert.equal(stageAt(14_400).level, 30)
   const run = newRun()
   const clock = createFixedClock()
   for (let i = 0; i < 1499; i++) clock.advance(.01, dt => advance(run, dt))
@@ -50,7 +50,7 @@ test('all 280 notices remain reachable without short repeats and fit in three li
   assert.equal(catalog.length, 280)
   assert.equal(new Set(catalog.map(value => value.replace(/[^A-Z]/g, ''))).size, catalog.length)
   const reached = new Set()
-  const categories = Array.from({ length: 10 }, () => ({}))
+  const categories = Array.from({ length: 15 }, () => ({}))
   let seed = 78654
   for (let run = 0; run < 1120; run++) {
     seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0
@@ -64,15 +64,15 @@ test('all 280 notices remain reachable without short repeats and fit in three li
       recent.push(sign.line)
       if (recent.length > 19) recent.shift()
       reached.add(sign.line)
-      if (ordinal < 13) {
+      if (ordinal < 21) {
         const group = categories[sign.region]
         group[sign.category] = (group[sign.category] ?? 0) + 1
       }
     }
   }
   assert.deepEqual(reached, new Set(catalog))
-  assert.ok(categories[4].farm > 65)
-  assert.ok(categories[8].canada > 20)
+  assert.ok(categories[5].farm > 65)
+  assert.ok(categories[12].canada > 20)
   assert.ok(categories[1].marsh > 20)
   const measure = line => [...line].reduce((n, symbol) => n + (symbol === ' ' ? 29 : 60), 0)
   for (const message of catalog) {

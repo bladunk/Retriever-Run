@@ -37,3 +37,7 @@ Owner approval and recorded physical-device evidence are separate from automated
 - Physical testing is required for touch and display latency, legibility in severe weather, real-world frame-time distribution, and several longer iPhone hunts. See the [Phase 02 report](PHASE_02_REPORT.md) for tested boundaries.
 
 To rehearse an actual Phase 01 update, point `FIELD_PHASE_ONE_BUILD` at an isolated build of `3fb4c4f` and `FIELD_BUILD` at the Phase 02 build. Run `npm run test:production -- from-phase-one repair` and prefix the arguments with `webkit` to switch engines. This covers a paused tab veto, changed-file download, existing saves, and persistent swipe sensitivity.
+
+## Phase 03 additions
+
+The revision tests the fifteen-stage-pair route, all boundary seams, bounded terrain packets, seeded topology, landmark placement, the slide volume and snowmobile eligibility, and save schema 4. `scripts/phase-three-browser.mjs` runs the compiled Pages subpath in Chromium or WebKit. Its default mode captures both approach and landmark scenes, and `transitions` replays the boundaries at the actual stage clock. The `timber` case uses independent Phase 02 and Phase 03 build and source directories for the reported cypress scene. `from-phase-two repair` rehearses updating while a paused hunt prevents activation.
