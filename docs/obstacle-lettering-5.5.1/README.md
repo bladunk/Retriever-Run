@@ -35,7 +35,7 @@ The matrix contains 30 captures with 28 distinct slogans across all 10 territori
 
 ## Reproduce
 
-Run these commands from the repository root with Node.js 22.12 or later. The browser commands start their own static server for the production bundle.
+Run these commands from a checkout of `86e03de`, the 5.5.1 lettering release, with Node.js 22.12 or later. The browser commands start their own static server for that production bundle.
 
 ```bash
 npm ci

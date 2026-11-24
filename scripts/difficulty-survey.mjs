@@ -5,10 +5,12 @@ const source = process.argv[2] ?? '.'
 const numberOfCourses = Number(process.argv[3] ?? 512)
 const { createCourse, speedAtTime } = await import(pathToFileURL(resolve(source, 'src/runner.js')))
 const { laneWidth } = await import(pathToFileURL(resolve(source, 'src/trail.js')))
+const { expeditionRegions, territorySeconds } = await import(pathToFileURL(resolve(source, 'src/expedition.js')))
 const totals = Array.from({ length: 20 }, (_, index) => ({
   stage: index + 1, start: index * 15, encounters: 0, crowded: 0, switches: 0, jumps: 0, slides: 0,
   chains: 0, guaranteedFree: 0, gearRisk: 0, reaction: [], gaps: [], patterns: new Set(),
 }))
+const regions = expeditionRegions.map(({ name }) => ({ territory: name, hazards: {}, rocks: 0 }))
 const pickNumber = (arr, fraction) => Number((arr.sort((a, b) => a - b)[Math.floor((arr.length - 1) * fraction)] ?? 0).toFixed(3))
 const rate = count => Number((count * 4 / numberOfCourses).toFixed(1))
 for (let seed = 0; seed < numberOfCourses; seed++) {
@@ -18,6 +20,9 @@ for (let seed = 0; seed < numberOfCourses; seed++) {
     const stage = totals[Math.floor(row.time / 15)]
     const hazards = row.entities.filter(item => item.hazard)
     if (hazards.length) {
+      const mix = regions[Math.floor(row.time / territorySeconds)]
+      for (const item of hazards) mix.hazards[item.type] = (mix.hazards[item.type] ?? 0) + 1
+      if (hazards.some(item => item.type === 'rock')) mix.rocks++
       stage.encounters++
       const wide = row.gate && row.entities.find(item => item.wide)
       const occupied = new Set(hazards.map(item => item.lane)).size
@@ -46,7 +51,12 @@ for (let seed = 0; seed < numberOfCourses; seed++) {
     previous = row
   }
 }
-console.log(JSON.stringify({ seeds: numberOfCourses, stages: totals.map(({ start, stage, encounters, crowded, switches, jumps,
+const territories = regions.map(({ territory, hazards, rocks }) => {
+  const instances = Object.values(hazards).reduce((sum, n) => sum + n, 0)
+  return { territory, hazards, rockShare: +(100 * rocks / instances).toFixed(1),
+    secondsPerRock: rocks ? +(territorySeconds * numberOfCourses / rocks).toFixed(1) : null }
+})
+console.log(JSON.stringify({ seeds: numberOfCourses, territories, stages: totals.map(({ start, stage, encounters, crowded, switches, jumps,
   slides, chains, guaranteedFree, gearRisk, reaction, gaps, patterns }) => ({
     stage, speed: +speedAtTime(start + 7.5).toFixed(2), encounters: rate(encounters), crowded: rate(crowded),
     switches: rate(switches), jumps: rate(jumps), slides: rate(slides), chains: rate(chains),

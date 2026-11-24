@@ -1,0 +1,1561 @@
+[
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "rock-0",
+    "seed": 57207,
+    "start": 108.71064544543407,
+    "stop": 109.41064544543407,
+    "target": 115.91064544543407,
+    "variant": 0,
+    "lane": 0,
+    "territory": 0,
+    "portrait": false,
+    "quality": "balanced",
+    "rock": {
+      "distance": 115.91064544543407,
+      "lane": -1,
+      "variant": 0,
+      "turn": 2,
+      "points": [
+        [
+          0.3903613981642623,
+          0.5668830631570188
+        ],
+        [
+          0.35647903245016205,
+          0.5917419604622106
+        ],
+        [
+          0.3896451581480658,
+          0.528389236944354
+        ],
+        [
+          0.35545109694743493,
+          0.5497166977867758
+        ],
+        [
+          0.42342260185623887,
+          0.572126607484343
+        ],
+        [
+          0.3920229359408215,
+          0.5980490957066231
+        ],
+        [
+          0.4229121783670997,
+          0.532885668190972
+        ],
+        [
+          0.3912323154155443,
+          0.5551320898163679
+        ]
+      ]
+    },
+    "ticks": 8,
+    "distance": 109.46912553784585,
+    "weather": "Autumn sunrise",
+    "habitat": "Gulf Coast Marsh",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "rock-2",
+    "seed": 57481,
+    "start": 1630.328423141407,
+    "stop": 1631.028423141407,
+    "target": 1637.528423141407,
+    "variant": 2,
+    "lane": 1,
+    "territory": 2,
+    "portrait": true,
+    "quality": "low",
+    "rock": {
+      "distance": 1637.528423141407,
+      "lane": -1,
+      "variant": 2,
+      "turn": 1,
+      "points": [
+        [
+          0.2179021639566529,
+          0.6342409483502389
+        ],
+        [
+          0.23380292915789713,
+          0.6491814409217644
+        ],
+        [
+          0.2166974356711429,
+          0.6063679189894888
+        ],
+        [
+          0.23259204139466394,
+          0.6195604118340473
+        ],
+        [
+          0.3312501638650742,
+          0.6296393528737991
+        ],
+        [
+          0.3540082957028604,
+          0.6439703568250161
+        ],
+        [
+          0.3305439558319325,
+          0.6023061704159506
+        ],
+        [
+          0.3533583732459586,
+          0.6149581812556215
+        ]
+      ]
+    },
+    "ticks": 8,
+    "distance": 1631.6398445080154,
+    "weather": "Morning fog",
+    "habitat": "Mississippi Flyway",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "rock-4",
+    "seed": 19617,
+    "start": 2267.958258532671,
+    "stop": 2268.658258532671,
+    "target": 2275.158258532671,
+    "variant": 4,
+    "lane": 0,
+    "territory": 3,
+    "portrait": true,
+    "quality": "high",
+    "rock": {
+      "distance": 2275.158258532671,
+      "lane": -1,
+      "variant": 4,
+      "turn": 1,
+      "points": [
+        [
+          0.22437474227916254,
+          0.6309658853904504
+        ],
+        [
+          0.18600318029799395,
+          0.6466609267069154
+        ],
+        [
+          0.2222610872422346,
+          0.5808900979560802
+        ],
+        [
+          0.18342748368598022,
+          0.5932245439778862
+        ],
+        [
+          0.36691578624190563,
+          0.6342373792312546
+        ],
+        [
+          0.33795614221347103,
+          0.6504039883644689
+        ],
+        [
+          0.36588040202158945,
+          0.5834600264126489
+        ],
+        [
+          0.3366062424767677,
+          0.5961680798627882
+        ]
+      ]
+    },
+    "ticks": 6,
+    "distance": 2268.95505535305,
+    "weather": "Light rain",
+    "habitat": "Arkansas Flooded Timber",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "rock-6",
+    "seed": 19891,
+    "start": 5040.613825802798,
+    "stop": 5041.3138258027975,
+    "target": 5047.8138258027975,
+    "variant": 6,
+    "lane": 0,
+    "territory": 7,
+    "portrait": false,
+    "quality": "balanced",
+    "rock": {
+      "distance": 5047.8138258027975,
+      "lane": -1,
+      "variant": 6,
+      "turn": 0,
+      "points": [
+        [
+          0.3360935505100594,
+          0.5961127744337511
+        ],
+        [
+          0.32139513089317895,
+          0.6257605852169184
+        ],
+        [
+          0.33231550805987287,
+          0.460965564278049
+        ],
+        [
+          0.31684525677009473,
+          0.47715307138590585
+        ],
+        [
+          0.40444809827938055,
+          0.5951673412324183
+        ],
+        [
+          0.39678871024630363,
+          0.6246116389468026
+        ],
+        [
+          0.4022529972637675,
+          0.460450623328026
+        ],
+        [
+          0.39416917135503654,
+          0.47652432544201684
+        ]
+      ]
+    },
+    "ticks": 6,
+    "distance": 5041.763763263542,
+    "weather": "Snow",
+    "habitat": "Northern Borderlands",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "chromium",
+    "build": "Revised production",
+    "label": "rock-8",
+    "seed": 39234,
+    "start": 5955.004074042406,
+    "stop": 5955.704074042405,
+    "target": 5962.204074042405,
+    "variant": 8,
+    "lane": 0,
+    "territory": 8,
+    "portrait": true,
+    "quality": "low",
+    "rock": {
+      "distance": 5962.204074042405,
+      "lane": -1,
+      "variant": 8,
+      "turn": 0,
+      "points": [
+        [
+          0.1681779597185576,
+          0.6241438903610028
+        ],
+        [
+          0.18966335603495799,
+          0.6506608679544267
+        ],
+        [
+          0.16303539054913235,
+          0.5228365108471442
+        ],
+        [
+          0.18426468740508584,
+          0.5374066313916382
+        ],
+        [
+          0.3420460541790108,
+          0.6176566511317985
+        ],
+        [
+          0.38306803603109296,
+          0.6425464357642885
+        ],
+        [
+          0.3396712690711767,
+          0.5192802810660614
+        ],
+        [
+          0.38110187756629094,
+          0.5329422637669101
+        ]
+      ]
+    },
+    "ticks": 4,
+    "distance": 5955.711561651391,
+    "weather": "Sleet",
+    "habitat": "Canadian Boreal Forest",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "chromium",
+    "build": "Revised production",
+    "label": "rock-10",
+    "seed": 58577,
+    "start": 2767.59426852374,
+    "stop": 2768.29426852374,
+    "target": 2774.79426852374,
+    "variant": 10,
+    "lane": 1,
+    "territory": 4,
+    "portrait": true,
+    "quality": "high",
+    "rock": {
+      "distance": 2774.79426852374,
+      "lane": -1,
+      "variant": 10,
+      "turn": 0,
+      "points": [
+        [
+          0.204517736861919,
+          0.6306031612114269
+        ],
+        [
+          0.19508926657517617,
+          0.6600864187534511
+        ],
+        [
+          0.19988042925099664,
+          0.5281155659412372
+        ],
+        [
+          0.18967065511858272,
+          0.5445585078975969
+        ],
+        [
+          0.37968434662466755,
+          0.6275590554101
+        ],
+        [
+          0.39283223428963826,
+          0.6562059043591231
+        ],
+        [
+          0.37782185376808736,
+          0.526421676480089
+        ],
+        [
+          0.39095709086156666,
+          0.5423904857748753
+        ]
+      ]
+    },
+    "ticks": 6,
+    "distance": 2768.629608559924,
+    "weather": "Light rain",
+    "habitat": "Midwest Farm Country",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "notice-0",
+    "seed": 2431,
+    "ordinal": 0,
+    "target": 225.48453338572477,
+    "start": 211.18453338572476,
+    "stop": 211.88453338572478,
+    "pass": false,
+    "territory": 0,
+    "portrait": false,
+    "quality": "high",
+    "sign": {
+      "line": "BOOTS BEFORE BREAKFAST",
+      "category": "rookie",
+      "style": "oldPaint",
+      "region": 0,
+      "tile": 7,
+      "ordinal": 0,
+      "distance": 225.48453338572477,
+      "width": 4.791840066718868,
+      "y": -0.8819757730797139,
+      "corners": [
+        [
+          0.6039498214659104,
+          0.37933782252012677
+        ],
+        [
+          0.6951557496151926,
+          0.3822886436159014
+        ],
+        [
+          0.6928351926569908,
+          0.45454954465892294
+        ],
+        [
+          0.6027617119682824,
+          0.44883001903519976
+        ]
+      ]
+    },
+    "ticks": 8,
+    "distance": 212.04243747120182,
+    "weather": "Autumn sunrise",
+    "habitat": "Gulf Coast Marsh",
+    "status": "running",
+    "inputs": 0,
+    "lettering": {
+      "cream": 393,
+      "dark": 831,
+      "samples": 1568,
+      "width": 82
+    }
+  },
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "notice-5",
+    "seed": 14586,
+    "ordinal": 5,
+    "target": 2652.374334779676,
+    "start": 2638.0743347796756,
+    "stop": 2638.774334779676,
+    "pass": false,
+    "territory": 4,
+    "portrait": false,
+    "quality": "low",
+    "sign": {
+      "line": "A STIFF BREEZE BY LOCAL STANDARDS",
+      "category": "weather",
+      "style": "oldPaint",
+      "region": 4,
+      "tile": 88,
+      "ordinal": 5,
+      "distance": 2652.374334779676,
+      "width": 4.810507307089865,
+      "y": -0.2688670211091599,
+      "corners": [
+        [
+          0.6095481459963367,
+          0.3474762248366269
+        ],
+        [
+          0.7042213041753456,
+          0.34924362941251785
+        ],
+        [
+          0.7017045082853064,
+          0.42454356373747926
+        ],
+        [
+          0.6082540004407145,
+          0.41967857696922717
+        ]
+      ]
+    },
+    "ticks": 8,
+    "distance": 2639.510665535435,
+    "weather": "Light rain",
+    "habitat": "Midwest Farm Country",
+    "status": "running",
+    "inputs": 0,
+    "lettering": {
+      "cream": 418,
+      "dark": 697,
+      "samples": 1568,
+      "width": 85
+    }
+  },
+  {
+    "engine": "webkit",
+    "build": "Initial production",
+    "label": "rock-1",
+    "seed": 38275,
+    "start": 735.4555811256979,
+    "stop": 736.155581125698,
+    "target": 742.655581125698,
+    "variant": 1,
+    "lane": -1,
+    "territory": 1,
+    "portrait": true,
+    "quality": "high",
+    "rock": {
+      "distance": 742.655581125698,
+      "lane": 1,
+      "variant": 1,
+      "turn": 0,
+      "points": [
+        [
+          0.6346813732162795,
+          0.6273414486842166
+        ],
+        [
+          0.627624560404599,
+          0.6402653400865548
+        ],
+        [
+          0.6353435330441808,
+          0.5952189758411083
+        ],
+        [
+          0.6282885032993446,
+          0.6063426539673067
+        ],
+        [
+          0.7411048813054177,
+          0.629462816669963
+        ],
+        [
+          0.7401939421445018,
+          0.6426404835889086
+        ],
+        [
+          0.7423015803024451,
+          0.5970444172103335
+        ],
+        [
+          0.7414561273510669,
+          0.6083876439037673
+        ]
+      ]
+    },
+    "ticks": 6,
+    "distance": 736.2748440392827,
+    "weather": "Overcast",
+    "habitat": "Southern Cypress Swamp",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "webkit",
+    "build": "Initial production",
+    "label": "rock-3",
+    "seed": 38549,
+    "start": 3677.7663133042956,
+    "stop": 3678.4663133042955,
+    "target": 3684.9663133042955,
+    "variant": 3,
+    "lane": 0,
+    "territory": 5,
+    "portrait": false,
+    "quality": "balanced",
+    "rock": {
+      "distance": 3684.9663133042955,
+      "lane": 1,
+      "variant": 3,
+      "turn": 2,
+      "points": [
+        [
+          0.5711789322925832,
+          0.5789462103340615
+        ],
+        [
+          0.5663239588863184,
+          0.6028113198507389
+        ],
+        [
+          0.5719311448907636,
+          0.516802795527223
+        ],
+        [
+          0.5670870977690182,
+          0.5354248069062256
+        ],
+        [
+          0.6114590195720239,
+          0.5821210182841947
+        ],
+        [
+          0.6101230455835454,
+          0.6065718125769504
+        ],
+        [
+          0.6126508103506896,
+          0.5192781144039854
+        ],
+        [
+          0.6114064465711718,
+          0.5383622841690296
+        ]
+      ]
+    },
+    "ticks": 6,
+    "distance": 3678.857332066002,
+    "weather": "Heavy rain",
+    "habitat": "Prairie Potholes",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "webkit",
+    "build": "Initial production",
+    "label": "rock-5",
+    "seed": 19754,
+    "start": 4319.927127854096,
+    "stop": 4320.627127854096,
+    "target": 4327.127127854096,
+    "variant": 5,
+    "lane": -1,
+    "territory": 6,
+    "portrait": true,
+    "quality": "low",
+    "rock": {
+      "distance": 4327.127127854096,
+      "lane": 1,
+      "variant": 5,
+      "turn": 2,
+      "points": [
+        [
+          0.6565184198116778,
+          0.633210575966029
+        ],
+        [
+          0.7025860054360178,
+          0.6521187873228933
+        ],
+        [
+          0.6579499586295883,
+          0.5735069028612853
+        ],
+        [
+          0.7045931657465384,
+          0.5876311898450488
+        ],
+        [
+          0.7872487133875592,
+          0.6288731587483153
+        ],
+        [
+          0.8429328693928235,
+          0.6470445689488062
+        ],
+        [
+          0.7898257945007693,
+          0.5702698890994048
+        ],
+        [
+          0.8462604189478045,
+          0.5838386957473783
+        ]
+      ]
+    },
+    "ticks": 5,
+    "distance": 4320.824801176796,
+    "weather": "Windy",
+    "habitat": "Dakota Wetlands",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "webkit",
+    "build": "Revised production",
+    "label": "rock-7",
+    "seed": 20028,
+    "start": 4400.276792411718,
+    "stop": 4400.976792411718,
+    "target": 4407.476792411718,
+    "variant": 7,
+    "lane": 0,
+    "territory": 6,
+    "portrait": true,
+    "quality": "high",
+    "rock": {
+      "distance": 4407.476792411718,
+      "lane": 1,
+      "variant": 7,
+      "turn": 1,
+      "points": [
+        [
+          0.6696328609092002,
+          0.6323688300627003
+        ],
+        [
+          0.6510268539539205,
+          0.6567813381899308
+        ],
+        [
+          0.6723502416173218,
+          0.5277861237887839
+        ],
+        [
+          0.6537092587906227,
+          0.5412599201984492
+        ],
+        [
+          0.8928537281254871,
+          0.6384119379027389
+        ],
+        [
+          0.8982510550941079,
+          0.6642057268081529
+        ],
+        [
+          0.89931610551381,
+          0.5311171497662281
+        ],
+        [
+          0.9055358851981541,
+          0.5453667690701044
+        ]
+      ]
+    },
+    "ticks": 6,
+    "distance": 4401.402213585442,
+    "weather": "Windy",
+    "habitat": "Dakota Wetlands",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "webkit",
+    "build": "Revised production",
+    "label": "rock-9",
+    "seed": 58440,
+    "start": 6889.5476875009745,
+    "stop": 6890.247687500974,
+    "target": 6896.747687500974,
+    "variant": 9,
+    "lane": -1,
+    "territory": 9,
+    "portrait": false,
+    "quality": "balanced",
+    "rock": {
+      "distance": 6896.747687500974,
+      "lane": 1,
+      "variant": 9,
+      "turn": 0,
+      "points": [
+        [
+          0.5673426584853236,
+          0.5774161822863193
+        ],
+        [
+          0.5513963837865883,
+          0.6108933185330506
+        ],
+        [
+          0.5694916736199773,
+          0.3897144923339843
+        ],
+        [
+          0.5532469406241641,
+          0.40031678701687406
+        ],
+        [
+          0.6624887567542366,
+          0.5888678868220498
+        ],
+        [
+          0.6581252495636559,
+          0.6254330479964482
+        ],
+        [
+          0.6679010031500732,
+          0.3933318344443341
+        ],
+        [
+          0.6641014022781045,
+          0.4049478048243093
+        ]
+      ]
+    },
+    "ticks": 4,
+    "distance": 6890.269336744441,
+    "weather": "High-country snow",
+    "habitat": "Canadian Mountain Wilderness",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "webkit",
+    "build": "Revised production",
+    "label": "rock-11",
+    "seed": 58714,
+    "start": 6782.448920580269,
+    "stop": 6783.148920580269,
+    "target": 6789.648920580269,
+    "variant": 11,
+    "lane": 0,
+    "territory": 9,
+    "portrait": true,
+    "quality": "low",
+    "rock": {
+      "distance": 6789.648920580269,
+      "lane": 1,
+      "variant": 11,
+      "turn": 2,
+      "points": [
+        [
+          0.6446109235074292,
+          0.6351816321287181
+        ],
+        [
+          0.6759401499761939,
+          0.6633945007208745
+        ],
+        [
+          0.6471192378363015,
+          0.521990323542513
+        ],
+        [
+          0.6793713658322024,
+          0.5366778605364726
+        ],
+        [
+          0.8343372345911441,
+          0.6334392177926282
+        ],
+        [
+          0.8883480068470961,
+          0.6612031219831457
+        ],
+        [
+          0.840091964392879,
+          0.5210852650861135
+        ],
+        [
+          0.8958564494848782,
+          0.5355348046914667
+        ]
+      ]
+    },
+    "ticks": 4,
+    "distance": 6783.170077894633,
+    "weather": "High-country snow",
+    "habitat": "Canadian Mountain Wilderness",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "webkit",
+    "build": "Initial production",
+    "label": "notice-1",
+    "seed": 4862,
+    "ordinal": 1,
+    "target": 626.2177134959591,
+    "start": 611.9177134959591,
+    "stop": 612.617713495959,
+    "pass": false,
+    "territory": 1,
+    "portrait": true,
+    "quality": "balanced",
+    "sign": {
+      "line": "PUBLIC SKIFF SLIP",
+      "category": "marsh",
+      "style": "plank",
+      "region": 1,
+      "tile": 20,
+      "ordinal": 1,
+      "distance": 626.2177134959591,
+      "width": -4.915573514793068,
+      "y": -0.6276495560273746,
+      "corners": [
+        [
+          0.06083922903556088,
+          0.489284775206346
+        ],
+        [
+          0.261610616550339,
+          0.4863255563904628
+        ],
+        [
+          0.263188013525708,
+          0.5304908866229083
+        ],
+        [
+          0.06384869167363966,
+          0.535004143117256
+        ]
+      ]
+    },
+    "ticks": 6,
+    "distance": 612.7145385964706,
+    "weather": "Autumn sunrise",
+    "habitat": "Southern Cypress Swamp",
+    "status": "running",
+    "inputs": 0,
+    "lettering": {
+      "cream": 374,
+      "dark": 723,
+      "samples": 1568,
+      "width": 83
+    }
+  },
+  {
+    "engine": "webkit",
+    "build": "Initial production",
+    "label": "notice-6",
+    "seed": 17017,
+    "ordinal": 6,
+    "target": 3046.6339241415058,
+    "start": 3032.3339241415056,
+    "stop": 3033.033924141506,
+    "pass": false,
+    "territory": 4,
+    "portrait": false,
+    "quality": "high",
+    "sign": {
+      "line": "KEEP THE CATTLE OUT OF THE MARSH",
+      "category": "property",
+      "style": "posted",
+      "region": 4,
+      "tile": 101,
+      "ordinal": 6,
+      "distance": 3046.6339241415058,
+      "width": -4.934240755164065,
+      "y": -0.5432435889532904,
+      "corners": [
+        [
+          0.29716684671657134,
+          0.36338550392393154
+        ],
+        [
+          0.3888409399801268,
+          0.36110055845934497
+        ],
+        [
+          0.39011376419775534,
+          0.43092823998383006
+        ],
+        [
+          0.2995864331695699,
+          0.4361037681842841
+        ]
+      ]
+    },
+    "ticks": 6,
+    "distance": 3033.386581975513,
+    "weather": "Heavy rain",
+    "habitat": "Midwest Farm Country",
+    "status": "running",
+    "inputs": 0,
+    "lettering": {
+      "cream": 347,
+      "dark": 725,
+      "samples": 1568,
+      "width": 83
+    }
+  },
+  {
+    "engine": "webkit",
+    "build": "Revised production",
+    "label": "notice-12",
+    "seed": 33518,
+    "ordinal": 12,
+    "target": 6781.027563066371,
+    "start": 6766.727563066371,
+    "stop": 6767.427563066371,
+    "pass": false,
+    "territory": 9,
+    "portrait": false,
+    "quality": "high",
+    "sign": {
+      "line": "TAKE THE UPLAND SPUR",
+      "category": "trail",
+      "style": "direction",
+      "region": 9,
+      "tile": 226,
+      "ordinal": 12,
+      "distance": 6781.027563066371,
+      "width": -4.77664144360926,
+      "y": -0.3429422472617462,
+      "corners": [
+        [
+          0.2950642044830614,
+          0.35375634896500807
+        ],
+        [
+          0.3902983431119976,
+          0.35187389716137807
+        ],
+        [
+          0.39160152998857506,
+          0.42442669462181176
+        ],
+        [
+          0.29759973702077036,
+          0.42929655032309016
+        ]
+      ]
+    },
+    "ticks": 8,
+    "distance": 6768.409675043257,
+    "weather": "High-country snow",
+    "habitat": "Canadian Mountain Wilderness",
+    "status": "running",
+    "inputs": 0,
+    "lettering": {
+      "cream": 302,
+      "dark": 916,
+      "samples": 1568,
+      "width": 86
+    }
+  },
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "rock-0-jump",
+    "seed": 19069,
+    "start": 85.96607671482398,
+    "stop": 98.41607671482399,
+    "target": 95.96607671482398,
+    "variant": 0,
+    "move": "jump",
+    "lane": -1,
+    "territory": 0,
+    "portrait": false,
+    "quality": "balanced",
+    "rock": {
+      "distance": 95.96607671482398,
+      "lane": 0,
+      "variant": 0,
+      "turn": 0,
+      "points": [
+        [
+          0.42073930236325513,
+          1.0647386087992723
+        ],
+        [
+          0.36627242172978797,
+          1.205115562518266
+        ],
+        [
+          0.41920201444045,
+          0.9601086109394317
+        ],
+        [
+          0.36318709670701943,
+          1.083891710314504
+        ],
+        [
+          0.5989988829920259,
+          1.1354217322025089
+        ],
+        [
+          0.5751466731581683,
+          1.3061632180715321
+        ],
+        [
+          0.6011019334364482,
+          1.0223249364953704
+        ],
+        [
+          0.5770805388115733,
+          1.1735486934930281
+        ]
+      ]
+    },
+    "ticks": 120,
+    "distance": 98.5737464003901,
+    "weather": "Autumn sunrise",
+    "habitat": "Gulf Coast Marsh",
+    "status": "running",
+    "inputs": 1
+  },
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "rock-4-slide",
+    "seed": 134031,
+    "start": 2252.261915062239,
+    "stop": 2270.0211537529685,
+    "target": 2267.5711537529687,
+    "variant": 4,
+    "move": "slide",
+    "lane": -1,
+    "territory": 3,
+    "portrait": true,
+    "quality": "high",
+    "rock": {
+      "distance": 2267.5711537529687,
+      "lane": 0,
+      "variant": 4,
+      "turn": 0,
+      "points": [
+        [
+          0.4202802021049077,
+          0.7226534669065529
+        ],
+        [
+          0.38639019037825323,
+          0.7550805372212768
+        ],
+        [
+          0.41941748267119383,
+          0.652978793441969
+        ],
+        [
+          0.3850341573253754,
+          0.6786207464481386
+        ],
+        [
+          0.6261570499059886,
+          0.7285453923322676
+        ],
+        [
+          0.6129454485766694,
+          0.762245599121157
+        ],
+        [
+          0.6275478207086636,
+          0.657633680530397
+        ],
+        [
+          0.6143213902583764,
+          0.6842941993603687
+        ]
+      ]
+    },
+    "ticks": 70,
+    "distance": 2266.1364249208254,
+    "weather": "Light rain",
+    "habitat": "Arkansas Flooded Timber",
+    "status": "over",
+    "contact": {
+      "fraction": 0.6539079114040312,
+      "type": "rock",
+      "part": "head",
+      "solid": "flooded slate",
+      "obstacleDistance": 2267.5711537529687,
+      "obstacleLane": 0,
+      "distance": 2266.1364249208254,
+      "lateral": 0,
+      "height": 0
+    },
+    "inputs": 1
+  },
+  {
+    "engine": "chromium",
+    "build": "Revised production",
+    "label": "rock-9-repeat",
+    "seed": 39371,
+    "start": 6620.168199450043,
+    "stop": 6645.333695719802,
+    "target": 6642.883695719802,
+    "variant": 9,
+    "move": "repeat",
+    "lane": -1,
+    "territory": 9,
+    "portrait": false,
+    "quality": "balanced",
+    "rock": {
+      "distance": 6642.883695719802,
+      "lane": 0,
+      "variant": 9,
+      "turn": 0,
+      "points": [
+        [
+          0.4532392008634612,
+          0.7168864272937925
+        ],
+        [
+          0.3937101985057339,
+          0.7967798260325316
+        ],
+        [
+          0.4509029712194785,
+          0.4299863545230669
+        ],
+        [
+          0.38730215290270875,
+          0.4553932956532739
+        ],
+        [
+          0.5978285709452268,
+          0.7537907226671688
+        ],
+        [
+          0.5630544396734327,
+          0.8504172819661442
+        ],
+        [
+          0.6031804276967698,
+          0.44166052396847383
+        ],
+        [
+          0.567300300546294,
+          0.4727328408531492
+        ]
+      ]
+    },
+    "ticks": 90,
+    "distance": 6641.516042753191,
+    "weather": "High-country snow",
+    "habitat": "Canadian Mountain Wilderness",
+    "status": "over",
+    "contact": {
+      "fraction": 0.11679803078508003,
+      "type": "rock",
+      "part": "chest",
+      "solid": "fractured alpine block",
+      "obstacleDistance": 6642.883695719802,
+      "obstacleLane": 0,
+      "distance": 6641.516042753191,
+      "lateral": 0,
+      "height": 1.0426371524472025
+    },
+    "inputs": 15
+  },
+  {
+    "engine": "chromium",
+    "build": "Revised production",
+    "label": "rock-9-dodge",
+    "seed": 20302,
+    "start": 6986.637134496464,
+    "stop": 7007.560862496463,
+    "target": 7005.110862496464,
+    "variant": 9,
+    "move": "dodge",
+    "lane": -1,
+    "territory": 9,
+    "portrait": false,
+    "quality": "balanced",
+    "rock": {
+      "distance": 7005.110862496464,
+      "lane": 0,
+      "variant": 9,
+      "turn": 0,
+      "points": [
+        [
+          0.32589924316251423,
+          1.2375697989137755
+        ],
+        [
+          0.4586517866305115,
+          1.9457052193363225
+        ],
+        [
+          0.30457658116612985,
+          0.5980440495619549
+        ],
+        [
+          0.44881722859853274,
+          0.8721510713521343
+        ],
+        [
+          0.5612510662904941,
+          1.08115398755416
+        ],
+        [
+          0.7912641666331488,
+          1.5156425401521152
+        ],
+        [
+          0.5673657756944224,
+          0.5442489015427863
+        ],
+        [
+          0.8393567195235141,
+          0.6993569169019143
+        ]
+      ]
+    },
+    "ticks": 90,
+    "distance": 7008.0454911631305,
+    "weather": "High-country snow",
+    "habitat": "Canadian Mountain Wilderness",
+    "status": "running",
+    "inputs": 1
+  },
+  {
+    "engine": "chromium",
+    "build": "Initial production",
+    "label": "notice-0-pass",
+    "seed": 5112,
+    "ordinal": 0,
+    "target": 225.48453338572477,
+    "start": 211.18453338572476,
+    "stop": 228.48453338572477,
+    "pass": true,
+    "territory": 0,
+    "portrait": false,
+    "quality": "high",
+    "sign": {
+      "line": "FOOTBRIDGE FOR RESIDENTS",
+      "category": "property",
+      "style": "posted",
+      "region": 0,
+      "tile": 7,
+      "ordinal": 0,
+      "distance": 225.48453338572477,
+      "width": 4.791840066718868,
+      "y": -0.8819757730797139,
+      "corners": [
+        [
+          1.1111276555621155,
+          0.6942365379933397
+        ],
+        [
+          1.7798359697737594,
+          0.7716839953494223
+        ],
+        [
+          1.6912848767636277,
+          1.1652091443839272
+        ],
+        [
+          1.0754813238805925,
+          1.0305076606425874
+        ]
+      ]
+    },
+    "ticks": 144,
+    "distance": 228.89050174868808,
+    "weather": "Autumn sunrise",
+    "habitat": "Gulf Coast Marsh",
+    "status": "running",
+    "inputs": 0
+  },
+  {
+    "engine": "webkit",
+    "build": "Initial production",
+    "label": "rock-1-jump",
+    "seed": 57344,
+    "start": 709.6779705695146,
+    "stop": 724.6751702016552,
+    "target": 722.2251702016551,
+    "variant": 1,
+    "move": "jump",
+    "lane": 1,
+    "territory": 1,
+    "portrait": true,
+    "quality": "high",
+    "rock": {
+      "distance": 722.2251702016551,
+      "lane": 0,
+      "variant": 1,
+      "turn": 0,
+      "points": [
+        [
+          0.46518906320746306,
+          0.8861135814660994
+        ],
+        [
+          0.39453948068608136,
+          0.9453612794390818
+        ],
+        [
+          0.4648134490397529,
+          0.8184072548002872
+        ],
+        [
+          0.39326004626273764,
+          0.8699543961876679
+        ],
+        [
+          0.6912762558743879,
+          0.9069676762445753
+        ],
+        [
+          0.6463109269455796,
+          0.9717948865287966
+        ],
+        [
+          0.6934304069041715,
+          0.8365353021448292
+        ],
+        [
+          0.6481737083164264,
+          0.8929965428036603
+        ]
+      ]
+    },
+    "ticks": 94,
+    "distance": 724.8557508329103,
+    "weather": "Overcast",
+    "habitat": "Southern Cypress Swamp",
+    "status": "running",
+    "inputs": 1
+  },
+  {
+    "engine": "webkit",
+    "build": "Revised production",
+    "label": "rock-7-repeat",
+    "seed": 20028,
+    "start": 4138.84012451469,
+    "stop": 4162.42560211327,
+    "target": 4159.97560211327,
+    "variant": 7,
+    "move": "repeat",
+    "lane": 1,
+    "territory": 6,
+    "portrait": true,
+    "quality": "high",
+    "rock": {
+      "distance": 4159.97560211327,
+      "lane": 0,
+      "variant": 7,
+      "turn": 0,
+      "points": [
+        [
+          0.398151816018848,
+          0.7157838507251518
+        ],
+        [
+          0.31323239055630114,
+          0.7621688303842118
+        ],
+        [
+          0.39591765233072657,
+          0.5744011118248646
+        ],
+        [
+          0.308510733545429,
+          0.600401539602384
+        ],
+        [
+          0.6887783024614528,
+          0.7309981294768482
+        ],
+        [
+          0.6447256684882247,
+          0.7823914506347881
+        ],
+        [
+          0.693126031242055,
+          0.5829105395843224
+        ],
+        [
+          0.6485964991504292,
+          0.611790386982317
+        ]
+      ]
+    },
+    "ticks": 89,
+    "distance": 4158.672891587373,
+    "weather": "Windy",
+    "habitat": "Dakota Wetlands",
+    "status": "over",
+    "contact": {
+      "fraction": 0.99860631626985,
+      "type": "rock",
+      "part": "forelegs",
+      "solid": "glacial dropstone",
+      "obstacleDistance": 4159.97560211327,
+      "obstacleLane": 0,
+      "distance": 4158.672891587373,
+      "lateral": 0,
+      "height": 1.0470367318956533
+    },
+    "inputs": 15
+  },
+  {
+    "engine": "webkit",
+    "build": "Revised production",
+    "label": "rock-7-dodge",
+    "seed": 20028,
+    "start": 4142.853189881508,
+    "stop": 4162.42560211327,
+    "target": 4159.97560211327,
+    "variant": 7,
+    "move": "dodge",
+    "lane": 1,
+    "territory": 6,
+    "portrait": true,
+    "quality": "high",
+    "rock": {
+      "distance": 4159.97560211327,
+      "lane": 0,
+      "variant": 7,
+      "turn": 0,
+      "points": [
+        [
+          0.32843935767575194,
+          0.8690888490524196
+        ],
+        [
+          0.1683287376180727,
+          0.9797074049002831
+        ],
+        [
+          0.3227650432205429,
+          0.6609872324801855
+        ],
+        [
+          0.15464273772221326,
+          0.7246458072488052
+        ],
+        [
+          0.7663171064897724,
+          0.9061633794200918
+        ],
+        [
+          0.7046957441575312,
+          1.0376065626303483
+        ],
+        [
+          0.7758525680300075,
+          0.6822109669604568
+        ],
+        [
+          0.7140302764831719,
+          0.7583695565275973
+        ]
+      ]
+    },
+    "ticks": 90,
+    "distance": 4162.68959594717,
+    "weather": "Windy",
+    "habitat": "Dakota Wetlands",
+    "status": "running",
+    "inputs": 1
+  },
+  {
+    "engine": "chromium",
+    "build": "Revised production",
+    "label": "notice-11",
+    "seed": 29172,
+    "ordinal": 11,
+    "target": 6128.625511363276,
+    "start": 6114.325511363276,
+    "stop": 6115.025511363276,
+    "pass": false,
+    "territory": 8,
+    "portrait": false,
+    "quality": "low",
+    "sign": {
+      "line": "BOAT WAKE ERODES THE BANK",
+      "category": "warning",
+      "style": "posted",
+      "region": 8,
+      "tile": 204,
+      "ordinal": 11,
+      "distance": 6128.625511363276,
+      "width": 4.95290799553506,
+      "y": -0.3671272531903849,
+      "corners": [
+        [
+          0.6073610399676694,
+          0.35256714256097366
+        ],
+        [
+          0.7010611162590499,
+          0.3544282037528048
+        ],
+        [
+          0.6986116658882602,
+          0.4288019289756615
+        ],
+        [
+          0.6061038997943452,
+          0.4240741080071185
+        ]
+      ]
+    },
+    "ticks": 8,
+    "distance": 6115.982517345993,
+    "weather": "Sleet",
+    "habitat": "Canadian Boreal Forest",
+    "status": "running",
+    "inputs": 0,
+    "lettering": {
+      "cream": 370,
+      "dark": 680,
+      "samples": 1568,
+      "width": 84
+    }
+  }
+]

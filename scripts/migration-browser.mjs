@@ -6,8 +6,8 @@ import { chromium, devices, webkit } from 'playwright'
 import { expeditionRegions } from '../src/expedition.js'
 import { createCourse } from '../src/runner.js'
 import { distanceAtTime, stageAt } from '../src/difficulty.js'
-import { signInterval, signOffset } from '../src/sign-placement.js'
-import { segmentLength } from '../src/trail.js'
+import { signDistance } from '../src/sign-placement.js'
+import { signTextureWidth, signTextureHeight } from '../src/sign-lettering.js'
 
 const engine = process.argv.includes('webkit') ? webkit : chromium
 const argv = process.argv.slice(2)
@@ -51,8 +51,9 @@ const signScenes = [0, 4, 8].map(region => {
   const territory = expeditionRegions[region]
   let from = territory.seconds
   let until = from + 29
-  const gap = signInterval * segmentLength
-  const board = Math.ceil((distanceAtTime(from + 2) - signOffset) / gap) * gap + signOffset
+  let ordinal = 0
+  while (signDistance(ordinal) < distanceAtTime(from + 2)) ordinal++
+  const board = signDistance(ordinal)
   for (let n = 0; n < 24; n++) {
     const middle = (from + until) * .5
     if (distanceAtTime(middle) < board - 12) from = middle
@@ -102,7 +103,7 @@ try {
     page.on('request', request => { if (!localAsset(request.url())) offsite.push(request.url()) })
     const rows = courseRows.filter(row => key !== 'preview-loss' && row.time >= start - .35 && row.time < stop + 3)
       .map(({ at, time, lane, end, gate, entities }) => ({ at, time, lane, end, gate, action: entities[0]?.type === 'branch' ? 'slide' : 'jump' }))
-    await page.addInitScript(({ quality, stop, rows, moving }) => {
+    await page.addInitScript(({ quality, stop, rows, moving, signTextureWidth, signTextureHeight }) => {
       const original = JSON.stringify({ quality, masterVolume: 0, best: 987, farthest: 654 })
       localStorage.setItem('retriever-run.record', original)
       localStorage.removeItem('retriever-run.record.practice')
@@ -110,7 +111,7 @@ try {
       qa.signLines = new Set()
       const drawText = CanvasRenderingContext2D.prototype.fillText
       CanvasRenderingContext2D.prototype.fillText = function (line, ...args) {
-        if (this.canvas.width === 384 && this.canvas.height === 192 && /[A-Z]{2}/.test(line)) qa.signLines.add(line)
+        if (this.canvas.width === signTextureWidth && this.canvas.height === signTextureHeight && /[A-Z]{2}/.test(line)) qa.signLines.add(line)
         return drawText.call(this, line, ...args)
       }
       Object.defineProperty(document, 'hidden', { get: () => qa.hidden })
@@ -184,7 +185,7 @@ try {
             wall, cpu: performance.now() - start, tiles: state.tiles, geometries: state.geometries })
         }
       })
-    }, { quality, stop, rows, moving: Boolean(scene.frames) || ['alpine-entry', 'visibility', 'preview-loss'].includes(key) })
+    }, { quality, stop, rows, signTextureWidth, signTextureHeight, moving: Boolean(scene.frames) || ['alpine-entry', 'visibility', 'preview-loss'].includes(key) })
     const offset = (start - region * 30).toFixed(6)
     await page.goto(origin + prefix + '?preview=' + (region + 1) + '&offset=' + offset + '&debug=collision&volumes=off&seed=7')
     await page.waitForFunction(() => migrationQA.ready && window.retrieverDebug, null, { timeout: 65_000 })

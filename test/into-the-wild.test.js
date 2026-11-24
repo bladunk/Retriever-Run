@@ -12,10 +12,11 @@ import { regionAt } from '../src/expedition.js'
 import { act, advance, newRun } from '../src/runner.js'
 import { createTrailSigns } from '../src/sign-scenery.js'
 import { signMessages } from '../src/sign-lines.js'
-import { signAnchor, signInterval } from '../src/sign-placement.js'
-import { signSlots, signTextRows, trailSign } from '../src/trail-signs.js'
+import { signAnchor, signDistance } from '../src/sign-placement.js'
+import { fitSignLettering } from '../src/sign-lettering.js'
+import { signSlots, trailSign } from '../src/trail-signs.js'
 import { createFixedClock, tickSeconds } from '../src/timing.js'
-import { centerAt, headingAt } from '../src/trail.js'
+import { centerAt, headingAt, segmentLength, laneWidth } from '../src/trail.js'
 
 test('every 15-second stage changes on active time and its travel fits current Camp rules', () => {
   assert.equal(courseStages.length, 20)
@@ -44,35 +45,72 @@ test('every 15-second stage changes on active time and its travel fits current C
   }
 })
 
-test('280 original trail messages have a readable two-line layout and are reachable', () => {
-  const all = Object.values(signMessages).flat()
-  assert.equal(all.length, 280)
-  assert.equal(new Set(all.map(value => value.replace(/[^A-Z]/g, ''))).size, all.length)
+test('all 280 notices remain reachable without short repeats and fit in three lines', () => {
+  const catalog = Object.values(signMessages).flat()
+  assert.equal(catalog.length, 280)
+  assert.equal(new Set(catalog.map(value => value.replace(/[^A-Z]/g, ''))).size, catalog.length)
   const reached = new Set()
-  let next = 78654
-  for (let run = 0; run < 200; run++) {
-    next = (Math.imul(next, 1664525) + 1013904223) >>> 0
+  const categories = Array.from({ length: 10 }, () => ({}))
+  let seed = 78654
+  for (let run = 0; run < 1120; run++) {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0
     const recent = []
-    for (let tile = 0; tile < 750; tile += signInterval) {
-      const notice = trailSign(tile, next)
-      assert.deepEqual(trailSign(tile, next), notice)
-      assert.ok(!recent.includes(notice.line), notice.line)
-      recent.push(notice.line)
+    const length = run < 50 ? 250 : 20
+    for (let ordinal = 0; ordinal < length; ordinal++) {
+      const anchor = { ordinal, distance: signDistance(ordinal) }
+      const sign = trailSign(anchor, seed)
+      assert.deepEqual(trailSign(anchor, seed), sign)
+      assert.ok(!recent.includes(sign.line), sign.line)
+      recent.push(sign.line)
       if (recent.length > 19) recent.shift()
-      reached.add(notice.line)
+      reached.add(sign.line)
+      if (ordinal < 13) {
+        const group = categories[sign.region]
+        group[sign.category] = (group[sign.category] ?? 0) + 1
+      }
     }
   }
-  assert.deepEqual(reached, new Set(all))
-  for (const value of all) {
-    const rows = signTextRows(value, line => line.length, 28)
-    assert.equal(rows.join(' '), value)
-    assert.ok(rows.every(line => line.length <= 28), value)
+  assert.deepEqual(reached, new Set(catalog))
+  assert.ok(categories[4].farm > 65)
+  assert.ok(categories[8].canada > 20)
+  assert.ok(categories[1].marsh > 20)
+  const measure = line => [...line].reduce((n, symbol) => n + (symbol === ' ' ? 29 : 60), 0)
+  for (const message of catalog) {
+    const fit = fitSignLettering(message, measure)
+    assert.equal(fit.lines.join(' '), message)
+    assert.ok(fit.lines.length <= 3 && fit.size >= 43)
+    assert.ok(fit.lines.every(line => measure(line) * fit.size * fit.scale / 100 <= 450.001))
+    assert.ok(fit.lines.length * fit.lineHeight <= 194)
   }
-  const watch = (territory, category) => Array.from({ length: 200 }, (_, n) => trailSign(n * signInterval, 7))
-    .filter(sign => sign.region === territory && sign.category === category).length
-  assert.ok(watch(4, 'farm') > watch(0, 'farm'))
-  assert.ok(watch(9, 'canada') > watch(4, 'canada'))
-  assert.ok(watch(1, 'marsh') > watch(9, 'marsh'))
+})
+
+test('notice placement stays off the outside lanes and unclustered through the speed limit', () => {
+  function timeAt(distance) {
+    let low = 0, high = distance / 11
+    for (let i = 0; i < 38; i++) {
+      const middle = (low + high) * .5
+      if (distanceAtTime(middle) < distance) low = middle
+      else high = middle
+    }
+    return (low + high) * .5
+  }
+  let previous = 0
+  const sides = new Set()
+  for (let ordinal = 0; ordinal < 150; ordinal++) {
+    const distance = signDistance(ordinal)
+    const tile = Math.floor(distance / segmentLength)
+    const anchor = signAnchor(tile, () => -.17)
+    assert.equal(anchor.distance, distance)
+    assert.equal(anchor.ordinal, ordinal)
+    assert.equal(anchor.y, -.17)
+    assert.ok(Math.abs(anchor.width) - 2.76 / 2 > laneWidth + .55)
+    sides.add(Math.sign(anchor.width))
+    const time = timeAt(distance)
+    assert.ok(time - previous >= 15 && time - previous <= 29)
+    assert.equal(signAnchor(tile + 1, () => 0), null)
+    previous = time
+  }
+  assert.equal(sides.size, 2)
 })
 
 test('sign art and drifting leaves reuse allocations across trail recycling and quality changes', () => {
@@ -80,7 +118,8 @@ test('sign art and drifting leaves reuse allocations across trail recycling and 
   let painted = 0
   const ctx = { clearRect() { painted++ }, createLinearGradient: () => ({ addColorStop() {} }),
     fillRect() {}, strokeRect() {}, beginPath() {}, moveTo() {}, bezierCurveTo() {}, stroke() {},
-    arc() {}, fill() {}, fillText() {}, measureText: line => ({ width: line.length * 15 }) }
+    arc() {}, fill() {}, fillText() {}, strokeText() {}, save() {}, restore() {}, scale() {}, translate() {},
+    measureText: line => ({ width: line.length * 53 }) }
   const scene = new Scene()
   const signs = createTrailSigns(scene, () => {
     canvasCount++
@@ -88,24 +127,30 @@ test('sign art and drifting leaves reuse allocations across trail recycling and 
   })
   const models = [...scene.children]
   const texture = models[0].children.at(-1).material.map
-  const paint = (tile, from, seed = 7) => {
+  const paint = (ordinal, from, seed = 7) => {
+    const tile = Math.floor(signDistance(ordinal) / segmentLength)
     signs.begin()
     signs.show(signAnchor(tile, () => -.15), from, seed)
     signs.finish()
   }
-  paint(0, 0)
-  paint(0, 2)
+  const first = signDistance(0)
+  paint(0, first - 11)
+  paint(0, first - 9)
   assert.equal(painted, 1)
   assert.equal(models[0].visible, true)
-  const relative = models[0].position.x - centerAt(13) + centerAt(2)
-  assert.ok(relative / Math.cos(headingAt(13)) < -4)
+  const relative = models[0].position.x - centerAt(first) + centerAt(first - 9)
+  const offset = relative / Math.cos(headingAt(first))
+  const turn = models[0].rotation.y - headingAt(first)
+  assert.ok(Math.abs(offset) > 4)
+  assert.ok(offset * turn < 0)
   const after = texture.version
-  paint(9, 270)
+  const next = signDistance(2)
+  paint(2, next - 12)
   assert.equal(painted, 2)
   assert.equal(texture.version, after + 1)
-  paint(9, 280, 53521)
+  paint(2, next - 7, 53521)
   assert.equal(painted, 3)
-  paint(9, 380)
+  paint(2, next + 10)
   assert.equal(models[0].visible, false)
   assert.equal(canvasCount, signSlots)
   assert.deepEqual(scene.children, models)

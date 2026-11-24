@@ -1,10 +1,8 @@
 import { expeditionRegions, regionAtDistance } from './expedition.js'
-import { seededRandom, segmentLength } from './trail.js'
 import { signMessages } from './sign-lines.js'
-import { signInterval, signOffset } from './sign-placement.js'
+import { signDistance } from './sign-placement.js'
 
-export const signSlots = 3
-const intervalMeters = signInterval * segmentLength
+export const signSlots = 2
 const plans = [
   ['marsh', 'rookie', 'labrador', 'marsh', 'ducks', 'trail', 'property', 'camp', 'weather'],
   ['marsh', 'warning', 'ducks', 'marsh', 'property', 'camp', 'labrador', 'weather', 'ducks'],
@@ -17,68 +15,49 @@ const plans = [
   ['canada', 'north', 'weather', 'veteran', 'canada', 'ducks', 'north', 'warning', 'camp'],
   ['canada', 'north', 'veteran', 'weather', 'canada', 'warning', 'north', 'trail', 'labrador'],
 ]
-const starts = expeditionRegions.map(region => Math.max(0, Math.ceil((region.marker - signOffset) / intervalMeters)))
-const countsAtStart = plans.map((_, territory) => {
-  const counts = {}
-  for (let earlier = 0; earlier < territory; earlier++) {
-    const plan = plans[earlier]
-    for (let n = starts[earlier]; n < starts[earlier + 1]; n++) {
-      const key = plan[(n - starts[earlier]) % plan.length]
-      counts[key] = (counts[key] ?? 0) + 1
-    }
-  }
-  return counts
+let ordinal = 0
+const starts = expeditionRegions.map(region => {
+  while (signDistance(ordinal) < region.marker) ordinal++
+  return ordinal
 })
 const surfaces = {
   marsh: 'plank', property: 'posted', ducks: 'crossing', geese: 'crossing', labrador: 'oldPaint',
   camp: 'direction', farm: 'farm', warning: 'posted', north: 'north', canada: 'north',
   veteran: 'plank', rookie: 'oldPaint', weather: 'oldPaint', trail: 'direction',
 }
-const catalog = Object.values(signMessages).flat()
 
-export function obstacleSignLine(distance, random, recent) {
-  const plan = plans[regionAtDistance(distance).index]
-  const skip = new Set(recent)
-  if (random() < .86) {
-    const preferred = plan[Math.floor(random() * plan.length)]
-    const choices = signMessages[preferred].filter(line => !skip.has(line))
-    if (choices.length) return choices[Math.floor(random() * choices.length)]
-  }
-  const choices = catalog.filter(line => !skip.has(line))
-  return choices[Math.floor(random() * choices.length)]
+function signRoll(seed) {
+  seed = Math.imul(seed ^ (seed >>> 16), 0x21f0aaad)
+  seed = Math.imul(seed ^ (seed >>> 15), 0x735a2d97)
+  return ((seed ^ (seed >>> 15)) >>> 0) / 4294967296
 }
 
-export function trailSign(tile, seed) {
-  const ordinal = tile / signInterval
-  const region = regionAtDistance(ordinal * intervalMeters + signOffset).index
+function regionalPhase(region, seed) {
+  return Math.floor(signRoll(seed ^ Math.imul(region + 1, 0x53a64ee3)) * plans[region].length)
+}
+
+function occurrencesOf(category, plan, phase, length) {
+  let matches = Math.floor(length / plan.length) * plan.filter(group => group === category).length
+  for (let j = 0; j < length % plan.length; j++) {
+    if (plan[(j + phase) % plan.length] === category) matches++
+  }
+  return matches
+}
+
+export function trailSign(anchor, seed) {
+  const region = regionAtDistance(anchor.distance).index
   const plan = plans[region]
-  const local = ordinal - starts[region]
-  const position = local % plan.length
-  const category = plan[position]
-  const occurrences = (countsAtStart[region][category] ?? 0)
-    + Math.floor(local / plan.length) * plan.filter(group => group === category).length
-    + plan.slice(0, position).filter(group => group === category).length
-  // A coprime stride visits the entire category before repeating, even when a
-  // terrain packet arrives out of order or the route crosses a territory.
+  const local = anchor.ordinal - starts[region]
+  const phase = regionalPhase(region, seed)
+  const category = plan[(local + phase) % plan.length]
+  let occurrences = occurrencesOf(category, plan, phase, local)
+  for (let i = 0; i < region; i++) {
+    occurrences += occurrencesOf(category, plans[i], regionalPhase(i, seed), starts[i + 1] - starts[i])
+  }
+  // A coprime stride visits the whole category before repeating. Tile
+  // rebuilds, reversals and territory seams need no mutable message history.
   const lines = signMessages[category]
-  const salt = seededRandom((seed ^ 0x4c71571) + category.charCodeAt(0) * 8191 + category.length)()
+  const salt = signRoll((seed ^ 0x4c71571) + category.charCodeAt(0) * 8191 + category.length)
   const index = (occurrences * 7 + Math.floor(salt * lines.length)) % lines.length
   return { line: lines[index], category, style: surfaces[category], region }
-}
-
-export function signTextRows(message, measure, limit) {
-  const words = message.split(' ')
-  let best = [message]
-  let cost = measure(message) <= limit ? measure(message) : Infinity
-  for (let split = 1; split < words.length; split++) {
-    const lines = [words.slice(0, split).join(' '), words.slice(split).join(' ')]
-    const lengths = lines.map(measure)
-    if (Math.max(...lengths) > limit) continue
-    const candidate = Math.max(...lengths) + Math.abs(lengths[0] - lengths[1]) * .22 + 30
-    if (candidate < cost) {
-      best = lines
-      cost = candidate
-    }
-  }
-  return best
 }

@@ -2,6 +2,7 @@ import { isWaterHazard, laneWidth, traceContact } from './collision.js'
 import { diveWarningLead } from './dive.js'
 import { score } from './runner.js'
 import { regionAt } from './expedition.js'
+import { rocks } from './rocks.js'
 
 export const counters = ['treats', 'logs', 'slidesCleared', 'geese', 'ducks', 'pheasants', 'jumps', 'slides']
 export const causes = ['water', 'logs', 'geese', 'other']
@@ -12,7 +13,7 @@ export const causeNames = { water: 'Water', logs: 'Timber', geese: 'Diving geese
 const hazardNames = {
   stream: 'Creek crossing', puddle: 'Puddle', log: 'Fallen log', drift: 'Driftwood',
   goose: 'Diving goose', fence: 'Fence', branch: 'Overhead branch', root: 'Exposed root', tree: 'Tree trunk',
-  fallen: 'Uprooted tree', tractor: 'Farm tractor', washout: 'Flooded lane',
+  fallen: 'Uprooted tree', tractor: 'Farm tractor', washout: 'Flooded lane', rock: 'Rock or boulder',
 }
 
 export function deathCause(hazard) {
@@ -60,7 +61,8 @@ export function createRunStatistics(runId) {
       if (finalized) return false
       const { type, distance } = entity
       const goose = type === 'goose'
-      const jumping = jumpTypes.has(type)
+      const rockSize = type === 'rock' ? rocks[entity.variant].size : null
+      const jumping = jumpTypes.has(type) || rockSize === 'small' || rockSize === 'medium'
       const key = goose ? 'geese' : type === 'branch' ? 'slidesCleared' : jumping ? 'jumpClears' : null
       if (!key || !entity.hazard) return false
       let state = hazards.get(entity)

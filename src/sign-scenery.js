@@ -1,19 +1,17 @@
 import * as T from 'three'
 import { headingAt, placeOnTrail, seededRandom } from './trail.js'
-import { signSlots, signTextRows, trailSign } from './trail-signs.js'
-import { signInterval } from './sign-placement.js'
+import { signSlots, trailSign } from './trail-signs.js'
+import { fitSignLettering, signTextureWidth as width, signTextureHeight as height } from './sign-lettering.js'
 
 const shades = {
   plank: ['#60462f', '#8e6942', '#f9e5b4', '#c59a64'],
   direction: ['#345345', '#466859', '#fff1c7', '#e0bb7c'],
   posted: ['#693e32', '#824b3b', '#ffe8ab', '#e0ad77'],
   farm: ['#664a34', '#876648', '#fff1ce', '#cda474'],
-  crossing: ['#876b3e', '#aa854c', '#fff4ce', '#f4d581'],
+  crossing: ['#624a2f', '#785b37', '#fff4ce', '#d1a565'],
   north: ['#344a4c', '#3f6063', '#e9f1dd', '#b8d5cb'],
-  oldPaint: ['#76644a', '#8b785a', '#fff2d0', '#d6b887'],
+  oldPaint: ['#5c503c', '#78654c', '#fff2d0', '#d6b887'],
 }
-const width = 384
-const height = 192
 
 function paint(ctx, sign, seed) {
   const [shadow, wood, letter, trim] = shades[sign.style]
@@ -52,28 +50,25 @@ function paint(ctx, sign, seed) {
     ctx.fillStyle = '#a49877'
     ctx.fillRect(x - 1, y - 2, 3, 2)
   }
-  const point = sign.style === 'direction' ? '›' : sign.style === 'crossing' ? '◆' :
-    sign.style === 'north' ? '▲' : sign.style === 'farm' ? '◇' : '—'
-  ctx.fillStyle = trim
-  ctx.font = 'bold 16px Georgia, serif'
+  const font = '800 '
+  ctx.font = font + '100px Arial, sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.fillText(point, width / 2, 25)
-  let rows
-  let size = 44
-  for (; size >= 22; size -= 2) {
-    ctx.font = 'bold ' + size + 'px ' + (sign.style === 'plank' || sign.style === 'farm' ? 'Georgia, serif' : 'Arial, sans-serif')
-    rows = signTextRows(sign.line, line => ctx.measureText(line).width, width - 53)
-    if (rows.every(line => ctx.measureText(line).width <= width - 53)) break
-  }
-  ctx.shadowColor = '#24160f'
-  ctx.shadowOffsetY = 2
-  ctx.shadowBlur = 1.8
+  const { lines, size, lineHeight, scale } = fitSignLettering(sign.line, line => ctx.measureText(line).width)
+  ctx.font = font + size + 'px Arial, sans-serif'
+  ctx.strokeStyle = '#261e14'
+  ctx.lineWidth = Math.max(2, size * .043)
+  ctx.lineJoin = 'round'
   ctx.fillStyle = letter
-  for (const [index, line] of rows.entries()) {
-    ctx.fillText(line, width / 2, 101 + (index - (rows.length - 1) / 2) * (size + 8), width - 50)
+  ctx.save()
+  ctx.translate(width / 2, 0)
+  ctx.scale(scale, 1)
+  for (const [index, line] of lines.entries()) {
+    const y = height * .51 + (index - (lines.length - 1) * .5) * lineHeight
+    ctx.strokeText(line, 0, y)
+    ctx.fillText(line, 0, y)
   }
-  ctx.shadowColor = 'transparent'
+  ctx.restore()
 }
 
 export function createTrailSigns(scene, makeCanvas = () => document.createElement('canvas')) {
@@ -101,13 +96,13 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
     },
     show(anchor, distance, seed) {
       if (!anchor || anchor.distance - distance > 64 || distance - anchor.distance > 7) return
-      const slot = slots[Math.floor(anchor.tile / signInterval) % slots.length]
-      const key = anchor.tile + ':' + seed
+      const slot = slots[anchor.ordinal % slots.length]
+      const key = anchor.ordinal + ':' + seed
       if (slot.key !== key) {
-        const sign = trailSign(anchor.tile, seed)
+        const sign = trailSign(anchor, seed)
         paint(slot.canvas.getContext('2d'), sign, anchor.tile * 5137 + seed)
         slot.texture.needsUpdate = true
-        const frame = sign.style === 'north' ? [2.87, 1.35, 2.48] : [3.06, 1.37, 2.25]
+        const frame = sign.style === 'north' ? [2.60, 1.32, 2.10] : [2.76, 1.34, 2.19]
         const [w, h, y] = frame
         slot.backing.scale.set(w, h, 1)
         slot.plate.scale.set(w - .026, h - .026, 1)
@@ -120,16 +115,17 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
           post.position.y = y / 2 - .035
         }
         slot.key = key
-        slot.root.userData.notice = sign
+        slot.root.userData.notice = { ...sign, ...anchor }
       }
       placeOnTrail(slot.root.position, anchor.distance, anchor.width, distance)
       slot.root.position.y = anchor.y
-      slot.root.rotation.y = headingAt(anchor.distance) + Math.sign(anchor.width) * .24
+      slot.root.rotation.y = headingAt(anchor.distance) - Math.sign(anchor.width) * .28
       slot.seen = true
     },
     finish() {
       for (const slot of slots) slot.root.visible = slot.seen
     },
+    visible() { return slots.filter(slot => slot.root.visible).map(slot => slot.plate) },
   }
 }
 
@@ -140,6 +136,6 @@ function noticePlate(face, makeCanvas) {
   const texture = new T.CanvasTexture(canvas)
   texture.colorSpace = T.SRGBColorSpace
   texture.anisotropy = 2
-  const plate = new T.Mesh(face, new T.MeshBasicMaterial({ map: texture }))
+  const plate = new T.Mesh(face, new T.MeshBasicMaterial({ map: texture, toneMapped: false }))
   return { canvas, texture, plate }
 }

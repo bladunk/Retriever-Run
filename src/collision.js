@@ -1,5 +1,6 @@
 import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
 import { diveFrame, diveScale } from './dive.js'
+import { rockShape } from './rocks.js'
 
 export { laneWidth } from './trail.js'
 export const jumpDuration = .92
@@ -74,6 +75,7 @@ const paws = [
 ]
 
 export function obstacleVolumes(entity) {
+  if (entity.type === 'rock') return rockShape(entity.variant, entity.turn)
   return water[entity.type] ?? solids[entity.wide ? entity.type + '-wide' : entity.type]
 }
 
@@ -184,6 +186,26 @@ function sweptBox(a, b, solid, dog, maxTime) {
   return interval.enter
 }
 
+function sweptRock(a, b, solid, startTime, maxTime) {
+  interval.enter = startTime
+  interval.exit = maxTime
+  // The renderer and solver use the same convex faces. Expand each plane by
+  // the support of the dog's current body volume and clip the moving center.
+  for (const normal of solid.planes) {
+    const { x, y, z, limit } = normal
+    const nx = Math.abs(x), ny = Math.abs(y), nz = Math.abs(z)
+    const start = a.x * x + a.y * y + a.z * z - (a.rx * nx + a.ry * ny + a.rz * nz) - limit + edge
+    const end = b.x * x + b.y * y + b.z * z - (b.rx * nx + b.ry * ny + b.rz * nz) - limit + edge
+    const change = end - start
+    if (Math.abs(change) < 1e-9) {
+      if (start >= 0) return Infinity
+    } else if (change < 0) interval.enter = Math.max(interval.enter, -start / change)
+    else interval.exit = Math.min(interval.exit, -start / change)
+    if (interval.enter > interval.exit) return Infinity
+  }
+  return interval.enter
+}
+
 // Sweep endpoint poses relative to the same visible obstacle. Only playable hazards have volumes.
 // The fixed step keeps the endpoint sweep local, including when a goose moves toward the dog.
 export function traceContact(previous, current, entity, witness) {
@@ -201,7 +223,9 @@ export function traceContact(previous, current, entity, witness) {
     relative(from, dogStart, hazardStart, part)
     relative(to, dogEnd, hazardEnd, part)
     for (const solid of bounds) {
-      const sample = sweptBox(from, to, solid, part, Math.min(1, time))
+      const until = Math.min(1, time)
+      let sample = sweptBox(from, to, solid, part, until)
+      if (solid.planes && sample < Infinity) sample = sweptRock(from, to, solid, sample, interval.exit)
       if (sample < time) {
         time = sample
         hitPart = part
