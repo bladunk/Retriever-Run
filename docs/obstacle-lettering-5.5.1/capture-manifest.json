@@ -1,0 +1,1426 @@
+[
+  {
+    "engine": "chromium",
+    "label": "gulf-377-wide",
+    "territory": "Gulf Coast Marsh",
+    "weather": "Autumn sunrise",
+    "quality": "balanced",
+    "distance": 377.2564568527783,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 386.3712431445023,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.3949974566231398,
+          0.5084353361755569
+        ],
+        [
+          0.6314813963725043,
+          0.5082970617703647
+        ],
+        [
+          0.6307664361242256,
+          0.5444724342341665
+        ],
+        [
+          0.39556918401547186,
+          0.5446575990689727
+        ]
+      ],
+      "message": "FIRST MARSH? FOLLOW THE BOARDS.",
+      "lines": [
+        "FIRST MARSH?",
+        "FOLLOW THE",
+        "BOARDS."
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 605,
+      "dark": 1728,
+      "total": 3200,
+      "width": 92
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "chromium",
+    "label": "gulf-377-single",
+    "territory": "Gulf Coast Marsh",
+    "weather": "Autumn sunrise",
+    "quality": "high",
+    "distance": 377.2564568527783,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 386.23144727305396,
+      "lane": 0,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.42221431203027704,
+          0.5092318891506138
+        ],
+        [
+          0.6047611909592175,
+          0.5091316369536112
+        ],
+        [
+          0.6041870767468438,
+          0.5455851014015652
+        ],
+        [
+          0.42264099839078495,
+          0.5457193343357698
+        ]
+      ],
+      "message": "CAMP STOVE OUT OF PROPANE",
+      "lines": [
+        "CAMP STOVE",
+        "OUT OF PROPANE"
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 391,
+      "dark": 2147,
+      "total": 3200,
+      "width": 71
+    },
+    "loadedFaces": 3
+  },
+  {
+    "engine": "chromium",
+    "label": "gulf-1",
+    "territory": "Gulf Coast Marsh",
+    "weather": "Autumn sunrise",
+    "quality": "high",
+    "distance": 224.17374265499066,
+    "ticks": 6,
+    "size": "landscape",
+    "sign": {
+      "distance": 233.4517362863901,
+      "lane": 1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.5402906306875748,
+          0.38228987326346187
+        ],
+        [
+          0.6202021580324977,
+          0.3822500963712206
+        ],
+        [
+          0.6189912180226119,
+          0.44347182802705315
+        ],
+        [
+          0.5398845224139441,
+          0.44354326967713487
+        ]
+      ],
+      "message": "WIGEON RESERVE",
+      "lines": [
+        "WIGEON",
+        "RESERVE"
+      ],
+      "size": 91
+    },
+    "pixels": {
+      "cream": 925,
+      "dark": 1437,
+      "total": 3200,
+      "width": 67
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "chromium",
+    "label": "cypress-1",
+    "territory": "Southern Cypress Swamp",
+    "weather": "Autumn sunrise",
+    "quality": "low",
+    "distance": 618.937273974083,
+    "ticks": 8,
+    "size": "portrait",
+    "sign": {
+      "distance": 627.7201467967662,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.4021258875468342,
+          0.5140569593727099
+        ],
+        [
+          0.6476283985345022,
+          0.5141013983621371
+        ],
+        [
+          0.6467946097981172,
+          0.5516421063356814
+        ],
+        [
+          0.40267844801521235,
+          0.5515828683792785
+        ]
+      ],
+      "message": "THE TIDE TOOK OUR PARKING LOT",
+      "lines": [
+        "THE TIDE",
+        "TOOK OUR",
+        "PARKING LOT"
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 577,
+      "dark": 1981,
+      "total": 3200,
+      "width": 96
+    },
+    "loadedFaces": 3
+  },
+  {
+    "engine": "chromium",
+    "label": "flyway-1",
+    "territory": "Mississippi Flyway",
+    "weather": "Morning fog",
+    "quality": "balanced",
+    "distance": 1389.9403653065451,
+    "ticks": 6,
+    "size": "landscape",
+    "sign": {
+      "distance": 1398.9293362953524,
+      "lane": 0,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.47190212421789446,
+          0.39040968391621533
+        ],
+        [
+          0.5520661897874617,
+          0.390445347085966
+        ],
+        [
+          0.5515400862202929,
+          0.4517685220326226
+        ],
+        [
+          0.4721859193920984,
+          0.4517072531241427
+        ]
+      ],
+      "message": "PAWS FIRST AT THE LANDING",
+      "lines": [
+        "PAWS FIRST AT",
+        "THE LANDING"
+      ],
+      "size": 72
+    },
+    "pixels": {
+      "cream": 537,
+      "dark": 1890,
+      "total": 3200,
+      "width": 68
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "chromium",
+    "label": "timber-1",
+    "territory": "Arkansas Flooded Timber",
+    "weather": "Morning fog",
+    "quality": "high",
+    "distance": 1932.7281781746833,
+    "ticks": 6,
+    "size": "landscape",
+    "sign": {
+      "distance": 1941.6618034173125,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.4638091731742221,
+          0.38830281774521735
+        ],
+        [
+          0.5676571016670879,
+          0.38851058243541936
+        ],
+        [
+          0.566978059365369,
+          0.44944056508684066
+        ],
+        [
+          0.46417148599100044,
+          0.44908099463402573
+        ]
+      ],
+      "message": "BILL DEEP AT THE BEND",
+      "lines": [
+        "BILL DEEP",
+        "AT THE BEND"
+      ],
+      "size": 82
+    },
+    "pixels": {
+      "cream": 654,
+      "dark": 1869,
+      "total": 3200,
+      "width": 88
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "chromium",
+    "label": "farm-1",
+    "territory": "Midwest Farm Country",
+    "weather": "Light rain",
+    "quality": "low",
+    "distance": 2587.220487738483,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 2596.5072446898066,
+      "lane": -1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.1687896194393229,
+          0.5088399969286064
+        ],
+        [
+          0.34774985323716556,
+          0.5087470125449515
+        ],
+        [
+          0.348566904209076,
+          0.5444461300219225
+        ],
+        [
+          0.170568628698749,
+          0.5445700982080419
+        ]
+      ],
+      "message": "GOOD LUCK AT THE THIRD BEND",
+      "lines": [
+        "GOOD LUCK AT",
+        "THE THIRD BEND"
+      ],
+      "size": 64
+    },
+    "pixels": {
+      "cream": 410,
+      "dark": 1898,
+      "total": 3200,
+      "width": 70
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "chromium",
+    "label": "prairie-1",
+    "territory": "Prairie Potholes",
+    "weather": "Heavy rain",
+    "quality": "balanced",
+    "distance": 3351.2416524654855,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 3360.4981512793825,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.451709177845026,
+          0.3845923971614487
+        ],
+        [
+          0.5512429181137732,
+          0.38442139638215866
+        ],
+        [
+          0.550750745139498,
+          0.44276912528868173
+        ],
+        [
+          0.45217401232652077,
+          0.44306622970484466
+        ]
+      ],
+      "message": "SINGLE FILE AT THE LEVEE",
+      "lines": [
+        "SINGLE FILE",
+        "AT THE LEVEE"
+      ],
+      "size": 77
+    },
+    "pixels": {
+      "cream": 584,
+      "dark": 1809,
+      "total": 3200,
+      "width": 84
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "chromium",
+    "label": "dakota-1",
+    "territory": "Dakota Wetlands",
+    "weather": "Windy",
+    "quality": "high",
+    "distance": 4395.91155412152,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 4405.136427041885,
+      "lane": 1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.5664235812608429,
+          0.3860766553795678
+        ],
+        [
+          0.6465447861071603,
+          0.3861537527153954
+        ],
+        [
+          0.645066176951419,
+          0.44743099380131945
+        ],
+        [
+          0.5657540266884528,
+          0.44729553682951845
+        ]
+      ],
+      "message": "GOOD MORNING TO THE HEADWIND",
+      "lines": [
+        "GOOD MORNING",
+        "TO THE HEADWIND"
+      ],
+      "size": 58
+    },
+    "pixels": {
+      "cream": 321,
+      "dark": 1967,
+      "total": 3200,
+      "width": 68
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "chromium",
+    "label": "border-1",
+    "territory": "Northern Borderlands",
+    "weather": "Snow",
+    "quality": "low",
+    "distance": 5059.285233726477,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 5068.494886863748,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.3456775945235845,
+          0.5130788241737962
+        ],
+        [
+          0.5854022542254677,
+          0.5131342623176037
+        ],
+        [
+          0.5849311220021807,
+          0.5498078167757935
+        ],
+        [
+          0.346528503788901,
+          0.5497341783200719
+        ]
+      ],
+      "message": "CARRY A SPARE MITTEN",
+      "lines": [
+        "CARRY A",
+        "SPARE MITTEN"
+      ],
+      "size": 74
+    },
+    "pixels": {
+      "cream": 512,
+      "dark": 2024,
+      "total": 3200,
+      "width": 93
+    },
+    "loadedFaces": 2
+  },
+  {
+    "engine": "chromium",
+    "label": "boreal-1",
+    "territory": "Canadian Boreal Forest",
+    "weather": "Sleet",
+    "quality": "balanced",
+    "distance": 5795.172200873475,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 5804.367619901437,
+      "lane": 1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.5423715744284795,
+          0.3772173982792971
+        ],
+        [
+          0.6152060849299139,
+          0.37708911976512327
+        ],
+        [
+          0.61414636192483,
+          0.43303664215181664
+        ],
+        [
+          0.5419811120807306,
+          0.43326529432615996
+        ]
+      ],
+      "message": "THE MUD IS FREE",
+      "lines": [
+        "THE MUD",
+        "IS FREE"
+      ],
+      "size": 91
+    },
+    "pixels": {
+      "cream": 621,
+      "dark": 1631,
+      "total": 3200,
+      "width": 61
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "chromium",
+    "label": "mountain-1",
+    "territory": "Canadian Mountain Wilderness",
+    "weather": "High-country snow",
+    "quality": "high",
+    "distance": 6651.199634600298,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 6660.380638538161,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.4298209989327926,
+          0.38473087382377574
+        ],
+        [
+          0.5320526977843832,
+          0.38458169485747423
+        ],
+        [
+          0.5317366648588173,
+          0.44447748939312426
+        ],
+        [
+          0.43051426786064,
+          0.4447393330347683
+        ]
+      ],
+      "message": "NO FIREWOOD ABOVE TIMBERLINE",
+      "lines": [
+        "NO FIREWOOD",
+        "ABOVE",
+        "TIMBERLINE"
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 635,
+      "dark": 1760,
+      "total": 3200,
+      "width": 86
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "gulf-377-wide",
+    "territory": "Gulf Coast Marsh",
+    "weather": "Autumn sunrise",
+    "quality": "balanced",
+    "distance": 377.2564568527783,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 386.3712431445023,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.3949974566231398,
+          0.5084353361755569
+        ],
+        [
+          0.6314813963725043,
+          0.5082970617703647
+        ],
+        [
+          0.6307664361242256,
+          0.5444724342341665
+        ],
+        [
+          0.39556918401547186,
+          0.5446575990689727
+        ]
+      ],
+      "message": "FIRST MARSH? FOLLOW THE BOARDS.",
+      "lines": [
+        "FIRST MARSH?",
+        "FOLLOW THE",
+        "BOARDS."
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 641,
+      "dark": 1926,
+      "total": 3200,
+      "width": 92
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "gulf-377-single",
+    "territory": "Gulf Coast Marsh",
+    "weather": "Autumn sunrise",
+    "quality": "high",
+    "distance": 377.2564568527783,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 386.23144727305396,
+      "lane": 0,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.42221431203027704,
+          0.5092318891506138
+        ],
+        [
+          0.6047611909592175,
+          0.5091316369536112
+        ],
+        [
+          0.6041870767468438,
+          0.5455851014015652
+        ],
+        [
+          0.42264099839078495,
+          0.5457193343357698
+        ]
+      ],
+      "message": "CAMP STOVE OUT OF PROPANE",
+      "lines": [
+        "CAMP STOVE",
+        "OUT OF PROPANE"
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 332,
+      "dark": 2073,
+      "total": 3200,
+      "width": 71
+    },
+    "loadedFaces": 3
+  },
+  {
+    "engine": "webkit",
+    "label": "gulf-2",
+    "territory": "Gulf Coast Marsh",
+    "weather": "Autumn sunrise",
+    "quality": "low",
+    "distance": 317.3125943483706,
+    "ticks": 8,
+    "size": "landscape",
+    "sign": {
+      "distance": 326.24950589376596,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.46319079403182917,
+          0.39161610594957735
+        ],
+        [
+          0.5686929686403807,
+          0.39184107227536374
+        ],
+        [
+          0.567992629816443,
+          0.4537004018876392
+        ],
+        [
+          0.463565085591877,
+          0.45331522727327767
+        ]
+      ],
+      "message": "SHOWERS WITH A CHANCE OF MORE SHOWERS",
+      "lines": [
+        "SHOWERS WITH",
+        "A CHANCE OF",
+        "MORE SHOWERS"
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 651,
+      "dark": 1645,
+      "total": 3200,
+      "width": 89
+    },
+    "loadedFaces": 2
+  },
+  {
+    "engine": "webkit",
+    "label": "cypress-2",
+    "territory": "Southern Cypress Swamp",
+    "weather": "Autumn sunrise",
+    "quality": "balanced",
+    "distance": 597.9151109821246,
+    "ticks": 6,
+    "size": "landscape",
+    "sign": {
+      "distance": 607.0210319390209,
+      "lane": 1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.5637561810022529,
+          0.3912408436673895
+        ],
+        [
+          0.6446141788125692,
+          0.3912697176054131
+        ],
+        [
+          0.6431410186678159,
+          0.45308406249953787
+        ],
+        [
+          0.56310692803916,
+          0.4530345006701663
+        ]
+      ],
+      "message": "KEEP THE SHORT END OF THE PADDLE DRY",
+      "lines": [
+        "KEEP THE SHORT",
+        "END OF THE",
+        "PADDLE DRY"
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 403,
+      "dark": 1690,
+      "total": 3200,
+      "width": 68
+    },
+    "loadedFaces": 2
+  },
+  {
+    "engine": "webkit",
+    "label": "flyway-2",
+    "territory": "Mississippi Flyway",
+    "weather": "Morning fog",
+    "quality": "high",
+    "distance": 1363.280913223954,
+    "ticks": 6,
+    "size": "portrait",
+    "sign": {
+      "distance": 1372.2727745737454,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.4086258381114766,
+          0.5079578196911502
+        ],
+        [
+          0.6440310416219138,
+          0.5080692499141402
+        ],
+        [
+          0.6432506276229146,
+          0.5441170897371268
+        ],
+        [
+          0.4091204108319637,
+          0.5439679191145285
+        ]
+      ],
+      "message": "TAKE THE UPLAND SPUR",
+      "lines": [
+        "TAKE THE",
+        "UPLAND SPUR"
+      ],
+      "size": 75
+    },
+    "pixels": {
+      "cream": 559,
+      "dark": 2192,
+      "total": 3200,
+      "width": 92
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "timber-2",
+    "territory": "Arkansas Flooded Timber",
+    "weather": "Light rain",
+    "quality": "low",
+    "distance": 2178.331329429117,
+    "ticks": 8,
+    "size": "landscape",
+    "sign": {
+      "distance": 2186.8470129474194,
+      "lane": 0,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.46971093578376916,
+          0.38813521398799067
+        ],
+        [
+          0.5524071806648175,
+          0.38821563584495417
+        ],
+        [
+          0.5518609514823108,
+          0.4514936461987995
+        ],
+        [
+          0.4700263227953046,
+          0.4513520002675129
+        ]
+      ],
+      "message": "LOOSE STONE AT THE PASS",
+      "lines": [
+        "LOOSE STONE",
+        "AT THE PASS"
+      ],
+      "size": 76
+    },
+    "pixels": {
+      "cream": 562,
+      "dark": 1724,
+      "total": 3200,
+      "width": 70
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "farm-2",
+    "territory": "Midwest Farm Country",
+    "weather": "Light rain",
+    "quality": "balanced",
+    "distance": 2873.427587430574,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 2882.702240967126,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.42857588406419,
+          0.38707405990968
+        ],
+        [
+          0.5311127624015795,
+          0.386868384307066
+        ],
+        [
+          0.5308052181808984,
+          0.44689364781337676
+        ],
+        [
+          0.4292837006759376,
+          0.44725046572746247
+        ]
+      ],
+      "message": "TIRE RUTS FILL FIRST",
+      "lines": [
+        "TIRE RUTS",
+        "FILL FIRST"
+      ],
+      "size": 91
+    },
+    "pixels": {
+      "cream": 810,
+      "dark": 1945,
+      "total": 3200,
+      "width": 87
+    },
+    "loadedFaces": 2
+  },
+  {
+    "engine": "webkit",
+    "label": "prairie-2",
+    "territory": "Prairie Potholes",
+    "weather": "Heavy rain",
+    "quality": "high",
+    "distance": 3436.9948998741734,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 3446.2482575067324,
+      "lane": 0,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.3844308755457131,
+          0.5118929279008652
+        ],
+        [
+          0.5689588674724465,
+          0.5119193209572189
+        ],
+        [
+          0.5685766816792343,
+          0.5487698147722851
+        ],
+        [
+          0.38507123042798214,
+          0.5487346157884623
+        ]
+      ],
+      "message": "MALLARDS OFF DUTY",
+      "lines": [
+        "MALLARDS",
+        "OFF DUTY"
+      ],
+      "size": 91
+    },
+    "pixels": {
+      "cream": 825,
+      "dark": 1664,
+      "total": 3200,
+      "width": 72
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "dakota-2",
+    "territory": "Dakota Wetlands",
+    "weather": "Windy",
+    "quality": "low",
+    "distance": 4369.96890143035,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 4379.194419820406,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.4606434203372258,
+          0.38840067655299215
+        ],
+        [
+          0.5652733593883323,
+          0.38852248835570624
+        ],
+        [
+          0.564613622520583,
+          0.44988195153368504
+        ],
+        [
+          0.4610406198634949,
+          0.44967053113120925
+        ]
+      ],
+      "message": "LONG WAY ROUND THE POND",
+      "lines": [
+        "LONG WAY",
+        "ROUND",
+        "THE POND"
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 510,
+      "dark": 2190,
+      "total": 3200,
+      "width": 88
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "border-2",
+    "territory": "Northern Borderlands",
+    "weather": "Snow",
+    "quality": "balanced",
+    "distance": 5213.029943705923,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 5222.236456437386,
+      "lane": 1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.5683423406754085,
+          0.38971594452248265
+        ],
+        [
+          0.6488397942525368,
+          0.38980133325633515
+        ],
+        [
+          0.6473311452847733,
+          0.45132247761179844
+        ],
+        [
+          0.5676503264066582,
+          0.45117509832293556
+        ]
+      ],
+      "message": "THE WINDSOCK RESIGNED",
+      "lines": [
+        "THE WINDSOCK",
+        "RESIGNED"
+      ],
+      "size": 70
+    },
+    "pixels": {
+      "cream": 449,
+      "dark": 1866,
+      "total": 3200,
+      "width": 68
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "boreal-2",
+    "territory": "Canadian Boreal Forest",
+    "weather": "Sleet",
+    "quality": "high",
+    "distance": 5782.86599754675,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 5792.0616437736335,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.394332118669861,
+          0.5050510090696365
+        ],
+        [
+          0.6205470301979072,
+          0.5048796674668689
+        ],
+        [
+          0.6199199480914211,
+          0.5395043939253289
+        ],
+        [
+          0.39488272751046144,
+          0.5397332745794857
+        ]
+      ],
+      "message": "THE PINES KEEP THE WEATHER",
+      "lines": [
+        "THE PINES KEEP",
+        "THE WEATHER"
+      ],
+      "size": 66
+    },
+    "pixels": {
+      "cream": 444,
+      "dark": 2050,
+      "total": 3200,
+      "width": 88
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "mountain-2",
+    "territory": "Canadian Mountain Wilderness",
+    "weather": "High-country snow",
+    "quality": "low",
+    "distance": 6672.616156006537,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 6681.796811656379,
+      "lane": -1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.35095626786596923,
+          0.38840979825124267
+        ],
+        [
+          0.431264237034085,
+          0.3883892686124086
+        ],
+        [
+          0.4319595843847925,
+          0.44980439343414075
+        ],
+        [
+          0.35246440656086486,
+          0.449840063360728
+        ]
+      ],
+      "message": "KEEP THE HOLLY OFF THE STOVE",
+      "lines": [
+        "KEEP THE HOLLY",
+        "OFF THE STOVE"
+      ],
+      "size": 64
+    },
+    "pixels": {
+      "cream": 278,
+      "dark": 1912,
+      "total": 3200,
+      "width": 68
+    },
+    "loadedFaces": 2
+  },
+  {
+    "engine": "chromium",
+    "label": "cypress-3",
+    "seed": 4096,
+    "territory": "Southern Cypress Swamp",
+    "weather": "Overcast",
+    "quality": "high",
+    "distance": 791.3930634119114,
+    "ticks": 6,
+    "size": "landscape",
+    "sign": {
+      "distance": 807.1642966220503,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.4665756588346684,
+          0.359094657873383
+        ],
+        [
+          0.535982089143785,
+          0.35932385045679016
+        ],
+        [
+          0.5357394664469688,
+          0.4004554521125394
+        ],
+        [
+          0.46680005304304495,
+          0.40004859657030606
+        ]
+      ],
+      "message": "MARSH ACCESS CLOSES AT DUSK",
+      "lines": [
+        "MARSH ACCESS",
+        "CLOSES AT DUSK"
+      ],
+      "size": 62
+    },
+    "pixels": {
+      "cream": 181,
+      "dark": 1967,
+      "total": 3200,
+      "width": 59
+    },
+    "loadedFaces": 2
+  },
+  {
+    "engine": "webkit",
+    "label": "cypress-4",
+    "seed": 5193,
+    "territory": "Southern Cypress Swamp",
+    "weather": "Overcast",
+    "quality": "low",
+    "distance": 893.9293836839315,
+    "ticks": 8,
+    "size": "portrait",
+    "sign": {
+      "distance": 909.3448067002574,
+      "lane": -1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.2741270949198483,
+          0.48471896127037856
+        ],
+        [
+          0.41330359034323905,
+          0.4844297382011497
+        ],
+        [
+          0.4136646963233493,
+          0.5122386691360443
+        ],
+        [
+          0.27507125961044043,
+          0.5126261139779484
+        ]
+      ],
+      "message": "SLOW WATER HIDES QUICK MUD",
+      "lines": [
+        "SLOW WATER",
+        "HIDES QUICK MUD"
+      ],
+      "size": 60
+    },
+    "pixels": {
+      "cream": 179,
+      "dark": 2035,
+      "total": 3200,
+      "width": 54
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "flyway-4",
+    "seed": 5337,
+    "territory": "Mississippi Flyway",
+    "weather": "Morning fog",
+    "quality": "balanced",
+    "distance": 1334.8316579895038,
+    "ticks": 6,
+    "size": "landscape",
+    "sign": {
+      "distance": 1350.5266635413386,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.47069642093950714,
+          0.3590961475090839
+        ],
+        [
+          0.5391549171176194,
+          0.35910114201648635
+        ],
+        [
+          0.5388952179254581,
+          0.3995615926896495
+        ],
+        [
+          0.4708907615408321,
+          0.39955277314950643
+        ]
+      ],
+      "message": "EMERGENCY HONKING ONLY",
+      "lines": [
+        "EMERGENCY",
+        "HONKING ONLY"
+      ],
+      "size": 71
+    },
+    "pixels": {
+      "cream": 366,
+      "dark": 1740,
+      "total": 3200,
+      "width": 58
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "farm-4",
+    "seed": 5759,
+    "territory": "Midwest Farm Country",
+    "weather": "Light rain",
+    "quality": "low",
+    "distance": 2766.901525488247,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 2782.880381153645,
+      "lane": 0,
+      "wide": true,
+      "face": true,
+      "corners": [
+        [
+          0.43602513858319447,
+          0.48222697612070703
+        ],
+        [
+          0.6126631979961792,
+          0.4818548146382776
+        ],
+        [
+          0.6122050077072541,
+          0.5090180809899747
+        ],
+        [
+          0.43628655481671164,
+          0.5095178338960261
+        ]
+      ],
+      "message": "THE DOG HEARD YOUR EXCUSE",
+      "lines": [
+        "THE DOG HEARD",
+        "YOUR EXCUSE"
+      ],
+      "size": 65
+    },
+    "pixels": {
+      "cream": 317,
+      "dark": 1855,
+      "total": 3200,
+      "width": 69
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "border-4",
+    "seed": 6392,
+    "territory": "Northern Borderlands",
+    "weather": "Snow",
+    "quality": "low",
+    "distance": 4969.186325873108,
+    "ticks": 4,
+    "size": "portrait",
+    "sign": {
+      "distance": 4985.097913117306,
+      "lane": 1,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.5728063654828661,
+          0.4793969122556361
+        ],
+        [
+          0.7007148529183342,
+          0.479259509480718
+        ],
+        [
+          0.6999415431834538,
+          0.5050026112643015
+        ],
+        [
+          0.5725253494109213,
+          0.5051862259262982
+        ]
+      ],
+      "message": "PORTAGE WITH THE BOAT RIGHT SIDE UP",
+      "lines": [
+        "PORTAGE WITH",
+        "THE BOAT",
+        "RIGHT SIDE UP"
+      ],
+      "size": 61
+    },
+    "pixels": {
+      "cream": 208,
+      "dark": 1283,
+      "total": 3200,
+      "width": 50
+    },
+    "loadedFaces": 1
+  },
+  {
+    "engine": "webkit",
+    "label": "mountain-4",
+    "seed": 6814,
+    "territory": "Canadian Mountain Wilderness",
+    "weather": "High-country snow",
+    "quality": "high",
+    "distance": 6907.335689243467,
+    "ticks": 4,
+    "size": "landscape",
+    "sign": {
+      "distance": 6923.214037100215,
+      "lane": 0,
+      "wide": false,
+      "face": true,
+      "corners": [
+        [
+          0.4655948631958784,
+          0.36126430703088613
+        ],
+        [
+          0.5203285186822941,
+          0.3613178773953483
+        ],
+        [
+          0.5201877460997967,
+          0.40354591755996017
+        ],
+        [
+          0.465832881037259,
+          0.40345130476459656
+        ]
+      ],
+      "message": "MUDDY PAWS ARE A VALID PERMIT",
+      "lines": [
+        "MUDDY PAWS ARE",
+        "A VALID PERMIT"
+      ],
+      "size": 59
+    },
+    "pixels": {
+      "cream": 223,
+      "dark": 2013,
+      "total": 3200,
+      "width": 46
+    },
+    "loadedFaces": 1
+  }
+]

@@ -33,7 +33,8 @@ import { expeditionRegions, regionAt } from './expedition.js'
 import { courseStages, distanceAtTime, speedAtTime, stageAt } from './difficulty.js'
 import { placeOnTrail, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
-import { createPostedTimber, createTrailSigns } from './sign-scenery.js'
+import { createTrailSigns } from './sign-scenery.js'
+import { createObstacleSigns } from './obstacle-signs.js'
 import { createDriftingLeaves } from './drifting-leaves.js'
 import { fallenVariant } from './fallen-timber.js'
 import { createDivingFlocks, createWildlife } from './wildlife.js'
@@ -54,6 +55,7 @@ scene.add(scenery)
 const entities = []
 const effects = []
 const pool = new Map()
+const obstacleSigns = createObstacleSigns()
 const dogPosition = {}
 const obstaclePosition = {}
 const cuePosition = {}
@@ -200,7 +202,6 @@ function initialize() {
   renderer.toneMappingExposure = 1.15
   const atmosphere = createAtmosphere(scene)
   const signs = createTrailSigns(scene)
-  const postedTimber = createPostedTimber()
   const terrain = createTerrain(scene, (anchor, distance) => signs.show(anchor, distance, signSeed))
   const leaves = createDriftingLeaves(scene)
   const wildlife = createWildlife(scene, sound.bird)
@@ -350,14 +351,13 @@ function initialize() {
       }
       spray.update(distance, visualTime)
       positionEntities(visualTime, distance)
-      postedTimber(entities, distance, signSeed)
       diving(entities, distance, visualTime, preset.detail === 0)
       frozen = false
     }
     if (mode === 'title' || mode === 'running' || needsRedraw) {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(),
-      })
+      }, camera, obstacleSigns)
       renderer.render(scene, camera)
       needsRedraw = false
     }
@@ -397,11 +397,13 @@ function acquire(entity) {
     scenery.add(object)
   }
   if (entity.span) prepareWashout(object, entity)
+  if (entity.type === 'branch') obstacleSigns.bind(object, entity, signSeed)
   return object
 }
 
 function release(entity) {
   if (!entity.model) return
+  if (entity.type === 'branch') obstacleSigns.release(entity.model)
   entity.model.removeFromParent()
   const key = entity.modelKey
   if (!entity.hazard) entity.model.scale.setScalar(1)

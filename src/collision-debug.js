@@ -2,14 +2,16 @@ import * as T from 'three'
 import { distanceAtTime, speedAtTime } from './difficulty.js'
 import { diveAge, diveWarning } from './dive.js'
 import { hazardFrame, isWaterHazard, obstacleVolumes, playerFrame, playerVolumes, volumeY } from './collision.js'
+import { obstacleSignFace } from './obstacle-signs.js'
 
 export function collisionDebug(scene) {
   const flags = new URLSearchParams(location.search)
   if (flags.get('debug') !== 'collision') return null
   const seed = Number(flags.get('seed'))
   const requested = Number(flags.get('at'))
-  const at = flags.has('at') && Number.isFinite(requested) ? Math.min(1320, Math.max(0, requested)) : 0
+  const at = flags.has('at') && Number.isFinite(requested) ? Math.min(distanceAtTime(330), Math.max(0, requested)) : 0
   const showVolumes = flags.get('volumes') !== 'off'
+  const showSigns = flags.get('signs') === 'on'
   const panel = document.createElement('pre')
   panel.id = 'collision-debug'
   panel.setAttribute('aria-label', 'Collision diagnostics')
@@ -27,6 +29,23 @@ export function collisionDebug(scene) {
   let count = 0
   let death
   let last = ''
+  const corner = new T.Vector3()
+
+  function inspectSigns(entities, run, camera) {
+    camera.updateMatrixWorld()
+    return entities.filter(entity => entity.type === 'branch' && entity.model?.visible &&
+        entity.distance >= run.distance - 4 && entity.distance <= run.distance + 80)
+      .map(({ model, distance, lane, wide }) => {
+        const face = model.getObjectByName(obstacleSignFace)
+        if (!face?.visible) return { distance, lane, wide, face: false }
+        face.updateWorldMatrix(true, false)
+        const corners = [[-.5, .5], [.5, .5], [.5, -.5], [-.5, -.5]].map(([x, y]) => {
+          corner.set(x, y, 0).applyMatrix4(face.matrixWorld).project(camera)
+          return [(corner.x + 1) * .5, (.5 - corner.y * .5)]
+        })
+        return { distance, lane, wide, face: true, corners, ...face.userData.lettering }
+      })
+  }
   function draw(part, frame, kind, crouch = 0) {
     if (!showVolumes) return
     let line = lines[count]
@@ -65,7 +84,7 @@ export function collisionDebug(scene) {
       death = { ...details }
       console.info('Retriever Run impact', death)
     },
-    draw(run, entities, mode, timings) {
+    draw(run, entities, mode, timings, camera, obstacleSigns) {
       count = 0
       playerFrame(transform, run, run.distance)
       for (const part of playerVolumes()) draw(part, transform, death?.part === part.name ? 'hit' : 'dog', transform.depth)
@@ -101,6 +120,10 @@ export function collisionDebug(scene) {
       window.retrieverDebug = { mode, elapsed: run.elapsed, distance: run.distance, lateral: run.x, lane: run.lane,
         height: run.jump > 0 ? transformPlayerHeight(run) : 0, ticks: timings.ticks, contact: death, power: run.power, flight, speed: run.speed, tiles: timings.tiles,
         drawCalls: timings.drawCalls, geometries: timings.geometries, entities: entities.length }
+      if (showSigns) {
+        window.retrieverDebug.signs = inspectSigns(entities, run, camera)
+        window.retrieverDebug.signCache = obstacleSigns.stats()
+      }
     },
   }
 }

@@ -25,11 +25,12 @@ const actor = new T.Group()
 dog.moveTo(actor)
 scene.add(actor, obstacles)
 const camera = new T.PerspectiveCamera(50, innerWidth / innerHeight, .1, 190)
-let decorate
+let notices
+let posted
 if (!baseline) {
-  const asset = '/src/' + 'sign-scenery.js'
+  const asset = '/src/' + 'obstacle-signs.js'
   const signs = await import(/* @vite-ignore */ asset)
-  decorate = signs.createPostedTimber()
+  notices = signs.createObstacleSigns()
 }
 
 const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
@@ -45,6 +46,8 @@ const elapsedAt = distance => {
 }
 
 async function cameraScene({ type, variety = 0, shot, elapsed = 246 }) {
+  if (posted) notices.release(posted)
+  posted = null
   obstacles.clear()
   const target = type === 'fallen' ? 6118 : distanceAtTime(elapsed)
   const trees = shot === 'trees'
@@ -75,7 +78,10 @@ async function cameraScene({ type, variety = 0, shot, elapsed = 246 }) {
     hazard.model.rotation.y = position.angle
     if (hazard.span) prepareWashout(hazard.model, hazard)
   }
-  decorate?.([hazard], origin, 13861)
+  if (notices && hazard.model && hazard.type === 'branch') {
+    posted = hazard.model
+    notices.bind(posted, hazard, 13861)
+  }
   diving(type === 'goose' ? [hazard] : [], origin, vegetationTime, true)
   actor.visible = character || !near && !panorama
   if (character) {

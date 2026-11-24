@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { fieldMaterials } from './materials.js'
 import { fallenTimberModel } from './fallen-timber.js'
 import { trailTimber } from './trail-timber.js'
+import { addObstacleSignFace } from './obstacle-signs.js'
 import { marshWater } from './marsh-water.js'
 import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
 
@@ -160,6 +161,7 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
   }
   if (baked.has(key)) {
     object.add(new T.Mesh(baked.get(key), fieldMaterials.material))
+    if (type === 'branch') addObstacleSignFace(object, wide)
     return object
   }
   const bark = 0x514033
@@ -199,7 +201,9 @@ export function createHazard(parent, type, x = 0, z = 0, wide = false, variant =
     mesh(object, box, 0x58716a, 0, 1.88, -.16, .92, .84, .065)
     mesh(object, cylinder, 0x41362e, .37, 1.51, -.64, .072, .66, .072)
   }
-  return compact(object, key, true)
+  compact(object, key, true)
+  if (type === 'branch') addObstacleSignFace(object, wide)
+  return object
 }
 
 export function createPickup(parent, type, x = 0, z = 0) {
