@@ -1,0 +1,1261 @@
+{
+  "engine": "webkit",
+  "seed": 7,
+  "duration": 62,
+  "offline": true,
+  "quality": "low",
+  "executed": 35,
+  "samples": [
+    {
+      "elapsed": 0.024166666666637127,
+      "distance": 0.2658983425922675,
+      "draws": 54,
+      "triangles": 83396,
+      "geometries": 40,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 0.5243666666666364,
+      "distance": 5.798316175925583,
+      "draws": 54,
+      "triangles": 83432,
+      "geometries": 40,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 1.0576999999999699,
+      "distance": 11.75790992288855,
+      "draws": 52,
+      "triangles": 76612,
+      "geometries": 40,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 1.5243666666666371,
+      "distance": 17.023950007036724,
+      "draws": 51,
+      "triangles": 76004,
+      "geometries": 40,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 2.0576999999999748,
+      "distance": 23.10101930955527,
+      "draws": 50,
+      "triangles": 73752,
+      "geometries": 42,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 2.524366666666642,
+      "distance": 28.469850504814556,
+      "draws": 51,
+      "triangles": 76332,
+      "geometries": 43,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 3.0576999999999765,
+      "distance": 34.66439536288862,
+      "draws": 52,
+      "triangles": 79912,
+      "geometries": 41,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 3.524366666666637,
+      "distance": 40.13601766925893,
+      "draws": 53,
+      "triangles": 82394,
+      "geometries": 42,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 4.05769999999997,
+      "distance": 46.44803808288851,
+      "draws": 52,
+      "triangles": 75946,
+      "geometries": 43,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 4.524366666666656,
+      "distance": 52.02245150036994,
+      "draws": 53,
+      "triangles": 75942,
+      "geometries": 44,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 5.0576999999999614,
+      "distance": 58.45194746955506,
+      "draws": 51,
+      "triangles": 75062,
+      "geometries": 45,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 5.524366666666647,
+      "distance": 64.1291519981476,
+      "draws": 53,
+      "triangles": 79023,
+      "geometries": 45,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 6.057699999999953,
+      "distance": 70.67612352288826,
+      "draws": 52,
+      "triangles": 77807,
+      "geometries": 45,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 6.524366666666638,
+      "distance": 76.45611916259192,
+      "draws": 52,
+      "triangles": 71115,
+      "geometries": 46,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 7.057699999999947,
+      "distance": 83.12056624288819,
+      "draws": 47,
+      "triangles": 66837,
+      "geometries": 46,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 7.524366666666646,
+      "distance": 89.00335299370309,
+      "draws": 50,
+      "triangles": 71706,
+      "geometries": 47,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 8.05769999999996,
+      "distance": 95.78527562955507,
+      "draws": 52,
+      "triangles": 77284,
+      "geometries": 46,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 8.524366666666609,
+      "distance": 101.7708534914811,
+      "draws": 50,
+      "triangles": 75992,
+      "geometries": 46,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 9.057699999999977,
+      "distance": 108.67025168288862,
+      "draws": 49,
+      "triangles": 71197,
+      "geometries": 48,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 9.524366666666626,
+      "distance": 114.7586206559258,
+      "draws": 52,
+      "triangles": 72817,
+      "geometries": 48,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 10.057699999999995,
+      "distance": 121.77549440288887,
+      "draws": 55,
+      "triangles": 80119,
+      "geometries": 47,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 10.524366666666644,
+      "distance": 127.96665448703715,
+      "draws": 52,
+      "triangles": 78843,
+      "geometries": 47,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 11.057700000000015,
+      "distance": 135.1010037895558,
+      "draws": 58,
+      "triangles": 75991,
+      "geometries": 52,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 11.524366666666664,
+      "distance": 141.3949549848152,
+      "draws": 58,
+      "triangles": 75991,
+      "geometries": 52,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 12.057700000000033,
+      "distance": 148.6467798428894,
+      "draws": 56,
+      "triangles": 78421,
+      "geometries": 53,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 12.524366666666682,
+      "distance": 155.04352214925993,
+      "draws": 57,
+      "triangles": 82197,
+      "geometries": 51,
+      "textures": 9,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 13.05770000000005,
+      "distance": 162.41282256288966,
+      "draws": 62,
+      "triangles": 80423,
+      "geometries": 54,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 13.5243666666667,
+      "distance": 168.91235598037125,
+      "draws": 59,
+      "triangles": 75415,
+      "geometries": 54,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 14.05770000000007,
+      "distance": 176.3991319495566,
+      "draws": 60,
+      "triangles": 80516,
+      "geometries": 55,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 14.524366666666719,
+      "distance": 183.0014564781493,
+      "draws": 62,
+      "triangles": 84264,
+      "geometries": 55,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 15.057700000000088,
+      "distance": 190.60578668922352,
+      "draws": 57,
+      "triangles": 80844,
+      "geometries": 55,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 15.524366666666713,
+      "distance": 197.3173128231492,
+      "draws": 50,
+      "triangles": 70435,
+      "geometries": 55,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 16.057700000000054,
+      "distance": 205.058952849223,
+      "draws": 54,
+      "triangles": 73883,
+      "geometries": 57,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 16.524366666666676,
+      "distance": 211.89529676092647,
+      "draws": 57,
+      "triangles": 80005,
+      "geometries": 56,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 17.05770000000002,
+      "distance": 219.7795856758891,
+      "draws": 51,
+      "triangles": 77291,
+      "geometries": 56,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 17.52436666666664,
+      "distance": 226.74074736537037,
+      "draws": 52,
+      "triangles": 73736,
+      "geometries": 60,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 18.05769999999998,
+      "distance": 234.76768516922192,
+      "draws": 51,
+      "triangles": 74970,
+      "geometries": 60,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 18.524366666666605,
+      "distance": 241.8536646364809,
+      "draws": 49,
+      "triangles": 79002,
+      "geometries": 60,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 19.057699999999944,
+      "distance": 250.02325132922135,
+      "draws": 50,
+      "triangles": 79746,
+      "geometries": 60,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 19.524366666666566,
+      "distance": 257.23404857425817,
+      "draws": 55,
+      "triangles": 74883,
+      "geometries": 60,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 20.057699999999908,
+      "distance": 265.5462841558876,
+      "draws": 52,
+      "triangles": 75553,
+      "geometries": 61,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 20.52436666666653,
+      "distance": 272.88189917870193,
+      "draws": 52,
+      "triangles": 77051,
+      "geometries": 60,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 21.057699999999873,
+      "distance": 281.33678364922,
+      "draws": 55,
+      "triangles": 77253,
+      "geometries": 60,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 21.524366666666495,
+      "distance": 288.7972164498123,
+      "draws": 49,
+      "triangles": 68307,
+      "geometries": 60,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 22.057699999999837,
+      "distance": 297.3947498092195,
+      "draws": 51,
+      "triangles": 71985,
+      "geometries": 61,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 22.52436666666646,
+      "distance": 304.98000038758966,
+      "draws": 57,
+      "triangles": 77869,
+      "geometries": 61,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 23.057699999999798,
+      "distance": 313.72018263588564,
+      "draws": 50,
+      "triangles": 67196,
+      "geometries": 61,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 23.524366666666424,
+      "distance": 321.43025099203334,
+      "draws": 50,
+      "triangles": 67256,
+      "geometries": 61,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 24.057699999999762,
+      "distance": 330.31308212921806,
+      "draws": 55,
+      "triangles": 75926,
+      "geometries": 64,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 24.52436666666639,
+      "distance": 338.1479682631437,
+      "draws": 54,
+      "triangles": 77699,
+      "geometries": 63,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 25.057699999999727,
+      "distance": 347.1734482892175,
+      "draws": 55,
+      "triangles": 73877,
+      "geometries": 63,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 25.52436666666635,
+      "distance": 355.133152200921,
+      "draws": 54,
+      "triangles": 76989,
+      "geometries": 64,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 26.05769999999969,
+      "distance": 364.3012811158835,
+      "draws": 59,
+      "triangles": 91697,
+      "geometries": 65,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 26.524366666666314,
+      "distance": 372.3858028053645,
+      "draws": 59,
+      "triangles": 91045,
+      "geometries": 65,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 27.057699999999656,
+      "distance": 381.6965806092159,
+      "draws": 57,
+      "triangles": 84165,
+      "geometries": 65,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 27.52436666666628,
+      "distance": 389.90592007647484,
+      "draws": 57,
+      "triangles": 93489,
+      "geometries": 66,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 28.057699999999617,
+      "distance": 399.3593467692153,
+      "draws": 60,
+      "triangles": 98593,
+      "geometries": 65,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 28.524366666666243,
+      "distance": 407.69350401425214,
+      "draws": 57,
+      "triangles": 91165,
+      "geometries": 65,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 29.05769999999958,
+      "distance": 417.28957959588126,
+      "draws": 59,
+      "triangles": 100351,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 29.524366666666207,
+      "distance": 425.7485546186956,
+      "draws": 60,
+      "triangles": 104147,
+      "geometries": 65,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 30.057699999999546,
+      "distance": 435.48697483539144,
+      "draws": 60,
+      "triangles": 98077,
+      "geometries": 66,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 30.524366666666168,
+      "distance": 444.0459803916577,
+      "draws": 66,
+      "triangles": 100619,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 31.05769999999951,
+      "distance": 453.8503570273906,
+      "draws": 65,
+      "triangles": 111525,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 31.524366666666136,
+      "distance": 462.449010583657,
+      "draws": 65,
+      "triangles": 108945,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 32.057699999999535,
+      "distance": 472.29869921939104,
+      "draws": 66,
+      "triangles": 106727,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 32.52436666666621,
+      "distance": 480.9370007756584,
+      "draws": 63,
+      "triangles": 111857,
+      "geometries": 70,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 33.057699999999606,
+      "distance": 490.8320014113925,
+      "draws": 64,
+      "triangles": 109213,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 33.52436666666628,
+      "distance": 499.5099509676597,
+      "draws": 66,
+      "triangles": 102474,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 34.057699999999684,
+      "distance": 509.45026360339364,
+      "draws": 65,
+      "triangles": 111564,
+      "geometries": 68,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 34.52436666666635,
+      "distance": 518.1678611596612,
+      "draws": 67,
+      "triangles": 115234,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 35.057699999999755,
+      "distance": 528.1534857953952,
+      "draws": 59,
+      "triangles": 95706,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 35.52436666666643,
+      "distance": 536.9107313516624,
+      "draws": 61,
+      "triangles": 107072,
+      "geometries": 68,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 36.057699999999826,
+      "distance": 546.9416679873965,
+      "draws": 61,
+      "triangles": 110172,
+      "geometries": 66,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 36.5243666666665,
+      "distance": 555.7385615436639,
+      "draws": 58,
+      "triangles": 103856,
+      "geometries": 67,
+      "textures": 10,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 37.0576999999999,
+      "distance": 565.8148101793979,
+      "draws": 62,
+      "triangles": 102818,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 37.52436666666657,
+      "distance": 574.6513517356652,
+      "draws": 64,
+      "triangles": 111626,
+      "geometries": 67,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 38.057699999999976,
+      "distance": 584.7729123713992,
+      "draws": 60,
+      "triangles": 100400,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 38.52436666666665,
+      "distance": 593.6491019276665,
+      "draws": 60,
+      "triangles": 100400,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 39.05770000000005,
+      "distance": 603.8159745634007,
+      "draws": 65,
+      "triangles": 111848,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 39.52436666666672,
+      "distance": 612.7318121196679,
+      "draws": 67,
+      "triangles": 110069,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 40.05770000000012,
+      "distance": 622.943996755402,
+      "draws": 64,
+      "triangles": 100169,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 40.52436666666679,
+      "distance": 631.8994823116693,
+      "draws": 63,
+      "triangles": 112857,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 41.057700000000196,
+      "distance": 642.1569789474034,
+      "draws": 61,
+      "triangles": 106479,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 41.524366666666864,
+      "distance": 651.1521125036708,
+      "draws": 61,
+      "triangles": 106479,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 42.05770000000027,
+      "distance": 661.4549211394049,
+      "draws": 64,
+      "triangles": 113247,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 42.52436666666694,
+      "distance": 670.4897026956722,
+      "draws": 64,
+      "triangles": 114482,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 43.05770000000034,
+      "distance": 680.8378233314063,
+      "draws": 61,
+      "triangles": 105430,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 43.524366666667014,
+      "distance": 689.9122528876736,
+      "draws": 62,
+      "triangles": 109998,
+      "geometries": 69,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 44.05770000000041,
+      "distance": 700.3056855234078,
+      "draws": 63,
+      "triangles": 110753,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "elapsed": 44.524366666667085,
+      "distance": 709.4197630796751,
+      "draws": 61,
+      "triangles": 105439,
+      "geometries": 68,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 45.05770000000049,
+      "distance": 719.8585024696536,
+      "draws": 65,
+      "triangles": 117835,
+      "geometries": 69,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 45.52436666666716,
+      "distance": 729.0118006596393,
+      "draws": 65,
+      "triangles": 116747,
+      "geometries": 67,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 46.05770000000056,
+      "distance": 739.494529765655,
+      "draws": 63,
+      "triangles": 106729,
+      "geometries": 69,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 46.524366666667234,
+      "distance": 748.6860075111965,
+      "draws": 63,
+      "triangles": 111381,
+      "geometries": 70,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 47.05770000000063,
+      "distance": 759.21237039499,
+      "draws": 66,
+      "triangles": 116865,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 47.524366666667305,
+      "distance": 768.4420276960868,
+      "draws": 63,
+      "triangles": 109679,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 48.05770000000071,
+      "distance": 779.012024357658,
+      "draws": 63,
+      "triangles": 115690,
+      "geometries": 73,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 48.524366666667376,
+      "distance": 788.2798612143107,
+      "draws": 64,
+      "triangles": 116570,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 49.05770000000078,
+      "distance": 798.8934916536597,
+      "draws": 57,
+      "triangles": 100146,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 49.524366666667454,
+      "distance": 808.1995080658677,
+      "draws": 60,
+      "triangles": 108270,
+      "geometries": 73,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 50.05770000000085,
+      "distance": 818.8567722829944,
+      "draws": 62,
+      "triangles": 111796,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 50.524366666667525,
+      "distance": 828.2009682507583,
+      "draws": 59,
+      "triangles": 104610,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 51.05770000000092,
+      "distance": 838.9018662456627,
+      "draws": 63,
+      "triangles": 109954,
+      "geometries": 73,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 51.524366666667596,
+      "distance": 848.2842417689818,
+      "draws": 64,
+      "triangles": 113744,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 52.057700000001,
+      "distance": 859.0287735416642,
+      "draws": 61,
+      "triangles": 106300,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 52.524366666667675,
+      "distance": 868.4493286205392,
+      "draws": 58,
+      "triangles": 105475,
+      "geometries": 73,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 53.05770000000107,
+      "distance": 879.2374941709992,
+      "draws": 62,
+      "triangles": 111172,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 53.524366666667746,
+      "distance": 888.6962288054294,
+      "draws": 60,
+      "triangles": 101564,
+      "geometries": 72,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 54.05770000000114,
+      "distance": 899.5280281336674,
+      "draws": 61,
+      "triangles": 106030,
+      "geometries": 73,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 54.52436666666782,
+      "distance": 909.0249423236535,
+      "draws": 63,
+      "triangles": 109356,
+      "geometries": 73,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 55.05770000000122,
+      "distance": 919.900375429669,
+      "draws": 56,
+      "triangles": 97922,
+      "geometries": 73,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 55.52436666666789,
+      "distance": 929.4354691752104,
+      "draws": 61,
+      "triangles": 106656,
+      "geometries": 74,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 56.05770000000129,
+      "distance": 940.3545360590039,
+      "draws": 62,
+      "triangles": 110795,
+      "geometries": 74,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 56.524366666667966,
+      "distance": 949.927809360101,
+      "draws": 60,
+      "triangles": 102981,
+      "geometries": 74,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 57.05770000000136,
+      "distance": 960.8905100216723,
+      "draws": 61,
+      "triangles": 101153,
+      "geometries": 79,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 57.52436666666804,
+      "distance": 970.5019628783248,
+      "draws": 62,
+      "triangles": 101398,
+      "geometries": 76,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 58.05770000000143,
+      "distance": 981.5082973176739,
+      "draws": 60,
+      "triangles": 94567,
+      "geometries": 76,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 58.52436666666811,
+      "distance": 991.1579297298821,
+      "draws": 64,
+      "triangles": 98319,
+      "geometries": 81,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 59.05770000000151,
+      "distance": 1002.2078979470089,
+      "draws": 62,
+      "triangles": 91468,
+      "geometries": 78,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 59.524366666668186,
+      "distance": 1011.8957099147725,
+      "draws": 59,
+      "triangles": 82580,
+      "geometries": 78,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 60.05770000000158,
+      "distance": 1022.989277812266,
+      "draws": 65,
+      "triangles": 91082,
+      "geometries": 79,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 60.52436666666826,
+      "distance": 1032.712491454756,
+      "draws": 64,
+      "triangles": 87256,
+      "geometries": 79,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 61.05770000000165,
+      "distance": 1043.841098284268,
+      "draws": 61,
+      "triangles": 81653,
+      "geometries": 79,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 61.52436666666833,
+      "distance": 1053.5929465934241,
+      "draws": 64,
+      "triangles": 83772,
+      "geometries": 79,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "elapsed": 62.05770000000173,
+      "distance": 1064.7542787562695,
+      "draws": 59,
+      "triangles": 74925,
+      "geometries": 80,
+      "textures": 11,
+      "tiles": 7,
+      "packs": 2
+    }
+  ],
+  "elapsed": 62.05770000000173
+}

@@ -2787,6 +2787,3424 @@
       }
     ]
   },
+  "transitions": {
+    "engine": "webkit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scenes": [
+      {
+        "label": "transition-cypress-before",
+        "seed": 2,
+        "distance": 429.25120258607984,
+        "weather": "Autumn sunrise",
+        "stage": "2 / 30",
+        "hud": "Gulf Coast Marsh",
+        "render": {
+          "draws": 63,
+          "triangles": 139343,
+          "geometries": 44,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 6195,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 14,
+              "buildMs": 521,
+              "unpackMs": 6
+            },
+            {
+              "index": 15,
+              "buildMs": 301,
+              "unpackMs": 41
+            },
+            {
+              "index": 16,
+              "buildMs": 547,
+              "unpackMs": 7
+            },
+            {
+              "index": 17,
+              "buildMs": 190,
+              "unpackMs": 4
+            },
+            {
+              "index": 18,
+              "buildMs": 280,
+              "unpackMs": 4
+            },
+            {
+              "index": 19,
+              "buildMs": 383,
+              "unpackMs": 1
+            },
+            {
+              "index": 13,
+              "buildMs": 401,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 3312,
+          "restart": 3872,
+          "cpuMs": {
+            "samples": 7,
+            "median": 301,
+            "p95": 984,
+            "p99": 984,
+            "max": 984,
+            "slow": 7,
+            "average": 380.29
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 4,
+            "average": 39.29
+          }
+        }
+      },
+      {
+        "label": "transition-cypress-after",
+        "seed": 2,
+        "distance": 442.98671813942997,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 58,
+          "triangles": 127489,
+          "geometries": 45,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 6195,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 14,
+              "buildMs": 521,
+              "unpackMs": 6
+            },
+            {
+              "index": 15,
+              "buildMs": 301,
+              "unpackMs": 41
+            },
+            {
+              "index": 16,
+              "buildMs": 547,
+              "unpackMs": 7
+            },
+            {
+              "index": 17,
+              "buildMs": 190,
+              "unpackMs": 4
+            },
+            {
+              "index": 18,
+              "buildMs": 280,
+              "unpackMs": 4
+            },
+            {
+              "index": 19,
+              "buildMs": 383,
+              "unpackMs": 1
+            },
+            {
+              "index": 13,
+              "buildMs": 401,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 3312,
+          "restart": 3872,
+          "cpuMs": {
+            "samples": 23,
+            "median": 252,
+            "p95": 491,
+            "p99": 984,
+            "max": 984,
+            "slow": 23,
+            "average": 306.52
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 18,
+            "average": 44.57
+          }
+        }
+      },
+      {
+        "label": "transition-flyway-before",
+        "seed": 1,
+        "distance": 1015.8929640065646,
+        "weather": "Overcast",
+        "stage": "4 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 65,
+          "triangles": 105191,
+          "geometries": 58,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3523,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 35,
+              "buildMs": 370,
+              "unpackMs": 10
+            },
+            {
+              "index": 36,
+              "buildMs": 287,
+              "unpackMs": 5
+            },
+            {
+              "index": 37,
+              "buildMs": 323,
+              "unpackMs": 5
+            },
+            {
+              "index": 38,
+              "buildMs": 103,
+              "unpackMs": 4
+            },
+            {
+              "index": 32,
+              "buildMs": 184,
+              "unpackMs": 5
+            },
+            {
+              "index": 33,
+              "buildMs": 626,
+              "unpackMs": 1
+            },
+            {
+              "index": 34,
+              "buildMs": 301,
+              "unpackMs": 13
+            }
+          ],
+          "ready": 14902,
+          "restart": 2866,
+          "cpuMs": {
+            "samples": 7,
+            "median": 497,
+            "p95": 811,
+            "p99": 811,
+            "max": 811,
+            "slow": 7,
+            "average": 548
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 4,
+            "average": 39.29
+          }
+        }
+      },
+      {
+        "label": "transition-flyway-after",
+        "seed": 1,
+        "distance": 1031.5095617939464,
+        "weather": "Overcast",
+        "stage": "5 / 30",
+        "hud": "Mississippi Delta",
+        "render": {
+          "draws": 71,
+          "triangles": 114619,
+          "geometries": 64,
+          "textures": 13,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3523,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 35,
+              "buildMs": 370,
+              "unpackMs": 10
+            },
+            {
+              "index": 36,
+              "buildMs": 287,
+              "unpackMs": 5
+            },
+            {
+              "index": 37,
+              "buildMs": 323,
+              "unpackMs": 5
+            },
+            {
+              "index": 38,
+              "buildMs": 103,
+              "unpackMs": 4
+            },
+            {
+              "index": 39,
+              "buildMs": 92,
+              "unpackMs": 2
+            },
+            {
+              "index": 33,
+              "buildMs": 626,
+              "unpackMs": 1
+            },
+            {
+              "index": 34,
+              "buildMs": 301,
+              "unpackMs": 13
+            }
+          ],
+          "ready": 14902,
+          "restart": 2866,
+          "cpuMs": {
+            "samples": 23,
+            "median": 334,
+            "p95": 811,
+            "p99": 3116,
+            "max": 3116,
+            "slow": 23,
+            "average": 521.3
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 18,
+            "average": 44.57
+          }
+        }
+      },
+      {
+        "label": "transition-timber-before",
+        "seed": 5,
+        "distance": 1667.5637599978954,
+        "weather": "Morning fog",
+        "stage": "6 / 30",
+        "hud": "Mississippi Delta",
+        "render": {
+          "draws": 64,
+          "triangles": 116955,
+          "geometries": 62,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3785,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 56,
+              "buildMs": 97,
+              "unpackMs": 16
+            },
+            {
+              "index": 57,
+              "buildMs": 111,
+              "unpackMs": 11
+            },
+            {
+              "index": 58,
+              "buildMs": 159,
+              "unpackMs": 8
+            },
+            {
+              "index": 59,
+              "buildMs": 133,
+              "unpackMs": 2
+            },
+            {
+              "index": 60,
+              "buildMs": 122,
+              "unpackMs": 1
+            },
+            {
+              "index": 54,
+              "buildMs": 367,
+              "unpackMs": 4
+            },
+            {
+              "index": 55,
+              "buildMs": 352,
+              "unpackMs": 9
+            }
+          ],
+          "ready": 13879,
+          "restart": 2691,
+          "cpuMs": {
+            "samples": 7,
+            "median": 330,
+            "p95": 603,
+            "p99": 603,
+            "max": 603,
+            "slow": 7,
+            "average": 354.57
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-timber-after",
+        "seed": 5,
+        "distance": 1684.5090357437662,
+        "weather": "Morning fog",
+        "stage": "7 / 30",
+        "hud": "Arkansas Flooded Timber",
+        "render": {
+          "draws": 70,
+          "triangles": 139017,
+          "geometries": 63,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3785,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 56,
+              "buildMs": 97,
+              "unpackMs": 16
+            },
+            {
+              "index": 57,
+              "buildMs": 111,
+              "unpackMs": 11
+            },
+            {
+              "index": 58,
+              "buildMs": 159,
+              "unpackMs": 8
+            },
+            {
+              "index": 59,
+              "buildMs": 133,
+              "unpackMs": 2
+            },
+            {
+              "index": 60,
+              "buildMs": 122,
+              "unpackMs": 1
+            },
+            {
+              "index": 61,
+              "buildMs": 330,
+              "unpackMs": 6
+            },
+            {
+              "index": 55,
+              "buildMs": 352,
+              "unpackMs": 9
+            }
+          ],
+          "ready": 13879,
+          "restart": 2691,
+          "cpuMs": {
+            "samples": 23,
+            "median": 335,
+            "p95": 603,
+            "p99": 614,
+            "max": 614,
+            "slow": 23,
+            "average": 365.52
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-ozark-before",
+        "seed": 3,
+        "distance": 2368.5071700493772,
+        "weather": "Light rain",
+        "stage": "8 / 30",
+        "hud": "Arkansas Flooded Timber",
+        "render": {
+          "draws": 61,
+          "triangles": 98859,
+          "geometries": 52,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 4438,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 77,
+              "buildMs": 72,
+              "unpackMs": 2
+            },
+            {
+              "index": 78,
+              "buildMs": 113,
+              "unpackMs": 3
+            },
+            {
+              "index": 79,
+              "buildMs": 91,
+              "unpackMs": 3
+            },
+            {
+              "index": 80,
+              "buildMs": 59,
+              "unpackMs": 36
+            },
+            {
+              "index": 81,
+              "buildMs": 43,
+              "unpackMs": 2
+            },
+            {
+              "index": 82,
+              "buildMs": 68,
+              "unpackMs": 5
+            },
+            {
+              "index": 83,
+              "buildMs": 47,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 14410,
+          "restart": 1700,
+          "cpuMs": {
+            "samples": 7,
+            "median": 292,
+            "p95": 935,
+            "p99": 935,
+            "max": 935,
+            "slow": 7,
+            "average": 372
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-ozark-after",
+        "seed": 3,
+        "distance": 2386.619714906119,
+        "weather": "Light rain",
+        "stage": "9 / 30",
+        "hud": "Ozark River Country",
+        "render": {
+          "draws": 57,
+          "triangles": 93886,
+          "geometries": 52,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 4438,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 84,
+              "buildMs": 85,
+              "unpackMs": 4
+            },
+            {
+              "index": 78,
+              "buildMs": 113,
+              "unpackMs": 3
+            },
+            {
+              "index": 79,
+              "buildMs": 91,
+              "unpackMs": 3
+            },
+            {
+              "index": 80,
+              "buildMs": 59,
+              "unpackMs": 36
+            },
+            {
+              "index": 81,
+              "buildMs": 43,
+              "unpackMs": 2
+            },
+            {
+              "index": 82,
+              "buildMs": 68,
+              "unpackMs": 5
+            },
+            {
+              "index": 83,
+              "buildMs": 47,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 14410,
+          "restart": 1700,
+          "cpuMs": {
+            "samples": 23,
+            "median": 63,
+            "p95": 340,
+            "p99": 935,
+            "max": 935,
+            "slow": 14,
+            "average": 147.87
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-farm-before",
+        "seed": 2,
+        "distance": 3111.83267925797,
+        "weather": "Heavy rain",
+        "stage": "10 / 30",
+        "hud": "Ozark River Country",
+        "render": {
+          "draws": 66,
+          "triangles": 154166,
+          "geometries": 61,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 4157,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 105,
+              "buildMs": 33,
+              "unpackMs": 2
+            },
+            {
+              "index": 106,
+              "buildMs": 221,
+              "unpackMs": 6
+            },
+            {
+              "index": 107,
+              "buildMs": 40,
+              "unpackMs": 1
+            },
+            {
+              "index": 108,
+              "buildMs": 75,
+              "unpackMs": 2
+            },
+            {
+              "index": 102,
+              "buildMs": 198,
+              "unpackMs": 10
+            },
+            {
+              "index": 103,
+              "buildMs": 116,
+              "unpackMs": 9
+            },
+            {
+              "index": 104,
+              "buildMs": 40,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 11156,
+          "restart": 2329,
+          "cpuMs": {
+            "samples": 7,
+            "median": 260,
+            "p95": 396,
+            "p99": 396,
+            "max": 396,
+            "slow": 7,
+            "average": 296.43
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-farm-after",
+        "seed": 2,
+        "distance": 3130.8829310454184,
+        "weather": "Heavy rain",
+        "stage": "11 / 30",
+        "hud": "Midwest Farm Country",
+        "render": {
+          "draws": 70,
+          "triangles": 176106,
+          "geometries": 62,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 4157,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 105,
+              "buildMs": 33,
+              "unpackMs": 2
+            },
+            {
+              "index": 106,
+              "buildMs": 221,
+              "unpackMs": 6
+            },
+            {
+              "index": 107,
+              "buildMs": 40,
+              "unpackMs": 1
+            },
+            {
+              "index": 108,
+              "buildMs": 75,
+              "unpackMs": 2
+            },
+            {
+              "index": 109,
+              "buildMs": 40,
+              "unpackMs": 8
+            },
+            {
+              "index": 103,
+              "buildMs": 116,
+              "unpackMs": 9
+            },
+            {
+              "index": 104,
+              "buildMs": 40,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 11156,
+          "restart": 2329,
+          "cpuMs": {
+            "samples": 23,
+            "median": 297,
+            "p95": 407,
+            "p99": 463,
+            "max": 463,
+            "slow": 23,
+            "average": 298.17
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-platte-before",
+        "seed": 2,
+        "distance": 3889.23789286164,
+        "weather": "Windy",
+        "stage": "12 / 30",
+        "hud": "Midwest Farm Country",
+        "render": {
+          "draws": 64,
+          "triangles": 123952,
+          "geometries": 65,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3230,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 133,
+              "buildMs": 197,
+              "unpackMs": 3
+            },
+            {
+              "index": 134,
+              "buildMs": 268,
+              "unpackMs": 2
+            },
+            {
+              "index": 128,
+              "buildMs": 116,
+              "unpackMs": 9
+            },
+            {
+              "index": 129,
+              "buildMs": 94,
+              "unpackMs": 12
+            },
+            {
+              "index": 130,
+              "buildMs": 167,
+              "unpackMs": 2
+            },
+            {
+              "index": 131,
+              "buildMs": 201,
+              "unpackMs": 5
+            },
+            {
+              "index": 132,
+              "buildMs": 185,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 10051,
+          "restart": 1432,
+          "cpuMs": {
+            "samples": 7,
+            "median": 315,
+            "p95": 386,
+            "p99": 386,
+            "max": 386,
+            "slow": 7,
+            "average": 314
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 4,
+            "average": 39.29
+          }
+        }
+      },
+      {
+        "label": "transition-platte-after",
+        "seed": 2,
+        "distance": 3909.0833217406944,
+        "weather": "Windy",
+        "stage": "13 / 30",
+        "hud": "Platte River Valley",
+        "render": {
+          "draws": 68,
+          "triangles": 121447,
+          "geometries": 66,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3230,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 133,
+              "buildMs": 197,
+              "unpackMs": 3
+            },
+            {
+              "index": 134,
+              "buildMs": 268,
+              "unpackMs": 2
+            },
+            {
+              "index": 135,
+              "buildMs": 97,
+              "unpackMs": 1
+            },
+            {
+              "index": 129,
+              "buildMs": 94,
+              "unpackMs": 12
+            },
+            {
+              "index": 130,
+              "buildMs": 167,
+              "unpackMs": 2
+            },
+            {
+              "index": 131,
+              "buildMs": 201,
+              "unpackMs": 5
+            },
+            {
+              "index": 132,
+              "buildMs": 185,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 10051,
+          "restart": 1432,
+          "cpuMs": {
+            "samples": 23,
+            "median": 261,
+            "p95": 386,
+            "p99": 410,
+            "max": 410,
+            "slow": 23,
+            "average": 265.22
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 18,
+            "average": 44.57
+          }
+        }
+      },
+      {
+        "label": "transition-sandhills-before",
+        "seed": 1,
+        "distance": 4696.517429307131,
+        "weather": "Windy",
+        "stage": "14 / 30",
+        "hud": "Platte River Valley",
+        "render": {
+          "draws": 61,
+          "triangles": 86146,
+          "geometries": 62,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2516,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 161,
+              "buildMs": 75,
+              "unpackMs": 5
+            },
+            {
+              "index": 155,
+              "buildMs": 169,
+              "unpackMs": 2
+            },
+            {
+              "index": 156,
+              "buildMs": 117,
+              "unpackMs": 5
+            },
+            {
+              "index": 157,
+              "buildMs": 115,
+              "unpackMs": 1
+            },
+            {
+              "index": 158,
+              "buildMs": 149,
+              "unpackMs": 1
+            },
+            {
+              "index": 159,
+              "buildMs": 27,
+              "unpackMs": 1
+            },
+            {
+              "index": 160,
+              "buildMs": 233,
+              "unpackMs": 8
+            }
+          ],
+          "ready": 7596,
+          "restart": 1637,
+          "cpuMs": {
+            "samples": 7,
+            "median": 181,
+            "p95": 219,
+            "p99": 219,
+            "max": 219,
+            "slow": 7,
+            "average": 183.14
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-sandhills-after",
+        "seed": 1,
+        "distance": 4717.000089679412,
+        "weather": "Snow",
+        "stage": "15 / 30",
+        "hud": "Nebraska Sandhills",
+        "render": {
+          "draws": 57,
+          "triangles": 91255,
+          "geometries": 63,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2516,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 161,
+              "buildMs": 75,
+              "unpackMs": 5
+            },
+            {
+              "index": 162,
+              "buildMs": 245,
+              "unpackMs": 6
+            },
+            {
+              "index": 156,
+              "buildMs": 117,
+              "unpackMs": 5
+            },
+            {
+              "index": 157,
+              "buildMs": 115,
+              "unpackMs": 1
+            },
+            {
+              "index": 158,
+              "buildMs": 149,
+              "unpackMs": 1
+            },
+            {
+              "index": 159,
+              "buildMs": 27,
+              "unpackMs": 1
+            },
+            {
+              "index": 160,
+              "buildMs": 233,
+              "unpackMs": 8
+            }
+          ],
+          "ready": 7596,
+          "restart": 1637,
+          "cpuMs": {
+            "samples": 23,
+            "median": 195,
+            "p95": 341,
+            "p99": 416,
+            "max": 416,
+            "slow": 23,
+            "average": 218.74
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-prairie-before",
+        "seed": 2,
+        "distance": 5526.01146844923,
+        "weather": "Snow",
+        "stage": "16 / 30",
+        "hud": "Nebraska Sandhills",
+        "render": {
+          "draws": 67,
+          "triangles": 110849,
+          "geometries": 61,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1878,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 189,
+              "buildMs": 277,
+              "unpackMs": 4
+            },
+            {
+              "index": 183,
+              "buildMs": 116,
+              "unpackMs": 8
+            },
+            {
+              "index": 184,
+              "buildMs": 33,
+              "unpackMs": 6
+            },
+            {
+              "index": 185,
+              "buildMs": 131,
+              "unpackMs": 53
+            },
+            {
+              "index": 186,
+              "buildMs": 125,
+              "unpackMs": 8
+            },
+            {
+              "index": 187,
+              "buildMs": 100,
+              "unpackMs": 1
+            },
+            {
+              "index": 188,
+              "buildMs": 109,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 6520,
+          "restart": 1632,
+          "cpuMs": {
+            "samples": 7,
+            "median": 263,
+            "p95": 397,
+            "p99": 397,
+            "max": 397,
+            "slow": 7,
+            "average": 272.43
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-prairie-after",
+        "seed": 2,
+        "distance": 5547.007205932526,
+        "weather": "Snow",
+        "stage": "17 / 30",
+        "hud": "Dakota Prairie Potholes",
+        "render": {
+          "draws": 61,
+          "triangles": 106016,
+          "geometries": 63,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1878,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 189,
+              "buildMs": 277,
+              "unpackMs": 4
+            },
+            {
+              "index": 183,
+              "buildMs": 116,
+              "unpackMs": 8
+            },
+            {
+              "index": 184,
+              "buildMs": 33,
+              "unpackMs": 6
+            },
+            {
+              "index": 185,
+              "buildMs": 131,
+              "unpackMs": 53
+            },
+            {
+              "index": 186,
+              "buildMs": 125,
+              "unpackMs": 8
+            },
+            {
+              "index": 187,
+              "buildMs": 100,
+              "unpackMs": 1
+            },
+            {
+              "index": 188,
+              "buildMs": 109,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 6520,
+          "restart": 1632,
+          "cpuMs": {
+            "samples": 23,
+            "median": 227,
+            "p95": 354,
+            "p99": 397,
+            "max": 397,
+            "slow": 23,
+            "average": 244.7
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-dakota-before",
+        "seed": 2,
+        "distance": 6374.6459467732275,
+        "weather": "Sleet",
+        "stage": "18 / 30",
+        "hud": "Dakota Prairie Potholes",
+        "render": {
+          "draws": 61,
+          "triangles": 97509,
+          "geometries": 59,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2762,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 217,
+              "buildMs": 29,
+              "unpackMs": 44
+            },
+            {
+              "index": 211,
+              "buildMs": 103,
+              "unpackMs": 5
+            },
+            {
+              "index": 212,
+              "buildMs": 222,
+              "unpackMs": 12
+            },
+            {
+              "index": 213,
+              "buildMs": 68,
+              "unpackMs": 3
+            },
+            {
+              "index": 214,
+              "buildMs": 199,
+              "unpackMs": 11
+            },
+            {
+              "index": 215,
+              "buildMs": 103,
+              "unpackMs": 4
+            },
+            {
+              "index": 216,
+              "buildMs": 83,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 7862,
+          "restart": 1018,
+          "cpuMs": {
+            "samples": 7,
+            "median": 218,
+            "p95": 346,
+            "p99": 346,
+            "max": 346,
+            "slow": 7,
+            "average": 253.71
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-dakota-after",
+        "seed": 2,
+        "distance": 6396.084099075812,
+        "weather": "Sleet",
+        "stage": "19 / 30",
+        "hud": "Northern Dakota Wetlands",
+        "render": {
+          "draws": 58,
+          "triangles": 105723,
+          "geometries": 59,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2762,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 217,
+              "buildMs": 29,
+              "unpackMs": 44
+            },
+            {
+              "index": 218,
+              "buildMs": 30,
+              "unpackMs": 9
+            },
+            {
+              "index": 212,
+              "buildMs": 222,
+              "unpackMs": 12
+            },
+            {
+              "index": 213,
+              "buildMs": 68,
+              "unpackMs": 3
+            },
+            {
+              "index": 214,
+              "buildMs": 199,
+              "unpackMs": 11
+            },
+            {
+              "index": 215,
+              "buildMs": 103,
+              "unpackMs": 4
+            },
+            {
+              "index": 216,
+              "buildMs": 83,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 7862,
+          "restart": 1018,
+          "cpuMs": {
+            "samples": 23,
+            "median": 247,
+            "p95": 346,
+            "p99": 765,
+            "max": 765,
+            "slow": 23,
+            "average": 271.3
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-manitoba-before",
+        "seed": 4,
+        "distance": 7239.263015602988,
+        "weather": "Autumn sunrise",
+        "stage": "20 / 30",
+        "hud": "Northern Dakota Wetlands",
+        "render": {
+          "draws": 48,
+          "triangles": 101705,
+          "geometries": 45,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2009,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 245,
+              "buildMs": 26,
+              "unpackMs": 2
+            },
+            {
+              "index": 246,
+              "buildMs": 74,
+              "unpackMs": 2
+            },
+            {
+              "index": 240,
+              "buildMs": 122,
+              "unpackMs": 4
+            },
+            {
+              "index": 241,
+              "buildMs": 89,
+              "unpackMs": 3
+            },
+            {
+              "index": 242,
+              "buildMs": 152,
+              "unpackMs": 3
+            },
+            {
+              "index": 243,
+              "buildMs": 32,
+              "unpackMs": 3
+            },
+            {
+              "index": 244,
+              "buildMs": 57,
+              "unpackMs": 1
+            }
+          ],
+          "ready": 6789,
+          "restart": 1396,
+          "cpuMs": {
+            "samples": 8,
+            "median": 241,
+            "p95": 684,
+            "p99": 684,
+            "max": 684,
+            "slow": 8,
+            "average": 311.63
+          },
+          "framesMs": {
+            "samples": 8,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 40.63
+          }
+        }
+      },
+      {
+        "label": "transition-manitoba-after",
+        "seed": 4,
+        "distance": 7259.481957274296,
+        "weather": "Autumn sunrise",
+        "stage": "21 / 30",
+        "hud": "Manitoba Marshlands",
+        "render": {
+          "draws": 51,
+          "triangles": 97345,
+          "geometries": 49,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2009,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 245,
+              "buildMs": 26,
+              "unpackMs": 2
+            },
+            {
+              "index": 246,
+              "buildMs": 74,
+              "unpackMs": 2
+            },
+            {
+              "index": 240,
+              "buildMs": 122,
+              "unpackMs": 4
+            },
+            {
+              "index": 241,
+              "buildMs": 89,
+              "unpackMs": 3
+            },
+            {
+              "index": 242,
+              "buildMs": 152,
+              "unpackMs": 3
+            },
+            {
+              "index": 243,
+              "buildMs": 32,
+              "unpackMs": 3
+            },
+            {
+              "index": 244,
+              "buildMs": 57,
+              "unpackMs": 1
+            }
+          ],
+          "ready": 6789,
+          "restart": 1396,
+          "cpuMs": {
+            "samples": 23,
+            "median": 24,
+            "p95": 486,
+            "p99": 684,
+            "max": 684,
+            "slow": 11,
+            "average": 130.22
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 18,
+            "average": 44.57
+          }
+        }
+      },
+      {
+        "label": "transition-parklands-before",
+        "seed": 4,
+        "distance": 8105.533285177354,
+        "weather": "Overcast",
+        "stage": "22 / 30",
+        "hud": "Manitoba Marshlands",
+        "render": {
+          "draws": 57,
+          "triangles": 104280,
+          "geometries": 56,
+          "textures": 13,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1701,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 273,
+              "buildMs": 67,
+              "unpackMs": 4
+            },
+            {
+              "index": 274,
+              "buildMs": 50,
+              "unpackMs": 1
+            },
+            {
+              "index": 275,
+              "buildMs": 173,
+              "unpackMs": 1
+            },
+            {
+              "index": 269,
+              "buildMs": 303,
+              "unpackMs": 11
+            },
+            {
+              "index": 270,
+              "buildMs": 41,
+              "unpackMs": 9
+            },
+            {
+              "index": 271,
+              "buildMs": 130,
+              "unpackMs": 6
+            },
+            {
+              "index": 272,
+              "buildMs": 103,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 6323,
+          "restart": 786,
+          "cpuMs": {
+            "samples": 7,
+            "median": 465,
+            "p95": 871,
+            "p99": 871,
+            "max": 871,
+            "slow": 7,
+            "average": 551.71
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-parklands-after",
+        "seed": 4,
+        "distance": 8127.219437806265,
+        "weather": "Overcast",
+        "stage": "23 / 30",
+        "hud": "Saskatchewan Parklands",
+        "render": {
+          "draws": 59,
+          "triangles": 98871,
+          "geometries": 59,
+          "textures": 13,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 1701,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 273,
+              "buildMs": 67,
+              "unpackMs": 4
+            },
+            {
+              "index": 274,
+              "buildMs": 50,
+              "unpackMs": 1
+            },
+            {
+              "index": 275,
+              "buildMs": 173,
+              "unpackMs": 1
+            },
+            {
+              "index": 269,
+              "buildMs": 303,
+              "unpackMs": 11
+            },
+            {
+              "index": 270,
+              "buildMs": 41,
+              "unpackMs": 9
+            },
+            {
+              "index": 271,
+              "buildMs": 130,
+              "unpackMs": 6
+            },
+            {
+              "index": 272,
+              "buildMs": 103,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 6323,
+          "restart": 786,
+          "cpuMs": {
+            "samples": 23,
+            "median": 357,
+            "p95": 771,
+            "p99": 871,
+            "max": 871,
+            "slow": 23,
+            "average": 396.48
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-boreal-before",
+        "seed": 1,
+        "distance": 8973.393569173995,
+        "weather": "Morning fog",
+        "stage": "24 / 30",
+        "hud": "Saskatchewan Parklands",
+        "render": {
+          "draws": 58,
+          "triangles": 117397,
+          "geometries": 59,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2614,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 301,
+              "buildMs": 124,
+              "unpackMs": 7
+            },
+            {
+              "index": 302,
+              "buildMs": 120,
+              "unpackMs": 9
+            },
+            {
+              "index": 303,
+              "buildMs": 50,
+              "unpackMs": 1
+            },
+            {
+              "index": 304,
+              "buildMs": 107,
+              "unpackMs": 42
+            },
+            {
+              "index": 298,
+              "buildMs": 203,
+              "unpackMs": 9
+            },
+            {
+              "index": 299,
+              "buildMs": 83,
+              "unpackMs": 5
+            },
+            {
+              "index": 300,
+              "buildMs": 75,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 8520,
+          "restart": 978,
+          "cpuMs": {
+            "samples": 7,
+            "median": 212,
+            "p95": 354,
+            "p99": 354,
+            "max": 354,
+            "slow": 7,
+            "average": 253.43
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-boreal-after",
+        "seed": 1,
+        "distance": 8995.100961794276,
+        "weather": "Morning fog",
+        "stage": "25 / 30",
+        "hud": "Canadian Boreal Forest",
+        "render": {
+          "draws": 53,
+          "triangles": 110343,
+          "geometries": 62,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2614,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 301,
+              "buildMs": 124,
+              "unpackMs": 7
+            },
+            {
+              "index": 302,
+              "buildMs": 120,
+              "unpackMs": 9
+            },
+            {
+              "index": 303,
+              "buildMs": 50,
+              "unpackMs": 1
+            },
+            {
+              "index": 304,
+              "buildMs": 107,
+              "unpackMs": 42
+            },
+            {
+              "index": 298,
+              "buildMs": 203,
+              "unpackMs": 9
+            },
+            {
+              "index": 299,
+              "buildMs": 83,
+              "unpackMs": 5
+            },
+            {
+              "index": 300,
+              "buildMs": 75,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 8520,
+          "restart": 978,
+          "cpuMs": {
+            "samples": 23,
+            "median": 188,
+            "p95": 321,
+            "p99": 354,
+            "max": 354,
+            "slow": 23,
+            "average": 203.52
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-foothills-before",
+        "seed": 24,
+        "distance": 9842.120548765743,
+        "weather": "Light rain",
+        "stage": "26 / 30",
+        "hud": "Canadian Boreal Forest",
+        "render": {
+          "draws": 68,
+          "triangles": 114240,
+          "geometries": 64,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2321,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 329,
+              "buildMs": 24,
+              "unpackMs": 1
+            },
+            {
+              "index": 330,
+              "buildMs": 98,
+              "unpackMs": 1
+            },
+            {
+              "index": 331,
+              "buildMs": 24,
+              "unpackMs": 6
+            },
+            {
+              "index": 332,
+              "buildMs": 108,
+              "unpackMs": 1
+            },
+            {
+              "index": 333,
+              "buildMs": 70,
+              "unpackMs": 3
+            },
+            {
+              "index": 327,
+              "buildMs": 146,
+              "unpackMs": 2
+            },
+            {
+              "index": 328,
+              "buildMs": 68,
+              "unpackMs": 9
+            }
+          ],
+          "ready": 8264,
+          "restart": 2444,
+          "cpuMs": {
+            "samples": 7,
+            "median": 70,
+            "p95": 86,
+            "p99": 86,
+            "max": 86,
+            "slow": 6,
+            "average": 62.43
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-foothills-after",
+        "seed": 24,
+        "distance": 9863.850927133451,
+        "weather": "Light rain",
+        "stage": "27 / 30",
+        "hud": "Rocky Mountain Foothills",
+        "render": {
+          "draws": 67,
+          "triangles": 114736,
+          "geometries": 69,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2321,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 329,
+              "buildMs": 24,
+              "unpackMs": 1
+            },
+            {
+              "index": 330,
+              "buildMs": 98,
+              "unpackMs": 1
+            },
+            {
+              "index": 331,
+              "buildMs": 24,
+              "unpackMs": 6
+            },
+            {
+              "index": 332,
+              "buildMs": 108,
+              "unpackMs": 1
+            },
+            {
+              "index": 333,
+              "buildMs": 70,
+              "unpackMs": 3
+            },
+            {
+              "index": 327,
+              "buildMs": 146,
+              "unpackMs": 2
+            },
+            {
+              "index": 328,
+              "buildMs": 68,
+              "unpackMs": 9
+            }
+          ],
+          "ready": 8264,
+          "restart": 2444,
+          "cpuMs": {
+            "samples": 23,
+            "median": 74,
+            "p95": 117,
+            "p99": 142,
+            "max": 142,
+            "slow": 21,
+            "average": 73.7
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 19,
+            "average": 45.65
+          }
+        }
+      },
+      {
+        "label": "transition-mountain-before",
+        "seed": 5,
+        "distance": 10712.354709900379,
+        "weather": "Heavy rain",
+        "stage": "28 / 30",
+        "hud": "Rocky Mountain Foothills",
+        "render": {
+          "draws": 58,
+          "triangles": 105318,
+          "geometries": 57,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2014,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 357,
+              "buildMs": 157,
+              "unpackMs": 8
+            },
+            {
+              "index": 358,
+              "buildMs": 119,
+              "unpackMs": 2
+            },
+            {
+              "index": 359,
+              "buildMs": 386,
+              "unpackMs": 6
+            },
+            {
+              "index": 360,
+              "buildMs": 216,
+              "unpackMs": 2
+            },
+            {
+              "index": 361,
+              "buildMs": 359,
+              "unpackMs": 5
+            },
+            {
+              "index": 362,
+              "buildMs": 208,
+              "unpackMs": 4
+            },
+            {
+              "index": 356,
+              "buildMs": 229,
+              "unpackMs": 19
+            }
+          ],
+          "ready": 11491,
+          "restart": 2632,
+          "cpuMs": {
+            "samples": 8,
+            "median": 40,
+            "p95": 112,
+            "p99": 112,
+            "max": 112,
+            "slow": 5,
+            "average": 57.63
+          },
+          "framesMs": {
+            "samples": 8,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 40.63
+          }
+        }
+      },
+      {
+        "label": "transition-mountain-after",
+        "seed": 5,
+        "distance": 10732.647931600633,
+        "weather": "Heavy rain",
+        "stage": "29 / 30",
+        "hud": "Canadian Mountain Wilderness",
+        "render": {
+          "draws": 62,
+          "triangles": 98894,
+          "geometries": 61,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 2014,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 357,
+              "buildMs": 157,
+              "unpackMs": 8
+            },
+            {
+              "index": 358,
+              "buildMs": 119,
+              "unpackMs": 2
+            },
+            {
+              "index": 359,
+              "buildMs": 386,
+              "unpackMs": 6
+            },
+            {
+              "index": 360,
+              "buildMs": 216,
+              "unpackMs": 2
+            },
+            {
+              "index": 361,
+              "buildMs": 359,
+              "unpackMs": 5
+            },
+            {
+              "index": 362,
+              "buildMs": 208,
+              "unpackMs": 4
+            },
+            {
+              "index": 356,
+              "buildMs": 229,
+              "unpackMs": 19
+            }
+          ],
+          "ready": 11491,
+          "restart": 2632,
+          "cpuMs": {
+            "samples": 23,
+            "median": 89,
+            "p95": 112,
+            "p99": 186,
+            "max": 186,
+            "slow": 20,
+            "average": 81.52
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 18,
+            "average": 44.57
+          }
+        }
+      },
+      {
+        "label": "transition-endless-before",
+        "seed": 8,
+        "distance": 11581.44332500002,
+        "weather": "High-country snow",
+        "stage": "30 / 30",
+        "hud": "Canadian Mountain Wilderness",
+        "render": {
+          "draws": 57,
+          "triangles": 102910,
+          "geometries": 54,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3461,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 385,
+              "buildMs": 207,
+              "unpackMs": 42
+            },
+            {
+              "index": 386,
+              "buildMs": 101,
+              "unpackMs": 39
+            },
+            {
+              "index": 387,
+              "buildMs": 321,
+              "unpackMs": 6
+            },
+            {
+              "index": 388,
+              "buildMs": 69,
+              "unpackMs": 11
+            },
+            {
+              "index": 389,
+              "buildMs": 393,
+              "unpackMs": 5
+            },
+            {
+              "index": 390,
+              "buildMs": 119,
+              "unpackMs": 1
+            },
+            {
+              "index": 391,
+              "buildMs": 121,
+              "unpackMs": 3
+            }
+          ],
+          "ready": 10007,
+          "restart": 2086,
+          "cpuMs": {
+            "samples": 7,
+            "median": 46,
+            "p95": 208,
+            "p99": 208,
+            "max": 208,
+            "slow": 5,
+            "average": 68.86
+          },
+          "framesMs": {
+            "samples": 7,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 5,
+            "average": 42.86
+          }
+        }
+      },
+      {
+        "label": "transition-endless-after",
+        "seed": 8,
+        "distance": 11602.46470000007,
+        "weather": "High-country snow",
+        "stage": "30 / 30",
+        "hud": "Canadian Mountain Wilderness",
+        "render": {
+          "draws": 60,
+          "triangles": 99564,
+          "geometries": 57,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 3461,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 385,
+              "buildMs": 207,
+              "unpackMs": 42
+            },
+            {
+              "index": 386,
+              "buildMs": 101,
+              "unpackMs": 39
+            },
+            {
+              "index": 387,
+              "buildMs": 321,
+              "unpackMs": 6
+            },
+            {
+              "index": 388,
+              "buildMs": 69,
+              "unpackMs": 11
+            },
+            {
+              "index": 389,
+              "buildMs": 393,
+              "unpackMs": 5
+            },
+            {
+              "index": 390,
+              "buildMs": 119,
+              "unpackMs": 1
+            },
+            {
+              "index": 391,
+              "buildMs": 121,
+              "unpackMs": 3
+            }
+          ],
+          "ready": 10007,
+          "restart": 2086,
+          "cpuMs": {
+            "samples": 23,
+            "median": 58,
+            "p95": 174,
+            "p99": 208,
+            "max": 208,
+            "slow": 16,
+            "average": 61.74
+          },
+          "framesMs": {
+            "samples": 23,
+            "median": 50,
+            "p95": 50,
+            "p99": 50,
+            "max": 50,
+            "slow": 18,
+            "average": 44.57
+          }
+        }
+      }
+    ]
+  },
+  "wide": {
+    "engine": "webkit",
+    "viewport": {
+      "width": 844,
+      "height": 470
+    },
+    "scenes": [
+      {
+        "label": "gulf-landmark",
+        "seed": 7,
+        "distance": 6.9896560960449285,
+        "weather": "Autumn sunrise",
+        "stage": "1 / 30",
+        "hud": "Gulf Coast Marsh",
+        "render": {
+          "draws": 58,
+          "triangles": 98854,
+          "geometries": 43,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 5180,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 0,
+              "buildMs": 386,
+              "unpackMs": 10
+            },
+            {
+              "index": 1,
+              "buildMs": 400,
+              "unpackMs": 10
+            },
+            {
+              "index": 2,
+              "buildMs": 114,
+              "unpackMs": 2
+            },
+            {
+              "index": 3,
+              "buildMs": 187,
+              "unpackMs": 12
+            },
+            {
+              "index": 4,
+              "buildMs": 61,
+              "unpackMs": 4
+            },
+            {
+              "index": 5,
+              "buildMs": 19,
+              "unpackMs": 1
+            },
+            {
+              "index": -1,
+              "buildMs": 407,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 2603,
+          "restart": 2680,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "cypress-landmark",
+        "seed": 7,
+        "distance": 484.9573660649359,
+        "weather": "Autumn sunrise",
+        "stage": "3 / 30",
+        "hud": "Southern Cypress Swamp",
+        "render": {
+          "draws": 67,
+          "triangles": 146397,
+          "geometries": 52,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 734,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 21,
+              "buildMs": 19,
+              "unpackMs": 3
+            },
+            {
+              "index": 15,
+              "buildMs": 25,
+              "unpackMs": 2
+            },
+            {
+              "index": 16,
+              "buildMs": 50,
+              "unpackMs": 2
+            },
+            {
+              "index": 17,
+              "buildMs": 21,
+              "unpackMs": 1
+            },
+            {
+              "index": 18,
+              "buildMs": 22,
+              "unpackMs": 1
+            },
+            {
+              "index": 19,
+              "buildMs": 17,
+              "unpackMs": 0
+            },
+            {
+              "index": 20,
+              "buildMs": 25,
+              "unpackMs": 0
+            }
+          ],
+          "ready": 2951,
+          "restart": 640,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "flyway-landmark",
+        "seed": 7,
+        "distance": 1082.2157585430891,
+        "weather": "Overcast",
+        "stage": "5 / 30",
+        "hud": "Mississippi Delta",
+        "render": {
+          "draws": 68,
+          "triangles": 106262,
+          "geometries": 63,
+          "textures": 13,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 596,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 35,
+              "buildMs": 31,
+              "unpackMs": 3
+            },
+            {
+              "index": 36,
+              "buildMs": 75,
+              "unpackMs": 3
+            },
+            {
+              "index": 37,
+              "buildMs": 23,
+              "unpackMs": 2
+            },
+            {
+              "index": 38,
+              "buildMs": 25,
+              "unpackMs": 1
+            },
+            {
+              "index": 39,
+              "buildMs": 17,
+              "unpackMs": 1
+            },
+            {
+              "index": 40,
+              "buildMs": 15,
+              "unpackMs": 2
+            },
+            {
+              "index": 41,
+              "buildMs": 21,
+              "unpackMs": 1
+            }
+          ],
+          "ready": 2900,
+          "restart": 430,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "timber-landmark",
+        "seed": 7,
+        "distance": 1715.3616770313122,
+        "weather": "Morning fog",
+        "stage": "7 / 30",
+        "hud": "Arkansas Flooded Timber",
+        "render": {
+          "draws": 68,
+          "triangles": 146016,
+          "geometries": 59,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 763,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 56,
+              "buildMs": 37,
+              "unpackMs": 4
+            },
+            {
+              "index": 57,
+              "buildMs": 35,
+              "unpackMs": 4
+            },
+            {
+              "index": 58,
+              "buildMs": 26,
+              "unpackMs": 1
+            },
+            {
+              "index": 59,
+              "buildMs": 47,
+              "unpackMs": 3
+            },
+            {
+              "index": 60,
+              "buildMs": 20,
+              "unpackMs": 3
+            },
+            {
+              "index": 61,
+              "buildMs": 20,
+              "unpackMs": 2
+            },
+            {
+              "index": 62,
+              "buildMs": 48,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 2890,
+          "restart": 716,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "ozark-landmark",
+        "seed": 7,
+        "distance": 2435.05349999601,
+        "weather": "Light rain",
+        "stage": "9 / 30",
+        "hud": "Ozark River Country",
+        "render": {
+          "draws": 59,
+          "triangles": 99480,
+          "geometries": 53,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 708,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 84,
+              "buildMs": 31,
+              "unpackMs": 1
+            },
+            {
+              "index": 85,
+              "buildMs": 15,
+              "unpackMs": 2
+            },
+            {
+              "index": 86,
+              "buildMs": 23,
+              "unpackMs": 2
+            },
+            {
+              "index": 80,
+              "buildMs": 24,
+              "unpackMs": 4
+            },
+            {
+              "index": 81,
+              "buildMs": 51,
+              "unpackMs": 4
+            },
+            {
+              "index": 82,
+              "buildMs": 17,
+              "unpackMs": 2
+            },
+            {
+              "index": 83,
+              "buildMs": 20,
+              "unpackMs": 1
+            }
+          ],
+          "ready": 2453,
+          "restart": 658,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "farm-landmark",
+        "seed": 7,
+        "distance": 3128.0847329076378,
+        "weather": "Heavy rain",
+        "stage": "11 / 30",
+        "hud": "Midwest Farm Country",
+        "render": {
+          "draws": 73,
+          "triangles": 180896,
+          "geometries": 63,
+          "textures": 12,
+          "residentTiles": 6,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 686,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 105,
+              "buildMs": 18,
+              "unpackMs": 5
+            },
+            {
+              "index": 106,
+              "buildMs": 35,
+              "unpackMs": 4
+            },
+            {
+              "index": 107,
+              "buildMs": 19,
+              "unpackMs": 2
+            },
+            {
+              "index": 108,
+              "buildMs": 19,
+              "unpackMs": 1
+            },
+            {
+              "index": 103,
+              "buildMs": 34,
+              "unpackMs": 2
+            },
+            {
+              "index": 104,
+              "buildMs": 60,
+              "unpackMs": 3
+            }
+          ],
+          "ready": 2363,
+          "restart": 518,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "platte-landmark",
+        "seed": 7,
+        "distance": 3931.706046546716,
+        "weather": "Windy",
+        "stage": "13 / 30",
+        "hud": "Platte River Valley",
+        "render": {
+          "draws": 72,
+          "triangles": 118703,
+          "geometries": 63,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 770,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 133,
+              "buildMs": 23,
+              "unpackMs": 2
+            },
+            {
+              "index": 134,
+              "buildMs": 17,
+              "unpackMs": 2
+            },
+            {
+              "index": 135,
+              "buildMs": 17,
+              "unpackMs": 2
+            },
+            {
+              "index": 136,
+              "buildMs": 19,
+              "unpackMs": 3
+            },
+            {
+              "index": 130,
+              "buildMs": 32,
+              "unpackMs": 4
+            },
+            {
+              "index": 131,
+              "buildMs": 62,
+              "unpackMs": 3
+            },
+            {
+              "index": 132,
+              "buildMs": 16,
+              "unpackMs": 5
+            }
+          ],
+          "ready": 2399,
+          "restart": 406,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "sandhills-landmark",
+        "seed": 7,
+        "distance": 4743.804116894491,
+        "weather": "Snow",
+        "stage": "15 / 30",
+        "hud": "Nebraska Sandhills",
+        "render": {
+          "draws": 51,
+          "triangles": 88255,
+          "geometries": 54,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 637,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 161,
+              "buildMs": 24,
+              "unpackMs": 2
+            },
+            {
+              "index": 162,
+              "buildMs": 63,
+              "unpackMs": 3
+            },
+            {
+              "index": 163,
+              "buildMs": 22,
+              "unpackMs": 3
+            },
+            {
+              "index": 157,
+              "buildMs": 27,
+              "unpackMs": 3
+            },
+            {
+              "index": 158,
+              "buildMs": 22,
+              "unpackMs": 3
+            },
+            {
+              "index": 159,
+              "buildMs": 22,
+              "unpackMs": 2
+            },
+            {
+              "index": 160,
+              "buildMs": 29,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 2309,
+          "restart": 367,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "prairie-landmark",
+        "seed": 7,
+        "distance": 5582.959594161995,
+        "weather": "Snow",
+        "stage": "17 / 30",
+        "hud": "Dakota Prairie Potholes",
+        "render": {
+          "draws": 62,
+          "triangles": 112368,
+          "geometries": 58,
+          "textures": 11,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 623,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 189,
+              "buildMs": 56,
+              "unpackMs": 2
+            },
+            {
+              "index": 190,
+              "buildMs": 36,
+              "unpackMs": 3
+            },
+            {
+              "index": 191,
+              "buildMs": 26,
+              "unpackMs": 1
+            },
+            {
+              "index": 185,
+              "buildMs": 49,
+              "unpackMs": 4
+            },
+            {
+              "index": 186,
+              "buildMs": 101,
+              "unpackMs": 3
+            },
+            {
+              "index": 187,
+              "buildMs": 37,
+              "unpackMs": 2
+            },
+            {
+              "index": 188,
+              "buildMs": 22,
+              "unpackMs": 4
+            }
+          ],
+          "ready": 2522,
+          "restart": 513,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "dakota-landmark",
+        "seed": 7,
+        "distance": 6422.347469528764,
+        "weather": "Sleet",
+        "stage": "19 / 30",
+        "hud": "Northern Dakota Wetlands",
+        "render": {
+          "draws": 56,
+          "triangles": 102459,
+          "geometries": 53,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 641,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 217,
+              "buildMs": 21,
+              "unpackMs": 3
+            },
+            {
+              "index": 218,
+              "buildMs": 50,
+              "unpackMs": 1
+            },
+            {
+              "index": 219,
+              "buildMs": 18,
+              "unpackMs": 3
+            },
+            {
+              "index": 213,
+              "buildMs": 52,
+              "unpackMs": 3
+            },
+            {
+              "index": 214,
+              "buildMs": 46,
+              "unpackMs": 2
+            },
+            {
+              "index": 215,
+              "buildMs": 23,
+              "unpackMs": 2
+            },
+            {
+              "index": 216,
+              "buildMs": 25,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 2469,
+          "restart": 617,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "manitoba-landmark",
+        "seed": 7,
+        "distance": 7291.425456746947,
+        "weather": "Autumn sunrise",
+        "stage": "21 / 30",
+        "hud": "Manitoba Marshlands",
+        "render": {
+          "draws": 54,
+          "triangles": 100555,
+          "geometries": 48,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 838,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 245,
+              "buildMs": 13,
+              "unpackMs": 1
+            },
+            {
+              "index": 246,
+              "buildMs": 61,
+              "unpackMs": 3
+            },
+            {
+              "index": 247,
+              "buildMs": 19,
+              "unpackMs": 2
+            },
+            {
+              "index": 248,
+              "buildMs": 23,
+              "unpackMs": 1
+            },
+            {
+              "index": 242,
+              "buildMs": 18,
+              "unpackMs": 2
+            },
+            {
+              "index": 243,
+              "buildMs": 59,
+              "unpackMs": 4
+            },
+            {
+              "index": 244,
+              "buildMs": 14,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 2816,
+          "restart": 550,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "parklands-landmark",
+        "seed": 7,
+        "distance": 8161.72491148524,
+        "weather": "Overcast",
+        "stage": "23 / 30",
+        "hud": "Saskatchewan Parklands",
+        "render": {
+          "draws": 63,
+          "triangles": 102531,
+          "geometries": 55,
+          "textures": 12,
+          "residentTiles": 7,
+          "residentPacks": 2,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 725,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 273,
+              "buildMs": 27,
+              "unpackMs": 2
+            },
+            {
+              "index": 274,
+              "buildMs": 33,
+              "unpackMs": 2
+            },
+            {
+              "index": 275,
+              "buildMs": 16,
+              "unpackMs": 2
+            },
+            {
+              "index": 276,
+              "buildMs": 25,
+              "unpackMs": 1
+            },
+            {
+              "index": 277,
+              "buildMs": 18,
+              "unpackMs": 2
+            },
+            {
+              "index": 271,
+              "buildMs": 32,
+              "unpackMs": 3
+            },
+            {
+              "index": 272,
+              "buildMs": 62,
+              "unpackMs": 6
+            }
+          ],
+          "ready": 2439,
+          "restart": 444,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "boreal-landmark",
+        "seed": 7,
+        "distance": 9033.882876569685,
+        "weather": "Morning fog",
+        "stage": "25 / 30",
+        "hud": "Canadian Boreal Forest",
+        "render": {
+          "draws": 57,
+          "triangles": 112168,
+          "geometries": 53,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 706,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 301,
+              "buildMs": 45,
+              "unpackMs": 5
+            },
+            {
+              "index": 302,
+              "buildMs": 28,
+              "unpackMs": 2
+            },
+            {
+              "index": 303,
+              "buildMs": 17,
+              "unpackMs": 1
+            },
+            {
+              "index": 304,
+              "buildMs": 33,
+              "unpackMs": 3
+            },
+            {
+              "index": 305,
+              "buildMs": 20,
+              "unpackMs": 5
+            },
+            {
+              "index": 306,
+              "buildMs": 26,
+              "unpackMs": 2
+            },
+            {
+              "index": 300,
+              "buildMs": 23,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 2518,
+          "restart": 398,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "foothills-landmark",
+        "seed": 7,
+        "distance": 9904.864056614973,
+        "weather": "Light rain",
+        "stage": "27 / 30",
+        "hud": "Rocky Mountain Foothills",
+        "render": {
+          "draws": 68,
+          "triangles": 130212,
+          "geometries": 61,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 855,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 329,
+              "buildMs": 42,
+              "unpackMs": 5
+            },
+            {
+              "index": 330,
+              "buildMs": 49,
+              "unpackMs": 4
+            },
+            {
+              "index": 331,
+              "buildMs": 24,
+              "unpackMs": 1
+            },
+            {
+              "index": 332,
+              "buildMs": 15,
+              "unpackMs": 1
+            },
+            {
+              "index": 333,
+              "buildMs": 23,
+              "unpackMs": 2
+            },
+            {
+              "index": 334,
+              "buildMs": 22,
+              "unpackMs": 1
+            },
+            {
+              "index": 335,
+              "buildMs": 59,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 2268,
+          "restart": 545,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      },
+      {
+        "label": "mountain-landmark",
+        "seed": 7,
+        "distance": 10773.203779102023,
+        "weather": "Heavy rain",
+        "stage": "29 / 30",
+        "hud": "Canadian Mountain Wilderness",
+        "render": {
+          "draws": 76,
+          "triangles": 110990,
+          "geometries": 63,
+          "textures": 10,
+          "residentTiles": 7,
+          "residentPacks": 0,
+          "surfaces": {
+            "active": "full",
+            "pending": false,
+            "lastLoadMs": 638,
+            "width": 2560,
+            "height": 2048,
+            "estimatedRgbaMipBytes": 27962027
+          },
+          "tileTimings": [
+            {
+              "index": 364,
+              "buildMs": 16,
+              "unpackMs": 4
+            },
+            {
+              "index": 358,
+              "buildMs": 19,
+              "unpackMs": 7
+            },
+            {
+              "index": 359,
+              "buildMs": 58,
+              "unpackMs": 7
+            },
+            {
+              "index": 360,
+              "buildMs": 35,
+              "unpackMs": 2
+            },
+            {
+              "index": 361,
+              "buildMs": 22,
+              "unpackMs": 4
+            },
+            {
+              "index": 362,
+              "buildMs": 18,
+              "unpackMs": 3
+            },
+            {
+              "index": 363,
+              "buildMs": 16,
+              "unpackMs": 2
+            }
+          ],
+          "ready": 2198,
+          "restart": 761,
+          "cpuMs": null,
+          "framesMs": null
+        }
+      }
+    ]
+  },
   "review-offline": {
     "engine": "webkit",
     "baseline": false,
@@ -2888,6 +6306,25 @@
     },
     "corruptFileRepaired": true,
     "offlineReadyMs": 6474
+  },
+  "review-upgrade": {
+    "engine": "chromium",
+    "baseline": false,
+    "upgrade": "phase-three",
+    "disclosure": "2.37 MB to download \u00b7 2.46 MB total",
+    "interruptedAsset": "labrador.glb",
+    "injectedNetworkErrors": 0,
+    "interruption": "The download stopped. Retry to resume from your verified files.",
+    "coldReadyMsIncludingRetry": 8521,
+    "updateVersions": [
+      "cc1d196faa43033b5da0",
+      "3565eb83e40bd8feef02"
+    ],
+    "update": {
+      "busyHuntProtected": true,
+      "preservedRuns": 2,
+      "unchangedAudioRequests": 1
+    }
   },
   "cypress-lifetime": {
     "samples": 353,

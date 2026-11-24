@@ -40,6 +40,8 @@ Phase 03 passed 131 Node tests, 10,000 full stress sessions, and 100,020 route w
 - Added roof assemblies, log walls, porch braces, tractor and snowmobile finishes, forest silhouettes, water character and stable mountain relief. Increased High geometry and water effects within the existing quality architecture.
 - Preserved Stage 1–30 and endless timing, obstacle decisions, the supported-tree and center-slide geometry contracts, v4 saves and the local-only Camp gate. Added 35 sourced notes to the existing loading UI.
 
+The review build passed 134 Node tests, 10,000 seeded hunts, 100,020 difficulty windows, all rendered borders and a 62-second offline WebKit soak. Chromium passed graphics switching and activated the real Phase 03 update after a paused hunt finished. The report and evidence document the software host and remaining physical iPhone review. [Phase 03B implementation report](PHASE_03B_REPORT.md)
+
 ## Carry forward
 
 1. Use the Phase 03B report to reproduce the build and render captures. Test native graphics presets and a continuous hunt on iPhone before publication, paying attention to building approach and departure, atlas switches, and terrain visibility.

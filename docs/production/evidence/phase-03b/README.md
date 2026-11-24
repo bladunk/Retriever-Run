@@ -3,9 +3,13 @@
 These captures show the built game from its normal runner camera at the repository subpath. Practice positions put the dog on reproducible seeds. The 390 × 844 captures are preserved individually for featured scenes. The 320 × 568 preset captures use a 2× browser viewport and retain their 640 × 1,136 files. Before and after scenes use the same seed, territory time, and viewpoint, allowing for a small displacement while the renderer settles.
 
 - [All fifteen territories in portrait](all-territories.webp)
-- [All fifteen territory landmark and terrain views in portrait](all-landmarks-portrait.webp)
+- [All fifteen territory landmark and terrain views in portrait](all-landmarks-portrait.webp) · [Wide landmark captures](all-landmarks-wide.webp)
+- [Fourteen territory boundaries and endless entry](boundaries.webp) · [Offline Mountain Wilderness](offline-mountain.webp)
 - [Small-phone preset comparison](small-phone-presets.webp) · [Battery Saver](cypress-low-retina.webp) · [Balanced](cypress-balanced-retina.webp) · [High](cypress-high-retina.webp)
 - [Cypress approach, pass, departure and tile retirement](cypress-lifetime.webp) · [Continuous Cypress footage](cypress-continuous.mp4?raw=true)
+- [Gulf shack approach and departure](gulf-lifetime.webp) · [Continuous Gulf footage](gulf-continuous.mp4?raw=true) · [Matched near view](gulf-near.webp)
+- [Tractor comparison](tractor-comparison.webp) · [Snowmobile comparison](snowmobile-comparison.webp) · [Ground log comparison](log-comparison.webp)
+- [Continuous offline soak finish](offline-soak-finish.webp) · [Resource samples](offline-soak.json)
 - [Download disclosure, interruption and offline playback](download-recovery.webp)
 
 ## Matched views and individual portrait files
