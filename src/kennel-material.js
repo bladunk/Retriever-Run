@@ -55,6 +55,20 @@ export function tintLabradorCoat(material, modelToRest, breed = 'lab') {
         float nose = smoothstep(2.29,2.48,p.z) * smoothstep(2.05,2.34,p.y);
         float eye = smoothstep(1.65,1.89,p.z) * (1. - smoothstep(2.11,2.32,p.z))
           * smoothstep(.21,.34,abs(p.x)) * smoothstep(2.18,2.37,p.y);
+        ${breed === 'boyd' ? `
+          float crown = smoothstep(2.24,2.61,p.y) * smoothstep(1.62,1.89,p.z);
+          float creamChest = smoothstep(.78,1.48,p.z) * (1. - smoothstep(1.44,2.04,p.y));
+          vec3 boydFur = mix(vec3(.80,.67,.49),vec3(.66,.43,.23),.31*crown + .69*ears);
+          boydFur = mix(boydFur,vec3(.96,.89,.74),.44 * max(muzzle,creamChest));
+          diffuseColor.rgb = mix(diffuseColor.rgb, boydFur * coatShading * (.94 + .085*smallFur*grainFade),warmFur*.81);
+          float lip = smoothstep(2.08,2.31,p.z) * smoothstep(1.98,2.05,p.y) * (1. - smoothstep(2.20,2.29,p.y));
+          float enamel = smoothstep(.31,.61,naturalCoat.b) * (1. - smoothstep(.048,.16,naturalCoat.r-naturalCoat.b));
+          float tongue = smoothstep(.022,.11,naturalCoat.r-naturalCoat.g) *
+            smoothstep(.018,.09,naturalCoat.b) * (1. - smoothstep(.26,.60,naturalCoat.g));
+          diffuseColor.rgb *= mix(vec3(1.),vec3(.48,.36,.33),lip * max(enamel,.76*tongue));
+          diffuseColor.rgb += dark * nose * smoothstep(.017,.13,naturalCoat.r) * vec3(.130,.069,.054);
+          diffuseColor.rgb += dark * eye * smoothstep(.018,.12,naturalCoat.r) * vec3(.043,.023,.010);
+        ` : ''}
       `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         float gloss = dark * max(nose * .85, eye * .61);
         float noseGrain = sin(p.x*205. + shortFur*.48)*sin(p.y*192. + p.z*140.);

@@ -1,10 +1,11 @@
 import { careerStanding } from './career.js'
 import { gearRequirement, kennelCatalog, unlocked } from './kennel-catalog.js'
 import { node } from './lodge-elements.js'
+import { masterHunter } from './master-hunter.js'
 
 const categories = { collar: 'Collars', vest: 'Hunting vests', coat: 'Coats' }
 
-export function kennelRoom(lodge, showAppearance) {
+export function kennelRoom(lodge, showAppearance, inspectDogs) {
   const player = lodge.current()
   const standing = careerStanding(player.career)
   const stage = node('div', null, 'kennel-stage')
@@ -91,8 +92,48 @@ export function kennelRoom(lodge, showAppearance) {
   })
   switchCategory(category)
   const breeds = node('details', null, 'kennel-breeds')
-  breeds.append(node('summary', 'Working dogs'), node('p', 'Labrador Retriever · Active breed'),
-    node('p', 'German Shorthaired Pointer · Career unlock pending'),
-    node('p', 'Boyd · Master Hunter · Career Level 100 and field honors'))
+  const portrait = node('img')
+  portrait.src = './branding/boyd-portrait.webp'
+  portrait.alt = 'Boyd, a pale yellow Labrador wearing his signature collar'
+  portrait.width = 768
+  portrait.height = 960
+  portrait.loading = 'lazy'
+  const emblem = node('img', null, 'master-hunter-emblem')
+  emblem.src = './branding/master-hunter.png'
+  emblem.alt = ''
+  emblem.width = emblem.height = 48
+  emblem.loading = 'lazy'
+  const master = node('article', null, 'kennel-master-hunter')
+  const details = node('div')
+  details.append(emblem, node('h3', masterHunter.name + ' · ' + masterHunter.title),
+    node('p', 'Locked · Career Level ' + masterHunter.level + ' and Field Honors'))
+  master.append(portrait, details)
+  breeds.append(node('summary', 'Working dogs'), node('p', 'Labrador Retriever'),
+    node('p', 'German Shorthaired Pointer · Career unlock pending'), master)
+  if (inspectDogs) {
+    const chooser = node('nav', null, 'kennel-inspection')
+    chooser.setAttribute('aria-label', 'Development dog inspection')
+    for (const [breed, label, kit] of [
+      ['lab', 'Labrador'], ['pointer', 'Pointer'], ['boyd', 'Boyd + vest'],
+      ['boyd', 'Signature collar', 'signature'], ['boyd', 'Master Hunter bandana', 'bandana'],
+    ]) {
+      const link = node('a', label)
+      const url = new URL(location.href)
+      url.searchParams.set('breed', breed)
+      url.searchParams.set('inspect', 'kennel')
+      if (kit) url.searchParams.set('kit', kit)
+      else url.searchParams.delete('kit')
+      link.href = url.href
+      link.addEventListener('click', event => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+        event.preventDefault()
+        // Switch the full inspection document so a second renderer, mixer,
+        // texture or skeleton never remains owned by this preview document.
+        location.replace(link.href)
+      })
+      chooser.append(link)
+    }
+    breeds.append(chooser)
+  }
   return { content: [fitting, options, feedback, breeds], stage }
 }

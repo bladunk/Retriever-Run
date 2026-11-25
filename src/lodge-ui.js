@@ -268,7 +268,7 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
   }))
 }
 
-export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKennel, onAppearance, onStart, onJoin }) {
+export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKennel, onAppearance, onStart, onJoin, inspectDogs }) {
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
   const scroll = dialog.querySelector('.lodge-scroll')
@@ -308,7 +308,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
       content = isWorldwide ? [switcher, worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart })]
         : [switcher, ...leaderboard(lodge, metric, selectMetric)]
     } else if (room === 'kennel') {
-      ({ content, stage } = kennelRoom(lodge, onAppearance))
+      ({ content, stage } = kennelRoom(lodge, onAppearance, inspectDogs))
     } else if (room === 'career') content = careerRoom(player, insignia)
     else content = room === 'trophies' ? trophies(player) : room === 'journal' ? journal(player) : personalRecords(player)
     panel.replaceChildren(...content)

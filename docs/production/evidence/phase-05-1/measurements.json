@@ -1,0 +1,66 @@
+{
+  "build": {
+    "version": "1.0.0-phase.5.1",
+    "id": "31f7fc6"
+  },
+  "offline": true,
+  "counts": [
+    {
+      "geometries": 30,
+      "textures": 18
+    },
+    {
+      "geometries": 19,
+      "textures": 13
+    },
+    {
+      "geometries": 19,
+      "textures": 14
+    },
+    {
+      "geometries": 23,
+      "textures": 13
+    },
+    {
+      "geometries": 21,
+      "textures": 13
+    }
+  ],
+  "incrementalUpdate": {
+    "engine": "chromium",
+    "corruptFileRepaired": true,
+    "updateVersions": [
+      "4dcff3121a512e161bd8",
+      "ac607117fc3d64d217cb"
+    ],
+    "update": {
+      "busyHuntProtected": true,
+      "preservedRuns": 2,
+      "unchangedAudioRequests": 1
+    }
+  },
+  "motions": {
+    "opening": {
+      "build": {
+        "version": "1.0.0-phase.5.1",
+        "id": "3f57166"
+      },
+      "seed": 7,
+      "start": 0,
+      "end": 17.114666666666665,
+      "jumpSamples": 6,
+      "slideSamples": 0
+    },
+    "jumpToSlide": {
+      "build": {
+        "version": "1.0.0-phase.5.1",
+        "id": "3f57166"
+      },
+      "seed": 7,
+      "start": 367,
+      "end": 376.03169416576594,
+      "jumpSamples": 11,
+      "slideSamples": 9
+    }
+  }
+}

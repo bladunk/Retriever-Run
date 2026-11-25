@@ -23,6 +23,8 @@
 #content-screen::backdrop { background: #0c1610d9; }
 .content-card { box-sizing: border-box; max-width: 448px; margin: max(0px, 8dvh - 40px) auto 0; padding: clamp(20px, 6vw, 36px);
   border: 1px solid #8c765b; border-radius: 10px; background: #24352b; box-shadow: 0 18px 52px #111a14a6; }
+.content-art { display: block; width: 100%; height: clamp(76px, 18dvh, 140px); object-fit: cover;
+  object-position: 63% 34%; border-radius: 4px; }
 .content-brand, #content-note-category { color: var(--gold); text-transform: uppercase; letter-spacing: .14em; font-weight: 750; font-size: .73rem; }
 #content-screen h1 { font: 600 clamp(2rem, 8vw, 3rem)/1.01 Georgia, serif; color: var(--cream); margin: .28em 0; letter-spacing: -.025em; }
 #content-description { margin: 1rem 0; color: #e7dec9; }

@@ -10,6 +10,7 @@ import { swipeDirection } from './gesture.js'
 import { createRunControls } from './run-controls.js'
 import { adaptivePresentation, adaptiveQuality, graphics, pixelRatio } from './quality.js'
 import { createPlayer } from './player.js'
+import { inspectionBreed } from './master-hunter.js'
 import { createFootSpray } from './spray.js'
 import { audioDefaults } from './profile.js'
 import { productionSession } from './production-session.js'
@@ -118,6 +119,7 @@ const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
   Math.min(previewRegion === expeditionRegions.at(-1) ? 180 : 29.95, Number(flags.get('offset')) || 0)) : 0
 const collisionRequested = flags.get('debug') === 'collision' &&
   (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
+const breed = inspectionBreed(collisionRequested, flags.get('breed'))
 const diagnosticsRequested = Boolean(previewRegion) || collisionRequested
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
 const campfire = createCampfire(diagnosticsRequested ? () => undefined : undefined)
@@ -195,6 +197,7 @@ function makeRenderer() {
 }
 
 const lodgeUI = createLodgeUI(ui, lodge, {
+  inspectDogs: collisionRequested,
   camp,
   onPlayer() {
     profile = lodge.current().profile
@@ -252,10 +255,19 @@ function initialize() {
   }))
   const observeWildlife = event => runStatistics?.observe(event)
   const diving = createDivingFlocks(scene)
-  if (diagnosticsRequested) {
+  if (diagnosticsRequested && navigator.onLine) {
+    // The collision overlay is an optional download. A verified offline
+    // edition can still inspect a dog when that developer chunk is absent.
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
+      .catch(error => { if (navigator.onLine) console.error(error) })
   }
-  dog = createPlayer(scene, collisionRequested && flags.get('breed') === 'pointer' ? 'pointer' : 'lab', createPickup)
+  dog = createPlayer(scene, breed, createPickup, flags.get('kit'))
+  if (collisionRequested) window.retrieverInspectDog = {
+    breed,
+    ready: dog.modelReady,
+    orbit: framing => kennel?.inspect(framing),
+    resources: () => ({ ...renderer.info.memory }),
+  }
   spray = createFootSpray(scene)
   dog.appearance(lodge.current().kennel.equipment)
   sound.settings(profile)
@@ -340,6 +352,10 @@ function initialize() {
       if (!diagnosticsRequested && mode === 'title') {
         if (lodge.current().enrollment) promotion.show()
         else onboarding.open()
+      }
+      if (collisionRequested && flags.get('inspect') === 'kennel') {
+        ui['open-lodge'].click()
+        ui['tab-kennel'].click()
       }
     }
     if (mode === 'running' && profile.quality === 'auto') {

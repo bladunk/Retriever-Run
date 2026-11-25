@@ -72,3 +72,9 @@ See [Phase 04 results and checklist](PHASE_04_REPORT.md) for remaining coverage 
 - In the production browser matrix, use `webkit small offline-only partial repair journal` and `small from-phase-three update-only partial repair` with `FIELD_PHASE_THREE_BUILD` pointing to the Phase 04.1 artifact. Check the old pause-time update veto, cache reuse, migrated records, offline version identification and the bottom Kennel card.
 
 - For the visual pass use `webkit small balanced natural-review sight video` with the seeds from the targeted evidence. Use `menu=0` for quick start or a short normal title dwell for the prepared-rig path. The gameplay clock runs on normal browser frames. Use `webkit small balanced offline wildlife-breaks` to assert cold play, background pause, paused quality changes, a prepared encounter on resume and two-rig capacity on replay. Use `npm run stress:master` for the full course and hull validation. [Visual-pass results](evidence/phase-05/visual-pass/README.md)
+
+## Phase 05.1 Boyd and installation artwork
+
+- Run `node --test test/boyd.test.js test/production-foundation.test.js`, the production build and artifact verifier. The artifact must contain only the approved static files and emitted dependencies.
+- Run `FIELD_BUILD=dist node scripts/phase-three-browser.mjs webkit small boyd-review` against the built Pages subpath for the locked Kennel, active footer, verified offline branding and dog rig, the last card and Labrador → Pointer → Boyd inspection. Use `boyd natural-review video seed=7` for actual trail motion.
+- Run the Phase 05 artifact upgrade using `scripts/production-browser.mjs small from-phase-three update-only partial repair`. Check the pending and current build labels, unchanged cached audio and safe activation. Verify native Home Screen artwork after approval. [Phase 05.1 report](PHASE_05_1_REPORT.md)
