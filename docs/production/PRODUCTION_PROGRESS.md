@@ -2,10 +2,9 @@
 
 ## Resume here
 
-- Active checkpoint is Phase 05.3A owner review on `codex/retriever-run-phase-05-3a`. Parent `074c5a3d9129dd8a2d19829570ebc97653379428` integrates Phase 05.2 through PR #32. The Cypress runtime commit is `20a8e76d0590b8336aa10e2a5c9f1500dc63ef3a`, build `1.0.0-phase.5.3a · 453f764`, manifest `ec3f4604000386f6a441`. [Draft PR #33](https://github.com/bladunk/Retriever-Run/pull/33) · [Showcase report](PHASE_05_3A_REPORT.md)
-- The owner approved Boyd branding and measured 60 FPS across 17,257 frames on the Phase 05.2 iPhone build. Phase 05.3A uses the same art pipeline to compose a Cypress-only flooded forest. Review the four matched portrait views and the moving clip, then collect a new iPhone trace. [Phase 05.2 report](PHASE_05_2_REPORT.md) · [Cypress evidence](evidence/phase-05-3a/README.md)
-- Six source photos were sanitized privately before processing. The release tree removes the originals, with Git and build exclusions for future uploads. Public repository history still contains the source files and needs separate owner-authorized remediation. Store future references outside Git. [Private intake](references/boyd/README.md)
-- Boyd has a separate skinned character, signature collar and equipment inspections, a locked Master Hunter presentation, and matching icon, portrait and installation art. The application remains Retriever Run. Local development inspection uses `?debug=collision&breed=boyd&inspect=kennel`. Public play uses the existing career, collision, scoring and ruleset paths.
+- Active checkpoint is Phase 06 owner review on `codex/retriever-run-phase-06` from integrated Cypress commit `db2565afcc30283b23ab9ac5a246feb36fc53b18`. Public baseline was Phase 05.3A `0ab92b0`. Review candidate `1.0.0-phase.6 · d4be70e`, manifest `53197ea0a3a7f57920ae`. [Draft PR #34](https://github.com/bladunk/Retriever-Run/pull/34) · [Phase 06 report](PHASE_06_REPORT.md)
+- Phase 06 adds the 100-level career, 621 local Field Honors, 25 pending Camp entries, Journal collections, 151 earnable wardrobe options and automatic Boyd qualification. The version 5 Lodge save retains prior progress. The owner accepted the Cypress showcase and reserved remaining environment and character art for the late visual-polish phase.
+- Review the portrait evidence and repeat the acceptance checklist on iPhone before approving. Next development phase is 07 after review. No merge, deployment, database migration or reset was performed.
 
 ## Implemented in Phase 01
 

@@ -37,7 +37,7 @@ const browser = await (safari ? webkit.launch() : chromium.launch({
   args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
 }))
 try {
-  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: 1 })
+  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: 1, reducedMotion: 'reduce' })
   await context.addInitScript(({ key, fixture }) => {
     if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(fixture))
     Math.random = () => 7 / 0x100000000
@@ -88,8 +88,18 @@ try {
   await scroll(page.getByText('Regional wildlife collections', { exact: true }))
   await capture('regional-collection')
   await tab('kennel')
-  await page.locator('.kennel-stage canvas').waitFor()
+  const canvas = page.locator('.kennel-stage canvas')
+  await canvas.waitFor()
+  await page.waitForFunction(() => window.retrieverPerformance().dogBreed === 'lab')
   await capture('kennel')
+  const beforeDrag = await canvas.screenshot()
+  const stageBounds = await canvas.boundingBox()
+  await page.mouse.move(stageBounds.x + stageBounds.width * .35, stageBounds.y + stageBounds.height * .5)
+  await page.mouse.down()
+  await page.mouse.move(stageBounds.x + stageBounds.width * .65, stageBounds.y + stageBounds.height * .5, { steps: 4 })
+  await page.mouse.up()
+  await page.waitForTimeout(250)
+  assert.ok(!beforeDrag.equals(await canvas.screenshot()), 'dragging rotates the real Kennel stage')
   const ownedBefore = (await save()).kennel?.equipment
   const last = page.locator('.kennel-items button').last()
   await last.scrollIntoViewIfNeeded()

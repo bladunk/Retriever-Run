@@ -86,3 +86,10 @@ See [Phase 04 results and checklist](PHASE_04_REPORT.md) for remaining coverage 
 - Use `scripts/phase-three-browser.mjs small balanced presets gulf` to change High, Battery Saver and Auto during the same paused hunt with the coast pack bound.
 - Use `scripts/phase-three-browser.mjs small balanced gulf-lifecycle fast` to verify the map pair binds, retires across the live Cypress transition and can be brought back. The clock is accelerated for this resource test. Use `natural-review video seed=7 seconds=17 menu=2000` for normal-clock comparison.
 - Run `FIELD_FAULT_ASSET=gulf-field-pbr.webp npm run test:production -- webkit small partial repair journal offline-only` to break a real transfer, repair cache bytes, replay offline and reach the final Kennel card. Use `small from-phase-three update-only partial repair` with the exact Phase 05.1 artifact for safe update and save compatibility. [Phase 05.2 results](PHASE_05_2_REPORT.md)
+
+## Phase 06 · Career and rewards
+
+- Run `npm test` for all 100 threshold edges, rank transitions, the four seeded progression profiles, receipt idempotency, same-hunt combinations, realistic clear credit, historical recognition, saved wardrobe state, ownership validation, Master Hunter qualification, and practice exclusions.
+- Run `FIELD_BUILD=dist node scripts/phase-six-browser.mjs` for the verified Pages subpath, 320 × 568 career, honors, Journal, Kennel, last-card and locked preview checks. The isolated fixture qualifies through a normal offline hunt and verifies auto-awards, Labrador and Boyd swaps and immediate offline replay.
+- Use `webkit small partial repair journal journal-sighting offline-only` with the production browser script for the interrupted download, actual cache repair, witnessed wildlife, background/resume, and last-card checks. Use `small from-phase-three update-only partial repair` with `FIELD_PHASE_THREE_BUILD` pointing to the Cypress artifact for upgrade and save preservation.
+- Use the iPhone acceptance checklist for native replay and frame-time verification. [Phase 06 report](PHASE_06_REPORT.md) · [Rendered portrait evidence](evidence/phase-06/README.md)
