@@ -224,15 +224,20 @@
         </div>
       </details>
       <nav class="lodge-tabs" aria-label="Lodge rooms" role="tablist">
-        <button type="button" role="tab" id="tab-trophies" aria-selected="true" aria-controls="lodge-panel" data-room="trophies">Field Honors</button>
-        <button type="button" role="tab" id="tab-board" aria-label="Camp Leaderboard" aria-selected="false" aria-controls="lodge-panel" data-room="board" tabindex="-1">Local Camp</button>
-        <button type="button" role="tab" id="tab-worldwide" aria-label="Global Camp Leaderboard" aria-selected="false" aria-controls="lodge-panel" data-room="worldwide" tabindex="-1">Worldwide Camp</button>
-        <button type="button" role="tab" id="tab-journal" aria-selected="false" aria-controls="lodge-panel" data-room="journal" tabindex="-1">Field Journal</button>
-        <button type="button" role="tab" id="tab-records" aria-selected="false" aria-controls="lodge-panel" data-room="records" tabindex="-1">Personal Records</button>
-        <button type="button" role="tab" id="tab-career" aria-selected="false" aria-controls="lodge-panel" data-room="career" tabindex="-1">Working Dog Career</button>
-        <button type="button" role="tab" id="tab-kennel" aria-selected="false" aria-controls="lodge-panel" data-room="kennel" tabindex="-1">The Kennel</button>
+        <button type="button" role="tab" id="tab-overview" aria-selected="true" aria-controls="lodge-panel" data-room="overview">Lodge</button>
+        <button type="button" role="tab" id="tab-collection" aria-label="Trophy room" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="collection">Trophies</button>
+        <button type="button" role="tab" id="tab-migration" aria-label="Great Migration" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="migration">Migration</button>
+        <button type="button" role="tab" id="tab-records" aria-label="Personal Records" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="records">Records</button>
+        <button type="button" role="tab" id="tab-equipment" aria-label="Equipment room" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="equipment">Equipment</button>
+        <button type="button" role="tab" id="tab-journal" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="journal">Field Journal</button>
+        <button type="button" role="tab" id="tab-trophies" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="trophies">Field Honors</button>
+        <button type="button" role="tab" id="tab-kennel" aria-label="The Kennel" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="kennel">Kennel</button>
+        <button type="button" role="tab" id="tab-shame" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="shame">Hall of Shame</button>
+        <button type="button" role="tab" id="tab-career" aria-label="Working Dog Career" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="career">Career</button>
+        <button type="button" role="tab" id="tab-board" aria-label="Camp Leaderboard" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="board">Local Camp</button>
+        <button type="button" role="tab" id="tab-worldwide" aria-label="Global Camp Leaderboard" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="worldwide">Worldwide Camp</button>
       </nav>
-      <div id="lodge-panel" class="lodge-panel" role="tabpanel" aria-labelledby="tab-trophies" tabindex="0"></div>
+      <div id="lodge-panel" class="lodge-panel" role="tabpanel" aria-labelledby="tab-overview" tabindex="0"></div>
     </div>
     </dialog>
   <script type="module" src="/src/production-entry.js"></script>

@@ -77,7 +77,7 @@ export function nearbyHonor(player) {
     }))
 }
 
-export function fillCareerReport(ui, report, openKennel) {
+export function fillCareerReport(ui, report, openKennel, openLodge) {
   const space = ui['report-career']
   space.replaceChildren()
   space.hidden = !report.career
@@ -87,6 +87,18 @@ export function fillCareerReport(ui, report, openKennel) {
     node('p', after.rank.name + ' · Level ' + number(after.level) +
       (after.level > before.level ? ' · Up ' + number(after.level - before.level) : '')),
     careerProgress(after))
+  if (report.lodge?.tier || report.lodge?.upgrades.length) {
+    const reward = node('div', null, 'report-lodge-award')
+    if (report.lodge.tier) reward.append(node('strong', 'Lodge upgraded · ' + report.lodge.tier.name))
+    const additions = report.lodge.upgrades
+    if (additions.length) reward.append(node('p', additions.length === 1 ? additions[0].name + ' added to the Lodge'
+      : number(additions.length) + ' new Lodge additions'))
+    const visit = node('button', 'See the Lodge')
+    visit.type = 'button'
+    visit.addEventListener('click', () => openLodge(visit))
+    reward.append(visit)
+    space.append(reward)
+  }
   if (report.newHonors.length) space.append(node('p', number(report.newHonors.length) + ' new Field Honors'))
   if (report.boyd) space.append(node('strong', 'Boyd and his Master Hunter kit earned'))
   if (report.gear.length) {

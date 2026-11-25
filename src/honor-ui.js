@@ -3,7 +3,7 @@ import { progressionMetrics } from './progression.js'
 import { node, number } from './lodge-elements.js'
 import { kennelItems } from './kennel-catalog.js'
 
-export function fieldHonorsRoom(player, insignia, legacyPanels) {
+export function fieldHonorsRoom(player, insignia, legacyPanels, category) {
   const earned = player.progression.honors
   const values = progressionMetrics(player)
   const root = node('section', null, 'patch-section')
@@ -11,6 +11,7 @@ export function fieldHonorsRoom(player, insignia, legacyPanels) {
   const section = node('select')
   section.setAttribute('aria-label', 'Field Honor category')
   for (const name of ['All local honors', ...honorCategories]) section.append(node('option', name))
+  if (honorCategories.includes(category)) section.value = category
   const status = node('select')
   status.setAttribute('aria-label', 'Field Honor status')
   for (const name of ['All statuses','Earned','Locked']) status.append(node('option', name))

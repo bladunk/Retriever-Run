@@ -7,7 +7,7 @@ import { expeditionRegions } from './expedition.js'
 import { stageAt } from './difficulty.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
 import { campSwitch, worldwideBoard } from './camp-ui.js'
-import { node, number, meters, date } from './lodge-elements.js'
+import { node, number, meters, date, duration, rows, cards } from './lodge-elements.js'
 import { careerRoom, nearbyHonor } from './career-ui.js'
 import { kennelRoom } from './kennel-ui.js'
 import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
@@ -15,29 +15,6 @@ import { fieldHonorsRoom } from './honor-ui.js'
 import { checkLabel, localHonors, waterfowlSpecies } from './field-honors.js'
 import { kennelItems } from './kennel-catalog.js'
 import { progressionMetrics } from './progression.js'
-
-function duration(seconds) {
-  const total = Math.floor(seconds)
-  const minutes = Math.floor(total / 60)
-  return (minutes >= 60 ? Math.floor(minutes / 60) + 'h ' : '') +
-    (minutes ? (minutes % 60) + 'm ' : '') + total % 60 + 's'
-}
-
-function rows(items) {
-  return items.map(([name, value]) => {
-    const row = node('div')
-    row.append(node('dt', name), node('dd', value))
-    return row
-  })
-}
-
-function cards(items) {
-  return items.map(([name, value]) => {
-    const card = node('div', null, 'record-card')
-    card.append(node('strong', value), node('span', name))
-    return card
-  })
-}
 
 const emblems = {
   paw: 'M7 17c1-2 3-4 5-4s4 2 5 4c1 2 0 4-2 4-1 0-2-1-3-1s-2 1-3 1c-2 0-3-2-2-4ZM4 10a1.5 2 0 1 0 3 0 1.5 2 0 1 0-3 0Zm4-4a1.5 2 0 1 0 3 0 1.5 2 0 1 0-3 0Zm5 0a1.5 2 0 1 0 3 0 1.5 2 0 1 0-3 0Zm4 4a1.5 2 0 1 0 3 0 1.5 2 0 1 0-3 0Z',
@@ -102,20 +79,6 @@ function trophies(player) {
       section.append(headingRow, grid)
       return section
     })
-}
-
-function personalRecords(player) {
-  const { profile, records } = player
-  const grid = node('div', null, 'record-grid')
-  const stats = [
-    ['Highest score', profile.best ? number(profile.best) : '—'],
-    ['Longest run', profile.farthest ? meters(profile.farthest) : '—'],
-    ['Best treat streak', profile.streak ? number(profile.streak) : '—'],
-    ...Object.keys(records).map(key => [personalRecordLabels[key],
-      records[key] ? (key === 'duration' ? duration(records[key]) : number(records[key])) : '—']),
-  ]
-  grid.append(...cards(stats))
-  return [node('h3', 'Personal Records', 'section-title'), grid]
 }
 
 function journal(player) {
@@ -322,12 +285,26 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   const panel = ui['lodge-panel']
   const scroll = dialog.querySelector('.lodge-scroll')
   const tabs = [...dialog.querySelectorAll('[role=tab]')]
-  let room = 'trophies'
+  const galleryRooms = new Set(['overview','collection','migration','equipment','shame','records'])
+  let room = 'overview'
+  let target
+  let request = 0
+  let gallery
+  let galleryLoading
   let metric = 'score'
   let rivalMetric = 'score'
   let trigger
 
+  function selectRoom(value, detail) {
+    room = value
+    target = typeof detail === 'string' ? detail : undefined
+    scroll.scrollTop = 0
+    renderRoom()
+    if (detail === true) tabs.find(tab => tab.dataset.room === value)?.focus({ preventScroll: true })
+  }
+
   function renderRoom() {
+    const intent = ++request
     onKennel(null)
     const player = lodge.current()
     panel.setAttribute('aria-labelledby', 'tab-' + room)
@@ -341,12 +318,6 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
       if (room === 'worldwide') rivalMetric = value
       renderRoom()
       panel.querySelector('[data-metric=' + value + ']')?.focus({ preventScroll: true })
-    }
-    function selectRoom(value, focus = false) {
-      room = value
-      renderRoom()
-      scroll.scrollTop = 0
-      if (focus) tabs.find(tab => tab.dataset.room === value).focus({ preventScroll: true })
     }
     let content
     let stage
@@ -364,7 +335,28 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
         panel.querySelector('.kennel-breeds').open = true
       }))
     } else if (room === 'career') content = careerRoom(player, insignia)
-    else content = room === 'trophies' ? fieldHonorsRoom(player, insignia, trophies(player)) : room === 'journal' ? journal(player) : personalRecords(player)
+    else if (room === 'trophies') content = fieldHonorsRoom(player, insignia, trophies(player), target)
+    else if (room === 'journal') content = journal(player)
+    else if (galleryRooms.has(room)) {
+      if (!gallery) {
+        const pending = node('p', 'Opening the Lodge…', 'room-note')
+        pending.setAttribute('role', 'status')
+        panel.replaceChildren(pending)
+        galleryLoading ??= import('./lodge-gallery.js').then(module => { gallery = module.showLodgeRoom })
+          .finally(() => { galleryLoading = undefined })
+        galleryLoading.then(() => {
+          if (dialog.open && intent === request) renderRoom()
+        }).catch(() => {
+          if (dialog.open && intent === request) panel.replaceChildren(node('p',
+            'The Lodge room could not open. Try this tab again or use the install repair screen.', 'room-note'))
+        })
+        return
+      }
+      content = gallery(room, player, { lodge, target, navigate(value, detail) {
+        selectRoom(value, detail)
+        tabs.find(tab => tab.dataset.room === value)?.focus({ preventScroll: true })
+      } })
+    }
     panel.replaceChildren(...content)
     if (stage) onKennel(stage)
   }
@@ -401,9 +393,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   })
   for (const tab of tabs) {
     tab.addEventListener('click', () => {
-      room = tab.dataset.room
-      renderRoom()
-      scroll.scrollTop = 0
+      selectRoom(tab.dataset.room)
     })
     tab.addEventListener('keydown', event => {
       const index = tabs.indexOf(tab)
@@ -432,15 +422,18 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   window.visualViewport?.addEventListener('scroll', fitViewport)
   ui['close-lodge'].addEventListener('click', () => dialog.close())
   dialog.addEventListener('close', () => {
+    request++
     onKennel(null)
+    panel.replaceChildren()
     onClose()
     trigger?.focus({ preventScroll: true })
   })
   return {
     rivalMetric: () => rivalMetric,
-    open(button, targetRoom) {
+    open(button, targetRoom = 'overview') {
       trigger = button
-      if (targetRoom) room = targetRoom
+      room = targetRoom
+      target = undefined
       dialog.showModal()
       fitViewport()
       renderPlayers()

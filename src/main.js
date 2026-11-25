@@ -820,7 +820,7 @@ function setMode(value, options = {}) {
       report.impact = { ...contact }
       fillReport(ui, report, { heckle: line, previousBest: report.previousBest ?? previousBest,
         player: previewRegion ? undefined : lodge.players().find(player => player.id === runPlayer) })
-      fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
+      fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'), button => lodgeUI.open(button))
       const posting = diagnosticsRequested ? null : connectedRun ? camp.record(runPlayer, report, runPermit) :
         runner.enrollment === 'worldwide' ? { status: 'unranked' } : null
       const worldwide = ui['report-worldwide']
