@@ -5,7 +5,7 @@ self.onmessage = ({ data }) => {
   const start = performance.now()
   const packet = buildTile(index, data.seed)
   packet.buildMs = performance.now() - start
-  const transfer = [packet.reeds.buffer, packet.trees.buffer, packet.crops.buffer]
+  const transfer = [packet.reeds.buffer, packet.trees.buffer, packet.crops.buffer, packet.shoreGrass.buffer]
   for (const geometry of [packet.ground, packet.detail, packet.solid, packet.water]) {
     if (!geometry) continue
     for (const { values } of Object.values(geometry.buffers)) transfer.push(values.buffer)

@@ -1,0 +1,72 @@
+{
+  "damp_beach_sand_02-diff.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/damp_beach_sand_02/damp_beach_sand_02_diff_2k.jpg",
+    "sha256": "9c502efd588ac0d89d4b983a3287e88a7d627d85407729a6a08f9e259cef19e7",
+    "bytes": 3384840
+  },
+  "damp_beach_sand_02-nor_gl.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/damp_beach_sand_02/damp_beach_sand_02_nor_gl_2k.jpg",
+    "sha256": "5ccb06ef5c6b3695d91c250fb4393aac414f25a428e5445a217240bde5397cfe",
+    "bytes": 3253130
+  },
+  "damp_beach_sand_02-rough.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/damp_beach_sand_02/damp_beach_sand_02_rough_2k.jpg",
+    "sha256": "5829bc673e3ac1725aaf8d17e01aa367a72adb001fc56e1e4cbd9fb5e3551009",
+    "bytes": 2974814
+  },
+  "muddy_tracks-diff.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/muddy_tracks/muddy_tracks_diff_2k.jpg",
+    "sha256": "09d45e99ae5338b4cdb0aa1897519bc096bc38a4249c5042512e5ee74b21125c",
+    "bytes": 2969433
+  },
+  "muddy_tracks-nor_gl.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/muddy_tracks/muddy_tracks_nor_gl_2k.jpg",
+    "sha256": "db4884d62000939863718260d97b2a073f0b82b2d9133921cb836457e6f1fc01",
+    "bytes": 5110104
+  },
+  "muddy_tracks-rough.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/muddy_tracks/muddy_tracks_rough_2k.jpg",
+    "sha256": "3b14301b357373eec83330655b98261918eb9483627e8d936807d80df566ba5e",
+    "bytes": 3035220
+  },
+  "stony_dirt_path-diff.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/stony_dirt_path/stony_dirt_path_diff_2k.jpg",
+    "sha256": "9c35b98628c17382b3a494ae15f17f95410edcaaac2e5922e50e5878f98d4a20",
+    "bytes": 4722246
+  },
+  "stony_dirt_path-nor_gl.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/stony_dirt_path/stony_dirt_path_nor_gl_2k.jpg",
+    "sha256": "6e0ee32808d6ae091cbfb23f6024ab4c7148495d23ae0baf39d0e7ee1f3269d9",
+    "bytes": 5855159
+  },
+  "stony_dirt_path-rough.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/stony_dirt_path/stony_dirt_path_rough_2k.jpg",
+    "sha256": "2b9507b060ef9031bd94e97efc6bf876d88583d31bc0a25cb3d16aa8c4bd31c9",
+    "bytes": 1876917
+  },
+  "driftwood/dead_tree_trunk_02.gltf": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/dead_tree_trunk_02/dead_tree_trunk_02_1k.gltf",
+    "sha256": "b486ab1f0c7f4972e0eec97b19de53b26a34d09f07da5f9c2a70f8621f9e574c",
+    "bytes": 2849
+  },
+  "driftwood/textures/dead_tree_trunk_02_diff_1k.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dead_tree_trunk_02/dead_tree_trunk_02_diff_1k.jpg",
+    "sha256": "fac23e81ab5639dcde93db605e5dd94c65e0aa2b1fb4a303f37de9afbb9af5b4",
+    "bytes": 932059
+  },
+  "driftwood/textures/dead_tree_trunk_02_arm_1k.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dead_tree_trunk_02/dead_tree_trunk_02_arm_1k.jpg",
+    "sha256": "ea15561ce36572ebd0db3c997f70d68a76d4bcbfef7efb4f91c8fd3b5f766e62",
+    "bytes": 805609
+  },
+  "driftwood/textures/dead_tree_trunk_02_nor_gl_1k.jpg": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dead_tree_trunk_02/dead_tree_trunk_02_nor_gl_1k.jpg",
+    "sha256": "9b26c29b89afced0ddb91dbe6f917e59038bed5ba6076dfceb8d1b4b00ca04f7",
+    "bytes": 1192056
+  },
+  "driftwood/dead_tree_trunk_02.bin": {
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/dead_tree_trunk_02/dead_tree_trunk_02.bin",
+    "sha256": "2b1b7ca07d98396ddc1987e367dcff9734df16b62e997c14837512d134687ded",
+    "bytes": 1974352
+  }
+}

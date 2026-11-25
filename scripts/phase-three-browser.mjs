@@ -268,7 +268,49 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('boyd-review')) {
+  if (args.includes('gulf-slice')) {
+    const seed = 7
+    const hazards = rowsFor(seed, 29).flatMap(row => row.entities).filter(item => item.hazard)
+    const crossing = hazards.find(item => item.type === 'stream')
+    assert.ok(crossing, 'Missing Gulf crossing fixture')
+    const frames = [
+      ['opening', 3], ['raised-shelter', 170], ['creek-bank', crossing.distance - 10],
+      ['decoy-water', 34], ['cordgrass-shore', 79], ['marsh-horizon', 149],
+    ].filter(([view]) => !args.some(arg => arg.startsWith('view=')) || args.includes('view=' + view))
+    for (const [view, wanted] of frames) {
+      const at = [0,-1,1,-2,2,-3,3,4,5].map(offset => wanted + offset).find(distance => {
+        const pose = { ...newRun(), distance }
+        return distance >= 0 && !firstContact(pose, pose, hazards, {})
+      })
+      assert.ok(at !== undefined, view)
+      await runAt(at, seed)
+      await page.waitForFunction(() => !window.retrieverPerformance()?.surfaces?.gulfAtlasPending,
+        null, { timeout: 35_000 })
+      await page.waitForTimeout(200)
+      await capture(view, { seed, at })
+    }
+  } else if (args.includes('gulf-lifecycle')) {
+    const ready = wanted => page.waitForFunction(value => {
+      const surfaces = window.retrieverPerformance()?.surfaces
+      return surfaces?.gulfAtlas === value && !surfaces.gulfAtlasPending
+    }, wanted, { timeout: 60_000 })
+    const inputs = guidedInputs(7, 38)
+    await runAt(0, 7)
+    await ready(true)
+    const marsh = await page.evaluate(() => window.retrieverPerformance())
+    await page.evaluate(inputs => {
+      window.phaseThreeQA.soak = { inputs, duration: 38, fast: true, next: 0, nextSample: 0, samples: [] }
+    }, inputs)
+    await ready(false)
+    const cypress = await page.evaluate(() => window.retrieverPerformance())
+    assert.equal(cypress.territory, 'cypress')
+    assert.equal(cypress.operations.filter(event => event.name === 'gulf-atlas-release').length, 1)
+    await runAt(3, 7, 'high')
+    await ready(true)
+    const returned = await page.evaluate(() => window.retrieverPerformance())
+    assert.ok([marsh, cypress, returned].every(report => report.residentTiles <= 7))
+    await writeFile(resolve(output, 'gulf-lifecycle.json'), JSON.stringify({ marsh, cypress, returned }, null, 2) + '\n')
+  } else if (args.includes('boyd-review')) {
     const release = JSON.parse(await readFile(resolve(root, 'content-manifest.json'), 'utf8'))
     const runtimeModel = release.assets.find(asset => asset.id === 'boyd.glb').path
     const standardModel = release.assets.find(asset => asset.id === 'labrador.glb').path

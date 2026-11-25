@@ -1,6 +1,7 @@
 import * as T from 'three'
 import { fieldAtlasShader } from './field-atlas-shader.js'
 import { landscapeMap, landscapeReady } from './landscape-atlas.js'
+import { gulfMap, gulfProperties, gulfReady, gulfScans } from './gulf-surfaces.js'
 import dirtColorUrl from './assets/mud-color.webp?url'
 import dirtSurfaceUrl from './assets/mud-surface.webp?url'
 import woodColorUrl from './assets/wood-color.webp?url'
@@ -16,7 +17,7 @@ export function createFieldMaterial() {
   const uniforms = {
     fieldEarth: { value: fallbackColor }, fieldWood: { value: fallbackColor },
     fieldEarthPbr: { value: fallbackPbr }, fieldWoodPbr: { value: fallbackPbr },
-    landscapeMap, landscapeReady, fieldDetail: { value: 1 }, fieldWet: { value: 0 }, fieldFrost: { value: 0 },
+    landscapeMap, landscapeReady, gulfMap, gulfProperties, gulfReady, fieldDetail: { value: 1 }, fieldWet: { value: 0 }, fieldFrost: { value: 0 },
   }
 
   for (const [key, url, space] of [
@@ -43,6 +44,7 @@ export function createFieldMaterial() {
       varying float vFieldLayer, vSnowFace, vLandStyle;
       varying vec2 vFieldUv, vRegionalSurface;
       ${fieldAtlasShader}
+      ${gulfScans}
     ` + shader.fragmentShader
       .replace('#include <color_fragment>', `#include <color_fragment>
         bool onGround = vFieldLayer > .5;
@@ -52,7 +54,8 @@ export function createFieldMaterial() {
         bool onMasonry = vFieldLayer > 5.5;
         bool onBark = vFieldLayer > 3.5 && vFieldLayer < 4.5;
         vec4 fieldPbr = vec4(.5, .5, .85, 1.);
-        if (onGround) {
+        float coastal = gulfReady * (1. - smoothstep(.04, .80, vRegionalSurface.x));
+        if (onGround && (onWood || coastal < .999)) {
           vec2 surfaceUV = vFieldUv;
           if (!onWood) surfaceUV += vec2(sin(vFieldUv.y*.78), sin(vFieldUv.x*1.2 + vFieldUv.y*.39))*.09;
           vec3 grain = onWood ? texture2D(fieldWood, surfaceUV).rgb : texture2D(fieldEarth, surfaceUV).rgb;
@@ -139,6 +142,35 @@ export function createFieldMaterial() {
             float dust = smoothstep(.52,.98,vSnowFace) * fieldFrost;
             float scatter = .30+.28*sin(vFieldUv.x*28. + grain.r*3.4)*sin(vFieldUv.y*23. + grain.g*9.4);
             diffuseColor.rgb = mix(diffuseColor.rgb,vec3(.57,.66,.70),dust*scatter);
+          }
+        }
+        if (onGround && !onWood && coastal > .001) {
+          vec2 trackUV = vFieldUv * vec2(.79, .96);
+          vec2 bedUV = vec2(trackUV.x * .78 + trackUV.y * .26, trackUV.y * .87 - trackUV.x * .23);
+          vec2 dx = dFdx(trackUV), dy = dFdy(trackUV);
+          vec2 bx = dFdx(bedUV), by = dFdy(bedUV);
+          float grain = sin(vFieldUv.y*1.31 + sin(vFieldUv.x*4. + vFieldUv.y*.73)*1.17);
+          float edge = smoothstep(.02,.95,vRegionalSurface.y + grain*.20);
+          float center = abs(vFieldUv.x + .051*sin(vFieldUv.y*.40));
+          float rutBreak = sin(vFieldUv.y*.71 + grain*.38) * sin(vFieldUv.y*1.71 + vFieldUv.x*.7);
+          float wheel = (1. - smoothstep(.085,.26,abs(center-.58+rutBreak*.08))) * (.22 + .37*smoothstep(-.55,.67,rutBreak));
+          float moisture = max(wheel, smoothstep(.15,.92,edge)*.74);
+          vec3 legacy = diffuseColor.rgb;
+          vec3 grit = gulfScan(0.,0.,bedUV,bx,by);
+          vec3 clay = gulfScan(1.,0.,trackUV,dx,dy);
+          vec3 sand = gulfScan(2.,0.,bedUV,bx,by);
+          vec3 settled = mix(grit * vec3(1.22,1.10,.94),clay * vec3(.93,.91,.85),moisture);
+          settled = mix(settled,sand * vec3(1.04,.96,.81),edge*.84);
+          float sod = smoothstep(1.86,2.61,center + grain*.18);
+          settled *= mix(vec3(1.),vec3(.60,.72,.49),sod*.77);
+          settled *= (1. - .16*fieldWet) * (1. - .13*wheel);
+          diffuseColor.rgb = mix(diffuseColor.rgb,settled * clamp(.69 + dot(legacy, vec3(.22,.60,.18)) * 2.4, .79, 1.12), coastal);
+          if (fieldDetail > .0) {
+            vec3 pbr = gulfScan(0.,1.,bedUV,bx,by);
+            if (fieldDetail > 1.) pbr = mix(pbr,gulfScan(1.,1.,trackUV,dx,dy),moisture);
+            pbr = mix(pbr,gulfScan(2.,1.,bedUV,bx,by),edge*.84);
+            pbr.b -= .18 * moisture;
+            fieldPbr.rgb = mix(fieldPbr.rgb, pbr, .70 * coastal);
           }
         }`)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>

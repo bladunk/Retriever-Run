@@ -1,5 +1,6 @@
 import * as T from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
+import { gulfGeometry } from './gulf-models.js'
 
 const plumage = new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide })
 const round = new T.SphereGeometry(1, 11, 7).toNonIndexed()
@@ -24,6 +25,7 @@ function bake(parts) {
 
 function birdBody(animal) {
   const { family, id, body, head, wing, neck, bill } = animal
+  if (id === 'mallard') return gulfGeometry('MallardDrake').clone()
   const long = ['goose','crane','wader'].includes(family)
   const wader = family === 'wader' || family === 'crane'
   const diver = family.includes('diver') || family === 'merganser'
