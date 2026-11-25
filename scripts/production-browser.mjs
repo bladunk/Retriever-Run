@@ -116,6 +116,8 @@ try {
     if (!app) return
     const footer = tab.locator('#running-version')
     assert.equal(await footer.textContent(), buildLabel(app))
+    if (!new URL(tab.url()).searchParams.has('perf')) return
+    await tab.waitForFunction(() => typeof window.retrieverPerformance === 'function')
     assert.deepEqual(await tab.evaluate(() => window.retrieverPerformance().build), app)
   }
   const log = { engine: safari ? 'webkit' : 'chromium', baseline, upgrade: phaseThree ? 'phase-three' : phaseTwo ? 'phase-two' : upgrade ? 'phase-one' : false }

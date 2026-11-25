@@ -410,8 +410,8 @@ function initialize() {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps, wildlife: wildlife.stamp,
       }, camera, signs)
-      const drawStart = performanceProbe?.stamp()
       if (wall < .027 && mode !== 'paused') wildlife.warm(renderer, camera)
+      const drawStart = performanceProbe?.stamp()
       renderer.render(scene, camera)
       if (mode === 'running' && performanceProbe) {
         const end = performanceProbe.stamp()

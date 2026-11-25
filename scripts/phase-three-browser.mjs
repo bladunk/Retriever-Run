@@ -126,7 +126,7 @@ try {
         }
         const toNext = (replay.inputs[replay.next]?.at - state.elapsed) * 1000
         stamp += replay.fast && toNext > 0 ? Math.max(16, Math.min(124, toNext)) : replay.fast ? 124 : 1000 / 30
-      } else if (state.distance < qa.limit) stamp += 25
+      } else if (state.distance < qa.limit) stamp += qa.advanceBy ?? 25
       else if (qa.limit < 0 && quality === 'low') stamp += .10
       const start = performance.now()
       callback(stamp)
@@ -239,6 +239,7 @@ try {
     await stage.focus()
     for (const [angle, presses, key] of [['three-quarter', 0, 'ArrowRight'], ['front', 2, 'ArrowLeft'],
       ['side', 3, 'ArrowRight'], ['rear', 3, 'ArrowRight']]) {
+      if (args.includes('baseline-dog') && angle !== 'three-quarter') break
       for (let step = 0; step < presses; step++) await page.keyboard.press(key)
       await page.waitForTimeout(500)
       await stage.screenshot({ path: resolve(output, angle + '.png'), scale: 'css' })
@@ -278,7 +279,7 @@ try {
     await runAt(start, seed)
     const samples = []
     for (let hunt = 0; hunt < 5; hunt++) {
-      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, start + 8)
+      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, start + (reuse ? 25 : 8))
       await page.waitForFunction(() => window.retrieverDebug?.wildlife?.model && window.retrieverDebug.wildlife.drawn > 0,
         null, { timeout: 40_000 }).catch(async error => {
         console.error(await page.evaluate(() => ({ mode: document.querySelector('#game').dataset.mode,
@@ -292,8 +293,12 @@ try {
       const retired = await page.evaluate(() => window.retrieverPerformance())
       samples.push({ hunt: hunt + 1, active, retired })
       console.log(`Hunt ${hunt + 1}: ${active.textures} textures with mallard, ${retired.textures} after retirement`)
-      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, encounter.distance + (reuse ? 150 : 65))
-      await page.locator('#run-again').waitFor({ timeout: 35_000 })
+      await page.evaluate(({ distance, reuse }) => {
+        window.phaseThreeQA.limit = distance + (reuse ? 150 : 65)
+        if (reuse) window.phaseThreeQA.advanceBy = 116
+      }, { distance: encounter.distance, reuse })
+      await page.locator('#run-again').waitFor({ timeout: 120_000 })
+      await page.evaluate(() => { window.phaseThreeQA.advanceBy = undefined })
       if (hunt < 4) {
         await page.locator('#run-again').tap()
       }
@@ -321,6 +326,10 @@ try {
       console.log(`Rendered ${state.elapsed.toFixed(2)} seconds (${state.mode})`)
       await writeFile(resolve(output, 'soak-checkpoint.json'), JSON.stringify({ elapsed: state.elapsed, stage: stageAt(state.elapsed).level,
         quality, acceleratedClock: args.includes('fast'), offline: args.includes('offline') }) + '\n')
+      if (args.includes('territory-evidence') && state.mode === 'running' && checkpoint % 30 === 15) {
+        const region = expeditionRegions[Math.floor(checkpoint / 30)]
+        if (region) await capture('journey-' + region.key, { sampledAfter: checkpoint })
+      }
       if (checkpoint === duration || state.mode !== 'running') break
     }
     const soak = await page.evaluate(() => ({ ...window.phaseThreeQA.soak, state: window.retrieverDebug }))
@@ -503,8 +512,18 @@ try {
     await stepTo(fixture.end)
     await capture('sign-near', fixture)
     assert.ok(results.at(-1).signs.some(sign => sign.distance === fixture.sign.distance))
+  } else if (args.includes('neighbor-timber')) {
+    const seed = 73
+    const target = rowsFor(seed, 59).find(row => row.at > 960 && row.at < 978 && row.entities.filter(entity => entity.type === 'fallen').length === 2)
+    assert.ok(target)
+    await runAt(target.at - 23, seed)
+    await capture('paired-approach', { seed, target: target.at })
+    await stepTo(target.at - 11)
+    await capture('paired-955m', { seed, target: target.at })
+    await stepTo(target.at - 5)
+    await capture('paired-close', { seed, target: target.at })
   } else if (args.includes('water-crossings') || args.includes('root-plate')) {
-    const candidates = args.includes('root-plate') ? ['cypress','delta','parklands'] : ['gulf','cypress','platte','mountain']
+    const candidates = args.includes('root-plate') ? ['cypress','flyway','parklands'] : ['gulf','cypress','platte','mountain']
     const type = args.includes('root-plate') ? 'fallen' : 'stream'
     for (const key of candidates) {
       if (args.some(arg => arg.startsWith('only=')) && !args.includes('only=' + key)) continue

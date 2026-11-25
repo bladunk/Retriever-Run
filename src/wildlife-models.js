@@ -46,7 +46,7 @@ export function disposeWildlifeModel(model) {
 }
 
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
-export function createWildlifeModels(probe) {
+export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(url)) {
   const decoded = new Map()
   let waiting
   let wanted = []
@@ -58,20 +58,24 @@ export function createWildlifeModels(probe) {
   let evictions = 0
   let lastRequested = ''
   const limit = 2
+  let upload
 
   function preparation(model) {
     const textures = new Set()
     const skeletons = new Set()
     const shades = []
+    const geometries = new Set()
     model.root.traverse(node => {
       if (!node.isMesh) return
       shades.push(node)
+      geometries.add(node.geometry)
       if (node.isSkinnedMesh) skeletons.add(node.skeleton)
       for (const material of Array.isArray(node.material) ? node.material : [node.material]) {
         for (const value of Object.values(material)) if (value?.isTexture) textures.add(value)
       }
     })
-    return { textures: [...textures], skeletons: [...skeletons], shades, texture: 0, skeleton: 0, shade: 0, pending: false }
+    return { textures: [...textures], skeletons: [...skeletons], geometries: [...geometries], shades,
+      texture: 0, skeleton: 0, geometry: 0, shade: 0, pending: false }
   }
 
   function release(id, model) {
@@ -97,7 +101,7 @@ export function createWildlifeModels(probe) {
     const desc = livingModels[id]
     const start = performance.now()
     probe?.operation('wildlife-load-start', id)
-    loader.loadAsync(desc.url).then(({ scene, animations }) => {
+    loadModel(desc.url).then(({ scene, animations }) => {
       probe?.operation('wildlife-load-ready', id, start)
       const setup = probe?.stamp()
       const bounds = new T.Box3().setFromObject(scene)
@@ -119,6 +123,33 @@ export function createWildlifeModels(probe) {
       waiting = undefined
       prepare()
     })
+  }
+
+  function uploadGeometry(renderer, geometry) {
+    // A real indexed draw uploads the geometry through Three's resource
+    // manager. Share one tiny target and omit the wildlife material and rig.
+    if (!upload) {
+      const target = new T.WebGLRenderTarget(1, 1, { depthBuffer: false })
+      const scene = new T.Scene()
+      const camera = new T.Camera()
+      const mesh = new T.Mesh(undefined, new T.MeshBasicMaterial({ colorWrite: false, depthWrite: false }))
+      mesh.frustumCulled = false
+      scene.add(mesh)
+      upload = { target, scene, camera, mesh }
+    }
+    const { mesh, scene, camera, target } = upload
+    const previousTarget = renderer.getRenderTarget()
+    const { start, count } = geometry.drawRange
+    geometry.setDrawRange(start, Math.min(3, count))
+    mesh.geometry = geometry
+    try {
+      renderer.setRenderTarget(target)
+      renderer.render(scene, camera)
+    } finally {
+      renderer.setRenderTarget(previousTarget)
+      mesh.geometry = null
+      geometry.setDrawRange(start, count)
+    }
   }
 
   return {
@@ -163,6 +194,11 @@ export function createWildlifeModels(probe) {
           renderer.compileAsync(work.shades[work.shade++], camera, scene)
             .catch(() => {}).finally(() => { work.pending = false; prepare() })
           probe?.operation('wildlife-warm-shader', id, started)
+          return
+        }
+        if (work.geometry < work.geometries.length) {
+          uploadGeometry(renderer, work.geometries[work.geometry++])
+          probe?.operation('wildlife-warm-geometry', id, started)
           return
         }
       }

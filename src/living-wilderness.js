@@ -148,7 +148,9 @@ export function createLivingWilderness(scene, call, prewarmSound, probe) {
         prepared = prepare(upcoming)
       }
       const model = detail > 0 ? models.get(upcoming.species) : undefined
-      const waitingForModel = detail > 0 && livingModels[upcoming.species] && !model && nearest > 30
+      const warm = model?.warmup
+      const preparingRig = !warm || warm.pending || warm.geometry < warm.geometries.length
+      const waitingForModel = detail > 0 && livingModels[upcoming.species] && preparingRig && nearest > 35
       if (running && nearest < encounterApproach(upcoming.species)[0] && !waitingForModel) {
         active = prepared
         prepared = undefined
