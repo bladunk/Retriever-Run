@@ -1,6 +1,6 @@
 # Phase 05.1 · Boyd and official branding
 
-The isolated branch `codex/retriever-run-phase-05-1` starts at `53411ccacc6af7e962795eb45da4d8ac2f60d664`, the merged Phase 05 baseline from PR #30. The candidate runtime is `05f3eebd89d7c9dbba3c61901230ec851c96a10e`. The verified local bundle is `1.0.0-phase.5.1 · 31f7fc6`, manifest `ac607117fc3d64d217cb`. Deployment-specific public configuration can change the short identifier. The in-game footer, Field settings and performance report use the active bundle’s own identifier. [Merged baseline](https://github.com/bladunk/Retriever-Run/pull/30) · [Draft PR #31](https://github.com/bladunk/Retriever-Run/pull/31) · [CI checks](https://github.com/bladunk/Retriever-Run/pull/31/checks)
+The isolated branch `codex/retriever-run-phase-05-1` starts at `53411ccacc6af7e962795eb45da4d8ac2f60d664`, the merged Phase 05 baseline from PR #30. The rendered character review uses runtime `05f3eebd89d7c9dbba3c61901230ec851c96a10e`. The verified icon-revision bundle is `1.0.0-phase.5.1 · e21de57`, manifest `85a0c4255ce182eb788a`. Deployment-specific public configuration can change the short identifier. The in-game footer, Field settings and performance report use the active bundle’s own identifier. [Merged baseline](https://github.com/bladunk/Retriever-Run/pull/30) · [Draft PR #31](https://github.com/bladunk/Retriever-Run/pull/31) · [CI checks](https://github.com/bladunk/Retriever-Run/pull/31/checks)
 
 ## Reference privacy
 
@@ -29,7 +29,7 @@ The normal Kennel has a locked Boyd portrait and emblem with the Level 100 and F
 
 ## Branding and installation
 
-The proposed default is Heritage Retriever, a tight portrait drawn from Boyd’s eyes, ear shape, nose, coat and collar. Waterfowl Country uses an open marsh composition. Working Dog is a closer cut from the upright prestige portrait. The icon artwork uses a simple silhouette, warm light, muted greens and subtle ducks. The menu pairs live title typography with the large landscape or portrait composition. A compact landscape derivative appears in the existing install and update screen. The Kennel portrait and framed Lodge artwork have separate uses. There are no extra screens, taps or waiting periods. [Master artwork and options](evidence/phase-05-1/README.md)
+The revised Heritage Retriever proposal follows the three-quarter reference, with a longer muzzle, closer-folded ears, cream cheeks and quiet green marsh light. Waterfowl Country uses an open marsh composition. Working Dog is a closer cut from the upright prestige portrait. The icon artwork uses a simple silhouette, warm light, muted greens and subtle ducks. The menu pairs live title typography with the large landscape or portrait composition. A compact landscape derivative appears in the existing install and update screen. The Kennel portrait and framed Lodge artwork have separate uses. There are no extra screens, taps or waiting periods. [Master artwork and options](evidence/phase-05-1/README.md)
 
 The HTML uses a 180 × 180 Apple touch icon and a 48 × 48 favicon. The manifest keeps the exact display name **Retriever Run**, its existing relative scope and standalone presentation. It lists standard 192 and 512 px icons and an opaque 512 px maskable icon. The maskable composition centers the eyes, muzzle and ear tips inside the central safety circle, with bleed to the edges. The new paths prevent an old service worker from serving its cached icon to the update downloader. Each artwork derivative participates in the existing content digest and offline verification. [Home Screen size and masks](evidence/phase-05-1/home-screen-study.webp)
 
@@ -39,11 +39,11 @@ Native installation and icon refresh remain owner acceptance items. After the re
 
 | Measurement | Phase 05 live | Phase 05.1 candidate |
 | --- | ---: | ---: |
-| Unique required bytes | 9,324,024 | 12,054,005 |
-| Build artifact bytes | — | 12,095,924 |
-| Launch shell bytes | — | 79,766 |
-| New required bytes with intact Phase 05 cache | — | 3,245,775 across 17 digests |
-| Approximate incremental bytes with text gzip | — | 2,941,134 |
+| Unique required bytes | 9,324,024 | 11,997,779 |
+| Build artifact bytes | — | 12,039,830 |
+| Launch shell bytes | — | 79,569 |
+| New required bytes with intact Phase 05 cache | — | 3,189,549 across 17 digests |
+| Approximate incremental bytes with text gzip | — | 2,884,885 |
 | Boyd GLB | — | 1,433,172 B, 34,298 triangles, one material, one coat and eight clips |
 | Current standard Labrador GLB | 893,212 B, 22,675 triangles | Same runtime file |
 
@@ -53,6 +53,7 @@ Normal online launch requests the Labrador GLB, even if a Boyd parameter is supp
 
 - The 156 Node tests passed. Coverage includes the lock, isolated gear IDs, distinct skinned mesh, shared clip contract, application names and icon sizes, Phase 05.1 build labels and rejection of unregistered public copies.
 - Production verification checks every declared asset hash, agreement with the service worker snapshot and the complete emitted file set.
+- The icon revision passed 14 targeted checks and verified all five resized icon files in the offline content manifest. The earlier rendered character evidence uses build `31f7fc6`.
 - Built artifact verification passed with 48 emitted files and 45 required entries. The final Chromium Phase 05 upgrade repaired the corrupt fixture, retained two saved hunts, reused unchanged audio and deferred activation until the paused hunt ended.
 - The WebKit rehearsal passed fresh preparation and offline access, Labrador → Pointer → Boyd switching, verified branding and static asset fetches, the locked portrait and bottom equipment card, and the visible build footer. Renderer snapshots across five previews ranged from 19–30 geometries and 13–18 textures, including background resources.
 - The rendered tests run built files under `/Retriever-Run/`. They cover fresh installation content, offline icon and Boyd requests, the Kennel and final equipment card, multiple practice breed switches, and update preparation and activation while preserving the active hunt and local records. The Phase 05 course stress evidence still applies because the runner, layout, scoring and territory modules were preserved. [Phase 05 validation](PHASE_05_REPORT.md)

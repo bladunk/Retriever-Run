@@ -6,9 +6,9 @@ import { landscapeProfiles } from '../src/migration-landscapes.js'
 import { createContentManifest, installation } from '../src/content-manifest.js'
 
 const worker = readFileSync(new URL('./offline-runtime.js', import.meta.url), 'utf8')
-const publicShell = ['manifest.webmanifest', 'icons/favicon.png', 'branding/boyd-install.webp']
-const publicFiles = [...publicShell, 'icons/boyd-192.png', 'icons/boyd-512.png',
-  'icons/boyd-maskable-512.png', 'icons/boyd-apple-touch-180.png', 'branding/boyd-portrait.webp', 'branding/boyd-menu.webp',
+const publicShell = ['manifest.webmanifest', 'icons/boyd-heritage-48.png', 'branding/boyd-install.webp']
+const publicFiles = [...publicShell, 'icons/boyd-heritage-192.png', 'icons/boyd-heritage-512.png',
+  'icons/boyd-heritage-maskable-512.png', 'icons/boyd-heritage-180.png', 'branding/boyd-portrait.webp', 'branding/boyd-menu.webp',
   'branding/master-hunter.png']
 const wildlifeTerritories = (...species) => Object.entries(habitatEncounters)
   .filter(([, tiers]) => tiers.some(tier => tier.some(id => species.includes(id)))).map(([territory]) => territory)

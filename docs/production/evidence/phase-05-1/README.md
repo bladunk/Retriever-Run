@@ -18,11 +18,11 @@ The game-only images use build `31f7fc6`. Moving footage used `3f57166`, which h
 ## Artwork
 
 - [A, B and C icon options](icon-options.webp)
-- [Proposed Heritage Retriever master artwork](heritage-master.webp)
+- [Revised Heritage Retriever master artwork](heritage-master.webp)
 - [60 px Home Screen placements, light and dark walls, maskable framing and favicon](home-screen-study.webp)
 - [Actual mobile main menu and version footer](menu.webp)
 - [Actual installation and content-load screen](install.webp)
 - [Master Hunter Kennel portrait and emblem](kennel-locked.webp)
 - [Future Lodge portrait](lodge-portrait.webp)
 
-Option A emphasizes Boyd’s face and collar at small icon size. Option B places him against a wider wetland. Option C emphasizes his upright stance and expression. The iPhone placements are a size simulation. Gameplay, install and Kennel views are browser captures. [Review and iPhone acceptance](../../PHASE_05_1_REPORT.md)
+Revised option A uses Boyd’s longer muzzle, closer-folded ears and softer cream markings against a darker marsh. Option B places him against a wider wetland. Option C emphasizes his upright stance and expression. The iPhone placements are a size simulation. Gameplay, install and Kennel views are browser captures. [Review and iPhone acceptance](../../PHASE_05_1_REPORT.md)

@@ -55,9 +55,9 @@ test('public build rejects unregistered copies even when a reference photo uses 
 test('the iPhone and browser use separate Boyd icon sizes and the running version supports Phase 05.1', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8')
   assert.match(html, /apple-mobile-web-app-title" content="Retriever Run"/)
-  assert.match(html, /rel="apple-touch-icon" href="\.\/icons\/boyd-apple-touch-180\.png"/)
-  assert.match(html, /rel="icon" href="\.\/icons\/favicon\.png"/)
-  const favicon = await readFile(new URL('../public/icons/favicon.png', import.meta.url))
+  assert.match(html, /rel="apple-touch-icon" href="\.\/icons\/boyd-heritage-180\.png"/)
+  assert.match(html, /rel="icon" href="\.\/icons\/boyd-heritage-48\.png"/)
+  const favicon = await readFile(new URL('../public/icons/boyd-heritage-48.png', import.meta.url))
   assert.equal(favicon.readUInt32BE(16), 48)
   assert.equal(favicon.readUInt32BE(20), 48)
   assert.equal(buildLabel({ version: '1.0.0-phase.5.1', id: 'abcdef0' }),
