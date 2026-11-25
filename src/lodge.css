@@ -369,6 +369,7 @@
 @media (max-width: 400px) {
   .lodge-tabs { gap: 2px; padding-inline: 4px; }
   .lodge-tabs button { padding-inline: 3px; font-size: .7rem; }
+  #tab-worldwide { padding-inline: 0; }
 }
 
 .wildlife-guide {

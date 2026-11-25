@@ -4,6 +4,7 @@ import { gearRarity } from './collection-gear.js'
 import { node } from './lodge-elements.js'
 import { masterHunter } from './master-hunter.js'
 import { qualificationCard } from './career-ui.js'
+import { checkLabel, honorById } from './field-honors.js'
 
 const categories = { collar: 'Collars', bandana: 'Bandanas', vest: 'Hunting vests', coat: 'Coats' }
 const slot = category => category === 'bandana' ? 'collar' : category
@@ -24,6 +25,7 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog) {
 
   const description = node('p', null, 'kennel-preview-status')
   description.setAttribute('role', 'status')
+  const threshold = node('p', null, 'room-note')
   const fitting = node('div', null, 'kennel-fitting')
   const count = node('p', ownedGear(player, standing).length + ' of ' + kennelItems.length + ' options available', 'room-note')
   const view = node('div', null, 'board-filters')
@@ -34,7 +36,7 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog) {
   order.setAttribute('aria-label', 'Sort equipment')
   for (const label of ['Field order', 'Rarity', 'Name']) order.append(node('option', label))
   view.append(ownership, order)
-  fitting.append(stage, description, count, filters, view)
+  fitting.append(stage, description, threshold, count, filters, view)
 
   const feedback = node('div', null, 'kennel-selection')
   const equip = node('button', 'Equip')
@@ -59,6 +61,9 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog) {
     const wearing = equipped() === selected
     const customCoat = category === 'coat' && player.kennel.breed === 'boyd'
     description.textContent = customCoat ? 'Boyd wears his signature coat.' : item ? (wearing ? 'Wearing ' : 'Previewing ') + item.name : 'Browse equipment'
+    const honor = honorById.get(item?.honor)
+    threshold.hidden = !honor || available(item)
+    threshold.textContent = threshold.hidden ? '' : honor.checks.map(checkLabel).join(' · ')
     equip.textContent = customCoat ? 'Available on Labrador' : wearing ? 'Equipped' : item && available(item) ? 'Equip' : 'Locked'
     equip.disabled = customCoat || wearing || !available(item)
     favorite.disabled = !item

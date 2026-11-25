@@ -15,7 +15,7 @@ export function nearMasterHunter() {
       retrieves: id === 'mallard' ? 340 : id === 'pheasant' ? 150 : 0 }]
   }))
   return { version: saveVersion, nextRun: 4301, active: 1, players: [{
-    id: 1, enrollment: 'guest', nickname: 'Willow Guide', career: { xp: xpAt(100) - 6, lastRun: 4300 },
+    id: 1, enrollment: 'guest', nickname: 'Willow Guide', career: { xp: xpAt(100) - 3, lastRun: 4300 },
     profile: { best: 70000, farthest: 12000, streak: 68, quality: 'low' },
     stats: { runs: 4300, distance: 8_400_000, playtime: 540000, points: 11_000_000, treats: 310000,
       jumps: 8000, slides: 4200, slidesCleared: 1120, logs: 890, geese: 605, ducks: 340, pheasants: 150 },

@@ -4,8 +4,9 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { extname, resolve, sep } from 'node:path'
 import { chromium, devices, webkit } from 'playwright'
 import { buildLabel } from '../src/build-info.js'
-import { saveKey } from '../src/lodge-save.js'
+import { openLodge, saveKey } from '../src/lodge-save.js'
 import { masterHunter } from '../src/master-hunter.js'
+import { masterHunterChecks } from '../src/progression.js'
 import { nearMasterHunter } from './career-fixtures.mjs'
 
 const root = resolve(process.env.FIELD_BUILD ?? 'dist')
@@ -98,7 +99,7 @@ try {
   assert.deepEqual((await save()).kennel?.equipment, ownedBefore)
   await capture('locked-equipment')
   await tapText('Working dogs')
-  assert.equal(await page.getByRole('button', { name: 'Equip Boyd' }).count(), 0)
+  assert.equal(await page.getByRole('button', { name: 'Equip Boyd', exact: true }).count(), 0)
   await page.locator('#close-lodge').tap()
   await context.setOffline(true)
   await page.reload({ waitUntil: 'domcontentloaded' })
@@ -109,18 +110,24 @@ try {
   await page.locator('#field-report').waitFor({ timeout: 95_000 })
   const saved = await save()
   assert.equal(saved.stats.runs, 4301)
-  assert.ok(saved.progression.boyd)
+  if (!saved.progression.boyd) {
+    const data = await page.evaluate(key => localStorage.getItem(key), saveKey)
+    const lodge = openLodge(() => ({ getItem: key => key === saveKey ? data : null }))
+    assert.fail('Boyd qualification after the fixture hunt: ' + JSON.stringify({ career: saved.career,
+      pending: masterHunterChecks(lodge.current()).filter(check => !check.met), report: await page.locator('#report-career').textContent() }))
+  }
   assert.match(await page.locator('#report-career').textContent(), /Career XP.*Level 100.*Master Hunter kit earned/s)
   assert.deepEqual(await page.evaluate(() => window.retrieverPerformance().build), release.app)
-  await scroll(page.locator('#report-career'))
   await capture('hunt-over')
+  await scroll(page.locator('#report-career'))
+  await capture('hunt-rewards')
   const replay = page.locator('#run-again')
   const actionBounds = await replay.boundingBox()
   assert.ok(actionBounds.y >= 0 && actionBounds.y + actionBounds.height <= viewport.height)
   await page.locator('#report-lodge').tap()
   await tab('kennel')
   await tapText('Working dogs')
-  await page.getByRole('button', { name: 'Equip Boyd' }).tap()
+  await page.getByRole('button', { name: 'Equip Boyd', exact: true }).tap()
   assert.equal((await save()).kennel.breed, 'boyd')
   assert.equal((await save()).kennel.equipment.collar, masterHunter.signature)
   await scroll(page.locator('.kennel-master-hunter'))
@@ -129,6 +136,16 @@ try {
   await page.waitForFunction(() => window.retrieverPerformance().dogBreed === 'boyd')
   await page.waitForTimeout(800)
   await capture('boyd-portrait')
+  const currentResources = () => page.evaluate(() => {
+    const snapshot = window.retrieverPerformance()
+    return { textures: snapshot.textures, geometries: snapshot.geometries, breed: snapshot.dogBreed }
+  })
+  const firstFit = await currentResources()
+  for (const [name, breed] of [['Use Labrador', 'lab'], ['Equip Boyd', 'boyd']]) {
+    await page.getByRole('button', { name, exact: true }).tap()
+    await page.waitForFunction(expected => window.retrieverPerformance().dogBreed === expected, breed)
+  }
+  const secondFit = await currentResources()
   await page.locator('#close-lodge').tap()
   const replayStart = Date.now()
   await replay.tap()
@@ -142,7 +159,7 @@ try {
   if (errors.length) fail(errors.join('\n'))
   const result = { browser: safari ? 'webkit' : 'chromium', app: release.app, viewport, replayMs,
     xp: saved.career.xp, honors: Object.keys(saved.progression.honors).length,
-    sameBuildOffline: true, firstBoydAward: true, offlineHunts: 2, errors }
+    sameBuildOffline: true, firstBoydAward: true, offlineHunts: 2, firstFit, secondFit, errors }
   await writeFile(resolve(output, 'browser.json'), JSON.stringify(result, null, 2) + '\n')
   console.log(JSON.stringify(result))
 } finally {
