@@ -106,7 +106,7 @@ function message(target, type) {
 
 function menuIsSafe() {
   return !['running', 'paused'].includes(game.dataset.mode) &&
-    !['onboarding', 'preferences', 'promotion', 'lodge'].some(id => select(id).open)
+    !document.querySelector('#onboarding[open], #preferences[open], #lodge[open]')
 }
 
 async function examine({ autoStart = false, update = false } = {}) {

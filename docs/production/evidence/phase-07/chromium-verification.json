@@ -1,0 +1,21 @@
+{
+  "app": {
+    "version": "1.0.0-phase.7",
+    "id": "9664832"
+  },
+  "engine": "chromium",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "offline": true,
+  "replayMs": 55,
+  "tiers": 5,
+  "sameLevelVariants": 2,
+  "trophyPinned": true,
+  "qualificationGranted": true,
+  "upgradeGrantedOnce": true,
+  "releasedLodgeDOM": true,
+  "lastKennelCard": true,
+  "errors": []
+}

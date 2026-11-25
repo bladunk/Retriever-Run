@@ -14,6 +14,8 @@ const phaseTwo = args.includes('from-phase-two')
 const phaseThree = args.includes('from-phase-three')
 const upgrade = phaseThree || phaseTwo || args.includes('from-phase-one')
 const shortUpgrade = phaseThree && args.includes('update-only')
+const closeLegacyClients = phaseThree && args.includes('phase-six-close')
+const lodgeVeto = args.includes('lodge-veto')
 const engine = safari ? webkit : chromium
 const root = resolve(process.env.FIELD_BUILD ?? 'dist')
 const original = upgrade ? resolve(phaseThree ? process.env.FIELD_PHASE_THREE_BUILD ?? 'qa-output/phase-three' :
@@ -28,6 +30,7 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.webmanifest': 
 const hits = new Map()
 const manifest = baseline ? null : JSON.parse(await readFile(resolve(root, 'content-manifest.json'), 'utf8'))
 const openingManifest = upgrade ? JSON.parse(await readFile(resolve(original, 'content-manifest.json'), 'utf8')) : manifest
+if (closeLegacyClients) assert.equal(openingManifest.app.version, '1.0.0-phase.6')
 const next = manifest && !upgrade && structuredClone(manifest)
 const replacements = new Map()
 if (next) {
@@ -49,7 +52,8 @@ let blocked = baseline || legacy ? null : openingManifest.assets.find(item => it
 if (!baseline && !legacy) assert.ok(blocked, 'Missing interruption fixture ' + interruptedAsset)
 const server = createServer(async (request, response) => {
   const path = new URL(request.url, 'http://localhost').pathname
-  if (legacy && path === '/qa-worker-boundary') return response.writeHead(200, { 'Content-Type': 'text/html' }).end('Worker boundary')
+  if ((legacy || closeLegacyClients) && path === '/qa-worker-boundary')
+    return response.writeHead(200, { 'Content-Type': 'text/html' }).end('Worker boundary')
   if (!path.startsWith(prefix)) return response.writeHead(404).end()
   const name = path.slice(prefix.length) || 'index.html'
   const serving = legacyActive || (upgrade && !newRelease) ? original : root
@@ -103,12 +107,17 @@ try {
   })
   const page = await context.newPage()
   const errors = []
+  let legacyDialogErrors = 0
+  function trackError(error) {
+    if (closeLegacyClients && /null.*open|open.*null/i.test(error.message)) legacyDialogErrors++
+    else { errors.push(error.message); console.error(error.message) }
+  }
   let interruptedPageErrors = 0
   page.on('pageerror', error => {
     // WebKit also reports an interrupted Service Worker response as a page
     // error. Count the intentional error only while the fixture is active.
     if (safari && blocked && args.includes('partial') && error.message === 'Load failed') interruptedPageErrors++
-    else { errors.push(error.message); console.error(error.message) }
+    else trackError(error)
   })
   page.on('console', message => { if (message.type() === 'error') console.error(message.text()) })
   const phase = message => { if (process.env.FIELD_QA_TRACE) console.error(message) }
@@ -310,6 +319,7 @@ try {
     }
     if (!args.includes('offline-only')) {
       const idle = await context.newPage()
+      idle.on('pageerror', trackError)
       await idle.goto(url + '?perf=1')
       await ready(idle)
       phase('Started second tab')
@@ -333,7 +343,14 @@ try {
         await assertRunningBuild(idle, openingManifest.app)
       }
       const preparation = idle.getByRole('button', { name: /^(Download|Apply) update$/ })
+      if (closeLegacyClients) blocked = manifest.assets.find(asset => asset.path === 'lodge/tier-1.webp')?.path
       await preparation.tap()
+      if (closeLegacyClients) {
+        await idle.getByText('The download stopped. Retry to resume from your verified files.').waitFor()
+        blocked = null
+        await idle.getByRole('button', { name: 'Retry download' }).tap()
+        log.interruptedLodgeUpdateResumed = true
+      }
       await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 65_000 }).catch(async error => {
         console.error('Update screen:', await idle.locator('#content-status').textContent())
         throw error
@@ -355,28 +372,59 @@ try {
       await page.bringToFront()
       await page.evaluate(() => window.qaBackground(false))
       await finish(page)
-      await idle.bringToFront()
-      await idle.getByRole('button', { name: 'Apply update' }).tap()
-      await migrated(idle)
-      phase('Activated candidate content')
-      await idle.bringToFront()
-      await ready(idle)
-      if (upgrade) await assertRunningBuild(idle, manifest.app)
-      await page.bringToFront()
-      await migrated(page)
-      await idle.bringToFront()
-      const after = await idle.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs)
+      let updated = idle
+      if (closeLegacyClients) {
+        // Already installed Phase 06 has a removed promotion dialog reference.
+        // Let the browser activate normally after all old tabs have finished and closed.
+        updated = await context.newPage()
+        await updated.goto(new URL('/qa-worker-boundary', url).href)
+        assert.ok(await updated.evaluate(async scope => {
+          window.qaWaitingWorker = (await navigator.serviceWorker.getRegistration(scope)).waiting
+          return Boolean(window.qaWaitingWorker)
+        }, url))
+        await page.close()
+        await idle.close()
+        await updated.waitForFunction(() => window.qaWaitingWorker.state === 'activated', null, { timeout: 30_000 })
+        updated.on('pageerror', error => { errors.push(error.message); console.error(error.message) })
+        await updated.goto(url + '?perf=1')
+        await assertRunningBuild(updated, manifest.app)
+        await ready(updated)
+        log.legacyDialogErrors = legacyDialogErrors
+        phase('Activated after closing the old Phase 06 clients')
+      } else {
+        if (lodgeVeto) {
+          await page.locator('#report-lodge').tap()
+          await idle.bringToFront()
+          await idle.getByRole('button', { name: 'Apply update' }).tap()
+          await idle.getByText('Finish or leave any open hunt').waitFor()
+          assert.equal(await page.locator('#lodge').evaluate(dialog => dialog.open), true)
+          await page.bringToFront()
+          await page.locator('#close-lodge').tap()
+          log.lodgeUpdateVeto = true
+        }
+        await idle.bringToFront()
+        await idle.getByRole('button', { name: 'Apply update' }).tap()
+        await migrated(idle)
+        phase('Activated candidate content')
+        await idle.bringToFront()
+        await ready(idle)
+        if (upgrade) await assertRunningBuild(idle, manifest.app)
+        await page.bringToFront()
+        await migrated(page)
+      }
+      await updated.bringToFront()
+      const after = await updated.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs)
       assert.equal(after, before + (shortUpgrade ? 1 : 2))
       assert.equal(hits.get(previouslyVerified.path), audioHits)
       if (upgrade) {
-        await idle.locator('#settings').tap()
-        assert.equal(await idle.locator('#swipe').inputValue(), 'standard')
-        await idle.locator('#swipe').selectOption('deliberate')
-        await idle.bringToFront()
-        await idle.reload({ waitUntil: 'domcontentloaded' })
-        await ready(idle)
-        await idle.locator('#settings').tap()
-        assert.equal(await idle.locator('#swipe').inputValue(), 'deliberate')
+        await updated.locator('#settings').tap()
+        assert.equal(await updated.locator('#swipe').inputValue(), 'standard')
+        await updated.locator('#swipe').selectOption('deliberate')
+        await updated.bringToFront()
+        await updated.reload({ waitUntil: 'domcontentloaded' })
+        await ready(updated)
+        await updated.locator('#settings').tap()
+        assert.equal(await updated.locator('#swipe').inputValue(), 'deliberate')
         log.updateVersions = [openingManifest.version, manifest.version]
       }
       log.update = { busyHuntProtected: true, preservedRuns: after, unchangedAudioRequests: audioHits }

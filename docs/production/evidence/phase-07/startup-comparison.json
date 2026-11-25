@@ -1,0 +1,54 @@
+[
+  {
+    "app": {
+      "version": "1.0.0-phase.6",
+      "id": "d4be70e"
+    },
+    "engine": "chromium",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "samples": [
+      {
+        "observed": 13839,
+        "readyMarker": 13829
+      },
+      {
+        "observed": 9933,
+        "readyMarker": 9916
+      },
+      {
+        "observed": 15758,
+        "readyMarker": 15696
+      }
+    ],
+    "lazy": true
+  },
+  {
+    "app": {
+      "version": "1.0.0-phase.7",
+      "id": "8496a45"
+    },
+    "engine": "chromium",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "samples": [
+      {
+        "observed": 7211,
+        "readyMarker": 7189
+      },
+      {
+        "observed": 9050,
+        "readyMarker": 9036
+      },
+      {
+        "observed": 11475,
+        "readyMarker": 11439
+      }
+    ],
+    "lazy": true
+  }
+]

@@ -425,3 +425,11 @@
 .board-filters:has(> select) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .board-filters select { min-width: 0; min-height: 44px; padding-inline: .45rem; }
 .kennel-master-hunter button { margin-block-start: .65rem; }
+
+.lodge-tabs { grid-template-columns: repeat(6,minmax(0,1fr)); }
+.report-lodge-award { border-inline-start: 3px solid #edba77; margin-block: .55rem; padding: .3rem .48rem; background: #71503548; }
+.report-lodge-award > button { min-height: 44px; margin-top: .25rem; }
+@media (max-width: 530px) {
+  .lodge-tabs { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .lodge-tabs button { padding-inline: 2px; }
+}

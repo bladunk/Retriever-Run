@@ -10,3 +10,26 @@ export function node(tag, text, className) {
   if (className) element.className = className
   return element
 }
+
+export function duration(seconds) {
+  const total = Math.floor(seconds)
+  const minutes = Math.floor(total / 60)
+  return (minutes >= 60 ? Math.floor(minutes / 60) + 'h ' : '') +
+    (minutes ? (minutes % 60) + 'm ' : '') + total % 60 + 's'
+}
+
+export function rows(items) {
+  return items.map(([name, value]) => {
+    const row = node('div')
+    row.append(node('dt', name), node('dd', value))
+    return row
+  })
+}
+
+export function cards(items) {
+  return items.map(([name, value]) => {
+    const card = node('div', null, 'record-card')
+    card.append(node('strong', value), node('span', name))
+    return card
+  })
+}
