@@ -256,7 +256,10 @@ function initialize() {
   const observeWildlife = event => runStatistics?.observe(event)
   const diving = createDivingFlocks(scene)
   if (diagnosticsRequested) {
+    // The collision overlay is an optional download. A verified offline
+    // edition can still inspect a dog when that developer chunk is absent.
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
+      .catch(error => { if (navigator.onLine) console.error(error) })
   }
   dog = createPlayer(scene, breed, createPickup, flags.get('kit'))
   if (collisionRequested) window.retrieverInspectDog = {

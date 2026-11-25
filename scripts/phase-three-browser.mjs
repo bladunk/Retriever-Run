@@ -271,13 +271,17 @@ try {
   if (args.includes('boyd-review')) {
     const release = JSON.parse(await readFile(resolve(root, 'content-manifest.json'), 'utf8'))
     const runtimeModel = release.assets.find(asset => asset.id === 'boyd.glb').path
+    const standardModel = release.assets.find(asset => asset.id === 'labrador.glb').path
     const visitor = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: .70 })
     await visitor.route(/.*/, route => route.request().url().startsWith(origin) ? route.continue() : route.abort())
     const ordinary = await visitor.newPage()
     const ordinaryRequests = []
     ordinary.on('request', request => ordinaryRequests.push(new URL(request.url()).pathname))
     await ordinary.goto(origin + prefix + '?breed=boyd&perf=1')
-    await ordinary.locator('#content-online').tap()
+    await Promise.all([
+      ordinary.waitForRequest(request => new URL(request.url()).pathname.endsWith('/' + standardModel)),
+      ordinary.locator('#content-online').tap(),
+    ])
     await ordinary.waitForFunction(() => Boolean(window.retrieverPerformance?.()?.build))
     assert.equal(await ordinary.evaluate(() => window.retrieverInspectDog), undefined)
     assert.equal(await ordinary.locator('#game[data-practice]').count(), 0)
