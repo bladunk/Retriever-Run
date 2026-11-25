@@ -29,8 +29,9 @@ export function planEncounter(packet, seed) {
     if (!candidates.length) continue
     // Prefer near-bank habitat so a normal portrait camera has time to see
     // the leader before its trajectory takes it out of the frame.
-    const shoreline = candidates.filter(anchor => Math.abs(anchor.lateral) < 8.6)
-    if (shoreline.length) candidates = shoreline
+    const closeRange = preferred === 'cover' ? 7.1 : 8.6
+    const near = candidates.filter(anchor => Math.abs(anchor.lateral) < closeRange)
+    if (near.length) candidates = near
     const anchor = candidates[Math.floor(roll() * candidates.length)]
     const count = animal.family === 'crane' ? 9 : animal.family === 'goose' ? 5 :
       ['duck','teal','diver','crest','crest-diver','spoon','pintail','merganser'].includes(animal.family) ? 3 : 1

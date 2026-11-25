@@ -27,6 +27,8 @@ The 29-species catalog includes 21 waterfowl, the ring-necked pheasant, Sandhill
 
 The Phase 04 download contains the regional asset groups. Terrain packets preselect off-trail, roost, water-edge and flight anchors. Cache verification, recovery, prompt sizing and worker activation continue to use existing offline preparation. No remote wildlife fetch is needed once verification completes. The local history persists observation and retrieve counts separately. [Species, territory and journal contracts](LIVING_WILDERNESS.md) · [Individual credits](ASSET_LICENSES.md#phase-04-living-wilderness)
 
+Rendered review flagged canopy occlusion and difficult foreground observations. Eligible cover anchors now favor nearer flanks, cranes and eagles clear more of the canopy, and mallards rise from the water after the dog approaches. These adjustments remain entirely off the collision path.
+
 The primary development branch is `codex/retriever-run-phase-04`. No release publication or database work occurred on this branch.
 
 ## Build, asset and hosting measurements
@@ -34,13 +36,13 @@ The primary development branch is `codex/retriever-run-phase-04`. No release pub
 | Local production output | Phase 03B | Phase 04 |
 | --- | ---: | ---: |
 | Files in Pages artifact | 32 | 41 |
-| Total artifact bytes | 5,611,909 | 7,494,868 |
-| Required manifest bytes with duplicate paths | 5,581,420 | 7,457,053 |
-| Unique required bytes by SHA-256 | 5,556,097 | 7,431,730 |
+| Total artifact bytes | 5,611,909 | 7,495,121 |
+| Required manifest bytes with duplicate paths | 5,581,420 | 7,457,306 |
+| Unique required bytes by SHA-256 | 5,556,097 | 7,431,983 |
 | Unique shell bytes | 76,074 | 76,973 |
 | Optional diagnostic module |  | 5,418 |
 
-The isolated Phase 04 verifier reported content version `77e3cc6b74180b5f653b`. Compared by digest, 17 changed or new required content objects total 3,006,320 bytes. Approximately 4.43 MB of the new working set can be reused from verified Phase 03B files. The figure excludes update metadata, network overhead and corruption repairs. Both landscape texture variants and all required model files are in the offline edition. There is no separate paid or online graphics pack.
+The isolated Phase 04 verifier reported content version `dfad9518c379538bfb46`. Compared by digest, 17 changed or new required content objects total 3,006,573 bytes. Approximately 4.43 MB of the new working set can be reused from verified Phase 03B files. The figure excludes update metadata, network overhead and corruption repairs. Both landscape texture variants and all required model files are in the offline edition. There is no separate paid or online graphics pack.
 
 | New content | Download bytes | Render / decode estimate | In-game purpose |
 | --- | ---: | --- | --- |
@@ -71,7 +73,7 @@ The offline WebKit acceptance flow measured 982 ms from replay input to its firs
 
 ## Verification and captures
 
-- `npm test` on the baseline passed all 134 tests. The Phase 04 suite adds encounter eligibility, deterministic reruns, animation and visibility bounds, journal migration and idempotence, original obstacle hull consistency and wildlife geometry lifecycle.
+- `npm test` on the baseline passed all 134 tests. The Phase 04 suite passed 139 tests and adds encounter eligibility, deterministic reruns, animation and visibility bounds, journal migration and idempotence, original obstacle hull consistency and wildlife geometry lifecycle.
 - `npm run build` and `npm run verify:production` verified the actual Vite output under `/Retriever-Run/`, including locally hosted Meshopt/WebP assets and every offline content digest.
 - `npm run stress` passed 10,000 seeded hunts and 31,865,525 fixed-step ticks, with 431,143 pickups. `npm run stress:master` verified 100,020 windows across all thirty stages over 69,147,728 ticks. The validation covered all 15 hazard types and the endless extension.
 - The WebKit 320 × 568 offline test interrupted a partial `living-mallard.glb` response, confirmed reuse of unchanged audio on retry, repaired a corrupt cached model, reloaded offline, played and completed a hunt, paused and returned from a visibility change, replayed, and exercised the last Kennel card. It also verified all 29 Journal entries offline. The test injected the network failures it reported.

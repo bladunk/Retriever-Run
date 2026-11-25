@@ -94,7 +94,7 @@ function guidedInputs(seed, duration) {
 try {
   const viewport = args.includes('wide') ? { width: 844, height: 470 }
     : args.includes('small') ? { width: 320, height: 568 } : { width: 390, height: 844 }
-  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: args.includes('retina') ? 2 : .70,
+  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: args.includes('retina') ? 2 : args.includes('fast') ? .32 : .70,
     ...(args.includes('video') ? { recordVideo: { dir: output, size: viewport } } : {}) })
   // Block the external APIs, while letting the same-origin app worker serve
   // an actually verified content pack for the full set of offline checkpoints.
@@ -124,7 +124,8 @@ try {
         while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
           window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
         }
-        stamp += 1000 / 30
+        const toNext = (replay.inputs[replay.next]?.at - state.elapsed) * 1000
+        stamp += replay.fast && toNext > 0 ? Math.max(16, Math.min(124, toNext)) : replay.fast ? 124 : 1000 / 30
       } else if (state.distance < qa.limit) stamp += 25
       else if (qa.limit < 0 && quality === 'low') stamp += .10
       const start = performance.now()
@@ -179,8 +180,12 @@ try {
       if (!isPhaseThree) return s.tiles === 7 && s.drawCalls >= 36
       const count = quality === 'low' || small ? 4 : 5
       const center = Math.floor(distance / 30)
-      return Array.from({ length: count }, (_, i) => center + i).every(i => s.world?.some(t => t.index === i))
-    }, { distance, isPhaseThree, quality: sceneQuality, small: args.includes('small') }, { timeout: 60_000 }).catch(async error => {
+      const ready = Array.from({ length: count }, (_, i) => center + i).every(i => s.world?.some(t => t.index === i))
+      // The fixture freezes the simulation clock at a view. A Low-presets
+      // capture still needs a redraw to let staged terrain finish attaching.
+      if (!ready && quality === 'low') window.dispatchEvent(new Event('resize'))
+      return ready
+    }, { distance, isPhaseThree, quality: sceneQuality, small: args.includes('small') }, { polling: 300, timeout: 60_000 }).catch(async error => {
       console.error(await page.evaluate(() => ({ state: window.retrieverDebug, perf: window.retrieverPerformance?.() })))
       throw error
     })
@@ -225,14 +230,16 @@ try {
     const seed = 7
     const inputs = guidedInputs(seed, duration)
     await runAt(0, seed)
-    await page.evaluate(({ inputs, duration }) => {
-      window.phaseThreeQA.soak = { inputs, duration, next: 0, nextSample: 0, samples: [] }
-    }, { inputs, duration })
+    await page.evaluate(({ inputs, duration, fast }) => {
+      window.phaseThreeQA.soak = { inputs, duration, fast, next: 0, nextSample: 0, samples: [] }
+    }, { inputs, duration, fast: args.includes('fast') })
     for (let checkpoint = Math.min(15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
       await page.waitForFunction(value => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
         window.retrieverDebug?.elapsed >= value, checkpoint, { timeout: 240_000 })
       const state = await page.evaluate(() => window.retrieverDebug)
       console.log(`Rendered ${state.elapsed.toFixed(2)} seconds (${state.mode})`)
+      await writeFile(resolve(output, 'soak-checkpoint.json'), JSON.stringify({ elapsed: state.elapsed, stage: stageAt(state.elapsed).level,
+        quality, acceleratedClock: args.includes('fast'), offline: args.includes('offline') }) + '\n')
       if (checkpoint === duration || state.mode !== 'running') break
     }
     const soak = await page.evaluate(() => ({ ...window.phaseThreeQA.soak, state: window.retrieverDebug }))

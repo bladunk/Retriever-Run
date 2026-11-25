@@ -39,6 +39,9 @@ test('bank and flight routes stay off the trail and the pheasant rises only afte
   const first = encounterPose(event, fieldSpecies.pheasant, 21, 5, 0, {}).height
   const later = encounterPose(event, fieldSpecies.pheasant, 11, 6, 0, {}).height
   assert.ok(later > first)
+  assert.equal(encounterPose(event, fieldSpecies.mallard, 26, 4, 0, {}).rig,'Idle')
+  assert.equal(encounterPose(event, fieldSpecies.mallard, 16, 5, 0, {}).rig,'Fly')
+  assert.ok(encounterPose(event, fieldSpecies.crane, 25, 5, 0, {}).height > event.height + 2)
   for (const animal of Object.values(fieldSpecies)) for (const ahead of [41,30,20,10,0,-5]) {
     const pose = encounterPose(event,animal,ahead,8,4,{})
     assert.ok(pose.lateral <= -4.82, animal.id)
@@ -75,8 +78,11 @@ test('observations, retrieved birds and old save totals remain distinct and dupl
 
 test('new root plate geometry retains every Phase 03B swept hull and the terrain worker includes finite bounds', () => {
   const volumes = [0,1,2].map(i => fallenTimber(i).volumes.map(({ hull, ...plane }) => plane))
-  assert.equal(createHash('sha256').update(JSON.stringify(volumes)).digest('hex'),
-    '24116cbf3564bf1e9d773a6f7499dc5d3c9c94a262321e400b836b6b3527cd9d')
+  // Trigonometric rounding varies across Node runtimes. Fingerprint geometry
+  // to sub-micrometre precision using the Phase 03B hulls as the reference.
+  const quantize = (_, value) => typeof value === 'number' ? Math.round(value * 1e7) / 1e7 : value
+  assert.equal(createHash('sha256').update(JSON.stringify(volumes, quantize)).digest('hex'),
+    '8e6ba0511e3261468d6549f8b8fcf70429bdce9b861978c053c40a3722bd92aa')
   const { ground, solid, water, anchors } = buildTile(0,7)
   for (const part of [ground,solid,water].filter(Boolean)) {
     assert.equal(part.bounds.length,4)

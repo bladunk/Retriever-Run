@@ -26,16 +26,17 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
   if (animal.family === 'pheasant') {
     const flush = Math.max(0, 23 - ahead)
     out.draw = flush > 0
-    out.height += Math.min(6.25, flush ** 1.53 * .075)
-    out.lateral += side * (.036 * flush ** 1.55)
+    out.height += Math.min(6.25, flush ** 1.53 * .10)
+    out.lateral += side * (.026 * flush ** 1.55)
     out.yaw = -side * (1.37 - Math.min(.42, flush * .013))
     out.pitch = Math.max(0,.44-flush*.015)
     out.wing = .63 + .35*Math.sin(phase*6.4)
     out.rig = 'Fly'
   } else if (flight) {
     const crossing = 29 - ahead
-    out.lateral += side * crossing * .235
+    out.lateral += side * crossing * .19
     out.height += Math.sin(phase * .47) * .27 + .016 * crossing
+    if (animal.family === 'crane' || animal.family === 'raptor') out.height += 3.05
     out.roll = side * .082 * Math.sin(crossing*.16)
     out.pitch = .05 * Math.sin(phase*.65)
     out.yaw = -side * .87
@@ -56,6 +57,14 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     out.lateral += side * Math.sin(phase * .42) * .33
     out.along += Math.sin(phase * .55) * .35
     out.height += animal.family === 'wader' ? .13 : Math.sin(phase * 1.5) * .028 + .078
+    if (animal.id === 'mallard' && ahead < 23 - group) {
+      const takeoff = 23 - group - ahead
+      out.height += Math.min(5.0, .105 * takeoff ** 1.26)
+      out.lateral += side * takeoff * .10
+      out.pitch = .22 - Math.min(.20, takeoff * .013)
+      out.wing = .48 + .42 * Math.sin(phase * 6.4)
+      out.rig = 'Fly'
+    }
   }
   // The whole local flock stays outside the edge of the playable trail.
   out.lateral = side * Math.max(4.82, side * out.lateral)
