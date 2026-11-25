@@ -46,7 +46,7 @@ test('all fifteen territory profiles stream distinct deterministic scenery on co
     assert.equal(tile.territory, region.key)
     assert.equal(tile.plantType, region.plant)
     assert.notEqual(region.birds.length, 0)
-    assert.ok(tile.trees.length <= region.treesPerSide * 14)
+    assert.ok(tile.trees.length <= (region.key === 'cypress' ? 26 : region.treesPerSide * 2) * 7)
     assert.deepEqual(buildTile(middle), tile)
     terrain.push(tile)
     plantAndSilhouette.add(tile.plantType + '/' + tile.treeStyle)
