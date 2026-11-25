@@ -153,7 +153,7 @@ export function createAtmosphere(scene) {
   const horizon = createNorthernHorizon(scene)
   const tone = new T.Color()
   const atmosphereWater = new T.Vector4()
-  const daylight = [.06, -.44, -.10, -.33, .26, .42, .35, .52, .18, .04, -.12, .17, -.27, .36, .51]
+  const daylight = [.06, .16, -.10, -.33, .26, .42, .35, .52, .18, .04, -.12, .17, -.27, .36, .51]
   const accent = new T.Color()
   const rain = precipitation(scene, false)
   const snow = precipitation(scene, true)
@@ -192,9 +192,10 @@ export function createAtmosphere(scene) {
       dawnDirection.set(-.58, elevation, -.82).normalize()
       sun.position.copy(dawnDirection).multiplyScalar(28)
       const shade = (region.from.treesPerSide + (region.to.treesPerSide - region.from.treesPerSide) * region.blend) / 12
-      fill.intensity = 1.67 - lerp('cloud') * .19 - shade * .26
+      const swamp = T.MathUtils.lerp(Number(region.from.key === 'cypress'), Number(region.to.key === 'cypress'), region.blend)
+      fill.intensity = 1.67 - lerp('cloud') * .19 - shade * .26 - swamp * .11
       fill.groundColor.setHex(region.from.bank).lerp(tone.setHex(region.to.bank), region.blend).multiplyScalar(.71)
-      sun.intensity *= 1.08 - shade * .10
+      sun.intensity *= 1.08 - shade * .10 + swamp * .33
       result.rain = lerp('rain') * (1 - result.frost)
       result.wind = lerp('wind')
       result.wet = Math.min(1, result.rain + lerp('snow') * .24)

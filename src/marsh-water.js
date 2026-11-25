@@ -14,6 +14,7 @@ Object.assign(uniforms, {
   waterSun: { value: dawnDirection }, landscapeMap, landscapeReady,
   waterProfile: { value: new T.Vector4(.60, .42, .67, .78) }, waterWind: { value: 0 },
   gulfEnd: { value: expeditionRegions[1].marker }, gulfMap, gulfProperties, gulfReady,
+  swampRange: { value: new T.Vector2(expeditionRegions[1].marker, expeditionRegions[2].marker) },
 })
 
 export const marshWater = new T.ShaderMaterial({
@@ -38,6 +39,7 @@ export const marshWater = new T.ShaderMaterial({
     uniform vec4 waterProfile;
     uniform float waterWind;
     uniform float gulfEnd;
+    uniform vec2 swampRange;
     ${fieldAtlasShader}
     ${gulfScans}
     uniform vec3 waterSky, waterHorizon, waterSun, waterLight, waterTint;
@@ -49,6 +51,8 @@ export const marshWater = new T.ShaderMaterial({
       if (bedDepth <= 0.) discard;
       vec2 p = waterPoint.xz + worldOrigin;
       float coast = 1. - smoothstep(gulfEnd - 11., gulfEnd + 16., -p.y);
+      float swamp = smoothstep(swampRange.x - 18., swampRange.x + 29., -p.y) *
+        (1. - smoothstep(swampRange.y - 29., swampRange.y + 18., -p.y));
       vec2 flow = normalize(vec2(.26 + waterProfile.y * .43, 1.0));
       vec2 drift = p + vec2(.49 * sin(p.x*.64 + p.y*.38), .44 * cos(p.y*.59-p.x*.73));
       float broad = sin(dot(drift, flow) * 2.23 + waterClock * (.85 + waterProfile.y * 2.6));
@@ -59,6 +63,7 @@ export const marshWater = new T.ShaderMaterial({
         ripple = sin(dot(p, vec2(6.6, 10.4)) - waterClock * 4.5 + crossWave * .9) * rippleFade;
       }
       float chop = .34 + waterProfile.w * .70 + waterWind * .46;
+      chop *= 1. - swamp * .57;
       vec3 normal = normalize(vec3((.021 * broad - .024 * crossWave) * chop,
         1., ((.041 + waterWeather * .033) * crossWave + .021 * broad + .017 * ripple) * chop));
       vec3 eye = normalize(cameraPosition - waterPoint);
@@ -86,6 +91,7 @@ export const marshWater = new T.ShaderMaterial({
       }
       mud *= 1. + sediment * .15 * (1. - smoothstep(.18,.55,length(fwidth(p))));
       vec3 lake = mix(mud, waterTint, deep);
+      lake = mix(lake, mix(vec3(.055,.042,.023), vec3(.012,.025,.018),deep), swamp * .63);
       lake = mix(lake, mix(vec3(.105,.093,.052),vec3(.034,.102,.099),deep),coast * .58);
       // Trail crossings use the same water as the banks. Reach a deeper
       // channel color in the middle, and leave the wet gravel edges visible.
@@ -106,11 +112,13 @@ export const marshWater = new T.ShaderMaterial({
       float foliage = smoothstep(-.15,.60, seam + .23*crossWave) * clamp(bankCanopy,0.,1.);
       float bankReflection = mix(.19, .88, min(1., bankCanopy)) * (.55 + graze * .45);
       mirrored *= 1. - foliage * (.41 + .40 * graze) - bankReflection * .17;
+      mirrored *= 1. - swamp * (.23 + bankReflection * .13);
       if (waterDetail > 1.5) {
         float wake = sin(dot(p, flow) * 5.7 + waterClock*2.17 + broad*1.16) * crossWave;
         mirrored *= .94 + wake * .11;
       }
-      vec3 reflectedLight = mirrored + waterLight * (shine + shimmer) * (1. - waterWeather * .76) * (1. - coast * .28);
+      vec3 reflectedLight = mirrored + waterLight * (shine + shimmer) * (1. - waterWeather * .76) *
+        (1. - coast * .28) * (1. - swamp * .81);
       float reflectivity = fresnel * mix(.50, .92, deep) * mix(1., .64, crossing) * (.58 + waterProfile.z * .67);
       vec3 color = mix(lake, reflectedLight, reflectivity);
       float wave = smoothstep(.40,.93, crossWave*.7 + broad*.3);

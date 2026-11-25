@@ -268,7 +268,24 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('gulf-slice')) {
+  if (args.includes('cypress-showcase')) {
+    const seed = 7
+    const hazards = rowsFor(seed, 61).flatMap(row => row.entities).filter(item => item.hazard)
+    const camp = buildTile(16, seed).landmark
+    assert.equal(camp?.role, 'swamp-cabin')
+    const frames = [['swamp-entry', 481], ['hunting-camp', camp.distance - 24],
+      ['flooded-grove', 669], ['moss-corridor', 845]]
+    for (const [view, wanted] of frames) {
+      if (args.some(arg => arg.startsWith('view=')) && !args.includes('view=' + view)) continue
+      const at = [0, -1, 1, -2, 2, -3, 3, -4, 4].map(offset => wanted + offset).find(distance => {
+        const pose = { ...newRun(), distance }
+        return !firstContact(pose, pose, hazards, {})
+      })
+      assert.ok(at !== undefined, view)
+      await runAt(at, seed)
+      await capture(view, { seed, at })
+    }
+  } else if (args.includes('gulf-slice')) {
     const seed = 7
     const hazards = rowsFor(seed, 29).flatMap(row => row.entities).filter(item => item.hazard)
     const crossing = hazards.find(item => item.type === 'stream')

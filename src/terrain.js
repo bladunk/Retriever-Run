@@ -1,6 +1,7 @@
 import * as T from 'three'
 import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
 import { gulfGeometry } from './gulf-models.js'
+import { cypressModel } from './cypress-models.js'
 import { prepareGulfSurfaces, regionalSurfaceResidency } from './gulf-surfaces.js'
 import { cornModel } from './corn.js'
 import { environmentAssets, fernTerritories } from './environment-assets.js'
@@ -245,8 +246,11 @@ export function createTerrain(scene, showSign, probe) {
     tile.trees.geometry = cards?.models[variant] ?? distantTrees[packet.treeStyle]
     tile.trees.material = cards?.material ?? treeMaterial
     tile.trees.count = 0
+    const swamp = packet.territory === 'cypress'
+    tile.swamp = swamp
     for (const [index, mesh] of tile.forest.entries()) {
-      assignForestGeometry(mesh, forestModel(variants[index], field.fieldDetail.value < 2, Math.abs(packet.index + index) % 2))
+      assignForestGeometry(mesh, swamp ? cypressModel(index > 0 ? 2 : variant)
+        : forestModel(variants[index], field.fieldDetail.value < 2, Math.abs(packet.index + index) % 2))
       mesh.count = 0
     }
     for (let n = 0; n < packet.trees.length / 7; n++) {
@@ -257,7 +261,7 @@ export function createTerrain(scene, showSign, probe) {
       const width = height * (.80 + n % 5 * .087)
       // Outer-bank trees use a single lighter silhouette at every distance.
       // They never share a pivot or fade against a near-bank tree.
-      const outer = Math.abs(packet.trees[at]) > 26
+      const outer = !swamp && Math.abs(packet.trees[at]) > 26
       const batch = outer ? tile.trees : tile.forest[variants[0] === variants[1] ? 0 : packet.trees[at + 6]]
       dummy.scale.set(width, height, width)
       if (outer && cards) {
@@ -289,8 +293,8 @@ export function createTerrain(scene, showSign, probe) {
     tile.tufts.geometry = vegetation[packet.plantType][0]
     tile.tufts.material = reedMaterial
     const gulf = packet.territory === 'gulf'
-    if (gulf) {
-      tile.tufts.geometry = gulfGeometry('CordgrassLOD1')
+    if (gulf || swamp) {
+      tile.tufts.geometry = gulf ? gulfGeometry('CordgrassLOD1') : cypressModel(3)
       tile.tufts.count = packet.shoreGrass.length / 4
       for (let n = 0; n < tile.tufts.count; n++) {
         const offset = n * 4
@@ -534,12 +538,15 @@ export function createTerrain(scene, showSign, probe) {
         const chimneyZ = tile.root.position.z + tile.smoke.position.z
         tile.smoke.visible = tile.hasChimney && detail > 0 && chimneyZ > -65 && chimneyZ < -6
         tile.trees.visible = tile.trees.count > 0 && tileStart < 113
-        for (const grove of tile.forest) grove.visible = grove.count > 0 && tileStart < (detail === 0 ? 64 : detail === 1 ? 86 : 106)
+        for (const [index, grove] of tile.forest.entries()) {
+          const range = detail === 0 ? 64 : detail === 1 ? 86 : 106
+          grove.visible = grove.count > 0 && tileStart < range + (tile.swamp ? index === 1 ? 19 : -9 : 0)
+        }
         tile.crops[0].visible = tile.crops[0].count > 0 && tileStart < range[1] + 2
         tile.crops[1].visible = tile.crops[1].count > 0 &&
           tileStart + segmentLength + 2 > range[0] && tileStart < range[3] + 2
         tile.ferns.visible = detail > 0 && tile.ferns.count > 0 && tileStart < 49
-        tile.tufts.visible = tile.tufts.count > 0 && (tile.gulf ? tileStart < (detail > 0 ? 44 : 18)
+        tile.tufts.visible = tile.tufts.count > 0 && (tile.gulf || tile.swamp ? tileStart < (detail > 0 ? 44 : 18)
           : detail > 0 && tileStart < 38)
         if (tile.gulf) tile.tufts.geometry = gulfGeometry(detail > 1 && tileStart < 15 ? 'CordgrassLOD0' : 'CordgrassLOD1')
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0

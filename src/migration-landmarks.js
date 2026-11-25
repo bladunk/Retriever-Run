@@ -213,9 +213,13 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     put(0x5a5040, x,y + .20,z,2.4,1.10,1.95)
     put(0x544d39, x,y + 1.07,z,2.74,.16,2.23)
     put(0x201f18, x,y + .58,z + 1.01,2.12,.28,.069)
+  } else if (role === 'swamp-cabin') {
+    lodge(4.2, 3.35, 2.22, 0x82745c, 0x475449, 'raised')
+    const jetty = z + 3.35
+    const bank = x + 2.45
+    pier(bank, jetty, 1.5, 3.2, Math.max(waterline + .33, earth(-jetty, bank) + .16))
   } else {
     const palette = {
-      'swamp-cabin': [4.2, 3.15, 2.3, 0x66604c, 0x46544b, 'raised'],
       'delta-shed': [5.18, 3.46, 1.94, 0x8b6d56, 0x73736b],
       'river-camp': [3.48, 2.65, 1.80, 0x7b7b66, 0x555f56, 'bank'],
       farm: [5.0, 4.3, 3.35, 0x817a6a, 0x515853],
