@@ -1,0 +1,169 @@
+:root {
+  --field-ground: #19251e;
+  --field-panel: #24342a;
+  --field-leather: #35291f;
+  --field-stroke: #c8aa794a;
+  --field-gold: #deb781;
+  --field-cream: #f6e9d4;
+  --field-control: 44px;
+  --field-gap: .65rem;
+}
+
+#game[data-mode="title"] .menu-content {
+  background: #1c2920;
+  border-top: 1px solid var(--field-stroke);
+  padding: 18px;
+  border-radius: 8px;
+}
+#game[data-mode="title"] #menu-copy { margin-block: .45rem .7rem; }
+#game[data-mode="title"] .eyebrow { margin-bottom: .65rem; }
+#game[data-mode="title"] #hint { display: none; }
+#game[data-mode="title"] .title-career { margin-block: .35rem; }
+#game[data-mode="title"] #current-runner:empty { display: none; }
+#game[data-mode="title"] #local-status { margin: .35rem 0; font-size: .68rem; }
+#game[data-mode="paused"] #local-status { display: none; }
+#game[data-mode="running"] #music-toggle,
+#game[data-mode="running"] #settings { display: none; }
+#game[data-mode="running"] #hud { border-radius: 8px; }
+#game[data-mode="running"] #conditions { letter-spacing: .09em; }
+
+.title-rooms {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: .25rem;
+  margin-top: .45rem;
+}
+.title-rooms button, .text-action {
+  min-height: var(--field-control);
+  font-size: .82rem;
+  padding: 0 .25rem;
+  font-weight: 650;
+}
+.title-rooms button { border-color: transparent; background: #2a392f; }
+.text-action { border: 0; background: transparent; text-decoration: underline; text-underline-offset: .22em; }
+#tutorial-entry { padding-inline: .6rem; }
+#title-milestone:not([hidden]) { display: inline; margin-inline-start: .4rem; }
+#game[data-mode="title"] #running-version { margin: 0; }
+
+#lodge .lodge-tabs { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.lodge-tabs button[aria-current="page"] {
+  background: #44382b;
+  box-shadow: inset 0 -2px var(--field-gold);
+  border-color: #bd9c6564;
+  color: #fff1d4;
+}
+.room-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .5rem max(12px, env(safe-area-inset-left)) .5rem max(12px, env(safe-area-inset-right));
+  color: var(--field-gold);
+  background: #25352b;
+  gap: .65rem;
+}
+.room-picker select { max-width: 86%; flex: 1; min-height: var(--field-control); background: var(--field-ground); padding-inline: .5rem; }
+#lodge .lodge-heading { padding-block: 12px; }
+.collection-tools { display: grid; gap: 5px; margin-bottom: .35rem; }
+.collection-tools .board-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.collection-tools select { padding-inline: .35rem; }
+.collection-search {
+  background: var(--field-ground);
+  color: var(--field-cream);
+  border: 1px solid var(--field-stroke);
+  border-radius: 5px;
+  min-height: var(--field-control);
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  padding-inline: .65rem;
+}
+.lodge-trophy-list { margin-top: .45rem; }
+.lodge-paging > button { padding-inline: .38rem; }
+.photo-credit { display: block; margin-top: .42rem; font-size: .74rem; }
+.wildlife-card img { object-fit: cover; aspect-ratio: 10/7; border: 1px solid var(--field-stroke); }
+#lodge .patch-grid { gap: .45rem; }
+
+#field-report { background: #16231bc9; }
+#field-report .report-sheet { animation: none; }
+#field-report .report-intro { background: #24352a; padding: 15px; }
+#field-report h2 { font-size: clamp(2.1rem, 8vw, 3.5rem); }
+#field-report .campfire-card { margin: .55rem 0 .8rem; padding-block: .15rem; }
+#field-report #report-message { margin-top: 0; }
+#field-report .report-actions div { grid-template-columns: 1.45fr .75fr 1fr; }
+#field-report #report-headline { gap: 6px; }
+#field-report .report-intro .record-card {
+  background: transparent;
+  border: 0;
+  min-height: 0;
+  padding: .52rem .3rem .5rem;
+  border-bottom: 1px solid var(--field-stroke);
+}
+#report-summary-context { color: #f2d39d; }
+#report-xp-summary { font-variant-numeric: tabular-nums; }
+.reward-summary { padding: 0; margin: .6rem 0 0; display: flex; flex-wrap: wrap; gap: 5px; list-style: none; }
+.reward-summary:empty, #report-xp-summary:empty { display: none; }
+.reward-summary li {
+  color: var(--field-cream);
+  background: #374638;
+  border-radius: 4px;
+  padding: .26rem .45rem;
+  font-size: .75rem;
+}
+.reward-summary [data-reward="lodge"] { background: #59402e; }
+.reward-summary [data-reward="species"] { background: #27484a; }
+.reward-summary [data-reward="gear"] { background: #4a4240; }
+.reward-summary [data-reward="platinum"] { background: #3b4c54; border: 1px solid #c2dce19e; }
+.reward-summary [data-reward="legendary"], .reward-summary [data-reward="prestige"] { background: #5f3d26; border: 1px solid var(--field-gold); }
+#report-details { padding-block: .7rem; }
+#report-details-title { margin: 0; font: 700 1.4rem Georgia,serif; }
+#report-details .field-list div { grid-column: 1 / -1; }
+.report-specimens { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .45rem; }
+.report-specimens > span { display: grid; gap: .25rem; max-width: 96px; }
+.report-specimens img { object-fit: cover; width: 100%; border-radius: 4px; }
+#report-details-toggle { font-weight: 680; }
+.record-comparison-up { color: var(--field-gold); }
+
+.settings-group { border-bottom: 1px solid var(--field-stroke); padding-block: .2rem; }
+.settings-group > summary { cursor: pointer; padding-block: .64rem; color: var(--field-gold); min-height: var(--field-control); }
+.settings-group .application-actions button { min-height: var(--field-control); }
+#tutorial {
+  border: 1px solid #a68757;
+  color: var(--field-cream);
+  width: min(420px, calc(100% - 24px));
+  max-height: calc(100dvh - 25px);
+  padding: 0;
+  background: var(--field-ground);
+  border-radius: 10px;
+}
+#tutorial::backdrop { background: #111d17bb; }
+.field-guide { padding: 16px; }
+.field-guide h2 { font: 700 1.76rem Georgia,serif; margin: 0; }
+.field-guide p, .field-guide dd { font-size: .87rem; line-height: 1.42; }
+.field-guide dl { display: grid; gap: 0; }
+.field-guide dl > div { padding-block: .5rem; border-bottom: 1px solid var(--field-stroke); }
+.field-guide dt { font-size: .75rem; letter-spacing: .05em; color: var(--field-gold); }
+.field-guide dd { font-weight: 400; }
+.field-guide .primary { min-height: var(--field-control); width: 100%; justify-content: center; }
+[data-reduce-motion] :is(.report-sheet, .content-sheet, .lodge-panel) { animation: none !important; }
+
+@media (orientation: portrait) {
+  #game[data-mode="title"] .menu {
+    padding: 62px max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+    background: transparent;
+  }
+  #game[data-mode="title"] .boyd-title-art {
+    background-image: linear-gradient(0deg, #1b241d 1%, transparent 60%), url('/branding/boyd-portrait.webp');
+    background-position: center, center top;
+    background-size: auto, 100% auto;
+  }
+  #game[data-mode="title"] .menu-content { width: min(100%, 495px); padding: 13px; }
+  #game[data-mode="title"] h1 { font-size: clamp(2.5rem, 11.3vw, 4.2rem); }
+}
+@media (max-height: 640px) and (orientation: portrait) {
+  #game[data-mode="title"] .menu-content { padding: 10px 12px; }
+  #game[data-mode="title"] #menu-copy { font-size: .79rem; }
+  #game[data-mode="title"] #primary { min-height: 46px; }
+  #field-report .report-actions div button { font-size: .73rem; }
+  #game[data-mode="title"] #current-runner { font-size: .72rem; }
+}

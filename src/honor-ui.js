@@ -1,3 +1,4 @@
+import { collectionSearch, collectionSelect, matchesCollection, recentlyEarned } from './collection-browser.js'
 import { checkLabel, honorCategories, honors, localHonors } from './field-honors.js'
 import { progressionMetrics } from './progression.js'
 import { node, number } from './lodge-elements.js'
@@ -15,7 +16,12 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category) {
   const status = node('select')
   status.setAttribute('aria-label', 'Field Honor status')
   for (const name of ['All statuses','Earned','Locked']) status.append(node('option', name))
-  filters.append(section, status)
+  const search = collectionSearch('Search Field Honors')
+  const rarity = collectionSelect('Honor rarity', { all: 'All tiers', Bronze: 'Bronze', Silver: 'Silver', Gold: 'Gold', Platinum: 'Platinum' })
+  const sort = collectionSelect('Order Field Honors', { catalog: 'Catalog order', recent: 'Recently earned', name: 'Name' })
+  const tools = node('div', null, 'collection-tools')
+  tools.append(search, filters)
+  filters.append(section, status, rarity, sort)
   const grid = node('div', null, 'patch-grid')
   const pageControls = node('div', null, 'board-filters')
   const back = node('button', 'Previous')
@@ -29,8 +35,16 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category) {
 
   function render() {
     const pool = section.value === 'All local honors' ? localHonors : honors.filter(honor => honor.category === section.value)
-    const filtered = pool.filter(honor => status.value === 'All statuses' ||
-      Object.hasOwn(earned, honor.id) === (status.value === 'Earned'))
+    const filtered = pool.filter(honor => {
+      const owned = Object.hasOwn(earned, honor.id)
+      return (status.value === 'All statuses' || owned === (status.value === 'Earned')) &&
+        (rarity.value === 'all' || honor.tier === rarity.value) &&
+        matchesCollection(search.value, honor.secret && !owned ? 'Secret Field Honor' : honor.name, honor.category)
+    })
+    if (sort.value === 'recent') filtered.sort((a, b) => recentlyEarned(earned[a.id], earned[b.id]) ||
+      Number(Object.hasOwn(earned, b.id)) - Number(Object.hasOwn(earned, a.id)))
+    if (sort.value === 'name') filtered.sort((a, b) => (a.secret && !Object.hasOwn(earned, a.id) ? 'Secret Field Honor' : a.name)
+      .localeCompare(b.secret && !Object.hasOwn(earned, b.id) ? 'Secret Field Honor' : b.name))
     const articles = filtered.slice(page * size, page * size + size).map(honor => {
       const owned = Object.hasOwn(earned, honor.id)
       const hidden = honor.secret && !owned
@@ -67,14 +81,15 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category) {
       Math.min((page + 1) * size, filtered.length) + ' of ' + filtered.length
   }
 
-  for (const filter of [section, status]) filter.addEventListener('change', () => { page = 0; render() })
+  search.addEventListener('input', () => { page = 0; render() })
+  for (const filter of [section, status, rarity, sort]) filter.addEventListener('change', () => { page = 0; render() })
   back.addEventListener('click', () => { page--; render() })
   next.addEventListener('click', () => { page++; render() })
   const archive = node('details', null, 'career-ledger')
   archive.append(node('summary', 'Earlier patches and Hall of Shame'), ...legacyPanels)
   root.append(node('h3', 'Field Honors', 'section-title'),
     node('p', number(Object.keys(earned).length) + ' of ' + number(localHonors.length) + ' local honors earned', 'room-note'),
-    filters, grid, pageControls, archive)
+    tools, pageControls, grid, archive)
   render()
   return [root]
 }

@@ -336,6 +336,8 @@ try {
       })
       await idle.locator('#content-open').filter({ hasText: 'Game update available' }).waitFor({ state: 'attached', timeout: 35_000 })
       await idle.locator('#settings').tap()
+      const updateGroup = idle.locator('details:not([open])').filter({ has: idle.locator('#content-open') })
+      if (await updateGroup.count()) await updateGroup.locator('summary').tap()
       await idle.getByRole('button', { name: 'Game update available' }).tap()
       const pendingBuild = upgrade ? manifest.app : next?.app
       if (pendingBuild && openingManifest.app) {

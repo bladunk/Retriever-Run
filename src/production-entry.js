@@ -106,7 +106,7 @@ function message(target, type) {
 
 function menuIsSafe() {
   return !['running', 'paused'].includes(game.dataset.mode) &&
-    !document.querySelector('#onboarding[open], #preferences[open], #lodge[open]')
+    !document.querySelector('#onboarding[open], #preferences[open], #tutorial[open], #lodge[open]')
 }
 
 async function examine({ autoStart = false, update = false } = {}) {

@@ -77,8 +77,9 @@ export function createOnboarding(ui, lodge, camp, onComplete, onStart) {
     if (name) complete(name, 'guest')
   })
   dialog.addEventListener('cancel', event => {
-    if (welcome.hidden) event.preventDefault()
+    if (pending) event.preventDefault()
   })
+  ui['camp-skip'].addEventListener('click', () => { if (!pending) dialog.close() })
   ui['camp-menu'].addEventListener('click', () => {
     dialog.close()
     ui.primary.focus({ preventScroll: true })

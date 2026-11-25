@@ -9,7 +9,7 @@ import { checkLabel, honorById } from './field-honors.js'
 const categories = { collar: 'Collars', bandana: 'Bandanas', vest: 'Hunting vests', coat: 'Coats' }
 const slot = category => category === 'bandana' ? 'collar' : category
 
-export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog) {
+export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog, previewId) {
   const player = lodge.current()
   const standing = careerStanding(player.career)
   const stage = node('div', null, 'kennel-stage')
@@ -72,9 +72,9 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog) {
       showAppearance({ ...player.kennel.equipment, [slot(category)]: selected })
   }
 
-  function switchCategory(value) {
+  function switchCategory(value, preview) {
     category = value
-    selected = equipped()
+    selected = preview ?? equipped()
     for (const button of filters.children) button.setAttribute('aria-pressed', String(button.dataset.category === value))
     const items = kennelCatalog[slot(category)].filter(item => {
       if (slot(category) === 'collar' && Boolean(item.bandana) !== (category === 'bandana')) return false
@@ -128,7 +128,9 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog) {
     showAppearance(player.kennel.equipment)
     switchCategory(category)
   })
-  switchCategory(category)
+  const previewSlot = Object.keys(kennelCatalog).find(key => kennelCatalog[key].some(item => item.id === previewId))
+  const previewItem = kennelCatalog[previewSlot]?.find(item => item.id === previewId)
+  switchCategory(previewItem?.bandana ? 'bandana' : previewSlot ?? category, previewId)
   const breeds = node('details', null, 'kennel-breeds')
   const portrait = node('img')
   portrait.src = './branding/boyd-portrait.webp'
