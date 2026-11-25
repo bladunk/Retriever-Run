@@ -119,6 +119,8 @@ try {
     const guideTitle = await page.locator('#tutorial-title').boundingBox()
     const guide = await page.locator('#tutorial').boundingBox()
     assert.ok(guideTitle.y >= guide.y && guideTitle.y + guideTitle.height <= guide.y + guide.height)
+    const guideExit = await page.locator('#tutorial-close').boundingBox()
+    assert.ok(guideExit.y + guideExit.height <= guide.y + guide.height)
     assert.equal(await page.locator('#tutorial').evaluate(el => el.scrollTop), 0)
     await shot('first-time-guide')
     await page.locator('#tutorial-close').tap()
