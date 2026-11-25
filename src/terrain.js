@@ -429,6 +429,16 @@ export function createTerrain(scene, showSign, probe) {
   return {
     packCount: environmentAssets.count,
     landscapeResidency,
+    sightMeshes(target) {
+      target.length = 0
+      for (const tile of tiles) {
+        if (!tile.root.visible) continue
+        tile.root.updateMatrixWorld(true)
+        for (const mesh of [tile.ground, tile.solid, tile.detail, tile.trees, ...tile.forest, ...tile.crops]) {
+          if (mesh.visible) target.push(mesh)
+        }
+      }
+    },
     measurements() {
       return tiles.filter(tile => tile.root.visible).map(tile => ({ index: tile.index, ...tile.preparation }))
     },

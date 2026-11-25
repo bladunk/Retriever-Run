@@ -77,7 +77,7 @@ test('the mixer retains old mute settings and clamps independent volume values',
   assert.deepEqual(normalizeProfile(JSON.parse(JSON.stringify(mixed))), mixed)
 })
 
-async function loadRig() {
+async function loadRig(createPickup) {
   // The texture is immaterial to this test. The original mesh, skin weights and
   // animation clips are decoded and sampled through the same loader as the game.
   globalThis.self = globalThis
@@ -86,12 +86,32 @@ async function loadRig() {
     const file = await readFile(new URL('../src/assets/labrador.glb', import.meta.url))
     const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
       .parseAsync(file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength), '')
-    return createLabradorRig(gltf)
+    return createLabradorRig(gltf, 'lab', createPickup)
   } finally {
     delete globalThis.self
     delete globalThis.createImageBitmap
   }
 }
+
+test('the retrieve pose uses one neck-mounted prop and clears it on the title', async () => {
+  const birds = new Map()
+  const rig = await loadRig((mouth, species) => {
+    const bird = new Group()
+    birds.set(species, bird)
+    mouth.add(bird)
+    return bird
+  })
+  const pose = { dt: 1 / 60, time: 2, stride: 1.2, airborne: false, jumpPhase: 1,
+    sliding: 0, idle: false, turn: 0, landing: 0, ground: 0, retrieve: 'mallard' }
+  rig.pose({ ...pose, sinceRetrieve: .04 })
+  assert.ok([...birds.values()].every(bird => !bird.visible))
+  rig.pose({ ...pose, sinceRetrieve: .37 })
+  assert.ok(birds.get('mallard').visible)
+  assert.equal(birds.get('mallard').parent.parent.name, 'Head')
+  assert.ok(!birds.get('pheasant').visible)
+  rig.pose({ ...pose, idle: true, sinceRetrieve: .44 })
+  assert.ok([...birds.values()].every(bird => !bird.visible))
+})
 
 test('the skinned Labrador clears the terrain and overhead envelope through real slide clips', async () => {
   const rig = await loadRig()

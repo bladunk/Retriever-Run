@@ -13,6 +13,7 @@ const hewnLog = new CylinderGeometry(.47,.5,1,8)
 const rock = new IcosahedronGeometry(1, 0)
 const pole = new CylinderGeometry(.41, .5, 1, 9)
 const tank = new CylinderGeometry(.5, .5, 1, 14)
+const fillPad = new CylinderGeometry(.43, .56, 1, 12)
 const steel = 0x656962
 const oak = 0x816b55
 const trim = 0x9d8e72
@@ -189,10 +190,12 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     }
     pier(side * 6.6, z + 4.0, 2.3, 2.8, Math.max(waterline + .23, earth(-z - 4, side * 6.6)))
   } else if (role === 'grain-elevator') {
+    const pad = Math.max(waterline + .14, ground)
+    add(fillPad, 0x777566, x - 2.2, pad - .48, z, 13.0, .96, 6.8, 0, 0, 0, false, 6)
     lodge(4.50, 4.05, 3.2, 0x878173, 0x555b53, 'grain')
     for (let n = 0; n < 2; n++) {
       const sx = x - 3.0 - n * 2.4
-      const sy = earth(-z, sx)
+      const sy = Math.max(pad, earth(-z, sx))
       add(tank, 0x94978e, sx, sy + 1.78, z, 2.13, 3.6, 2.13, 0, 0, 0, false, 5)
       add(pole, 0x6a706b, sx, sy + 3.87, z, 2.18, .61, 2.18)
       for (let rib = 0; rib < 7; rib++) add(tank, 0x7b8079, sx, sy + .24 + rib * .47, z, 2.15, .039, 2.15)

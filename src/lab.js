@@ -4,7 +4,7 @@ import { createLabradorRig } from './lab-rig.js'
 import pointerUrl from './assets/pointer.glb?url'
 import labUrl from './assets/labrador.glb?url'
 
-export async function loadLabrador(breed = 'lab') {
+export async function loadLabrador(breed = 'lab', createPickup) {
   const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(breed === 'pointer' ? pointerUrl : labUrl)
-  return createLabradorRig(gltf, breed)
+  return createLabradorRig(gltf, breed, createPickup)
 }

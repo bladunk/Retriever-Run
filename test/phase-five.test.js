@@ -8,6 +8,7 @@ import { kennelCatalog, unlocked } from '../src/kennel-catalog.js'
 import { encounterApproach, encounterPose } from '../src/living-wilderness.js'
 import { openLodge, saveVersion } from '../src/lodge-save.js'
 import { courseRuleset, legacyMigrationRuleset } from '../src/ruleset.js'
+import { createCourse } from '../src/runner.js'
 import { fieldSpecies } from '../src/wildlife-catalog.js'
 import { createWildlifeModels } from '../src/wildlife-models.js'
 
@@ -59,6 +60,24 @@ test('deer and flushing pheasant gain forward travel while remaining outside the
   }
 })
 
+test('the northern paired creek and chute can demand a validated two-lane slide', () => {
+  const next = createCourse(7)
+  let previous
+  let found = 0
+  for (let row = next(); row.time < 540; row = next()) {
+    if (row.pattern === 'cross-trail-slide-followup') {
+      assert.ok(row.time >= 360)
+      assert.equal(previous.gate?.action, 'jump')
+      assert.equal(row.gate?.action, 'slide')
+      assert.equal(Math.abs(row.lane - previous.lane), 2)
+      assert.ok(row.time - previous.time >= 1.47)
+      found++
+    }
+    previous = row
+  }
+  assert.ok(found > 0)
+})
+
 test('the two-rig pool reuses an idle model and evicts only an unpinned rig', async () => {
   const released = []
   const models = createWildlifeModels(undefined, async url => {
@@ -69,14 +88,20 @@ test('the two-rig pool reuses an idle model and evicts only an unpinned rig', as
     return { scene, animations: [] }
   })
   const settle = () => new Promise(resolve => setImmediate(resolve))
+  const renderer = { compileAsync: async () => {}, getRenderTarget() {}, setRenderTarget() {}, render() {} }
+  const finishLoading = async () => {
+    for (let i = 0; i < 6; i++) {
+      models.warm(renderer, {}, {})
+      await settle()
+    }
+  }
   models.retain(['mallard', 'deer'])
-  await settle()
+  await finishLoading()
   assert.equal(models.metrics().resident, 2)
   const original = models.get('mallard')
   models.retain([])
-  await settle()
   models.retain(['mallard', 'eagle'])
-  await settle()
+  await finishLoading()
   assert.equal(models.get('mallard'), original)
   assert.equal(models.get('deer'), undefined)
   assert.equal(models.metrics().resident, 2)
@@ -105,7 +130,11 @@ test('wildlife geometry is staged with a limited draw and returns the renderer t
     },
   }
   models.retain(['mallard'])
+  models.warm(renderer, {}, scene)
   await new Promise(resolve => setImmediate(resolve))
+  assert.equal(models.ready('mallard'), undefined)
+  models.warm(renderer, {}, scene)
+  assert.deepEqual(calls, [])
   models.warm(renderer, {}, scene)
   assert.deepEqual(calls, ['shader'])
   await new Promise(resolve => setImmediate(resolve))
@@ -113,6 +142,33 @@ test('wildlife geometry is staged with a limited draw and returns the renderer t
   assert.deepEqual(calls, ['shader', 'geometry'])
   assert.equal(target, originalTarget)
   assert.equal(geometry.drawRange.count, Infinity)
+  assert.equal(models.ready('mallard'), models.get('mallard'))
   models.warm(renderer, {}, scene)
   assert.equal(calls.length, 2)
+  models.invalidateGPU()
+  assert.equal(models.ready('mallard'), undefined)
+})
+
+test('a quick start defers rigs that finished loading to the next safe break', async () => {
+  const scene = new Group()
+  scene.add(new Mesh(new BoxGeometry(), new MeshBasicMaterial()))
+  let safe = true
+  const outcomes = []
+  const models = createWildlifeModels(undefined, async url => {
+    outcomes.push(url)
+    return { scene, animations: [] }
+  }, () => safe)
+  models.retain(['mallard', 'deer'])
+  models.warm({}, {}, scene)
+  safe = false
+  await new Promise(resolve => setImmediate(resolve))
+  models.warm({}, {}, scene)
+  assert.equal(outcomes.length, 1)
+  assert.equal(models.metrics().preparing, 'mallard')
+  assert.equal(models.get('mallard'), undefined)
+  safe = true
+  models.warm({}, {}, scene)
+  assert.ok(models.get('mallard'))
+  assert.equal(models.ready('mallard'), undefined)
+  assert.equal(outcomes.length, 1)
 })

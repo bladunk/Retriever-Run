@@ -9,7 +9,7 @@ const up = new T.Vector3(0, 1, 0)
 const pitchAxis = new T.Vector3(1, 0, 0)
 const bankAxis = new T.Vector3(0, 0, 1)
 
-export function createLabradorRig(gltf, breed = 'lab') {
+export function createLabradorRig(gltf, breed = 'lab', createPickup) {
   const root = gltf.scene
   root.updateMatrixWorld(true)
   const bounds = new T.Box3().setFromObject(root, true)
@@ -48,6 +48,19 @@ export function createLabradorRig(gltf, breed = 'lab') {
   }
   const head = root.getObjectByName('Head')
   const neck = root.getObjectByName('Neck1')
+  const mouth = new T.Group()
+  const face = head.getWorldQuaternion(new T.Quaternion()).invert().multiply(root.getWorldQuaternion(new T.Quaternion()))
+  const headPitch = pitchAxis.clone().applyQuaternion(face)
+  mouth.position.copy(head.worldToLocal(root.localToWorld(new T.Vector3(0, 2.17, breed === 'pointer' ? 2.57 : 2.37))))
+  mouth.quaternion.copy(face)
+  head.add(mouth)
+  const carry = createPickup ? ['mallard', 'pheasant'].map(species => {
+    const bird = createPickup(mouth, species)
+    bird.position.set(0, -.10, .05)
+    bird.scale.setScalar(.97)
+    bird.visible = false
+    return [species, bird]
+  }) : []
   const secondaryMotion = ['Ear2L', 'Ear2R', 'Tail4'].map(name => {
     const bone = root.getObjectByName(name)
     return { bone, base: bone.quaternion.clone() }
@@ -115,14 +128,15 @@ export function createLabradorRig(gltf, breed = 'lab') {
       air = groundCorrection = compression = earFollow = banking = 0
       idle = 0
     },
-    pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing, ground, wet = 0, gait = 'idle' }) {
+    pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing, ground, wet = 0,
+      lateralSpeed = 0, retrieve, sinceRetrieve = Infinity, gait = 'idle' }) {
       const blend = -Math.expm1(-15 * dt)
       idle += (Number(resting) - idle) * blend
       air += (Number(airborne) - air) * -Math.expm1(-34 * dt)
       const low = sliding
       compression = Math.max(landing, compression * Math.exp(-18 * dt))
       const grounded = (1 - idle) * (1 - air)
-      banking += (T.MathUtils.clamp(turn * .054, -.097, .097) * (1 - .40 * low) - banking) * blend
+      banking += (T.MathUtils.clamp(turn * .025 + lateralSpeed * .010, -.16, .16) * (1 - .45 * low) - banking) * blend
       weights[0] = idle
       weights[1] = grounded * (1 - low)
       weights[2] = (1 - idle) * air
@@ -155,20 +169,31 @@ export function createLabradorRig(gltf, breed = 'lab') {
       // The outer player group stays at terrain plus jump height. Only skeletal
       // joints lower into the crouch, and the rig child may receive upward support.
       body.position.y -= low * .88 + compression * .065
-      body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105))
+      const jumpPitch = -.105 * air * Math.sin(2 * Math.PI * jumpPhase)
+      body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105 + jumpPitch))
       body.quaternion.premultiply(lean.setFromAxisAngle(bankAxis, banking))
       head.quaternion.multiply(lean.setFromAxisAngle(up, -turn * .08 + (resting ? .07 * Math.sin(time * .8) : 0)))
       head.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, compression * .040 - .026 * air * Math.sin(jumpPhase * Math.PI)))
+      const reaching = !resting && sinceRetrieve < .31 ? Math.sin(Math.PI * Math.max(0, sinceRetrieve) / .31) : 0
+      head.quaternion.multiply(lean.setFromAxisAngle(headPitch, reaching * .28 * (1 - .82 * Math.max(low, air))))
+      for (const [species, bird] of carry) {
+        bird.visible = !resting && retrieve === species && sinceRetrieve >= .16 && sinceRetrieve < 1.43
+        if (bird.visible) {
+          bird.rotation.set(.08, .22, -.28 + .07 * Math.sin(stride - .8))
+          bird.scale.setScalar(.97 * Math.min(1, (sinceRetrieve - .16) * 16, (1.43 - sinceRetrieve) * 7))
+        }
+      }
       const activeEars = (1 - idle) * (1 - .82 * low)
       const earRoll = activeEars * (.096 * Math.sin(stride * 2 - .79) + .041 * air + compression * .047)
       earFollow += (earRoll - earFollow) * -Math.expm1(-23 * dt)
       secondaryMotion[0].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earFollow + idle * .021 * Math.sin(time * 2.1)))
       secondaryMotion[1].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earFollow - idle * .022 * Math.sin(time * 1.6)))
-      const tailSway = idle * .045 * Math.sin(time * 2.6) + grounded * (1 - low) * .032 * Math.sin(stride - .7)
+      const tailSway = idle * .045 * Math.sin(time * 2.6) + grounded * (1 - low) * (.051 * Math.sin(stride - .7) - .42 * banking)
       secondaryMotion[2].bone.quaternion.multiply(lean.setFromAxisAngle(up, tailSway))
       root.position.y = restingFloor
       root.updateMatrixWorld(true)
       if (low > .001) planting.solve(low, ground)
+      else if (!airborne && !resting && compression > .16) planting.solve(compression * .48, ground, true)
       const correction = planting.support(ground + (low > .001 ? .030 : .014))
       groundCorrection = Math.max(correction, groundCorrection * Math.exp(-25 * dt))
       root.position.y += groundCorrection

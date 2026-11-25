@@ -115,6 +115,10 @@ try {
   const assertRunningBuild = async (tab, app) => {
     if (!app) return
     const footer = tab.locator('#running-version')
+    // A new controller can answer manifest requests before the old page
+    // receives controllerchange and reloads its application bundle.
+    await tab.waitForFunction(label => document.querySelector('#running-version')?.textContent === label,
+      buildLabel(app), { timeout: 30_000 })
     assert.equal(await footer.textContent(), buildLabel(app))
     if (!new URL(tab.url()).searchParams.has('perf')) return
     await tab.waitForFunction(() => typeof window.retrieverPerformance === 'function')
@@ -315,8 +319,9 @@ try {
       await idle.locator('#content-open').filter({ hasText: 'Game update available' }).waitFor({ state: 'attached', timeout: 35_000 })
       await idle.locator('#settings').tap()
       await idle.getByRole('button', { name: 'Game update available' }).tap()
-      if (next?.app) {
-        assert.equal(await idle.locator('#pending-version').textContent(), 'Pending · ' + buildLabel(next.app))
+      const pendingBuild = upgrade ? manifest.app : next?.app
+      if (pendingBuild) {
+        assert.equal(await idle.locator('#pending-version').textContent(), 'Pending · ' + buildLabel(pendingBuild))
         await assertRunningBuild(idle, openingManifest.app)
       }
       const preparation = idle.getByRole('button', { name: /^(Download|Apply) update$/ })

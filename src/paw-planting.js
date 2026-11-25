@@ -54,15 +54,17 @@ export function createPawPlanting(root, meshes) {
       for (const [bone, previous] of rotations) previous.copy(bone.quaternion)
       for (const leg of legs) leg.position.copy(leg.anchor.position)
     },
-    solve(amount, ground) {
+    solve(amount, ground, landingOnly = false) {
       facing.set(0, 0, 1).applyQuaternion(root.getWorldQuaternion(parent))
       for (const { chain, marker, anchor, toe, foot, rear } of legs) {
+        if (landingOnly && rear) continue
         marker.getWorldPosition(point)
-        target.copy(point).addScaledVector(facing, amount * (rear ? .025 : .10))
+        if (landingOnly && Math.abs(point.y - ground) > .16) continue
+        target.copy(point).addScaledVector(facing, landingOnly ? 0 : amount * (rear ? .025 : .10))
         target.y += (ground + .049 - point.y) * amount
         anchor.getWorldPosition(current).add(target).sub(point)
         anchor.position.copy(anchor.parent.worldToLocal(current))
-        for (let iteration = 0; iteration < 3; iteration++) {
+        for (let iteration = 0; iteration < (landingOnly ? 2 : 3); iteration++) {
           for (const joint of chain) {
             joint.getWorldPosition(pivot)
             foot.localToWorld(end.copy(toe))

@@ -114,7 +114,7 @@ function rootFan(palette, random, volumes) {
       const theta = Math.PI * (column / columns)
       const leaf = rim[column]
       const flare = Math.sin(theta) * r * leaf / crown
-      const x = palette.side * (-.38 + (.71 * Math.cos(theta) * r * leaf) + .36 * flare)
+      const x = palette.side * (-.38 + .71 * Math.cos(theta) * r * leaf + .36 * flare + .13 * flare * Math.sin(theta * 5))
       const y = Math.max(.015, .17 * (1 - r) + flare * palette.lift + .08 * Math.cos(theta * 3) * r)
       const z = .41 + Math.cos(theta) * .20 * r - palette.rake * y + .07 * Math.sin(theta * 9 + r * 7) * r
       if (row === rows) outline.push([x, y, z])
@@ -155,9 +155,9 @@ export function fallenTimber(variant = 0) {
   const turn = (x, y, z, width) => [palette.side*x, y, z, width]
   const { plate, outline } = rootFan(palette, random, volumes)
   const parts = [plate, curvedWood([
-    turn(-.62,.60,.26,.29), turn(-.45,.56,.12,.38),
-    turn(.03,.44,-.18,.33), turn(.42,.32,-.47,.28),
-    turn(.84,.29,-.73,.21),
+    turn(-.56,.55,.29,.28), turn(-.34,.46,.53,.39),
+    turn(.07,.34,.99,.32), turn(.50,.25,1.51,.25),
+    turn(.77,.18,1.96,.16),
   ], palette.bark, palette.wood, random, true, false, volumes)]
   for (let n = 1; n < outline.length - 1; n += 2) {
     const [x, y, z] = outline[n]
@@ -168,9 +168,9 @@ export function fallenTimber(variant = 0) {
     if (n % 4 === 1) parts.push(curvedWood([mid, [x-.08,y*.69,z+.11,.03],
       [x+.13,y*.54,z+.07,.012]], palette.bark, palette.wood, random, false, false, undefined, true))
   }
-  for (const [side, y, offset] of [[-1,.58,-.24],[1,.43,-.47]]) {
-    parts.push(curvedWood([turn(.14,.42,offset,.115), turn(.39,y,offset+side*.17,.072),
-      turn(.62,y+.09,offset+side*.27,.025)], palette.bark, palette.wood, random, false))
+  for (const [side, x, y, offset] of [[-1,.09,.48,1.03],[1,.53,.35,1.57]]) {
+    parts.push(curvedWood([turn(x,y-.12,offset,.104), turn(x+side*.27,y,offset+.22,.061),
+      turn(x+side*.44,y+.09,offset+.41,.023)], palette.bark, palette.wood, random, false))
   }
   const geometry = mergeGeometries(parts)
   for (const part of parts) part.dispose()

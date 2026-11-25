@@ -41,7 +41,7 @@ test('bank and flight routes stay off the trail and the pheasant rises only afte
   const first = encounterPose(event, fieldSpecies.pheasant, 21, 5, 0, {}).height
   const later = encounterPose(event, fieldSpecies.pheasant, 11, 6, 0, {}).height
   assert.ok(later > first)
-  assert.equal(encounterPose(event, fieldSpecies.mallard, 26, 4, 0, {}).rig,'Idle')
+  assert.equal(encounterPose(event, fieldSpecies.mallard, 36, 4, 0, {}).rig,'Idle')
   assert.equal(encounterPose(event, fieldSpecies.mallard, 16, 5, 0, {}).rig,'Fly')
   assert.ok(encounterPose(event, fieldSpecies.crane, 25, 5, 0, {}).height > event.height + 2)
   for (const animal of Object.values(fieldSpecies)) for (const ahead of [41,30,20,10,0,-5]) {
@@ -86,7 +86,7 @@ test('tipped root plates have distinct bounded meshes and the terrain worker inc
     assert.ok(volumes.length > 10)
     assert.ok(geometry.boundingBox.min.y < .07 && geometry.boundingBox.max.y > 1.4)
     assert.ok(geometry.boundingBox.min.x > -1.23 && geometry.boundingBox.max.x < 1.23)
-    assert.ok(geometry.boundingBox.min.z < -.78)
+    assert.ok(geometry.boundingBox.max.z > 1.90)
   }
   const { ground, solid, water, anchors } = buildTile(0,7)
   for (const part of [ground,solid,water].filter(Boolean)) {

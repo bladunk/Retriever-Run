@@ -46,9 +46,10 @@ export function disposeWildlifeModel(model) {
 }
 
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
-export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(url)) {
+export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(url), canPrepare = () => true) {
   const decoded = new Map()
   let waiting
+  let loaded
   let wanted = []
   const failed = new Set()
   let loadMs = 0
@@ -86,7 +87,28 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
   }
 
   function prepare() {
-    if (waiting) return
+    if (!canPrepare() || waiting) return
+    if (loaded) {
+      const { id, scene, animations, desc } = loaded
+      loaded = undefined
+      const setup = probe?.stamp()
+      const bounds = new T.Box3().setFromObject(scene)
+      const scale = Math.max(.001, bounds.max[desc.scaleAxis] - bounds.min[desc.scaleAxis])
+      const root = new T.Group()
+      scene.position.set(0, -bounds.min.y, 0)
+      scene.rotation.y = desc.face
+      root.add(scene)
+      const mix = new T.AnimationMixer(root)
+      const actions = Object.fromEntries(animations.map(clip => [clip.name, mix.clipAction(clip)]))
+      if (id === 'pheasant') actions.Fly = actions['Take 001']
+      const model = { root, mix, scale, actions }
+      model.warmup = preparation(model)
+      probe?.operation('wildlife-rig-setup', id, setup)
+      if (wanted.includes(id)) decoded.set(id, model)
+      else release(id, model)
+      // A fresh assembly and a GPU step get separate frames.
+      return true
+    }
     const id = wanted.find(key => !decoded.has(key) && !failed.has(key))
     if (!id) return
     if (decoded.size >= limit) {
@@ -103,25 +125,10 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
     probe?.operation('wildlife-load-start', id)
     loadModel(desc.url).then(({ scene, animations }) => {
       probe?.operation('wildlife-load-ready', id, start)
-      const setup = probe?.stamp()
-      const bounds = new T.Box3().setFromObject(scene)
-      const scale = Math.max(.001, bounds.max[desc.scaleAxis] - bounds.min[desc.scaleAxis])
-      const root = new T.Group()
-      scene.position.set(0, -bounds.min.y, 0)
-      scene.rotation.y = desc.face
-      root.add(scene)
-      const mix = new T.AnimationMixer(root)
-      const actions = Object.fromEntries(animations.map(clip => [clip.name, mix.clipAction(clip)]))
-      if (id === 'pheasant') actions.Fly = actions['Take 001']
-      const model = { root, mix, scale, actions }
-      model.warmup = preparation(model)
-      probe?.operation('wildlife-rig-setup', id, setup)
-      if (wanted.includes(id)) decoded.set(id, model)
-      else release(id, model)
       loadMs = performance.now() - start
+      loaded = { id, scene, animations, desc }
     }).catch(() => { failed.add(id) }).finally(() => {
       waiting = undefined
-      prepare()
     })
   }
 
@@ -167,10 +174,21 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
           } else misses++
         }
       }
-      prepare()
     },
     get: id => decoded.get(id),
+    ready(id) {
+      const model = decoded.get(id)
+      const work = model?.warmup
+      if (work && !work.pending && !work.shaderFailed && work.geometry === work.geometries.length) return model
+    },
+    invalidateGPU() {
+      upload?.target.dispose()
+      upload?.mesh.material.dispose()
+      upload = undefined
+      for (const model of decoded.values()) model.warmup = preparation(model)
+    },
     warm(renderer, camera, scene, activeModel) {
+      if (!canPrepare() || prepare()) return
       for (const id of wanted) {
         const model = decoded.get(id)
         if (!model || model === activeModel) continue
@@ -192,7 +210,7 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
         if (work.shade < work.shades.length) {
           work.pending = true
           renderer.compileAsync(work.shades[work.shade++], camera, scene)
-            .catch(() => {}).finally(() => { work.pending = false; prepare() })
+            .catch(() => { work.shaderFailed = true }).finally(() => { work.pending = false })
           probe?.operation('wildlife-warm-shader', id, started)
           return
         }
@@ -219,7 +237,7 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
             shaders: warmup.shade - Number(warmup.pending), geometries: warmup.geometry,
             geometryTotal: warmup.geometries.length } })
       }
-      return { resident: decoded.size, preparing: waiting ?? null, loadMs, releasedBoneTextures, hits, misses, evictions, limit, models }
+      return { resident: decoded.size, preparing: waiting ?? loaded?.id ?? null, loadMs, releasedBoneTextures, hits, misses, evictions, limit, models }
     },
   }
 }
