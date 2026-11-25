@@ -1,14 +1,16 @@
+import { rewardGroups } from './hunt-presentation.js'
+import { collectionSearch, collectionSelect, matchesCollection, primaryRoom, roomGroups } from './collection-browser.js'
 import { encounterTiers, fieldSpecies, habitatEncounters } from './wildlife-catalog.js'
-import { wildlifePortrait } from './wildlife-portrait.js'
+import { speciesArtwork, wildlifePortrait } from './wildlife-portrait.js'
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, honorProgress, medals, patches } from './honors.js'
 import { legacyTerritoryNames } from './lodge-save.js'
 import { expeditionRegions } from './expedition.js'
 import { stageAt } from './difficulty.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
-import { campSwitch, worldwideBoard } from './camp-ui.js'
+import { worldwideBoard } from './camp-ui.js'
 import { node, number, meters, date, duration, rows, cards } from './lodge-elements.js'
-import { careerRoom, nearbyHonor } from './career-ui.js'
+import { careerLine, careerRoom, nearbyHonor } from './career-ui.js'
 import { kennelRoom } from './kennel-ui.js'
 import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
 import { fieldHonorsRoom } from './honor-ui.js'
@@ -115,6 +117,13 @@ function journal(player) {
     ten.append(...rows(legacyTerritoryNames.map((name, index) => [name, duration(player.legacyMigration.seconds[index])])))
     archive.push(node('h3', 'Earlier ten-territory course', 'section-title section-break'), ten)
   }
+  const search = collectionSearch('Search wildlife')
+  const category = collectionSelect('Wildlife group', { all: 'All wildlife', waterfowl: 'Waterfowl', upland: 'Upland birds',
+    birds: 'Other birds', mammals: 'Mammals', reptiles: 'Reptiles' })
+  const filters = node('div', null, 'collection-tools')
+  filters.append(search, category)
+  const results = node('p', null, 'room-note')
+  results.setAttribute('aria-live', 'polite')
   const guide = node('div', null, 'wildlife-guide')
   let known = 0
   const scientific = {
@@ -135,6 +144,8 @@ function journal(player) {
     const seen = Boolean(observation?.seen)
     known += Number(seen)
     const row = node('article', null, 'wildlife-card')
+    row.dataset.species = animal.id
+    row.dataset.category = speciesArtwork[animal.id].group
     const image = node('img')
     image.src = wildlifePortrait(animal, seen)
     image.alt = ''
@@ -174,9 +185,33 @@ function journal(player) {
       notes.append(node('p', 'Equipment rewards · ' + [...kinds].join(', ')))
     }
     details.append(notes)
+    const sourceArt = speciesArtwork[animal.id].photo
+    if (seen && sourceArt) {
+      const credit = node('a', 'Photo by ' + sourceArt.author, 'photo-credit')
+      credit.href = sourceArt.source
+      credit.target = '_blank'
+      credit.rel = 'noopener'
+      const terms = node('a', sourceArt.license, 'photo-credit')
+      terms.href = sourceArt.terms
+      terms.target = '_blank'
+      terms.rel = 'noopener'
+      notes.append(credit, terms)
+    } else if (seen) details.append(node('small', 'Field silhouette', 'room-note'))
     row.append(image, details)
     guide.append(row)
   }
+  const filter = () => {
+    let count = 0
+    for (const row of guide.children) {
+      const id = row.dataset.species
+      row.hidden = (category.value !== 'all' && row.dataset.category !== category.value) ||
+        !matchesCollection(search.value, fieldSpecies[id].name, scientific[id], fieldSpecies[id].habitat)
+      if (!row.hidden) count++
+    }
+    results.textContent = count ? '' : 'No species match this search.'
+  }
+  search.addEventListener('input', filter)
+  category.addEventListener('change', filter)
   const values = progressionMetrics(player)
   const collections = node('details', null, 'career-ledger')
   collections.append(node('summary', 'Regional wildlife collections'))
@@ -184,11 +219,14 @@ function journal(player) {
   regionList.append(...rows(expeditionRegions.map(region => [region.name, values.get('local-species:' + region.key) + ' / ' +
     new Set(habitatEncounters[region.key].flat()).size])))
   collections.append(regionList)
+  const lifetime = node('details', null, 'career-ledger')
+  lifetime.append(node('summary', 'Lifetime Field Journal'), grid,
+    node('h3', 'The Great Migration · territory time', 'section-title section-break'), migration, ...archive,
+    node('h3', 'Field breakdown', 'section-title section-break'), breakdown)
   return [node('h3', 'Wildlife · ' + known + ' of ' + Object.keys(fieldSpecies).length + ' observed', 'section-title'),
     node('p', 'Waterfowl · ' + values.get('waterfowl-count') + ' of ' + waterfowlSpecies.length + ' observed', 'room-note'), collections,
-    guide, node('h3', 'Lifetime Field Journal', 'section-title section-break'),
-    grid, node('h3', 'The Great Migration · territory time', 'section-title section-break'), migration, ...archive,
-    node('h3', 'Field breakdown', 'section-title section-break'), breakdown, ...personalRecords(player)]
+    filters, results, guide, lifetime]
+
 }
 
 function leaderboard(lodge, metric, selectMetric) {
@@ -234,9 +272,25 @@ function leaderboard(lodge, metric, selectMetric) {
 export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}) {
   const wildlife = document.getElementById('report-wildlife')
   if (wildlife) {
-    const names = (report.newWildlife ?? []).map(id => fieldSpecies[id]?.name).filter(Boolean)
-    wildlife.hidden = !names.length
-    wildlife.textContent = names.length ? 'New in the Field Journal · ' + names.join(', ') : ''
+    const animals = (report.newWildlife ?? []).map(id => fieldSpecies[id]).filter(Boolean)
+    wildlife.hidden = !animals.length
+    wildlife.replaceChildren()
+    if (animals.length) {
+      wildlife.append(node('strong', 'New in the Field Journal'))
+      const discovered = node('span', null, 'report-specimens')
+      for (const animal of animals) {
+        const chip = node('span')
+        const portrait = node('img')
+        portrait.src = wildlifePortrait(animal, true)
+        portrait.alt = ''
+        portrait.width = 48
+        portrait.height = 34
+        portrait.loading = 'lazy'
+        chip.append(portrait, node('span', animal.name))
+        discovered.append(chip)
+      }
+      wildlife.append(discovered)
+    }
   }
   ui['report-nickname'].textContent = report.nickname
   const stage = stageAt(report.duration)
@@ -253,8 +307,26 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
         : previousBest && previousBest === report.score ? 'Matched your personal best' : ''
   ui['report-headline'].replaceChildren(...cards([
     ['Score', number(report.score)], ['Distance', meters(report.distance)],
-    ['Personal best', number(Math.max(previousBest, scoreRecord ? report.score : 0))],
+    ['Survival', duration(report.duration)],
   ]))
+  const region = expeditionRegions[report.territory - 1]
+  ui['report-summary-context'].textContent = [
+    region?.name, report.retrieves + (report.retrieves === 1 ? ' retrieve' : ' retrieves'),
+    record ? ui['report-record'].textContent : null,
+  ].filter(Boolean).join(' · ')
+  ui['report-record'].hidden = true
+  ui['report-xp-summary'].textContent = report.career && player ? '+' + number(report.career.earned) + ' XP · ' + careerLine(player) : ''
+  const rewards = rewardGroups(report)
+  ui['report-reward-summary'].replaceChildren(...rewards.slice(0, 4).map(group => {
+    const label = (group.count > 1 || ['honor', 'gear', 'species', 'lodge'].includes(group.type) ? group.count + ' ' : '') + group.label
+    const item = node('li', label)
+    item.dataset.reward = group.type
+    return item
+  }))
+  if (rewards.length > 4) ui['report-reward-summary'].append(node('li', '+' + (rewards.length - 4) + ' reward groups'))
+  ui['report-details'].hidden = true
+  ui['report-details-toggle'].textContent = 'Full Field Report'
+  ui['report-details-toggle'].setAttribute('aria-expanded', 'false')
   const next = player && report.career && nearbyHonor(player)
   const nextHonor = ui['report-next-honor']
   nextHonor.hidden = !next
@@ -265,6 +337,14 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
     ['Active time', duration(report.duration)], ['Treats collected', number(report.treats)],
     ['Logs jumped', number(report.logs)], ['Branches cleared', number(report.slidesCleared)],
     ['Geese dodged', number(report.geese)], ['Retrieves', number(report.retrieves)],
+    ['Hunt score', number(report.score)], ['Distance', meters(report.distance)],
+    ['Territories reached', expeditionRegions.slice(0, report.territory).map(place => place.name).join(' · ')],
+    ['Species encountered', Object.entries(report.wildlife ?? {}).filter(([, item]) => item.seen)
+      .map(([id, item]) => fieldSpecies[id].name + ' ×' + item.seen).join(' · ') || '—'],
+  ]))
+  if (report.field) ui['report-tallies'].append(...rows([
+    ['Verified clears', number(Object.values(report.field.clears).reduce((sum, n) => sum + n, 0))],
+    ['Lane changes', number(report.field.shifts)], ['Longest clear chain', number(report.field.chain)],
   ]))
   const highlights = [
     ['Personal records', report.improved.map(key => personalRecordLabels[key])],
@@ -284,7 +364,13 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
   const scroll = dialog.querySelector('.lodge-scroll')
-  const tabs = [...dialog.querySelectorAll('[role=tab]')]
+  const tabs = [...dialog.querySelectorAll('[data-room]')]
+  const picker = ui['lodge-room']
+  const labels = { overview: 'Lodge overview', collection: 'Trophy room', trophies: 'Field Honors', career: 'Career and Master Hunter',
+    records: 'Personal records', migration: 'Great Migration', shame: 'Hall of Shame',
+    kennel: 'Kennel', equipment: 'Equipment room', board: 'Local Camp', worldwide: 'Worldwide Camp' }
+  const positions = new Map()
+  const views = new Map()
   const galleryRooms = new Set(['overview','collection','migration','equipment','shame','records'])
   let room = 'overview'
   let target
@@ -296,9 +382,9 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   let trigger
 
   function selectRoom(value, detail) {
+    positions.set(room, scroll.scrollTop)
     room = value
     target = typeof detail === 'string' ? detail : undefined
-    scroll.scrollTop = 0
     renderRoom()
     if (detail === true) tabs.find(tab => tab.dataset.room === value)?.focus({ preventScroll: true })
   }
@@ -307,15 +393,30 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     const intent = ++request
     onKennel(null)
     const player = lodge.current()
-    panel.setAttribute('aria-labelledby', 'tab-' + room)
+    const group = primaryRoom(room)
+    panel.setAttribute('aria-labelledby', 'tab-' + group)
     for (const tab of tabs) {
-      const active = tab.dataset.room === room
-      tab.setAttribute('aria-selected', String(active))
-      tab.tabIndex = active ? 0 : -1
+      if (tab.dataset.room === group) tab.setAttribute('aria-current', 'page')
+      else tab.removeAttribute('aria-current')
+    }
+    ui['room-picker'].hidden = roomGroups[group].length < 2
+    picker.replaceChildren(...roomGroups[group].map(key => {
+      const option = node('option', labels[key])
+      option.value = key
+      return option
+    }))
+    picker.value = room
+    if (room === 'overview') views.delete(room)
+    const remembered = !target && room !== 'kennel' && views.get(room)
+    if (remembered) {
+      panel.replaceChildren(...remembered)
+      scroll.scrollTop = positions.get(room) ?? 0
+      return
     }
     function selectMetric(value) {
       metric = value
       if (room === 'worldwide') rivalMetric = value
+      views.delete(room)
       renderRoom()
       panel.querySelector('[data-metric=' + value + ']')?.focus({ preventScroll: true })
     }
@@ -323,17 +424,16 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     let stage
     if (room === 'board' || room === 'worldwide') {
       const isWorldwide = room === 'worldwide'
-      const switcher = campSwitch(isWorldwide, () => selectRoom('board', true), () => selectRoom('worldwide', true))
       if (isWorldwide) metric = rivalMetric
-      content = isWorldwide ? [switcher, worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart })]
-        : [switcher, ...leaderboard(lodge, metric, selectMetric)]
+      content = isWorldwide ? [worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart })]
+        : leaderboard(lodge, metric, selectMetric)
     } else if (room === 'kennel') {
       ({ content, stage } = kennelRoom(lodge, onAppearance, inspectDogs, breed => {
         if (!lodge.selectBreed(breed)) return
         onPlayer()
         renderRoom()
         panel.querySelector('.kennel-breeds').open = true
-      }))
+      }, target))
     } else if (room === 'career') content = careerRoom(player, insignia)
     else if (room === 'trophies') content = fieldHonorsRoom(player, insignia, trophies(player), target)
     else if (room === 'journal') content = journal(player)
@@ -353,15 +453,20 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
         return
       }
       content = gallery(room, player, { lodge, target, navigate(value, detail) {
+        views.delete('overview')
         selectRoom(value, detail)
-        tabs.find(tab => tab.dataset.room === value)?.focus({ preventScroll: true })
+        tabs.find(tab => tab.dataset.room === primaryRoom(value))?.focus({ preventScroll: true })
       } })
     }
     panel.replaceChildren(...content)
     if (stage) onKennel(stage)
+    else if (room === 'trophies' || room === 'collection') views.set(room, content)
+    if (!target) scroll.scrollTop = positions.get(room) ?? 0
   }
 
   function renderPlayers() {
+    positions.clear()
+    views.clear()
     const player = lodge.current()
     ui['active-nickname'].textContent = 'Playing as ' + player.nickname
     ui.nickname.value = player.nickname
@@ -391,20 +496,9 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     onPlayer()
     renderPlayers()
   })
-  for (const tab of tabs) {
-    tab.addEventListener('click', () => {
-      selectRoom(tab.dataset.room)
-    })
-    tab.addEventListener('keydown', event => {
-      const index = tabs.indexOf(tab)
-      const next = { ArrowRight: (index + 1) % tabs.length, ArrowLeft: (index - 1 + tabs.length) % tabs.length,
-        Home: 0, End: tabs.length - 1 }[event.key]
-      if (next === undefined) return
-      event.preventDefault()
-      tabs[next].click()
-      tabs[next].focus()
-    })
-  }
+  for (const tab of tabs) tab.addEventListener('click', () => selectRoom(tab.dataset.room))
+  picker.addEventListener('change', () => selectRoom(picker.value))
+  ui['camp-hunt'].addEventListener('click', () => dialog.close())
 
   function onConnectivity() {
     if (dialog.open && room === 'worldwide') renderRoom()
@@ -423,6 +517,8 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   ui['close-lodge'].addEventListener('click', () => dialog.close())
   dialog.addEventListener('close', () => {
     request++
+    views.clear()
+    positions.clear()
     onKennel(null)
     panel.replaceChildren()
     onClose()
@@ -430,10 +526,10 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   })
   return {
     rivalMetric: () => rivalMetric,
-    open(button, targetRoom = 'overview') {
+    open(button, targetRoom = 'overview', detail) {
       trigger = button
       room = targetRoom
-      target = undefined
+      target = detail
       dialog.showModal()
       fitViewport()
       renderPlayers()

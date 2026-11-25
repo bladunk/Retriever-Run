@@ -4,6 +4,7 @@ export const heckleHistoryKey = 'retriever-run.heckles'
 export const recentHeckleLimit = 24
 const byHazard = {
   tree: 'tree', 'leaning-tree': 'tree', fallen: 'tree', log: 'log', root: 'log', drift: 'log',
+  fence: 'fence', rock: 'rock', snowmobile: 'sled',
   stream: 'water', puddle: 'water', washout: 'water', tractor: 'tractor', goose: 'goose', branch: 'slide',
 }
 const catalog = Object.fromEntries(Object.entries(campfireLines).map(([category, lines]) =>
@@ -11,7 +12,7 @@ const catalog = Object.fromEntries(Object.entries(campfireLines).map(([category,
 const known = new Set(Object.values(catalog).flat().map(joke => joke.id))
 
 function weights({ hazard, duration, score, previousBest, priorRuns, bestStreak, jump, slide, changingLane, rivalGap,
-  postedTimber, recentTreat }) {
+  postedTimber, recentTreat, territory, retrieves, rankedUp, notable, repeated }) {
   const result = { camp: 3, tree: 0, log: 0, water: 0, tractor: 0, goose: 0, jump: 0, slide: 0,
     lane: 0, short: 0, rookie: 0, long: 0, best: 0, rival: 0, combo: 0 }
   if (byHazard[hazard]) result[byHazard[hazard]] = 7
@@ -30,6 +31,13 @@ function weights({ hazard, duration, score, previousBest, priorRuns, bestStreak,
   if (postedTimber) result.postedTimber = 13
   if (hazard === 'fallen') result.downedTimber = 11
   if (recentTreat) result.treatDetour = 9
+  if (retrieves > 0) result.bag = 8
+  if (rankedUp) result.rank = 13
+  if (notable) result.careerLegend = 15
+  if (territory >= 6 && territory <= 10) result.plains = 5
+  if (territory === 2 || territory === 4) result.timberCountry = 5
+  if (territory >= 14) result.highCountry = 7
+  if (repeated) result.repeat = 9
   if (duration >= 15 && duration < 288 && duration % 15 < 3) result.freshStage = 8
   if (duration >= 150 && ['puddle', 'root', 'log', 'fence', 'tree', 'branch'].includes(hazard)) result.slowFinish = 9
   return result

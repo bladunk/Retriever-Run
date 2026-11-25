@@ -1,3 +1,4 @@
+import { hapticFeedback, rewardGroups } from './hunt-presentation.js'
 import * as T from 'three'
 import { createHazard, createPickup, prepareWashout } from './art.js'
 import { createAtmosphere } from './atmosphere.js'
@@ -23,7 +24,7 @@ import { createWorldwideCamp } from './worldwide-camp.js'
 import { submissionMessages } from './camp-ui.js'
 import { createLodgeUI, fillReport } from './lodge-ui.js'
 import { createRunStatistics, deathCause } from './field-stats.js'
-import { careerStanding } from './career.js'
+import { careerStanding, xpAt } from './career.js'
 import { careerLine, fillCareerReport } from './career-ui.js'
 import { createOnboarding, restoreEnrollment } from './camp-onboarding.js'
 import { createReportRival } from './rival-ui.js'
@@ -46,11 +47,17 @@ import { createWildlifeSightProbe } from './wildlife-sight-probe.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
 import './lodge.css'
+import './experience.css'
 import './top-dog.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
 const volumeKeys = Object.keys(audioDefaults)
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
+const systemMotion = matchMedia('(prefers-reduced-motion: reduce)')
+const reduceMotion = () => systemMotion.matches || profile.motion
+function setMotionPreference() {
+  document.documentElement.toggleAttribute('data-reduce-motion', reduceMotion())
+}
+systemMotion.addEventListener?.('change', setMotionPreference)
 const format = new Intl.NumberFormat()
 const scene = new T.Scene()
 const camera = new T.PerspectiveCamera(50, 1, .1, 190)
@@ -133,6 +140,7 @@ if (!diagnosticsRequested) {
 }
 const saveProfile = lodge.commit
 let profile = lodge.current().profile
+setMotionPreference()
 let runPlayer
 let runStatistics
 let runPermit
@@ -194,6 +202,7 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   camp,
   onPlayer() {
     profile = lodge.current().profile
+    setMotionPreference()
     if (!diagnosticsRequested) dog?.chooseBreed(lodge.current().kennel.breed)
     dog?.appearance(lodge.current().kennel.equipment)
     resize?.()
@@ -218,8 +227,11 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   },
 })
 const onboarding = createOnboarding(ui, lodge, camp, showTitleRecord, start)
+ui['custom-camp'].addEventListener('click', () => { ui.preferences.close(); onboarding.open() })
 const renderReportRival = createReportRival(ui['report-rival'], camp)
 ui['open-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
+for (const button of ui['title-rooms'].querySelectorAll('[data-entry]'))
+  button.addEventListener('click', () => lodgeUI.open(button, button.dataset.entry))
 ui['report-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
 ui.lodge.addEventListener('click', () => { if (ui.lodge.open && !audioGesture) engageMusic() })
 sound.settings(profile)
@@ -240,7 +252,7 @@ function initialize() {
   const sightProbe = collisionRequested && flags.get('sight') === '1' ? createWildlifeSightProbe(terrain, () => viewWidth / camera.aspect) : undefined
   if (sightProbe) window.retrieverSightings = () => sightProbe.stamp()
   const mayPrepareWildlife = () => contextReady && mode !== 'running' && !document.hidden &&
-    !ui.lodge.open && !ui.preferences.open && !ui.onboarding.open && !ui['content-screen'].open
+    !ui.lodge.open && !ui.preferences.open && !ui.onboarding.open && !ui.tutorial.open && !ui['content-screen'].open
   const wildlife = createLivingWilderness(scene, sound.bird, sound.prepareWildlife, performanceProbe, sightProbe, mayPrepareWildlife)
   performanceProbe?.watch(() => ({
     residentTiles: terrain.count(), residentPacks: terrain.packCount(), surfaces: terrain.landscapeResidency(),
@@ -337,15 +349,15 @@ function initialize() {
     if (!contextReady) return
     dog.installPrepared()
     if (ui.lodge.open) {
-      if (kennelStage) kennel.render(renderer, dog, ms, reducedMotion.matches)
+      if (kennelStage) kennel.render(renderer, dog, ms, reduceMotion())
       return
     }
     if (!trailReady && terrain.readyAt(0) && terrain.readyAt(-1)) {
       trailReady = true
       performanceProbe?.ready()
       ui.primary.disabled = false
-      if (mode === 'title') ui.primary.textContent = 'Start run'
-      if (!diagnosticsRequested && mode === 'title' && !lodge.current().enrollment) onboarding.open()
+      if (mode === 'title') ui.primary.textContent = 'Hunt'
+
       if (collisionRequested && flags.get('inspect') === 'kennel') {
         ui['open-lodge'].click()
         ui['tab-kennel'].click()
@@ -380,7 +392,7 @@ function initialize() {
       const turn = display.lane * laneWidth - display.x
       const ground = trailHeight(distance, display.x)
       const body = playerFrame(dogPosition, display, distance)
-      const comfort = profile.comfort || reducedMotion.matches
+      const comfort = profile.comfort || reduceMotion()
       if (idle) {
         if (layout.portrait) {
           camera.position.set(2.4, 1.95, 3.85)
@@ -396,7 +408,7 @@ function initialize() {
       }
       landing *= Math.exp(-12 * dt)
       const height = getHeight(display)
-      const weather = atmosphere.update(display.elapsed, visualTime, reducedMotion.matches ? .34 : preset.weather, distance)
+      const weather = atmosphere.update(display.elapsed, visualTime, reduceMotion() ? .34 : preset.weather, distance)
       setRockWeather(weather)
       trailPose = {
         x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
@@ -412,7 +424,7 @@ function initialize() {
       signs.begin()
       terrain.update(distance, visualTime, weather, preset.detail)
       signs.finish()
-      leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reducedMotion.matches)
+      leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reduceMotion())
       camera.updateMatrixWorld()
       wildlife(visualTime, distance, preset.detail, mode, terrain.encounters(), camera, observeWildlife)
       if (!idle && !frozen) {
@@ -532,7 +544,6 @@ function runningSurface() {
 
 function onAction(move) {
   runStatistics.action(move)
-  if (profile.haptics && !reducedMotion.matches) navigator.vibrate?.(move === 'jump' ? 18 : 10)
   if (move === 'left' || move === 'right') {
     lastShift = run.elapsed
     return
@@ -561,6 +572,7 @@ function step(dt) {
     debug?.hit(contact)
     frozen = true
     sound.play('hit', isWaterHazard(impacted.type) ? 'splash' : runningSurface())
+    hapticFeedback(navigator, profile.haptics, 'collision')
     setMode('over')
     return false
   }
@@ -577,6 +589,7 @@ function step(dt) {
     const distance = Math.floor(run.distance / 150) * 150
     announce(distance + ' m · Distance milestone', 2)
     sound.play('milestone')
+    if (distance % 750 === 0) hapticFeedback(navigator, profile.haptics, 'milestone')
   }
 
   let warningLabel = ''
@@ -640,9 +653,9 @@ function step(dt) {
       entity.duration = retrieve ? .72 : .30
       entity.remaining = entity.duration
       const combo = treat && run.streak <= 15 && run.streak % 5 === 0
+      if (retrieve) hapticFeedback(navigator, profile.haptics, 'retrieve')
       sound.play(retrieve ? 'retrieve' : result.activated ? 'power' : combo ? 'combo' : treat ? 'treat' : 'bonus')
       if (retrieve && result.activated) announce(pickupNames[entity.type] + '  +' + result.points + ' · Good Boy bonus', 3)
-      else if (retrieve && run.retrieves + profile.retrieves === 3) announce(pickupNames[entity.type] + ' · Marsh bandana unlocked', 3)
       else if (result.activated) announce('Good Boy!  ·  Double pickup points', 3)
       else if (!treat) announce(pickupNames[entity.type] + '  +' + result.points, 3)
       else announce('+' + result.points + (multiplier(run.streak) > 1 ? '  ·  ' + multiplier(run.streak) + '× streak' : ''), 1)
@@ -678,7 +691,7 @@ function announce(message, priority) {
   cueUntil = visualTime + (priority >= 3 ? .94 : .48)
   ui.callout.textContent = message
   calloutAnimation?.cancel()
-  if (reducedMotion.matches) {
+  if (reduceMotion()) {
     calloutAnimation = ui.callout.animate([{ opacity: 1 }, { opacity: 1, offset: .75 }, { opacity: 0 }], 1000)
   } else {
     calloutAnimation = ui.callout.animate([
@@ -695,12 +708,16 @@ function updateConditions(weather) {
   const habitat = region.name
   if (currentTerritory !== null && currentTerritory !== region.key && !frozen) {
     runStatistics?.discover(region, run.elapsed)
+    if (mode === 'running') {
+      sound.play('territory')
+      hapticFeedback(navigator, profile.haptics, 'milestone')
+    }
     announce(region.key === 'manitoba' ? 'Canada · Manitoba Marshlands' : region.name, 2)
   }
   currentTerritory = region.key
   if (ui.habitat.textContent !== habitat) {
     ui.habitat.textContent = habitat
-    if (!reducedMotion.matches) ui.habitat.animate([{ color: '#ffe4a2' }, { color: '#fff3de' }], 1800)
+    if (!reduceMotion()) ui.habitat.animate([{ color: '#ffe4a2' }, { color: '#fff3de' }], 1800)
   }
   const condition = habitat + weather
   if (lastCondition === condition) return
@@ -718,14 +735,14 @@ function updateHud() {
     display.textContent = stage.level + ' / ' + courseStages.length
     display.title = stage.group
     display.setAttribute('aria-label', 'Stage ' + stage.level + ' of ' + courseStages.length + ', ' + stage.group)
-    if (hudCache.stage && stage.level > hudCache.stage && !reducedMotion.matches) {
+    if (hudCache.stage && stage.level > hudCache.stage && !reduceMotion()) {
       display.animate([{ color: '#fff0cd' }, { color: '#efca91' }], 650)
     }
     hudCache.stage = stage.level
   }
   if (hudCache.points !== points) ui.score.textContent = format.format(points)
   if (hudCache.distance !== distance) ui.distance.textContent = format.format(distance) + ' m'
-  if (hudCache.best !== profile.best) ui.best.textContent = format.format(profile.best)
+  if (hudCache.retrieves !== run.retrieves) ui['hud-retrieves'].textContent = format.format(run.retrieves)
   if (hudCache.charge !== charge) ui.charge.value = charge
   if (hudCache.streak !== run.streak) {
     ui.combo.hidden = run.streak < 5
@@ -738,7 +755,7 @@ function updateHud() {
   }
   hudCache.points = points
   hudCache.distance = distance
-  hudCache.best = profile.best
+  hudCache.retrieves = run.retrieves
   hudCache.charge = charge
   hudCache.streak = run.streak
   hudCache.powered = powered
@@ -753,6 +770,12 @@ function showTitleRecord() {
   ui['title-xp'].value = career.within
   ui.record.hidden = !profile.best && !profile.farthest
   ui.record.textContent = 'Best ' + format.format(profile.best) + '  ·  Longest run ' + format.format(profile.farthest) + ' m'
+  const next = career.nextRank
+  const remaining = next ? xpAt(next.level) - career.xp : Infinity
+  const milestone = !player.stats.runs ? 'Your first hunt earns career XP.'
+    : next?.id !== 'master-hunter' && remaining <= 500 ? format.format(remaining) + ' XP to ' + next.name : ''
+  ui['title-milestone'].textContent = milestone
+  ui['title-milestone'].hidden = !milestone
 }
 
 function updateMusicButton() {
@@ -793,15 +816,17 @@ function setMode(value, options = {}) {
   ui.game.dataset.mode = value
   const running = value === 'running'
   if (!running) performanceProbe?.pause()
-  void wakeLock.set(running)
+  void wakeLock.set(running && profile.keepAwake)
   const title = value === 'title'
   const over = value === 'over'
   const paused = value === 'paused'
   let newRecord = false
+  let rewardCue
   if (over && oldMode !== 'over') {
     const runner = lodge.current()
     const previousBest = runner.profile.best
     const priorRuns = runner.stats.runs
+    const repeated = runner.stats.lastHazard === contact.type
     const report = previewRegion
       ? { ...runStatistics.preview(run), cause: deathCause(contact.type), hazard: contact.type, nickname: 'Territory preview',
         improved: [], earned: [], placements: {}, gear: [], preview: true }
@@ -816,11 +841,14 @@ function setMode(value, options = {}) {
         rivalGap: target > 0 ? (target + 1 - measured) / (target + 1) : 0,
         bestStreak: run.bestStreak,
         recentTreat: run.elapsed - lastTreat < .65,
+        territory: report.territory, retrieves: report.retrieves, repeated,
+        rankedUp: report.career?.before.rank.id !== report.career?.after.rank.id && report.career?.after.rank.id !== 'master-hunter',
+        notable: report.newHonors?.some(honor => honor.category === 'Legendary') || report.boyd,
       })
       report.impact = { ...contact }
       const player = previewRegion ? undefined : lodge.players().find(player => player.id === runPlayer)
       fillReport(ui, report, { heckle: line, previousBest: report.previousBest ?? previousBest, player })
-      fillCareerReport(ui, report, player, button => lodgeUI.open(button, 'kennel'), button => lodgeUI.open(button))
+      fillCareerReport(ui, report, player, (button, id) => lodgeUI.open(button, 'kennel', id), button => lodgeUI.open(button))
       const posting = diagnosticsRequested ? null : connectedRun ? camp.record(runPlayer, report, runPermit) :
         runner.enrollment === 'worldwide' ? { status: 'unranked' } : null
       const worldwide = ui['report-worldwide']
@@ -839,6 +867,8 @@ function setMode(value, options = {}) {
         renderReportRival(runPlayer, runMetric, report, runRival, posting)
       }
       newRecord = report.improved.includes('score') || report.improved.includes('distance')
+      rewardCue = rewardGroups(report)[0]?.type
+      if (rewardCue === 'prestige') hapticFeedback(navigator, profile.haptics, 'prestige')
     }
   }
   ui.menu.hidden = running || over
@@ -852,14 +882,18 @@ function setMode(value, options = {}) {
   ui.hint.hidden = !title
   ui['current-runner'].hidden = !title
   ui['title-career'].hidden = !title
-  ui['open-lodge'].hidden = !title
+  ui['title-rooms'].hidden = !title
+  ui['tutorial-entry'].hidden = !title
+  ui['pause-actions'].hidden = !paused
+  if (!title) ui['title-milestone'].hidden = true
+  ui['running-version'].hidden = !title
   if (title) showTitleRecord()
   else ui.record.hidden = true
   ui.eyebrow.textContent = title ? 'THE GREAT MIGRATION' : regionAt(run.elapsed).name.toUpperCase()
-  ui['menu-title'].innerHTML = title ? 'Retriever<br><em>Run</em>' : '<em>Paused</em>'
-  ui['menu-copy'].textContent = title ? 'Follow a yellow Lab through the cattails, creek beds, and flooded timber.'
+  ui['menu-title'].innerHTML = title ? 'Retriever <em>Run</em>' : '<em>Paused</em>'
+  ui['menu-copy'].textContent = title ? 'Run the Great Migration with your retriever.'
     : 'Your run is held at ' + Math.floor(run.distance) + ' m.'
-  ui.primary.textContent = title ? trailReady ? 'Start run' : 'Preparing trail…' : 'Resume run'
+  ui.primary.textContent = title ? trailReady ? 'Hunt' : 'Preparing trail…' : 'Resume run'
   if (!running) {
     flightLabel = ''
     ui['flight-warning'].hidden = true
@@ -870,7 +904,7 @@ function setMode(value, options = {}) {
     audioGesture = true
     updateMusicButton()
   }
-  sound.selectScene(value, { ...options, record: newRecord })
+  sound.selectScene(value, { ...options, record: newRecord, reward: rewardCue })
   if (over) {
     fitReport()
     if (oldMode !== 'over') {
@@ -928,8 +962,11 @@ function resetTrail(seed) {
 
 function start() {
   if (productionSession.locked() || ui['content-screen'].open || mode === 'running' || !trailReady || !contextReady ||
-      ui.onboarding.open ||
-      (!lodge.current().enrollment && !diagnosticsRequested)) return
+      ui.onboarding.open || ui.tutorial.open) return
+  if (!lodge.current().enrollment && !diagnosticsRequested) {
+    const player = lodge.current()
+    lodge.enroll(player.id, player.nickname, 'guest')
+  }
   performanceProbe?.restart()
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
@@ -967,6 +1004,11 @@ function openSettings() {
   ui.swipe.value = profile.swipe
   ui.comfort.checked = profile.comfort
   ui.haptics.checked = profile.haptics
+  ui.motion.checked = profile.motion || systemMotion.matches
+  ui.motion.disabled = systemMotion.matches
+  ui['custom-camp'].hidden = Boolean(lodge.current().enrollment)
+  ui.keepAwake.checked = profile.keepAwake
+  ui.keepAwake.closest('label').hidden = !navigator.wakeLock
   ui.haptics.closest('label').hidden = typeof navigator.vibrate !== 'function'
   ui.preferences.showModal()
 }
@@ -977,6 +1019,26 @@ function bindInput() {
   ui.primary.addEventListener('click', () => mode === 'paused' ? pause() : start())
   ui['run-again'].addEventListener('click', start)
   ui['main-menu'].addEventListener('click', mainMenu)
+  ui['pause-settings'].addEventListener('click', openSettings)
+  ui['pause-menu'].addEventListener('click', mainMenu)
+  ui['pause-restart'].addEventListener('click', start)
+  let tutorialTrigger
+  for (const id of ['tutorial-entry', 'settings-tutorial']) ui[id].addEventListener('click', event => {
+    tutorialTrigger = event.currentTarget
+    ui.tutorial.showModal()
+  })
+  ui['tutorial-close'].addEventListener('click', () => ui.tutorial.close())
+  ui.tutorial.addEventListener('close', () => tutorialTrigger?.focus({ preventScroll: true }))
+  ui['report-details-toggle'].addEventListener('click', event => {
+    const opening = ui['report-details'].hidden
+    ui['report-details'].hidden = !opening
+    event.currentTarget.setAttribute('aria-expanded', String(opening))
+    event.currentTarget.textContent = opening ? 'Hunt summary' : 'Full Field Report'
+    if (opening) {
+      ui['report-details-title'].scrollIntoView({ block: 'start' })
+      ui['report-details-title'].focus({ preventScroll: true })
+    } else ui['report-scroll'].scrollTop = 0
+  })
   ui['music-toggle'].addEventListener('click', () => {
     if (!audioGesture && profile.musicVolume) {
       engageMusic()
@@ -1007,10 +1069,12 @@ function bindInput() {
       saveProfile()
     })
   }
-  for (const key of ['quality', 'swipe', 'comfort', 'haptics']) {
+  for (const key of ['quality', 'swipe', 'comfort', 'haptics', 'motion', 'keepAwake']) {
     ui[key].addEventListener('change', () => {
       profile[key] = key === 'quality' || key === 'swipe' ? ui[key].value : ui[key].checked
       if (key === 'quality') resize()
+      if (key === 'motion') setMotionPreference()
+      if (key === 'keepAwake') void wakeLock.set(mode === 'running' && profile.keepAwake)
       saveProfile()
     })
   }
@@ -1024,9 +1088,9 @@ function bindInput() {
     ' ': 'jump', arrowdown: 'slide', s: 'slide' }
   window.addEventListener('keydown', (event) => {
     if (event.altKey || event.metaKey || event.ctrlKey || ui['content-screen'].open || ui.preferences.open || ui.lodge.open ||
-        ui.onboarding.open) return
+        ui.onboarding.open || ui.tutorial.open) return
     const key = event.key.toLowerCase()
-    if (mode === 'over' && key === ' ' && event.target === ui['report-scroll']) return
+    if (mode === 'over' && (event.target === ui['report-scroll'] || event.target.closest?.('summary,a,input,select'))) return
     if (key in keys && mode === 'running' && !(key === ' ' && event.target instanceof HTMLButtonElement)) {
       event.preventDefault()
       if (!event.repeat) move(keys[key])

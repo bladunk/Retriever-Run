@@ -1,3 +1,4 @@
+import { speciesPhotoFiles } from '../src/species-artwork.js'
 import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { relative, resolve } from 'node:path'
@@ -9,7 +10,7 @@ const worker = readFileSync(new URL('./offline-runtime.js', import.meta.url), 'u
 const publicShell = ['manifest.webmanifest', 'icons/boyd-heritage-48.png', 'branding/boyd-install.webp']
 const lodgeArt = ['tier-1','tier-2','tier-3','tier-4','tier-5','decoy','pheasant','equipment','journal',
   'legend','map','medal','observation','record','shame'].map(name => 'lodge/' + name + '.webp')
-const publicFiles = [...publicShell, ...lodgeArt, 'icons/boyd-heritage-192.png', 'icons/boyd-heritage-512.png',
+const publicFiles = [...publicShell, ...lodgeArt, ...speciesPhotoFiles, 'icons/boyd-heritage-192.png', 'icons/boyd-heritage-512.png',
   'icons/boyd-heritage-maskable-512.png', 'icons/boyd-heritage-180.png', 'branding/boyd-portrait.webp', 'branding/boyd-menu.webp',
   'branding/master-hunter.png']
 const wildlifeTerritories = (...species) => Object.entries(habitatEncounters)
@@ -29,6 +30,7 @@ const groups = {
   'upland-wildlife': { label: 'Fields and woodland wildlife', license: 'living-wildlife', territories: wildlifeTerritories('pheasant','deer') },
   'sky-wildlife': { label: 'River and northern airspace', license: 'living-wildlife', territories: wildlifeTerritories('eagle') },
   'field-recordings': { label: 'Wilderness field recordings', license: 'living-recordings' },
+  'species-photos': { label: 'Field Journal photographs', license: 'species-photographs' },
   lodge: { label: 'Lodge interiors and display objects', license: 'original' },
   dogs: { label: 'Labrador and animations', license: 'labrador' },
   branding: { label: 'Boyd artwork and icons', license: 'boyd-artwork' },
@@ -43,6 +45,7 @@ function groupFor(file, shell) {
   const key = cleanId(file)
   if (/^collision-debug/.test(key)) return 'diagnostics'
   if (/^(?:lab(?:rador)?|pointer|boyd)\./.test(key)) return 'dogs'
+  if (file.startsWith('species/')) return 'species-photos'
   if (file.startsWith('lodge/') || /^lodge-gallery\./.test(key)) return 'lodge'
   if (/^(branding|icons)\//.test(file)) return 'branding'
   if (key.startsWith('living-fern.')) return 'woodland-plants'

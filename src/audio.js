@@ -1,5 +1,5 @@
 import { instrumentSample, sampleUrls } from './audio-samples.js'
-import { regionAt } from './expedition.js'
+import { ambienceMix } from './field-soundscapes.js'
 import { beatSeconds, musicMix } from './marshland.js'
 import { createMusicTransport } from './music-transport.js'
 import { audioDefaults } from './profile.js'
@@ -23,6 +23,8 @@ const rewards = {
   power: [50, 57, 62, 66],
   milestone: [57, 62, 66],
   promotion: [50, 57, 66, 69, 74],
+  territory: [57, 64],
+  prestige: [50, 57, 62, 66, 69, 76],
 }
 
 export function createSound(onInterruption, probe) {
@@ -37,6 +39,9 @@ export function createSound(onInterruption, probe) {
   let wind
   let water
   let rain
+  let reeds
+  let insects
+  let decodeQueue = Promise.resolve()
   let levels = { ...audioDefaults }
   let playing = false
   let scheduler
@@ -111,6 +116,8 @@ export function createSound(onInterruption, probe) {
     wind = noiseBed(710, 'lowpass')
     water = noiseBed(960, 'bandpass')
     rain = noiseBed(1810, 'highpass')
+    reeds = noiseBed(1390, 'bandpass')
+    insects = noiseBed(3250, 'bandpass')
     context.addEventListener('statechange', () => {
       if (!playing) return
       if (context.state === 'running') {
@@ -140,11 +147,15 @@ export function createSound(onInterruption, probe) {
       const buffer = await download(name)
       if (!buffer) return
       // The callback form also works in Safari versions with a prefixed context.
-      const started = probe?.stamp()
-      probe?.operation('audio-decode-start', name)
-      const decoded = await new Promise((resolve, reject) => context.decodeAudioData(buffer, resolve, reject))
-      buffers.set(name, decoded)
-      probe?.operation('audio-decode-ready', name, started)
+      const decode = decodeQueue.then(async () => {
+        const started = probe?.stamp()
+        probe?.operation('audio-decode-start', name)
+        const decoded = await new Promise((resolve, reject) => context.decodeAudioData(buffer, resolve, reject))
+        buffers.set(name, decoded)
+        probe?.operation('audio-decode-ready', name, started)
+      })
+      decodeQueue = decode.catch(() => {})
+      await decode
     } catch {
       // The game and procedural foley can still run if an audio download fails.
     } finally {
@@ -245,7 +256,7 @@ export function createSound(onInterruption, probe) {
     }
   }
 
-  function selectScene(value, { gesture = false, restart = false, record = false, immediate = false } = {}) {
+  function selectScene(value, { gesture = false, restart = false, record = false, reward, immediate = false } = {}) {
     const previousScene = scene
     scene = value
     clearTimeout(transitionTimer)
@@ -282,7 +293,9 @@ export function createSound(onInterruption, probe) {
       const bed = scene === 'running' ? 1 : scene === 'title' ? .69 : scene === 'lodge' ? .54 : .46
       ramp(musicBed.gain, arrivingAtReport ? .15 : bed, scene === 'running' ? .16 : .21)
       if (arrivingAtReport) {
-        accent(record)
+        if (reward === 'prestige' || reward === 'legendary') api.play('prestige')
+        else if (reward === 'rank' || reward === 'platinum' || reward === 'lodge') api.play('promotion')
+        else accent(record)
         transitionTimer = setTimeout(() => ramp(musicBed.gain, bed, .42), 420)
       }
       if (context.state === 'running') beginScheduling()
@@ -294,7 +307,7 @@ export function createSound(onInterruption, probe) {
         }).catch(() => {})
       }
       void load('instruments')
-      if (scene === 'running') {
+      if (scene === 'title' || scene === 'lodge' || scene === 'running') {
         void load('goose')
         void load('mallard')
         void load('creek')
@@ -334,7 +347,7 @@ export function createSound(onInterruption, probe) {
     }
   }
 
-  return {
+  const api = {
     selectScene,
     suspend,
     preload() {
@@ -365,15 +378,16 @@ export function createSound(onInterruption, probe) {
       if (elapsed - lastEnvironment < .15) return
       lastEnvironment = elapsed
       const breeze = .77 + .23 * Math.sin(elapsed * .66)
-      ramp(wind, (.020 + weather.wind * .073) * breeze, .34)
-      ramp(water, wetland ? (.011 + .006 * Math.sin(elapsed * 1.1)) : .002, .36)
+      const [air, current, foliage, insect, creek] = ambienceMix(elapsed)
+      ramp(wind, (.012 + weather.wind * .070) * air * breeze, .34)
+      ramp(water, current * (wetland ? .023 : .006) * (.86 + .14 * Math.sin(elapsed * 1.1)), .42)
       ramp(rain, weather.rain * .053, .34)
-      const habitat = regionAt(elapsed).kind
-      const openWater = ['tidal','swamp','hardwood','limestone','braids','lacustrine','boreal','alpine'].includes(habitat)
-      if (elapsed >= nextCreek && (wetland || openWater) && canPlay('ambientVolume')) {
-        nextCreek = elapsed + vary(12,21)
+      ramp(reeds, foliage * (.007 + weather.wind * .016) * breeze, .43)
+      ramp(insects, insect * .010 * (1 - weather.rain) * (.75 + .25 * Math.sin(elapsed * .88)), .54)
+      if (elapsed >= nextCreek && creek > .15 && canPlay('ambientVolume')) {
+        nextCreek = elapsed + vary(11, 22)
         voice({ buffer: buffers.get('creek'), destination: terrainBed, start: context.currentTime,
-          offset: vary(.3,10), duration: vary(3.1,5.2), volume: habitat === 'limestone' || habitat === 'braids' ? .042 : .025,
+          offset: vary(.3,10), duration: vary(3.1,5.2), volume: creek * .048,
           pan: vary(-.35,.35), filter: 'lowpass', frequency: 2800, attack: .5, release: .9 })
       }
       if (elapsed >= nextBreath && runningOnGround && canPlay('effectsVolume')) {
@@ -409,9 +423,10 @@ export function createSound(onInterruption, probe) {
       if (notes) {
         if (!buffers.has('instruments')) rustle(bus, 'bandpass', effect === 'combo' ? 950 : 780, .039, .090)
         notes.forEach((pitch, index) => instrument('guitar', pitch,
-          context.currentTime + .007 + index * (effect === 'promotion' ? .102 : .048),
+          context.currentTime + .007 + index * (['promotion', 'prestige'].includes(effect) ? .097 : .048),
           .32, (effect === 'treat' ? .093 : .13) / (1 + index * .18), index * .06, bus))
       }
     },
   }
+  return api
 }

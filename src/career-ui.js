@@ -110,7 +110,8 @@ export function fillCareerReport(ui, report, player, openKennel, openLodge) {
   if (report.gear.length) {
     const button = node('button', 'View in Kennel')
     button.type = 'button'
-    button.addEventListener('click', () => openKennel(button))
+    const gear = report.gear.find(item => !item.breed || item.breed === player?.kennel.breed)
+    button.addEventListener('click', () => openKennel(button, gear?.id))
     space.append(node('p', number(report.gear.length) + ' new equipment option' + (report.gear.length === 1 ? '' : 's')), button)
   }
   if (report.saved === false) space.append(node('p', 'Progress is in memory. Leave this page open to retry saving on your next hunt.', 'room-note'))

@@ -1,3 +1,4 @@
+import { collectionSearch, collectionSelect, matchesCollection } from './collection-browser.js'
 import './lodge-gallery.css'
 import { careerStanding } from './career.js'
 import { qualificationCard } from './career-ui.js'
@@ -180,7 +181,12 @@ function trophyRoom(player, { lodge, target, navigate }) {
     option.value = key
     categories.append(option)
   }
-  filters.append(categories, action('Full Field Honors', () => navigate('trophies')))
+  const search = collectionSearch('Search trophies')
+  const rarity = collectionSelect('Trophy rarity', { all: 'All tiers', Bronze: 'Bronze', Silver: 'Silver', Gold: 'Gold', Platinum: 'Platinum' })
+  const sort = collectionSelect('Order trophies', { recent: 'Newest first', name: 'Name', tier: 'Highest tier first' })
+  const tools = node('div', null, 'collection-tools')
+  filters.append(categories, rarity, sort, action('Full Field Honors', () => navigate('trophies')))
+  tools.append(search, filters)
   const status = node('p', null, 'room-note')
   status.setAttribute('role', 'status')
   const list = node('div', null, 'lodge-trophy-list')
@@ -193,8 +199,14 @@ function trophyRoom(player, { lodge, target, navigate }) {
   let highlight
   const pageSize = 10
   const ownedDisplay = () => lodge.players().find(item => item.id === player.id).lodgeDisplay.pins
-  const pool = () => trophies.filter(item => categories.value === 'all' ||
-    (categories.value === 'pinned' ? ownedDisplay().includes(item.key) : item.category === categories.value))
+  function pool() {
+    const choices = trophies.filter(item => (categories.value === 'all' ||
+      (categories.value === 'pinned' ? ownedDisplay().includes(item.key) : item.category === categories.value)) &&
+      (rarity.value === 'all' || item.badge === rarity.value) && matchesCollection(search.value, item.name, item.badge))
+    if (sort.value === 'name') choices.sort((a, b) => a.name.localeCompare(b.name))
+    if (sort.value === 'tier') choices.sort((a, b) => (medals[b.badge] ?? 0) - (medals[a.badge] ?? 0))
+    return choices
+  }
   function render(scroll = false) {
     const choices = pool()
     page = Math.min(page, Math.max(0, Math.ceil(choices.length / pageSize) - 1))
@@ -234,17 +246,21 @@ function trophyRoom(player, { lodge, target, navigate }) {
     previous.disabled = !page
     next.disabled = start + pageSize >= choices.length
     paging.hidden = choices.length <= pageSize
-    if (scroll) list.scrollIntoView({ block: 'start' })
+    if (scroll) paging.scrollIntoView({ block: 'start' })
   }
   function jumpTo(key) {
-    categories.value = 'all'
+    categories.value = rarity.value = 'all'
+    sort.value = 'recent'
+    search.value = ''
     page = Math.max(0, Math.floor(trophies.findIndex(item => item.key === key) / pageSize))
     highlight = key
     render()
     requestAnimationFrame(() => [...list.children].find(card => card.dataset.trophy === key)?.scrollIntoView({ block: 'start' }))
   }
-  categories.addEventListener('change', () => { page = 0; highlight = undefined; render() })
-  room.append(gallery, filters, status, list, paging)
+  const resetPage = () => { page = 0; highlight = undefined; render() }
+  for (const filter of [categories, rarity, sort]) filter.addEventListener('change', resetPage)
+  search.addEventListener('input', resetPage)
+  room.append(gallery, tools, status, paging, list)
   if (target) jumpTo(target)
   else render()
   return [room]

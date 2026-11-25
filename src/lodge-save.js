@@ -186,8 +186,8 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
     if (!raw && practice) {
       const opening = readSave(disk.getItem(saveKey))
       const settings = opening?.players?.find(player => player.id === opening.active)?.profile ?? opening
-      const { quality, comfort, haptics, swipe, masterVolume, musicVolume, wildlifeVolume, ambientVolume, effectsVolume } = settings ?? {}
-      raw = { quality, comfort, haptics, swipe, masterVolume, musicVolume, wildlifeVolume, ambientVolume, effectsVolume }
+      const { quality, comfort, haptics, motion, keepAwake, swipe, masterVolume, musicVolume, wildlifeVolume, ambientVolume, effectsVolume } = settings ?? {}
+      raw = { quality, comfort, haptics, motion, keepAwake, swipe, masterVolume, musicVolume, wildlifeVolume, ambientVolume, effectsVolume }
     }
   } catch { /* Use an in-memory save. */ }
   const futureSave = Number.isInteger(raw?.version) && raw.version > saveVersion

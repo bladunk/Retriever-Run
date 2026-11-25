@@ -57,8 +57,8 @@
       <dl>
         <div><dt>Score</dt><dd id="score">0</dd></div>
         <div><dt>Distance</dt><dd id="distance">0 m</dd></div>
-        <div><dt>Best</dt><dd id="best">0</dd></div>
-        <div class="difficulty-readout"><dt>Stage</dt><dd id="difficulty-stage" title="Rookie">1 / 20</dd></div>
+        <div><dt>Retrieves</dt><dd id="hud-retrieves">0</dd></div>
+        <div class="difficulty-readout"><dt>Stage</dt><dd id="difficulty-stage" title="Rookie">1 / 30</dd></div>
       </dl>
       <div class="meter">
         <label id="meter-label" for="charge">Good Boy Meter</label>
@@ -83,12 +83,38 @@
         </div>
         <p id="record" class="record" hidden></p>
         <button id="primary" class="primary" type="button" disabled>Preparing trail…</button>
-        <button id="open-lodge" class="lodge-entry" type="button">Outfitter’s Lodge</button>
+        <nav id="title-rooms" class="title-rooms" aria-label="Camp sections">
+          <button id="open-lodge" type="button">Lodge</button>
+          <button type="button" data-entry="kennel">Kennel</button>
+          <button type="button" data-entry="journal">Journal</button>
+          <button type="button" data-entry="board">Camp</button>
+        </nav>
+        <button id="tutorial-entry" class="text-action" type="button">How to hunt</button>
+        <p id="title-milestone" class="control-hint" hidden></p>
+        <div id="pause-actions" class="title-rooms" hidden>
+          <button id="pause-settings" type="button">Settings</button>
+          <button id="pause-restart" type="button">Restart hunt</button>
+          <button id="pause-menu" type="button">End hunt</button>
+        </div>
         <p id="local-status" class="control-hint" hidden></p>
         <p class="control-hint" id="hint">Swipe or use arrows to steer, jump, and duck.</p>
         <p id="running-version" class="build-version"></p>
       </div>
     </section>
+    <dialog id="tutorial" aria-labelledby="tutorial-title">
+      <div class="field-guide">
+        <h2 id="tutorial-title" tabindex="-1" autofocus>How to hunt</h2>
+        <p>Run the Great Migration. Collect treats and marked birds along the trail.</p>
+        <dl>
+          <div><dt>← → Lanes</dt><dd>Swipe left or right, or tap the arrows.</dd></div>
+          <div><dt>↑ Jump</dt><dd>Swipe up to clear logs and narrow crossings.</dd></div>
+          <div><dt>↓ Slide</dt><dd>Swipe down to duck under low timber.</dd></div>
+          <div><dt>Retrieves</dt><dd>Collect marked birds in your lane. Off-trail wildlife goes in the Journal.</dd></div>
+        </dl>
+        <p>Earn XP and Lodge upgrades. Fit earned gear in the Kennel.</p>
+        <button id="tutorial-close" class="primary" type="button">Back to game</button>
+      </div>
+    </dialog>
     <dialog id="onboarding" aria-labelledby="onboarding-title">
       <div class="onboarding-dock">
         <div class="onboarding-sheet">
@@ -101,6 +127,7 @@
             <p id="onboarding-status" role="status"></p>
             <button id="camp-join" class="primary" type="submit">Join the Camp</button>
             <button id="camp-guest" type="button">Play in Guest Camp</button>
+            <button id="camp-skip" type="button">Back to game</button>
           </form>
           <p id="camp-privacy">Your camp name tracks records, honors, and standings. Your identity is stored in this browser. Clearing its data or changing devices can remove access.</p>
           <div id="camp-welcome" hidden>
@@ -118,11 +145,16 @@
         <button id="close-settings" type="button" aria-label="Close settings">×</button>
       </div>
       <p id="settings-version" class="build-version"></p>
+      <details class="settings-group" open>
+      <summary>Audio</summary>
       <label class="setting-row">Master volume <input id="masterVolume" type="range" min="0" max="100" step="1"></label>
       <label class="setting-row">Music <input id="musicVolume" type="range" min="0" max="100" step="1"></label>
       <label class="setting-row">Wildlife calls <input id="wildlifeVolume" type="range" min="0" max="100" step="1"></label>
       <label class="setting-row">Environmental ambience <input id="ambientVolume" type="range" min="0" max="100" step="1"></label>
       <label class="setting-row">Gameplay effects <input id="effectsVolume" type="range" min="0" max="100" step="1"></label>
+      </details>
+      <details class="settings-group" open>
+      <summary>Controls and display</summary>
       <label class="setting-row">Touch haptics <input id="haptics" type="checkbox"></label>
       <label class="setting-row">Comfort mode <input id="comfort" type="checkbox"></label>
       <label class="setting-row">Swipe sensitivity
@@ -137,7 +169,14 @@
           <option value="auto">Adaptive</option><option value="low">Battery Saver</option><option value="balanced">Balanced</option><option value="high">High</option>
         </select>
       </label>
+      <label class="setting-row">Reduce motion <input id="motion" type="checkbox"></label>
+      <label class="setting-row">Keep screen awake during hunts <input id="keepAwake" type="checkbox"></label>
+      </details>
+      <details class="settings-group">
+      <summary>Game and installation</summary>
       <div class="application-actions">
+        <button id="custom-camp" type="button">Choose a camp name</button>
+        <button id="settings-tutorial" type="button">How to hunt</button>
         <button id="content-open" type="button" hidden>Game downloads</button>
         <button id="install-app" type="button" hidden>Install Retriever Run</button>
         <button id="full-screen" type="button" hidden>Full screen</button>
@@ -153,6 +192,8 @@
         <p>Deer Female by <a href="https://opengameart.org/content/deer-female">CDmir and TinyWorlds</a> and Fern 02 by
           <a href="https://polyhaven.com/a/fern_02">Rob Tuytel and Rico Cilliers</a>. CC0.</p>
         <a href="https://github.com/bladunk/Retriever-Run/blob/main/docs/production/ASSET_LICENSES.md#phase-04-living-wilderness">Field recordings and full credits</a>
+      </details>
+      <p class="control-hint">Solo saves and settings stay in this browser. Worldwide Camp uses the existing optional Camp identity.</p>
       </details>
     </dialog>
     <nav id="controls" aria-label="Touch controls" hidden>
@@ -174,13 +215,17 @@
           <h2 id="report-title" tabindex="-1">HUNT <em>OVER</em></h2>
           <p id="report-record" class="hunt-record" hidden></p>
           <figure class="campfire-card">
-            <figcaption>Campfire Heckling</figcaption>
+
             <blockquote id="report-message"></blockquote>
           </figure>
           <div id="report-headline" class="record-grid"></div>
-          <p id="report-best" class="report-comparison"></p>
+          <p id="report-summary-context" class="report-comparison"></p>
+          <p id="report-xp-summary" class="report-comparison"></p>
+          <ul id="report-reward-summary" class="reward-summary" aria-label="New rewards"></ul>
         </div>
-        <div class="report-notes">
+        <div id="report-details" class="report-notes" hidden>
+          <h3 id="report-details-title" tabindex="-1">Full Field Report</h3>
+          <p id="report-best" class="report-comparison"></p>
           <section id="report-career" class="report-career" aria-label="Career progress" hidden></section>
           <p id="report-next-honor" class="room-note"></p>
           <p id="report-worldwide" class="room-note" role="status" hidden></p>
@@ -193,7 +238,8 @@
       <div class="report-actions">
         <button id="run-again" class="primary" type="button">Play Again</button>
         <div>
-          <button id="report-lodge" type="button">Outfitter’s Lodge</button>
+          <button id="report-details-toggle" type="button" aria-controls="report-details" aria-expanded="false">Full Field Report</button>
+          <button id="report-lodge" type="button">Lodge</button>
           <button id="main-menu" type="button">Main Menu</button>
         </div>
       </div>
@@ -223,21 +269,15 @@
           </form>
         </div>
       </details>
-      <nav class="lodge-tabs" aria-label="Lodge rooms" role="tablist">
-        <button type="button" role="tab" id="tab-overview" aria-selected="true" aria-controls="lodge-panel" data-room="overview">Lodge</button>
-        <button type="button" role="tab" id="tab-collection" aria-label="Trophy room" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="collection">Trophies</button>
-        <button type="button" role="tab" id="tab-migration" aria-label="Great Migration" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="migration">Migration</button>
-        <button type="button" role="tab" id="tab-records" aria-label="Personal Records" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="records">Records</button>
-        <button type="button" role="tab" id="tab-equipment" aria-label="Equipment room" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="equipment">Equipment</button>
-        <button type="button" role="tab" id="tab-journal" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="journal">Field Journal</button>
-        <button type="button" role="tab" id="tab-trophies" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="trophies">Field Honors</button>
-        <button type="button" role="tab" id="tab-kennel" aria-label="The Kennel" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="kennel">Kennel</button>
-        <button type="button" role="tab" id="tab-shame" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="shame">Hall of Shame</button>
-        <button type="button" role="tab" id="tab-career" aria-label="Working Dog Career" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="career">Career</button>
-        <button type="button" role="tab" id="tab-board" aria-label="Camp Leaderboard" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="board">Local Camp</button>
-        <button type="button" role="tab" id="tab-worldwide" aria-label="Global Camp Leaderboard" aria-selected="false" tabindex="-1" aria-controls="lodge-panel" data-room="worldwide">Worldwide Camp</button>
+      <nav class="lodge-tabs" aria-label="Camp sections">
+        <button id="camp-hunt" type="button">Hunt</button>
+        <button id="tab-overview" type="button" data-room="overview">Lodge</button>
+        <button id="tab-kennel" type="button" data-room="kennel">Kennel</button>
+        <button id="tab-journal" type="button" data-room="journal">Journal</button>
+        <button id="tab-board" type="button" data-room="board">Camp</button>
       </nav>
-      <div id="lodge-panel" class="lodge-panel" role="tabpanel" aria-labelledby="tab-overview" tabindex="0"></div>
+      <label class="room-picker" id="room-picker">Room <select id="lodge-room"></select></label>
+      <div id="lodge-panel" class="lodge-panel" role="region" aria-labelledby="tab-overview" tabindex="0"></div>
     </div>
     </dialog>
   <script type="module" src="/src/production-entry.js"></script>

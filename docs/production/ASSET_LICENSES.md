@@ -104,3 +104,15 @@ The bald cypress, Spanish moss and palmetto geometry is original project artwork
 ## Phase 07 Lodge interiors and objects
 
 The original illustrated interiors, decoy and pheasant carvings, study frames, maps, journals, medals, record plaques, rolled gear and stump are produced by `art/blender/lodge.py` with Blender 4.3.2. All geometry and materials are project-authored. `art/lodge-webp.py` converts the named render outputs into the 15 allowlisted `public/lodge/*.webp` derivatives. The migration chart is original Canvas 2D art. The Lodge reuses the approved derived Boyd portrait and emblem, fitted Kennel models and prior wildlife illustrations. [Reproduction commands](../../art/README.md#reproduce-the-evolving-lodge)
+
+## Phase 08 Journal photographs
+
+The `species-photos` content group contains three locally distributed WebP derivatives at 420 × 294. The published files have a portrait crop, orientation correction as needed, downsampling and WebP encoding. Image metadata was removed. The Journal credits link to each author’s Commons file and the license terms. The Phase 08 audit assigned stable keys and accurate category fallbacks to all 29 catalog species. The other 26 currently have schematic project-authored silhouettes. [Registry](../../src/species-artwork.js) · [Final portrait backlog](FINAL_VISUAL_BACKLOG.md#journal-portrait-queue)
+
+| Runtime derivative | Artist and source | License |
+| --- | --- | --- |
+| `public/species/mallard.webp` · 30,702 bytes | Charles J. Sharp, [Mallard drake](https://commons.wikimedia.org/wiki/File:Mallard_drake_(anas_platyrhynchos).JPG) | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/). The standalone WebP derivative is redistributed under the same terms. |
+| `public/species/wood-duck.webp` · 26,018 bytes | Arjan Haverkamp, [Wood Duck](https://commons.wikimedia.org/wiki/File:Aix_sponsa_-Ouwehands_Dierenpark-8a.jpg) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) |
+| `public/species/alligator.webp` · 24,540 bytes | Judy Gallagher, [American Alligator](https://commons.wikimedia.org/wiki/File:American_Alligator_-_Alligator_mississippiensis,_Everglades_National_Park,_Homestead,_Florida,_January_31,_2022_(51858108563).jpg) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) |
+
+Phase 08’s wind, foliage, water and insect mix and its shorter reward cues are original runtime synthesis and composition. They use the existing cleared audio bank and creek recording. The identified recordings and their terms stay attached to the original files. [Recording credits](../../AUDIO.md#recording-credits)

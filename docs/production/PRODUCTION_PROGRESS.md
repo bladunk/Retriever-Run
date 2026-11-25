@@ -2,9 +2,9 @@
 
 ## Resume here
 
-- Active checkpoint is Phase 07 owner review on `codex/retriever-run-phase-07`. Integrated Phase 06 is `da8526aeb6dea5c8b96782a4563f84de1ed5ca3c`. Pages served `1.0.0-phase.6 · b8f04c8` when the baseline was checked. Owner merge approval is complete and physical iPhone acceptance remains open. [Phase 06 report](PHASE_06_REPORT.md)
-- Phase 07 review artifact is `1.0.0-phase.7 · 9664832`, manifest `0aa8a085db83cf4490e8`. Five illustrated interiors and 25 earned additions use the existing career data. Trophy pins and recently granted gear live in the versioned Lodge display preferences. The Migration wall carries the actual 15-territory route, and the Phase 06 receipt gates Boyd’s tribute. [Draft PR #35](https://github.com/bladunk/Retriever-Run/pull/35) · [Phase 07 report](PHASE_07_REPORT.md)
-- Resume with the physical iPhone checks in the report. Review the five tiers, personalized shelves, offline favorites, Hunt Over replay and the legitimate Boyd reveal. The branch is at the owner review checkpoint. Phase 08 has not begun.
+- Active checkpoint is Phase 08 owner review on `codex/retriever-run-phase-08`, based on the accepted Phase 07 merge `358c2e723e2710f9206f1aad2dc9240449e49df4`. The deployed build at baseline was `1.0.0-phase.7 · 995272c`. [Phase 07 report](PHASE_07_REPORT.md)
+- Phase 08 groups the Lodge’s navigation, makes large collections searchable, adds a one-screen Hunt Over with immediate replay, and ships an optional guide, regional audio and three licensed Journal portraits. Review build `1.0.0-phase.8 · a8b6e41` passed 185 automated tests, production verification, two offline portrait browser checks and the Phase 07 update rehearsal. [Draft PR #36](https://github.com/bladunk/Retriever-Run/pull/36) · [Phase 08 report](PHASE_08_REPORT.md) · [Portrait gallery](evidence/phase-08/README.md)
+- Owner acceptance starts with the small-screen replay, guest guide, Trophy Room, Journal and native audio/launch checks. The consolidated visual production queue sits in Phase 08B. Phase 09 is still pending. [Visual backlog](FINAL_VISUAL_BACKLOG.md)
 
 ## Implemented in Phase 01
 

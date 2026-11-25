@@ -1,0 +1,69 @@
+{
+  "method": "Chromium SwiftShader, sequential equal 320 x 568 viewport and nine isolated profiles. Cold includes a fresh verified download. Warm is three offline launches. The timing candidate predates the final field guide copy and focus changes. Shared host, no native or iPhone measurements.",
+  "baseline": {
+    "app": {
+      "version": "1.0.0-phase.7",
+      "id": "9664832"
+    },
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "cold": {
+      "wall": 8430,
+      "ready": 8381,
+      "collectionRequests": 0
+    },
+    "warm": [
+      {
+        "wall": 5825,
+        "ready": 5734,
+        "collectionRequests": 0
+      },
+      {
+        "wall": 5207,
+        "ready": 5183,
+        "collectionRequests": 0
+      },
+      {
+        "wall": 3275,
+        "ready": 3253,
+        "collectionRequests": 0
+      }
+    ],
+    "errors": []
+  },
+  "candidate": {
+    "app": {
+      "version": "1.0.0-phase.8",
+      "id": "78646eb"
+    },
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "cold": {
+      "wall": 4604,
+      "ready": 4594,
+      "collectionRequests": 0
+    },
+    "warm": [
+      {
+        "wall": 3186,
+        "ready": 3155,
+        "collectionRequests": 0
+      },
+      {
+        "wall": 3435,
+        "ready": 3390,
+        "collectionRequests": 0
+      },
+      {
+        "wall": 3748,
+        "ready": 3727,
+        "collectionRequests": 0
+      }
+    ],
+    "errors": []
+  }
+}
