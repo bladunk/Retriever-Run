@@ -94,7 +94,7 @@ function guidedInputs(seed, duration) {
 try {
   const viewport = args.includes('wide') ? { width: 844, height: 470 }
     : args.includes('small') ? { width: 320, height: 568 } : { width: 390, height: 844 }
-  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: args.includes('retina') ? 2 : .70,
+  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: args.includes('retina') ? 2 : args.includes('fast') ? .32 : .70,
     ...(args.includes('video') ? { recordVideo: { dir: output, size: viewport } } : {}) })
   // Block the external APIs, while letting the same-origin app worker serve
   // an actually verified content pack for the full set of offline checkpoints.
@@ -103,6 +103,7 @@ try {
     return url.startsWith(origin) || url.startsWith('blob:') || url.startsWith('data:') ? route.continue() : route.abort()
   })
   const page = await context.newPage()
+  const recordingStarted = performance.now()
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   page.on('console', msg => { if (msg.type() === 'error' && /shader error|THREE.WebGLProgram/i.test(msg.text())) errors.push(msg.text()) })
@@ -123,7 +124,8 @@ try {
         while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
           window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
         }
-        stamp += 1000 / 30
+        const toNext = (replay.inputs[replay.next]?.at - state.elapsed) * 1000
+        stamp += replay.fast && toNext > 0 ? Math.max(16, Math.min(124, toNext)) : replay.fast ? 124 : 1000 / 30
       } else if (state.distance < qa.limit) stamp += 25
       else if (qa.limit < 0 && quality === 'low') stamp += .10
       const start = performance.now()
@@ -138,7 +140,8 @@ try {
         const sample = window.retrieverPerformance()
         qa.soak.samples.push({ elapsed: state.elapsed, distance: state.distance,
           draws: sample.draws, triangles: sample.triangles, geometries: sample.geometries,
-          textures: sample.textures, tiles: sample.residentTiles, packs: sample.residentPacks })
+          textures: sample.textures, tiles: sample.residentTiles, packs: sample.residentPacks,
+          tileSliceMs: Math.max(0, ...(sample.tileTimings ?? []).map(tile => tile.integrationPeakMs ?? tile.unpackMs ?? 0)) })
         qa.soak.nextSample += .5
       }
       if (state?.mode === 'running' && qa.rendered < 180) {
@@ -158,7 +161,7 @@ try {
     }
     await page.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
       null, { timeout: 60_000 })
-    await page.addStyleTag({ content: '#collision-debug, #game[data-practice] .practice-status, #callout { display: none }' })
+    await page.addStyleTag({ content: '#collision-debug, #game[data-practice] .practice-status, #callout, #patch-toast { display: none }' })
     await page.locator('#primary').tap()
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running', null, { timeout: 40_000 })
     if (args.includes('offline')) await context.setOffline(true)
@@ -171,14 +174,21 @@ try {
   }
 
   async function settle(distance, sceneQuality) {
-    await page.waitForFunction(({ distance, isPhaseThree, quality }) => {
+    await page.waitForFunction(({ distance, isPhaseThree, quality, small }) => {
       const s = window.retrieverDebug
       if (!s || s.mode !== 'running') return false
       if (!isPhaseThree) return s.tiles === 7 && s.drawCalls >= 36
-      const count = quality === 'low' ? 4 : 5
+      const count = quality === 'low' || small ? 4 : 5
       const center = Math.floor(distance / 30)
-      return Array.from({ length: count }, (_, i) => center + i).every(i => s.world?.some(t => t.index === i))
-    }, { distance, isPhaseThree, quality: sceneQuality }, { timeout: 35_000 })
+      const ready = Array.from({ length: count }, (_, i) => center + i).every(i => s.world?.some(t => t.index === i))
+      // The fixture freezes the simulation clock at a view. A Low-presets
+      // capture still needs a redraw to let staged terrain finish attaching.
+      if (!ready && quality === 'low') window.dispatchEvent(new Event('resize'))
+      return ready
+    }, { distance, isPhaseThree, quality: sceneQuality, small: args.includes('small') }, { polling: 300, timeout: 60_000 }).catch(async error => {
+      console.error(await page.evaluate(() => ({ state: window.retrieverDebug, perf: window.retrieverPerformance?.() })))
+      throw error
+    })
   }
 
   async function stepTo(distance) {
@@ -203,6 +213,7 @@ try {
   async function capture(label, extra = {}) {
     assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running')
     await page.screenshot({ path: resolve(output, label + '.png'), scale: args.includes('retina') ? 'device' : 'css', timeout: 45_000 })
+    if (args.includes('video')) extra.recordingSeconds = (performance.now() - recordingStarted) / 1000
     results.push(await page.evaluate(({ label, extra }) => ({
       label, ...extra, ...window.retrieverDebug, perf: window.retrieverPerformance(),
       weather: document.querySelector('#weather')?.textContent,
@@ -219,18 +230,29 @@ try {
     const seed = 7
     const inputs = guidedInputs(seed, duration)
     await runAt(0, seed)
-    await page.evaluate(({ inputs, duration }) => {
-      window.phaseThreeQA.soak = { inputs, duration, next: 0, nextSample: 0, samples: [] }
-    }, { inputs, duration })
-    await page.waitForFunction(duration => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
-      window.retrieverDebug?.elapsed >= duration, duration, { timeout: 900_000 })
+    await page.evaluate(({ inputs, duration, fast }) => {
+      window.phaseThreeQA.soak = { inputs, duration, fast, next: 0, nextSample: 0, samples: [] }
+    }, { inputs, duration, fast: args.includes('fast') })
+    for (let checkpoint = Math.min(15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
+      await page.waitForFunction(value => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
+        window.retrieverDebug?.elapsed >= value, checkpoint, { timeout: 240_000 })
+      const state = await page.evaluate(() => window.retrieverDebug)
+      console.log(`Rendered ${state.elapsed.toFixed(2)} seconds (${state.mode})`)
+      await writeFile(resolve(output, 'soak-checkpoint.json'), JSON.stringify({ elapsed: state.elapsed, stage: stageAt(state.elapsed).level,
+        quality, acceleratedClock: args.includes('fast'), offline: args.includes('offline') }) + '\n')
+      if (checkpoint === duration || state.mode !== 'running') break
+    }
     const soak = await page.evaluate(() => ({ ...window.phaseThreeQA.soak, state: window.retrieverDebug }))
+    const endPerformance = await page.evaluate(() => window.retrieverPerformance())
     await writeFile(resolve(output, 'soak.json'), JSON.stringify({ engine: engine.name(), seed, duration,
-      offline: args.includes('offline'), quality, executed: soak.next, samples: soak.samples, elapsed: soak.state.elapsed }, null, 2) + '\n')
+      offline: args.includes('offline'), quality, executed: soak.next, samples: soak.samples, elapsed: soak.state.elapsed,
+      renderedEnd: endPerformance }, null, 2) + '\n')
     assert.equal(soak.state.mode, 'running', JSON.stringify(soak.state))
     assert.ok(soak.samples.length >= duration, 'insufficient rendered samples')
-    assert.ok(soak.samples.every(({ tiles, packs, textures, geometries }) => tiles === 7 && packs <= 2 &&
-      textures <= 18 && geometries <= 90), 'unexpected scene resource growth')
+    const living = 'wildlife' in soak.state
+    assert.ok(soak.samples.every(({ tiles, packs, textures, geometries }) =>
+      tiles <= 7 && tiles >= (living ? 5 : 7) && packs <= (living ? 3 : 2) &&
+      textures <= (living ? 34 : 18) && geometries <= (living ? 120 : 90)), 'unexpected scene resource growth')
     await capture('soak-finish', { seed, duration, executed: soak.next })
   } else if (args.includes('landmark-pass')) {
     const keys = args.filter(a => a.startsWith('only=')).map(a => a.slice(5))
@@ -329,6 +351,106 @@ try {
         throw error
       })
       await capture(selected + '-cypress')
+    }
+  } else if (args.includes('living')) {
+    const { planEncounter } = await fromSource('wildlife-encounters')
+    const defaults = [['mallard','gulf'],['pheasant','farm'],['deer','farm'],['crane','platte'],
+      ['canada-goose','sandhills'],['moose','boreal'],['eagle','foothills'],['alligator','cypress']]
+    const selected = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
+    for (const [id, territory] of defaults) {
+      if (selected.length && !selected.includes(id)) continue
+      const region = expeditionRegions.find(row => row.key === territory)
+      const first = Math.max(4, Math.ceil(region.marker / 120) * 4)
+      const last = Math.floor(distanceAtTime(region.seconds + 29) / 30)
+      let fixture
+      for (let tile = first; tile <= last && !fixture; tile += 4) {
+        const sample = buildTile(tile, 7)
+        for (let seed = 1; seed < 900 && !fixture; seed++) {
+          if (planEncounter(sample, seed)?.species !== id) continue
+          const event = planEncounter(buildTile(tile, tile < 3 ? 0 : seed), seed)
+          if (event?.species !== id || event.distance < region.marker + 45) continue
+          const start = Math.max(0, event.distance - 43)
+          const end = event.distance - (id === 'pheasant' ? 16 : 21)
+          let left = 0, right = region.seconds + 35
+          for (let n = 0; n < 30; n++) {
+            const middle = (left + right) * .5
+            if (distanceAtTime(middle) < start) left = middle
+            else right = middle
+          }
+          const run = { ...newRun(), elapsed: right, distance: start, speed: speedAtTime(right) }
+          const hazards = rowsFor(seed,region.seconds+40).flatMap(row => row.entities)
+            .filter(item => item.hazard && item.distance >= start - 30 && item.distance <= end + 30)
+          let hit
+          while (run.distance < end + 2 && !hit) {
+            const prior = { ...run }
+            advance(run,tickSeconds)
+            hit = firstContact(prior,run,hazards,{})
+          }
+          if (!hit) fixture = { seed, event, start, end }
+        }
+      }
+      assert.ok(fixture,id)
+      const { seed, event, start, end } = fixture
+      await runAt(start,seed)
+      await stepTo(Math.max(start+1, event.distance-27))
+      await capture(id+'-approach',{ seed, planned: event })
+      await stepTo(end)
+      await capture(id+'-animal',{ seed, planned: event })
+      assert.equal(results.at(-1).wildlife?.species,id)
+      assert.ok(results.at(-1).wildlife.drawn > 0,id)
+    }
+  } else if (args.includes('sign-run')) {
+    let fixture
+    for (let index = 4; index < 48 && !fixture; index++) {
+      const { sign } = buildTile(index, 1)
+      if (!sign) continue
+      for (let seed = 1; seed <= 12 && !fixture; seed++) {
+        const start = sign.distance - 26
+        const end = sign.distance - 12
+        const hazards = rowsFor(seed, 84).flatMap(row => row.entities).filter(item => item.hazard)
+        let clear = true
+        for (let distance = start; distance < end && clear; distance += .5) {
+          const pose = { ...newRun(), distance }
+          clear = !firstContact(pose, pose, hazards, {})
+        }
+        if (clear) fixture = { seed, start, end, sign }
+      }
+    }
+    assert.ok(fixture)
+    await runAt(fixture.start, fixture.seed)
+    await capture('sign-approach', fixture)
+    await stepTo(fixture.end)
+    await capture('sign-near', fixture)
+    assert.ok(results.at(-1).signs.some(sign => sign.distance === fixture.sign.distance))
+  } else if (args.includes('water-crossings') || args.includes('root-plate')) {
+    const candidates = args.includes('root-plate') ? ['parklands'] : ['gulf','cypress','platte','mountain']
+    const type = args.includes('root-plate') ? 'fallen' : 'stream'
+    for (const key of candidates) {
+      if (args.some(arg => arg.startsWith('only=')) && !args.includes('only=' + key)) continue
+      const region = expeditionRegions.find(item => item.key === key)
+      let fixture
+      for (let seed=1; seed<21 && !fixture; seed++) {
+        const rows = rowsFor(seed,region.seconds+29)
+        const candidates = rows.filter(row=>row.time >= region.seconds+1)
+          .flatMap(row=>row.entities).filter(item=>item.hazard && item.type===type)
+        const hazards = rows.flatMap(row=>row.entities).filter(item=>item.hazard)
+        for (const item of candidates) {
+          const start = item.distance - (type === 'fallen' ? 18 : 15)
+          const end = item.distance - (type === 'fallen' ? 6 : 7.5)
+          let clear = true
+          for (let distance=start; distance<=end && clear; distance+=.4) {
+            const pose = { ...newRun(), distance }
+            clear = !firstContact(pose,pose,hazards,{})
+          }
+          if (clear) { fixture = { seed, item, start, end }; break }
+        }
+      }
+      assert.ok(fixture,key)
+      const { seed, item, start, end } = fixture
+      await runAt(start,seed)
+      await capture(key+'-approach',{ seed, target: item.distance })
+      await stepTo(end)
+      await capture(key+'-close',{ seed, target: item.distance })
     }
   } else if (args.includes('equipment')) {
     for (const [type, from, to] of [['tractor', 150, 180], ['snowmobile', 392, 449], ['log', 40, 58]]) {

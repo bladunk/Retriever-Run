@@ -4,6 +4,7 @@ import { awardPatches, patches } from './honors.js'
 import { applyRunXP, careerStanding, legacyLevel, normalizeCareer, serviceCredit } from './career.js'
 import { journalIssues, reviewSavedRank } from './career-integrity.js'
 import { expeditionRegions, migrationSecondsByTerritory, regionAt, territorySeconds } from './expedition.js'
+import { commitWildlife, normalizeWildlife } from './wildlife-journal.js'
 import { courseRuleset } from './ruleset.js'
 import { classicGear, kennelCatalog, legacyGear, newGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 
@@ -69,6 +70,7 @@ function normalizePlayer(raw, id, schema) {
     seconds: expeditionRegions.map((region, index) => Math.min(measure(progress?.seconds?.[index]),
       playtime, index < expeditionRegions.length - 1 ? total : Infinity)),
   }
+  player.wildlife = normalizeWildlife(raw?.wildlife, player.stats)
   player.enrollment = ['guest', 'worldwide', 'returning'].includes(raw?.enrollment)
     ? raw.enrollment : legacy ? 'returning' : null
   const priorLevel = schema === 2 ? legacyLevel(raw?.career?.xp) : undefined
@@ -236,6 +238,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       if (!result) return null
       save.nextRun = Math.max(save.nextRun, runId + 1)
       const date = now().toISOString()
+      const newWildlife = practice ? [] : commitWildlife(player.wildlife, result, runId, date)
       const statistics = player.stats
       statistics.runs++
       statistics.deaths++
@@ -273,11 +276,12 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const career = practice ? null : applyRunXP(player.career, runId, result, improved, earned, player, plausible)
       const gear = career ? newGear(career.before, career.after, player.kennel.inherited) : []
       const entry = { ...result, id: runId, player: id, date }
+      delete entry.wildlife
       save.entries = retainedEntries([...save.entries, entry])
       const placements = emptyCounts(metrics)
       for (const metric of metrics) placements[metric] = rankRuns(save.entries, metric).findIndex(run => run.id === entry.id) + 1
       commit()
-      return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements, career, gear, practice }
+      return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements, career, gear, practice, newWildlife }
     },
   }
 }

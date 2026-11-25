@@ -14,6 +14,8 @@ const shades = {
 }
 
 function paint(ctx, sign, seed) {
+  ctx.save()
+  ctx.scale(2, 2)
   const [shadow, wood, letter, trim] = shades[sign.style]
   const random = seededRandom(seed)
   ctx.clearRect(0, 0, width, height)
@@ -57,7 +59,7 @@ function paint(ctx, sign, seed) {
   const { lines, size, lineHeight, scale } = fitSignLettering(sign.line, line => ctx.measureText(line).width)
   ctx.font = font + size + 'px Arial, sans-serif'
   ctx.strokeStyle = '#261e14'
-  ctx.lineWidth = Math.max(2, size * .043)
+  ctx.lineWidth = Math.max(2.4, size * .054)
   ctx.lineJoin = 'round'
   ctx.fillStyle = letter
   ctx.save()
@@ -68,6 +70,7 @@ function paint(ctx, sign, seed) {
     ctx.strokeText(line, 0, y)
     ctx.fillText(line, 0, y)
   }
+  ctx.restore()
   ctx.restore()
 }
 
@@ -119,7 +122,7 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
       }
       placeOnTrail(slot.root.position, anchor.distance, anchor.width, distance)
       slot.root.position.y = anchor.y
-      slot.root.rotation.y = headingAt(anchor.distance) - Math.sign(anchor.width) * .28
+      slot.root.rotation.y = headingAt(anchor.distance) - Math.sign(anchor.width) * .36
       slot.seen = true
     },
     finish() {
@@ -131,11 +134,13 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
 
 function noticePlate(face, makeCanvas) {
   const canvas = makeCanvas()
-  canvas.width = width
-  canvas.height = height
+  canvas.width = width * 2
+  canvas.height = height * 2
   const texture = new T.CanvasTexture(canvas)
   texture.colorSpace = T.SRGBColorSpace
-  texture.anisotropy = 2
+  texture.anisotropy = 8
+  texture.minFilter = T.LinearMipmapLinearFilter
+  texture.magFilter = T.LinearFilter
   const plate = new T.Mesh(face, new T.MeshBasicMaterial({ map: texture, toneMapped: false }))
   return { canvas, texture, plate }
 }

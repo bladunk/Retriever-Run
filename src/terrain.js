@@ -1,16 +1,17 @@
 import * as T from 'three'
 import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
 import { cornModel } from './corn.js'
-import { environmentAssets } from './environment-assets.js'
+import { environmentAssets, fernTerritories } from './environment-assets.js'
 import { landscapeProfiles } from './migration-landscapes.js'
 import { regionAtDistance } from './expedition.js'
 import { fieldAtlasShader } from './field-atlas-shader.js'
 import { landscapeMap, landscapeReady, updateLandscapeQuality, landscapeResidency } from './landscape-atlas.js'
 import { fieldMaterials } from './materials.js'
-import { forestModel, forestProfileAt, forestSurface } from './forest-models.js'
+import { assignForestGeometry, forestModel, forestProfileAt, forestSurface } from './forest-models.js'
 import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
 import { createBankPlant } from './marsh-plants.js'
 import { marshWater, updateMarshWater } from './marsh-water.js'
+import { planEncounter } from './wildlife-encounters.js'
 import { replaceTileGeometry } from './tile-mesh.js'
 import { centerAt, segmentLength } from './trail.js'
 
@@ -116,8 +117,20 @@ landmarkMaterial.onBeforeCompile = shader => {
 }
 settleTreeHaze(treeMaterial)
 settleTreeHaze(forestMaterial, true)
-softenLOD(cropMaterial, false)
-softenLOD(cropFarMaterial, true)
+function cropWind(shader) {
+  shader.uniforms.windClock = windClock
+  shader.uniforms.windStrength = windStrength
+  shader.vertexShader = 'uniform float windClock, windStrength;\n' + shader.vertexShader
+    .replace('#include <begin_vertex>', `#include <begin_vertex>
+      #ifdef USE_INSTANCING
+      float stalk = max(0., position.y);
+      float sway = sin(windClock*1.7 + instanceMatrix[3].x*.64 + instanceMatrix[3].z*.67);
+      transformed.x += stalk*stalk*(.032 + windStrength*.11)*sway;
+      #endif
+    `)
+}
+softenLOD(cropMaterial, false, cropWind)
+softenLOD(cropFarMaterial, true, cropWind)
 
 const reedMaterial = new T.MeshLambertMaterial({ color: 0xffffff, side: T.DoubleSide, vertexColors: true })
 const windClock = { value: 0 }
@@ -162,12 +175,13 @@ export function createTerrain(scene, showSign) {
     for (const grove of forest) grove.name = 'Canopy instances'
     const crops = [batch(cropGeometries[0], cropMaterial, 112), batch(cropGeometries[1], cropFarMaterial, 112)]
     const tufts = batch(vegetation[0][0], reedMaterial, 16)
+    const ferns = batch(vegetation[0][0], reedMaterial, 4)
     const reeds = batch(vegetation[0][0], reedMaterial, reedCount)
     const smoke = createChimneySmoke()
     root.visible = false
-    root.add(ground, water, reeds, detail, solid, trees, ...forest, ...crops, tufts, smoke)
+    root.add(ground, water, reeds, detail, solid, trees, ...forest, ...crops, tufts, ferns, smoke)
     scene.add(root)
-    return { root, ground, water, detail, solid, trees, forest, crops, tufts, reeds, smoke, hasChimney: false,
+    return { root, ground, water, detail, solid, trees, forest, crops, tufts, ferns, reeds, smoke, hasChimney: false,
       plantType: 0, index: null, wanted: null }
   })
   const slot = (index) => tiles[((index % tiles.length) + tiles.length) % tiles.length]
@@ -175,23 +189,38 @@ export function createTerrain(scene, showSign) {
   const nearCount = [14, 27, 40]
   const farCount = [7, 12, 17]
   let building = false
+  let integration
+  const current = (tile, packet) => tile.wanted === packet.index && (packet.seed ?? 0) === seedAt(packet.index)
   let worker
   let workerDeadline
   let center = 0
   let terrainSeed = 0
   const seedAt = index => index < 3 ? 0 : terrainSeed
   let requestedEnvironment = false
+  let requestedFerns = false
   const openingTiles = new Map()
+  const activeEncounters = []
 
-  function load(packet) {
-    const tile = slot(packet.index)
-    if (tile.wanted !== packet.index || (packet.seed ?? 0) !== seedAt(packet.index)) return
+  function* integrate(tile, packet) {
+    tile.installing = true
+    // Old buffers have been replaced after the first slice. Keep a partial
+    // tile out of both rendering and the readyAt contract until commit.
+    tile.index = null
+    try {
+      yield* installParts(tile, packet)
+    } finally {
+      tile.installing = false
+    }
+  }
+
+  function* installParts(tile, packet) {
     if (packet.index === 0 || packet.index === -1) openingTiles.set(packet.index, packet)
-    const prepareStart = performance.now()
+
     for (const [mesh, data] of [[tile.ground, packet.ground], [tile.water, packet.water],
       [tile.detail, packet.detail], [tile.solid, packet.solid]]) replaceTileGeometry(mesh, data)
     tile.solid.visible = Boolean(packet.solid)
     tile.hasWater = Boolean(packet.water)
+    yield
     const variants = forestProfileAt(packet.territory, packet.index)
     const cards = coverTypes.has(packet.territory) ? environmentAssets.get('trees') : null
     const grasses = coverTypes.has(packet.territory) ? environmentAssets.get('grass') : null
@@ -205,7 +234,7 @@ export function createTerrain(scene, showSign) {
     tile.trees.material = cards?.material ?? treeMaterial
     tile.trees.count = 0
     for (const [index, mesh] of tile.forest.entries()) {
-      mesh.geometry = forestModel(variants[index], field.fieldDetail.value < 2, Math.abs(packet.index + index) % 2)
+      assignForestGeometry(mesh, forestModel(variants[index], field.fieldDetail.value < 2, Math.abs(packet.index + index) % 2))
       mesh.count = 0
     }
     for (let n = 0; n < packet.trees.length / 7; n++) {
@@ -228,6 +257,7 @@ export function createTerrain(scene, showSign) {
       batch.setColorAt(batch.count++, tint.setHex(fieldTints[packet.trees[at + 5]]).multiplyScalar(outer ? .83 : 1))
     }
     for (const mesh of [tile.trees, ...tile.forest]) updateBatch(mesh)
+    yield
     for (const [index, mesh] of tile.crops.entries()) {
       mesh.geometry = cropGeometries[packet.harvested ? 2 : index]
       mesh.count = packet.crops.length / 6
@@ -260,6 +290,23 @@ export function createTerrain(scene, showSign) {
       }
       updateBatch(tile.tufts)
     }
+    yield
+    const fern = fernTerritories.has(packet.territory) ? environmentAssets.get('ferns') : null
+    tile.ferns.geometry = fern?.models[0] ?? vegetation[0][0]
+    tile.ferns.material = fern?.material ?? reedMaterial
+    tile.ferns.count = 0
+    if (fern) for (let n = 1; n < packet.reeds.length / 6 && tile.ferns.count < 4; n += 3) {
+      const index = n * 6
+      if (packet.reeds[index + 1] < -.42 || Math.abs(packet.reeds[index]) < 4) continue
+      dummy.position.fromArray(packet.reeds,index)
+      dummy.rotation.set(0,n * 2.37,0)
+      dummy.scale.setScalar(.84 + (n % 5) * .10)
+      dummy.updateMatrix()
+      tile.ferns.setMatrixAt(tile.ferns.count, dummy.matrix)
+      tile.ferns.setColorAt(tile.ferns.count++, tint.setHex(0xe1e0c4))
+    }
+    updateBatch(tile.ferns)
+    tile.usesFernPack = Boolean(fern)
     tile.plantType = packet.plantType
     tile.reedTotal = packet.reeds.length / 6
     for (let n = 0; n < tile.reedTotal; n++) {
@@ -284,15 +331,47 @@ export function createTerrain(scene, showSign) {
     tile.seed = packet.seed ?? 0
     tile.landmark = packet.landmark
     tile.habitats = packet.habitats
-    tile.preparation = { buildMs: packet.buildMs, unpackMs: performance.now() - prepareStart }
+    tile.fauna = { index: packet.index, territory: packet.territory, anchors: packet.anchors }
+    tile.encounter = planEncounter(tile.fauna, terrainSeed)
+  }
+
+  function queue(packet) {
+    const tile = slot(packet.index)
+    if (integration || !current(tile, packet)) return
+    integration = { tile, packet, work: integrate(tile, packet), total: 0, max: 0 }
+  }
+
+  function integrateFrame() {
+    if (!integration) return
+    const job = integration
+    if (!current(job.tile, job.packet)) {
+      job.work.return()
+      integration = null
+      return
+    }
+    const start = performance.now()
+    const { done } = job.work.next()
+    const duration = performance.now() - start
+    job.total += duration
+    job.max = Math.max(job.max, duration)
+    if (done) {
+      job.tile.preparation = { buildMs: job.packet.buildMs, unpackMs: job.total, integrationPeakMs: job.max }
+      integration = null
+    }
   }
 
   function pump() {
-    if (building) return
+    if (integration) return
     for (const offset of order) {
       const index = center + offset
       const tile = slot(index)
       if (tile.wanted !== index || tile.index === index && tile.seed === seedAt(index)) continue
+      const cached = openingTiles.get(index)
+      if (cached) {
+        queue(cached)
+        break
+      }
+      if (building) return
       building = true
       if (worker) {
         workerDeadline = setTimeout(useFallback, 4500)
@@ -303,7 +382,7 @@ export function createTerrain(scene, showSign) {
           const start = performance.now()
           const packet = buildTile(index, seedAt(index))
           packet.buildMs = performance.now() - start
-          load(packet)
+          queue(packet)
         }
         building = false
         pump()
@@ -325,7 +404,7 @@ export function createTerrain(scene, showSign) {
     worker.onmessage = ({ data }) => {
       if (!worker) return
       clearTimeout(workerDeadline)
-      load(data)
+      queue(data)
       building = false
       pump()
     }
@@ -341,7 +420,17 @@ export function createTerrain(scene, showSign) {
     measurements() {
       return tiles.filter(tile => tile.root.visible).map(tile => ({ index: tile.index, ...tile.preparation }))
     },
-    setSeed(value) { terrainSeed = value >>> 0 },
+    setSeed(value) {
+      terrainSeed = value >>> 0
+      for (const tile of tiles) if (tile.index !== null && tile.index < 3 && tile.fauna) tile.encounter = planEncounter(tile.fauna, terrainSeed)
+    },
+    encounters() {
+      activeEncounters.length = 0
+      for (const tile of tiles) {
+        if (tile.index !== null && tile.seed === seedAt(tile.index) && tile.encounter) activeEncounters.push(tile.encounter)
+      }
+      return activeEncounters
+    },
     stamps() { return tiles.filter(tile => tile.root.visible).map(tile => ({
       index: tile.index, landmark: tile.landmark, solid: tile.solid.visible ? tile.solid.geometry.id : null,
       solidOpaque: tile.solid.visible && !tile.solid.material.transparent && tile.solid.material.opacity === 1, habitats: tile.habitats?.length ?? 0,
@@ -359,6 +448,12 @@ export function createTerrain(scene, showSign) {
         environmentAssets.request('trees')
         environmentAssets.request('grass')
       }
+      const wantsFern = detail > 0 && (fernTerritories.has(regionAtDistance(distance).key) ||
+        fernTerritories.has(regionAtDistance(distance + 185).key))
+      if (wantsFern && !requestedFerns) {
+        requestedFerns = true
+        environmentAssets.request('ferns')
+      }
       center = Math.floor(distance / segmentLength)
       const offset = centerAt(distance)
       updateMarshWater(time, offset, distance, weather, detail)
@@ -369,14 +464,14 @@ export function createTerrain(scene, showSign) {
       field.fieldFrost.value = weather.frost ?? 0
       field.fieldDetail.value = detail
       updateLandscapeQuality(detail)
+      for (let i = center - 1; i < center + 6; i++) slot(i).wanted = i
+      integrateFrame()
       const range = lodRanges[detail]
       lodRange.value.fromArray(range)
       for (let i = center - 1; i < center + 6; i++) {
         const tile = slot(i)
-        tile.wanted = i
-        if (tile.index !== i && openingTiles.has(i)) load(openingTiles.get(i))
         const insideDrawDistance = i - center < (detail === 0 ? 4 : detail === 1 ? 5 : 6)
-        tile.root.visible = tile.index === i && tile.seed === seedAt(i)
+        tile.root.visible = !tile.installing && tile.index === i && tile.seed === seedAt(i)
         if (!tile.root.visible) continue
         tile.ground.visible = insideDrawDistance
         tile.water.visible = tile.hasWater && insideDrawDistance
@@ -394,6 +489,7 @@ export function createTerrain(scene, showSign) {
         tile.crops[0].visible = tile.crops[0].count > 0 && tileStart < range[1] + 2
         tile.crops[1].visible = tile.crops[1].count > 0 &&
           tileStart + segmentLength + 2 > range[0] && tileStart < range[3] + 2
+        tile.ferns.visible = detail > 0 && tile.ferns.count > 0 && tileStart < 49
         tile.tufts.visible = detail > 0 && tile.tufts.count > 0 && tileStart < 38
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
         tile.reeds.geometry = vegetation[tile.plantType][richPlants]
@@ -403,6 +499,10 @@ export function createTerrain(scene, showSign) {
         environmentAssets.release('trees')
         environmentAssets.release('grass')
         requestedEnvironment = false
+      }
+      if (requestedFerns && !wantsFern && tiles.every(tile => !tile.usesFernPack)) {
+        environmentAssets.release('ferns')
+        requestedFerns = false
       }
       pump()
     },

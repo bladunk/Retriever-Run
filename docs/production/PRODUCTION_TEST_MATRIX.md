@@ -49,3 +49,16 @@ The revision tests the fifteen-stage-pair route, all boundary seams, bounded ter
 - Run `FIELD_FAULT_ASSET=field-atlas-full.webp npm run test:production -- webkit small offline-only partial repair` against the built subpath. The test severs the HTTP body at one quarter, verifies retry and reuse of downloaded audio, damages the atlas in Cache Storage, and tests repair. It then exercises offline boot, a hunt, background pause and the final Kennel card at 320 × 568.
 - To test the real worker transition, build the Phase 03 merge and set `FIELD_PHASE_THREE_BUILD` to that artifact. Run `npm run test:production -- from-phase-three update-only`. It tests that a paused tab prevents update, then verifies the activated worker and manifest, existing runs and swipe settings.
 - A continuous 62-second offline Battery Saver replay uses `node scripts/phase-three-browser.mjs webkit offline small low soak seconds=62`. It sends deterministic keyboard actions through the game input handler and bounds draw-time resource counts across two territory boundaries. Longer rendered play and native timings remain in the manual device matrix.
+
+## Phase 04 additions
+
+| Area | Automated and rendered coverage | Owner verification |
+| --- | --- | --- |
+| Wildlife placement and timing | Seeded regional tier selection, safe shoulders, wing and flush motion, geometry disposal, normal-camera approach fixtures for eight species | Confirm recognizable pheasant, crane, waterfowl and mammal behavior in ordinary hunts |
+| Journal and saves | Legacy retrieve migration, separate sighting and retrieve totals, duplicate prevention, offline Journal and last Kennel card in Chromium and WebKit | Confirm a newly observed animal persists after offline replay and reconnection |
+| Environment and collision | Identical uprooted-tree swept volumes, localized stream material and terrain placement screenshots, opaque structures, selected sign and shed comparisons | Recheck lighting, sign readability and obstacle identification across presets |
+| Migration | 10,000 seeded hunts, 100,020 difficulty windows, fifteen rendered territories, fourteen rendered border checks and endless entry | Compare native frame pacing and stability across the complete route |
+| Download and cache | Required SHA-256 verification, partial-file interruption and repair, offline startup and hunt across both engines | Complete the Home Screen install, offline and update checks |
+| Performance | Presented-frame diagnostics, adaptive events, worker and installation timing, runtime model decode and renderer residency | Record `?perf=1` output on physical iPhone after a long run and repeated replays |
+
+See [Phase 04 results and checklist](PHASE_04_REPORT.md) for remaining coverage and measured limits.

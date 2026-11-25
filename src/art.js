@@ -23,7 +23,20 @@ const hardwood = new Set([0x514033, 0xb18354, 0xb67c45, 0x8c7b58])
 const crossingSurface = streamRibbon()
 const soakedGround = new T.CircleGeometry(1, 22).rotateX(-Math.PI / 2)
 const wetShapes = [pondSheet(), depthGeometry(crossingSurface.clone(), true)]
-const bankMaterial = new T.MeshLambertMaterial({ color: 0x645847 })
+const bankMaterial = new T.MeshLambertMaterial({ color: 0xffffff, vertexColors: true })
+const creekBed = crossingSurface.clone()
+const bedPosition = creekBed.attributes.position
+const bedColor = new Float32Array(bedPosition.count * 3)
+const sedimentTone = new T.Color()
+for (let n = 0; n < bedPosition.count; n++) {
+  const u = creekBed.attributes.uv.getX(n)
+  const v = creekBed.attributes.uv.getY(n)
+  const edge = Math.abs(v * 2 - 1)
+  const ripple = .5 + .5 * Math.sin(u * 128 + v * 39)
+  sedimentTone.setHex(edge > .80 ? 0x817058 : 0x494133).multiplyScalar(.82 + ripple * .31).toArray(bedColor, n * 3)
+}
+creekBed.setAttribute('color', new T.BufferAttribute(bedColor, 3))
+const puddleBankMaterial = new T.MeshLambertMaterial({ color: 0x645847 })
 const wheel = new T.CylinderGeometry(1, 1, 1, 12).rotateZ(Math.PI / 2)
 
 function depthGeometry(geometry, ribbon) {
@@ -50,12 +63,13 @@ function pondSheet() {
 }
 
 function fitWaterHazard(object, stream) {
-  const bed = new T.Mesh(stream ? crossingSurface : soakedGround, bankMaterial)
+  const bed = stream ? new T.Mesh(creekBed, bankMaterial) :
+    new T.Mesh(soakedGround, puddleBankMaterial)
   bed.scale.set(stream ? 7.41 : 1.0, 1, stream ? 2.23 : .90)
-  bed.position.y = .022
+  bed.position.y = .013
   const mesh = new T.Mesh(wetShapes[Number(stream)], marshWater)
   mesh.scale.set(stream ? 7.24 : .92, 1, stream ? 2.12 : .82)
-  mesh.position.y = .060
+  mesh.position.y = .023
   object.add(bed, mesh)
   return object
 }
@@ -90,13 +104,15 @@ export function prepareWashout(object, entity) {
 
 function streamRibbon() {
   const width = 22
-  const geometry = new T.PlaneGeometry(1, 1, width, 3)
+  const geometry = new T.PlaneGeometry(1, 1, width, 8)
   geometry.rotateX(-Math.PI / 2)
   const positions = geometry.attributes.position
   for (let i = 0; i < positions.count; i++) {
     const x = positions.getX(i)
     const z = positions.getZ(i)
-    positions.setZ(i, z * (.89 + .15 * Math.cos(x * 19)) + .10 * Math.sin(x * 8.6))
+    positions.setZ(i, z * (.91 + .11 * Math.cos(x * 21) + .04 * Math.sin(x * 41 + z)) +
+      .11 * Math.sin(x * 8.6) + .035 * Math.sin(x * 19 + z * 4))
+    positions.setY(i, .021 * Math.sin(x * 19) * Math.abs(z * 2))
   }
   geometry.computeVertexNormals()
   return geometry

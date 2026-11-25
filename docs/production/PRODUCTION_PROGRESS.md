@@ -2,8 +2,8 @@
 
 ## Resume here
 
-- Program target is Retriever Run 1.0 — The Great Migration. Phase 03B review version is `1.0.0-phase.3b`. The installed name remains Retriever Run.
-- Development and rollback baseline is deployed Phase 03 `02db9239fbdeb28655eb0ae577fa703bb0bc1789`. The review branch is `codex/retriever-run-phase-03b`. [Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45472889024) · [Draft PR #27](https://github.com/bladunk/Retriever-Run/pull/27)
+- Program target is Retriever Run 1.0 — The Great Migration. Phase 04 review version is `1.0.0-phase.4`. The installed name remains Retriever Run.
+- Development and rollback baseline is deployed Phase 03B `f8094b23072151c7bcc31135b422df74f6a53eb3`. The review branch is `codex/retriever-run-phase-04`. [Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45509931577)
 - Read the [charter](PLAYER_FIRST_CHARTER.md), [architecture](ARCHITECTURE.md), [obstacle reference](OBSTACLES.md), [territory registry](TERRITORIES.md), [test matrix](PRODUCTION_TEST_MATRIX.md) and [Phase 03 report](PHASE_03_REPORT.md).
 - Restore dependencies with `npm ci`. Run `npm test`, `npm run build`, `npm run verify:production`, `npm run stress`, and `npm run stress:master`. Use the [Phase 03B report](PHASE_03B_REPORT.md) for browser, material and scene reproductions.
 
@@ -42,9 +42,17 @@ Phase 03 passed 131 Node tests, 10,000 full stress sessions, and 100,020 route w
 
 The review build passed 134 Node tests, 10,000 seeded hunts, 100,020 difficulty windows, all rendered borders and a 62-second offline WebKit soak. Chromium passed graphics switching and activated the real Phase 03 update after a paused hunt finished. The report and evidence document the software host and remaining physical iPhone review. [Phase 03B implementation report](PHASE_03B_REPORT.md)
 
+## Phase 04 checkpoint
+
+- Baseline build and all 134 tests were verified from the deployed Phase 03B merge. The owner reported 5:52, 30,040 points, 573 treats and seven retrieves at Stage 24, ending at an uprooted tree. The owner asked to retain the balance and reported stutters, soft sign text, blue-strip crossings and narrow tall sheds.
+- Terrain packets now carry worker-computed bounds. The main thread integrates ground and water, trees, crops and plants, then publishes the finished tile. The previous route and swept collisions remain.
+- The new Phase 04 art uses region-tinted crossings, a replacement continuous root plate with the prior collision volumes, higher-resolution sign lettering and wide low sheds. Platte banks and the Midwest farm layout are retained.
+- Encounter habitat tables, four named tiers, new four animated models, Fern 02 and verified recordings are integrated. The nested official Journal tracks observations and retrieves separately without awarding gameplay credit. The baseline and review artifact paths are recorded in the report.
+- Runtime review build `98d7cfa5f1b6a962443c` is on `codex/retriever-run-phase-04` and was produced at runtime commit `7c0d798`. The draft is [PR #28](https://github.com/bladunk/Retriever-Run/pull/28). Both software browsers verified offline recovery, play and Kennel selection. The 140 tests, both stress suites, all 15 rendered checkpoints, 14 borders and endless entry passed. The final rendered accelerated offline run reached 466.14 seconds with peak geometry residency down from 136 to 115. The new Journal test recorded a real Mallard sighting and displayed it after offline reload. See the [Phase 04 report](PHASE_04_REPORT.md), [wildlife registry](LIVING_WILDERNESS.md) and [capture index](evidence/phase-04/README.md).
+
 ## Carry forward
 
 1. Use the Phase 03B report to reproduce the build and render captures. Test native graphics presets and a continuous hunt on iPhone before publication, paying attention to building approach and departure, atlas switches, and terrain visibility.
-2. Start Phase 04 with `migration-landscapes.js`, `landforms.js` and the terrain worker habitat packet. Add wildlife placement keyed by biome, water depth and cover. Keep active collision hazards separate from background, collectible and encounter wildlife.
+2. Continue the Phase 04 verification gates in the report. Build the review branch with `npm run build` and run `npm run verify:production`. For Linux WebKit replay, install Playwright WebKit and run `node scripts/phase-three-browser.mjs webkit small low soak seconds=451 offline`. Capture the owner’s diagnostic reports and verify frame hitches before release. The production clock and gameplay contract remain fixed. Keep active hazards separate from ambient wildlife and Journal encounters.
 3. Preserve the staged recovery checks, terrain slot limits, offline hydration, historic leaderboard restriction and local record compatibility. Run all thirty stage windows whenever gameplay changes.
 4. Record the approved Boyd portrait when available. Keep both rollback references and retain all saves. [Artwork pipeline](ASSET_LICENSES.md#application-icons) · [Release checklist](RELEASE_CHECKLIST.md)

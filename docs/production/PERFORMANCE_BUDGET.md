@@ -2,14 +2,14 @@
 
 ## Targets and measurement units
 
-| Area | Phase 01 budget or next review threshold |
+| Area | Production budget or next review threshold |
 | --- | --- |
 | Launch shell | Build guard at 180 KB decoded file bytes. Keep the title bootstrap and install metadata independent of the renderer |
-| Current offline edition | Keep under 5 MB while the production content pipeline is being proven |
+| Phase 04 offline edition | 25–75 MB is authorized where the art justifies it. The current verified edition is 7.43 MB in unique required files |
 | Long-term content | 75–150 MB complete optimized production target. Up to 250 MB requires a new storage, coverage and hosting review |
 | Frame budget | Target 60 FPS on capable phones, 16.7 ms per frame. Maintain a 33.3 ms fallback with unchanged simulation |
 | Render budget | Start later art reviews at 100 visible draws and 180,000 submitted triangles in a Balanced checkpoint. Track peak as well as median |
-| Residency | Seven terrain tile slots, two shared mid-route habitat packs, and current/upcoming preparation only. Budget decoded GPU memory separately from file bytes |
+| Residency | Seven terrain tile slots, at most three vegetation packs, one active wildlife encounter and at most two decoded hero models. Budget GPU memory separately from file bytes |
 | Assets | Start with at most a 2K hero atlas and 512–1024 px prop atlases. Measure actual decoded texture residency before adding a higher variant |
 | Restart | Target below one second from the input to the first running frame with content ready. Sample repeated restarts on real phones |
 
@@ -47,3 +47,15 @@ The old 5 MB Phase 01 trial limit is superseded by the 75–150 MB complete-cont
 The atlas is shared across all fifteen territories. The game verifies both WebP variants for offline use, and one ready texture stays bound at a time. Uncompressed RGBA8 plus mipmaps would cost about 6.67 MiB for Battery Saver and 26.67 MiB for Balanced or High. A browser can transiently retain the decoded image during a swap. Budget around those estimates and measure iOS GPU allocation and storage under memory pressure. The larger pack uses the existing digest cache and one in-flight transfer buffer. WebP bytes are smaller than decoded residency, and any future KTX2 or equivalent should be compared on physical WebKit before changing formats. [Phase 03B measurements](PHASE_03B_REPORT.md)
 
 A clean install at 5.56 MB of unique required content implies about 5.56 GB per thousand full downloads, or 55.6 GB for ten thousand. Reopening with intact cached bytes avoids that full transfer. The largest new individual runtime file is approximately 2.57 MB. Keep monitoring Pages limits and repeat downloads from iOS storage eviction before expanding toward the full production ceiling.
+
+## Phase 04 content and device gates
+
+| Fresh installations | Transfer for this 7.43 MB edition | Transfer for a prospective 25 MB edition | Transfer for a prospective 75 MB edition |
+| ---: | ---: | ---: | ---: |
+| 100 | 0.74 GB | 2.5 GB | 7.5 GB |
+| 1,000 | 7.43 GB | 25 GB | 75 GB |
+| 10,000 | 74.32 GB | 250 GB | 750 GB |
+
+The projection uses decimal units and full transfers. It excludes retries, manifest and protocol overhead, update transfers and repeat transfers after eviction. Returning active players can use their local content without a full download. A Phase 03B installation retaining all verified files needs approximately 3.01 MB of changed required content. The 100 GB soft Pages allowance remains a planning threshold. Future high-traffic content can move to versioned object storage behind the existing manifest and verified cache, following separate owner approval. [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)
+
+The full and compact terrain atlases estimate 26.7 MiB and 6.7 MiB of mipmapped RGBA8 respectively. Runtime selects one. A wildlife hero adds up to 16 MiB of decoded texture memory and the fern pack adds up to 16 MiB across three shared maps. The GLBs are 1.60 MB on disk in total. Their CPU/GPU residency depends on current and upcoming encounter preparation, image storage and renderer behavior. Review large maps on physical iPhone before increasing this budget. Real frame pacing, sustained thermal behavior and restart latency remain physical-device gates. [Phase 04 evidence and measurements](PHASE_04_REPORT.md)

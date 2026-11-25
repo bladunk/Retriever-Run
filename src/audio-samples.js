@@ -2,7 +2,13 @@ import instrumentsUrl from './assets/audio/instruments.mp3?url'
 import gooseUrl from './assets/audio/canada-goose.mp3?url'
 import mallardUrl from './assets/audio/mallard.mp3?url'
 
-export const sampleUrls = { instruments: instrumentsUrl, goose: gooseUrl, mallard: mallardUrl }
+import craneUrl from './assets/audio/field-crane.mp3?url'
+import pheasantUrl from './assets/audio/field-pheasant.mp3?url'
+import eagleUrl from './assets/audio/field-eagle.mp3?url'
+import creekUrl from './assets/audio/field-creek.mp3?url'
+
+export const sampleUrls = { instruments: instrumentsUrl, goose: gooseUrl, mallard: mallardUrl,
+  crane: craneUrl, pheasant: pheasantUrl, eagle: eagleUrl, creek: creekUrl }
 
 // [MIDI pitch, offset in the mono sample bank, sample length]. The 75 ms guards
 // between recordings leave room for MP3 encoder padding and resampling.

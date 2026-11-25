@@ -4,6 +4,7 @@ import { courseRuleset } from './ruleset.js'
 import { score } from './runner.js'
 import { regionAt } from './expedition.js'
 import { obstacles } from './obstacles.js'
+import { fieldSpecies, retrieveSpecies } from './wildlife-catalog.js'
 import { rocks } from './rocks.js'
 
 export const counters = ['treats', 'logs', 'slidesCleared', 'geese', 'ducks', 'pheasants', 'jumps', 'slides']
@@ -29,6 +30,8 @@ export function createRunStatistics(runId, onSkill = () => {}) {
   const standingAfter = {}
   const discovered = new Set()
   const recoveredRoutes = new Map()
+  const observed = new Set()
+  const wildlife = {}
   let finalized = false
   let jumpClears = 0
 
@@ -54,11 +57,24 @@ export function createRunStatistics(runId, onSkill = () => {}) {
       discovered.add(region.key)
       onSkill({ kind: 'territory', territory: region.key, elapsed })
     },
+    observe(event) {
+      if (finalized || observed.has(event.id) || !Object.hasOwn(fieldSpecies, event.species)) return
+      observed.add(event.id)
+      const row = wildlife[event.species] ??= { seen: 0, retrieves: 0, rare: 0, territory: null }
+      row.seen++
+      row.rare += Number(event.rarity === 'rare' || event.rarity === 'exceptional')
+      row.territory ??= event.territory
+      onSkill({ kind: 'wildlife-observed', species: event.species, territory: event.territory, rarity: event.rarity })
+    },
     pickup(type, entity) {
       if (finalized) return
       if (type === 'treat') stats.treats++
       if (type === 'mallard') stats.ducks++
       if (type === 'pheasant') stats.pheasants++
+      if (Object.hasOwn(retrieveSpecies,type)) {
+        const row = wildlife[retrieveSpecies[type]] ??= { seen: 0, retrieves: 0, rare: 0, territory: null }
+        row.retrieves++
+      }
       if (entity?.riskRoute && Number.isSafeInteger(entity.rowId)) {
         const key = entity.rowId * 3 + entity.lane + 1
         const count = (recoveredRoutes.get(key) ?? 0) + 1
@@ -118,7 +134,7 @@ export function createRunStatistics(runId, onSkill = () => {}) {
     finish(run, hazard) {
       if (finalized) return null
       finalized = true
-      return { ...this.preview(run), cause: deathCause(hazard), hazard, bestStreak: run.bestStreak }
+      return { ...this.preview(run), wildlife, cause: deathCause(hazard), hazard, bestStreak: run.bestStreak }
     },
   }
 }

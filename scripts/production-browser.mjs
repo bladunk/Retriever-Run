@@ -202,8 +202,15 @@ try {
     log.coldReadyMsIncludingRetry = Math.round(await ready())
     phase('Verified download and title')
     assert.equal(hits.get(previouslyVerified.path), audioHits)
+    if (args.includes('journal-sighting')) await page.evaluate(() => { Math.random = () => 7 / 0x100000000 })
     await play(page)
     await finish(page)
+    if (args.includes('journal-sighting')) {
+      const mallard = await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record'))
+        .players[0].wildlife?.species.mallard)
+      assert.ok(mallard?.seen > 0 && mallard.territory === 'gulf', 'the first hunt should record the observed mallard')
+      log.matchedSighting = mallard
+    }
     if (!shortUpgrade) {
       log.restartMs = await restart(page)
       await page.waitForTimeout(650)
@@ -254,6 +261,13 @@ try {
       await finish(page)
       assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs), before + 1)
       await page.locator('#report-lodge').tap()
+      if (args.includes('journal')) {
+        await page.locator('#tab-journal').tap()
+        const cards = page.locator('.wildlife-card')
+        await cards.first().waitFor()
+        assert.equal(await cards.count(), 29)
+        await page.screenshot({ path: resolve(output, 'offline-wildlife-journal.png'), scale: 'css' })
+      }
       await page.locator('#tab-kennel').tap()
       const bottom = page.locator('.kennel-items button').last()
       await bottom.scrollIntoViewIfNeeded()

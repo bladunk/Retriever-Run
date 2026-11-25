@@ -442,9 +442,37 @@ export function buildTile(index, seed = 0) {
     if (i % 7 === 0) habitats.push({ distance: at, side, lateral: x, depth: waterline - y,
       kind: y < waterline ? 'shallow-water' : colors.habitats[1] })
   }
+  const anchors = []
+  if (index >= 0 && index % 4 === 0) {
+    const placement = seededRandom(Math.imul(index + 511, 0x3598e1) ^ seed)
+    for (const side of [-1, 1]) {
+      for (const step of [0, 1, 2, 3, 4, 5]) {
+        const distance = start + 13 + step * 1.8 + placement() * 2
+        for (const width of [5.5, 7.4, 9.5, 12.7, 16.5]) {
+          const lateral = side * (width + placement() * .7)
+          const low = earth(distance, lateral)
+          if (landmark && Math.abs(lateral - landmark.x) < 4.5 && Math.abs(distance - landmark.distance) < 6) continue
+          const occupied = trees.some((x, at) => at % 7 === 0 &&
+            Math.abs(start - distance - trees[at + 2]) < 1.2 && Math.abs(x + base - centerAt(distance) - lateral) < 1.9)
+          if (occupied) continue
+          if (width < 12.7 && low >= -.44 && low < 2) anchors.push({ kind: 'cover', distance, lateral, height: low })
+          if (width > 5.5 && low < waterline - .07 && low > waterline - 2.3) {
+            anchors.push({ kind: 'water', distance, lateral, height: waterline })
+            if (low >= waterline - .44) anchors.push({ kind: 'bank', distance, lateral, height: waterline - .14 })
+          }
+        }
+      }
+      anchors.push({ kind: 'open', distance: start + 20, lateral: side * (7.1 + placement() * 1.4), height: 4.3 + placement() * 2.2 })
+      if (!anchors.some(anchor => anchor.kind === 'water' && Math.sign(anchor.lateral) === side)) {
+        // A wetland bird presented as a flyover still uses its local species
+        // pool where the tile happens to have no safe, visible water anchor.
+        anchors.push({ kind: 'flyover', distance: start + 21.3, lateral: side * 8.1, height: 4.8 })
+      }
+    }
+  }
   const ground = pack(land)
   const waterPacket = water ? pack(water) : null
-  return { index, seed, ground, detail, solid, water: waterPacket, reeds: new Float32Array(reeds), habitats, landmark: landmark ? { id: key + ':' + index + ':' + seed, ...landmark } : null,
+  return { index, seed, ground, detail, solid, water: waterPacket, reeds: new Float32Array(reeds), habitats, anchors, landmark: landmark ? { id: key + ':' + index + ':' + seed, ...landmark } : null,
     plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
       : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign }
 }
@@ -468,7 +496,10 @@ function pack(geometry) {
     }
     buffers[name] = { values, itemSize: attr.itemSize, normalized }
   }
-  const packet = { buffers, index: geometry.index?.array ?? null }
+  geometry.computeBoundingSphere()
+  const sphere = geometry.boundingSphere
+  const packet = { buffers, index: geometry.index?.array ?? null,
+    bounds: [...sphere.center.toArray(), sphere.radius] }
   geometry.dispose()
   return packet
 }

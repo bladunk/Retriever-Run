@@ -370,3 +370,35 @@
   .lodge-tabs { gap: 2px; padding-inline: 4px; }
   .lodge-tabs button { padding-inline: 3px; font-size: .7rem; }
 }
+
+.wildlife-guide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 235px), 1fr));
+  gap: .55rem;
+}
+
+.wildlife-card {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  align-items: center;
+  gap: .65rem;
+  min-width: 0;
+  padding: .5rem;
+  border: 1px solid #766747;
+  border-radius: .45rem;
+  background: #25392f;
+  color: #f1e4c5;
+}
+
+.wildlife-card img {
+  width: 5rem;
+  height: auto;
+  border-radius: .32rem;
+}
+
+.wildlife-card p {
+  margin: .24rem 0 0;
+  color: #ded4bc;
+  font-size: .82rem;
+  line-height: 1.25;
+}

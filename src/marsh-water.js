@@ -68,7 +68,7 @@ export const marshWater = new T.ShaderMaterial({
       vec3 clearBed = mix(vec3(.084,.084,.054), vec3(.169,.144,.091), strand);
       vec3 siltBed = mix(vec3(.051,.043,.024), vec3(.099,.071,.041), strand);
       vec3 mud = mix(clearBed, siltBed, waterProfile.x);
-      if (waterDetail > .5 && crossing < .5 && deep < .95 && landscapeReady > .5) {
+      if (waterDetail > .5 && deep < .95 && landscapeReady > .5) {
         vec2 bed = p * .74 + vec2(broad, crossWave) * depth * .072;
         vec2 dx = dFdx(bed), dy = dFdy(bed);
         float close = (1. - smoothstep(.08,.29,max(length(dx), length(dy)))) * (1. - deep);
@@ -79,7 +79,9 @@ export const marshWater = new T.ShaderMaterial({
       }
       mud *= 1. + sediment * .15 * (1. - smoothstep(.18,.55,length(fwidth(p))));
       vec3 lake = mix(mud, waterTint, deep);
-      lake = mix(lake, vec3(.081,.163,.181) * (.85 + deep*.22 + crossWave*.055), crossing * .86);
+      // Trail crossings use the same water as the banks. Reach a deeper
+      // channel color in the middle, and leave the wet gravel edges visible.
+      lake = mix(lake, mix(mud * .72, waterTint * .82, .28 + deep * .63), crossing);
       lake *= 1. - .26 * (1. - smoothstep(.012, .095, depth));
       float rim = smoothstep(.015,.04,depth) * (1. - smoothstep(.073,.115,depth));
       rim *= .77 + .23 * sin(dot(p, vec2(1.77,.97)) + broad * .41);
@@ -104,7 +106,7 @@ export const marshWater = new T.ShaderMaterial({
       vec3 color = mix(lake, reflectedLight, reflectivity);
       color *= 1. - min(.69,bankCanopy*.54) * mix(.71,.32,deep);
       color += (broad + crossWave * .6) * (.002 + chop*.003) * vec3(.74,.96,1.);
-      color += crossing * rim * vec3(.025,.036,.036);
+      color += crossing * rim * vec3(.021,.019,.012);
       if (waterDetail > .5 && crossing < .5) {
         float moving = smoothstep(.55,.90,crossWave + broad*.29);
         float ribbons = smoothstep(.26,.91,sediment) * rim * moving;
