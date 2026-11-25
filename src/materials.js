@@ -34,7 +34,7 @@ export function createFieldMaterial() {
     map.anisotropy = 4
   }
 
-  fieldMaterial.onBeforeCompile = (shader) => {
+  function applyFieldShader(shader, useGulf) {
     Object.assign(shader.uniforms, uniforms)
     shader.vertexShader = 'attribute float fieldLayer, landStyle; attribute vec2 regionalSurface; varying vec2 vRegionalSurface; varying float vFieldLayer, vSnowFace, vLandStyle; varying vec2 vFieldUv;\n'
       + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvFieldLayer = fieldLayer; vRegionalSurface = regionalSurface; vLandStyle = landStyle; vFieldUv = uv; vSnowFace = normalize(mat3(modelMatrix)*normal).y;')
@@ -44,7 +44,7 @@ export function createFieldMaterial() {
       varying float vFieldLayer, vSnowFace, vLandStyle;
       varying vec2 vFieldUv, vRegionalSurface;
       ${fieldAtlasShader}
-      ${gulfScans}
+      ${useGulf ? gulfScans : ''}
     ` + shader.fragmentShader
       .replace('#include <color_fragment>', `#include <color_fragment>
         bool onGround = vFieldLayer > .5;
@@ -54,8 +54,8 @@ export function createFieldMaterial() {
         bool onMasonry = vFieldLayer > 5.5;
         bool onBark = vFieldLayer > 3.5 && vFieldLayer < 4.5;
         vec4 fieldPbr = vec4(.5, .5, .85, 1.);
-        float coastal = gulfReady * (1. - smoothstep(.04, .80, vRegionalSurface.x));
-        if (onGround && (onWood || coastal < .999)) {
+        ${useGulf ? 'float coastal = gulfReady * (1. - smoothstep(.04, .80, vRegionalSurface.x));' : ''}
+        if (onGround${useGulf ? ' && (onWood || coastal < .999)' : ''}) {
           vec2 surfaceUV = vFieldUv;
           if (!onWood) surfaceUV += vec2(sin(vFieldUv.y*.78), sin(vFieldUv.x*1.2 + vFieldUv.y*.39))*.09;
           vec3 grain = onWood ? texture2D(fieldWood, surfaceUV).rgb : texture2D(fieldEarth, surfaceUV).rgb;
@@ -144,7 +144,7 @@ export function createFieldMaterial() {
             diffuseColor.rgb = mix(diffuseColor.rgb,vec3(.57,.66,.70),dust*scatter);
           }
         }
-        if (onGround && !onWood && coastal > .001) {
+        ${useGulf ? `if (onGround && !onWood && coastal > .001) {
           vec2 trackUV = vFieldUv * vec2(.79, .96);
           vec2 bedUV = vec2(trackUV.x * .78 + trackUV.y * .26, trackUV.y * .87 - trackUV.x * .23);
           vec2 dx = dFdx(trackUV), dy = dFdy(trackUV);
@@ -172,7 +172,7 @@ export function createFieldMaterial() {
             pbr.b -= .18 * moisture;
             fieldPbr.rgb = mix(fieldPbr.rgb, pbr, .70 * coastal);
           }
-        }`)
+        }` : ''}`)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         if (onGround) roughnessFactor = clamp(fieldPbr.b * .83 + .21 - fieldWet * .36, .28, 1.);`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
@@ -188,7 +188,13 @@ export function createFieldMaterial() {
         }`)
   }
 
-  return { material: fieldMaterial, uniforms }
+  // Keep the expensive coastal variant on the ground tiles that use it.
+  // Props, timber and later territories retain the regular field program.
+  const gulfTerrain = fieldMaterial.clone()
+  gulfTerrain.customProgramCacheKey = () => 'field-gulf-ground'
+  gulfTerrain.onBeforeCompile = shader => applyFieldShader(shader, true)
+  fieldMaterial.onBeforeCompile = shader => applyFieldShader(shader, false)
+  return { material: fieldMaterial, gulfTerrain, uniforms }
 }
 
 export const fieldMaterials = createFieldMaterial()

@@ -29,7 +29,7 @@ const cropFarMaterial = cropMaterial.clone()
 const cardsReady = new WeakSet()
 const dummy = new T.Object3D()
 
-const { material: terrainMaterial, uniforms: field } = fieldMaterials
+const { material: terrainMaterial, gulfTerrain, uniforms: field } = fieldMaterials
 const detailMaterial = terrainMaterial.clone()
 const landmarkMaterial = terrainMaterial.clone()
 const lodRanges = [[43, 57, 71, 87], [69, 86, 99, 117], [69, 86, 126, 145]]
@@ -229,6 +229,7 @@ export function createTerrain(scene, showSign, probe) {
 
     for (const [mesh, data] of [[tile.ground, packet.ground], [tile.water, packet.water],
       [tile.detail, packet.detail], [tile.solid, packet.solid]]) replaceTileGeometry(mesh, data)
+    tile.ground.material = packet.territory === 'gulf' ? gulfTerrain : terrainMaterial
     tile.solid.visible = Boolean(packet.solid)
     tile.hasWater = Boolean(packet.water)
     yield
