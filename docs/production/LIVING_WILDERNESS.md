@@ -64,6 +64,6 @@ The Lodge displays original illustrations, species habitats, first sightings and
 | heron | Great Blue Heron | wader | Shallow, quiet banks and marsh pools | [Habitat reference](https://www.allaboutbirds.org/guide/Great_Blue_Heron/lifehistory) |
 | egret | Great Egret | wader | Southern shallow marshes and slow waters | [Habitat reference](https://www.allaboutbirds.org/guide/Great_Egret/lifehistory) |
 | eagle | Bald Eagle | raptor | Wooded rivers and fish-bearing lakes | [Habitat reference](https://www.allaboutbirds.org/guide/Bald_Eagle/lifehistory) |
-| deer | White-tailed Deer | deer | Field edges and broken woodland | [Habitat reference](https://www.nps.gov/subjects/nnlandmarks/white-tailed-deer.htm) |
+| deer | White-tailed Deer | deer | Field edges and broken woodland | [Habitat reference](https://mdc.mo.gov/discover-nature/field-guide/white-tailed-deer) |
 | moose | Moose | moose | Northern marshes, lake edges and boreal forest | [Habitat reference](https://www.nps.gov/romo/learn/nature/moose.htm) |
 | alligator | American Alligator | alligator | Warm southern backwaters and marsh banks | [Habitat reference](https://www.nps.gov/ever/learn/nature/alligator.htm) |

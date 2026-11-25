@@ -462,7 +462,7 @@ export function buildTile(index, seed = 0) {
           }
         }
       }
-      anchors.push({ kind: 'open', distance: start + 20, lateral: side * (9.6 + placement() * 2.1), height: 5.1 + placement() * 2.7 })
+      anchors.push({ kind: 'open', distance: start + 20, lateral: side * (7.1 + placement() * 1.4), height: 4.3 + placement() * 2.2 })
       if (!anchors.some(anchor => anchor.kind === 'water' && Math.sign(anchor.lateral) === side)) {
         // A wetland bird presented as a flyover still uses its local species
         // pool where the tile happens to have no safe, visible water anchor.

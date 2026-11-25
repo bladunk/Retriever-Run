@@ -45,7 +45,7 @@ test('bank and flight routes stay off the trail and the pheasant rises only afte
     assert.ok(Number.isFinite(pose.height),animal.id)
   }
   assert.ok(encounterVisible(16,.35,.6,.9,true))
-  for (const args of [[42,0,0,0,true],[12,1,0,0,true],[12,0,0,0,false],[12,0,0,1.1,true]])
+  for (const args of [[43,0,0,0,true],[12,1,0,0,true],[12,0,0,0,false],[12,0,0,1.1,true]])
     assert.equal(encounterVisible(...args),false)
 })
 

@@ -27,6 +27,10 @@ export function planEncounter(packet, seed) {
     let candidates = anchors.filter(anchor => anchor.kind === preferred)
     if (!candidates.length && preferred === 'water') candidates = anchors.filter(anchor => anchor.kind === 'flyover')
     if (!candidates.length) continue
+    // Prefer near-bank habitat so a normal portrait camera has time to see
+    // the leader before its trajectory takes it out of the frame.
+    const shoreline = candidates.filter(anchor => Math.abs(anchor.lateral) < 8.6)
+    if (shoreline.length) candidates = shoreline
     const anchor = candidates[Math.floor(roll() * candidates.length)]
     const count = animal.family === 'crane' ? 9 : animal.family === 'goose' ? 5 :
       ['duck','teal','diver','crest','crest-diver','spoon','pintail','merganser'].includes(animal.family) ? 3 : 1
@@ -37,7 +41,7 @@ export function planEncounter(packet, seed) {
 }
 
 export function encounterVisible(ahead, projectedX, projectedY, projectedDepth, rendered) {
-  return rendered && ahead >= 5 && ahead <= 36 && Math.abs(projectedX) <= .88 &&
+  return rendered && ahead >= 5 && ahead <= 42 && Math.abs(projectedX) <= .88 &&
     Math.abs(projectedY) <= .88 && Math.abs(projectedDepth) <= 1
 }
 

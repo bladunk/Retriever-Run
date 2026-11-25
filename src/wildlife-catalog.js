@@ -33,7 +33,7 @@ export const fieldSpecies = Object.freeze(Object.fromEntries([
 ].map(([id, name, family, cornell, body, head, wing, size, bill, neck, habitat]) => [id, Object.freeze({
   id, name, family, body, head, wing, size, bill, neck, habitat,
   source: cornell ? 'https://www.allaboutbirds.org/guide/' + cornell + '/lifehistory' :
-    { deer: 'https://www.nps.gov/subjects/nnlandmarks/white-tailed-deer.htm',
+    { deer: 'https://mdc.mo.gov/discover-nature/field-guide/white-tailed-deer',
       moose: 'https://www.nps.gov/romo/learn/nature/moose.htm',
       alligator: 'https://www.nps.gov/ever/learn/nature/alligator.htm' }[id],
 })])))

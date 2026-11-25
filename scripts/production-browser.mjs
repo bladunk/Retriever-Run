@@ -254,6 +254,13 @@ try {
       await finish(page)
       assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0].stats.runs), before + 1)
       await page.locator('#report-lodge').tap()
+      if (args.includes('journal')) {
+        await page.locator('#tab-journal').tap()
+        const cards = page.locator('.wildlife-card')
+        await cards.first().waitFor()
+        assert.equal(await cards.count(), 29)
+        await page.screenshot({ path: resolve(output, 'offline-wildlife-journal.png'), scale: 'css' })
+      }
       await page.locator('#tab-kennel').tap()
       const bottom = page.locator('.kennel-items button').last()
       await bottom.scrollIntoViewIfNeeded()

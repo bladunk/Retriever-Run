@@ -76,6 +76,7 @@ export function createLivingWilderness(scene, call, prewarmSound) {
   let lastVoice = -Infinity
   let count = 0
   let nextSound
+  let leaderInFrame = false
 
   function retire(slot) {
     if (!slot) return
@@ -134,6 +135,7 @@ export function createLivingWilderness(scene, call, prewarmSound) {
       }
     }
     count = 0
+    leaderInFrame = false
     if (!active) return
     const { event, art, model } = active
     const animal = fieldSpecies[event.species]
@@ -154,6 +156,7 @@ export function createLivingWilderness(scene, call, prewarmSound) {
         projected.y += art.legs ? animal.size * .35 : .13
         projected.project(camera)
         const visible = encounterVisible(ahead, projected.x, projected.y, projected.z, running)
+        leaderInFrame = visible
         active.seen = visible ? active.seen + dt : Math.max(0, active.seen - dt)
         if (!active.recorded && active.seen >= .22) {
           observation(event)
@@ -209,6 +212,7 @@ export function createLivingWilderness(scene, call, prewarmSound) {
   }
   update.active = () => count
   update.metrics = models.metrics
-  update.stamp = () => active ? { ...active.event, drawn: count, model: Boolean(active.model), seen: active.seen } : null
+  update.stamp = () => active ? { ...active.event, drawn: count, model: Boolean(active.model),
+    seen: active.seen, leaderInFrame } : null
   return update
 }
