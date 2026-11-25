@@ -18,11 +18,13 @@ test('bundled development and release labels distinguish exact builds', () => {
   assert.equal(buildLabel({ version: '1.0.0', id: 'a05da7e' }), 'v1.0.0 · a05da7e')
 })
 
-test('working coat previews preserve existing gates and count twelve plausible colors', () => {
+test('working coat previews preserve earned palettes and add career gates and count twelve plausible colors', () => {
   assert.equal(kennelCatalog.coat.length, 12)
   assert.equal(new Set(kennelCatalog.coat.map(coat => coat.color)).size, 12)
-  assert.equal(unlocked(kennelCatalog.coat.find(coat => coat.id === 'black'), { level: 100 }, []), false)
-  assert.equal(unlocked(kennelCatalog.coat.find(coat => coat.id === 'fox-red'), { level: 1 }, ['fox-red']), true)
+  const black = kennelCatalog.coat.find(coat => coat.id === 'black')
+  assert.equal(unlocked(black, { level: 71 }, { inherited: [] }), false)
+  assert.equal(unlocked(black, { level: 72 }, { inherited: [] }), true)
+  assert.equal(unlocked(kennelCatalog.coat.find(coat => coat.id === 'fox-red'), { level: 1 }, { inherited: ['fox-red'] }), true)
 })
 
 test('historical runs remain available without sharing the new course ranks', () => {

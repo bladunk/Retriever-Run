@@ -1,13 +1,14 @@
-import { careerStanding, dogRanks, promotionRequirements, rankIndex } from './career.js'
+import { careerStanding, dogRanks, xpAt } from './career.js'
 import { journalIssues } from './career-integrity.js'
-import { gearRequirement, kennelItems, unlocked } from './kennel-catalog.js'
-import { meters, node, number } from './lodge-elements.js'
+import { localHonors } from './field-honors.js'
+import { masterHunterChecks, masterHunterTrials, progressionMetrics } from './progression.js'
+import { node, number } from './lodge-elements.js'
 
 export function careerProgress(standing) {
   const track = node('progress')
   track.max = standing.span
   track.value = standing.within
-  track.setAttribute('aria-label', 'Working Dog experience to level ' + (standing.level + 1))
+  track.setAttribute('aria-label', standing.maxed ? 'Master Hunter level complete' : 'Career XP to level ' + (standing.level + 1))
   return track
 }
 
@@ -16,66 +17,64 @@ export function careerLine(player) {
   return standing.rank.name + ' · Level ' + number(standing.level)
 }
 
+export function qualificationCard(player) {
+  const qualified = Boolean(player.progression.boyd)
+  const panel = node('section', null, 'career-ledger master-qualification')
+  panel.append(node('h3', 'Boyd · Master Hunter', 'section-title'),
+    node('p', qualified ? 'Qualified · Boyd and his exclusive field kit are available in the Kennel.'
+      : 'Earn Boyd through field experience, mastery and wildlife discovery.'))
+  const checklist = node('ul', null, 'career-requirements')
+  for (const requirement of masterHunterChecks(player)) {
+    const entry = node('li')
+    entry.dataset.met = String(requirement.met)
+    entry.append(node('strong', requirement.label), node('span',
+      (requirement.met ? 'Complete · ' : '') + number(Math.min(requirement.value, requirement.target)) + ' / ' + number(requirement.target)))
+    checklist.append(entry)
+  }
+  panel.append(checklist, node('p', 'Complete any two legendary trials · ' + masterHunterTrials.join(' · '), 'room-note'))
+  return panel
+}
+
 export function careerRoom(player, insignia) {
   const standing = careerStanding(player.career)
   const panel = node('section', null, 'career-ledger')
   panel.append(node('p', player.nickname, 'lodge-kicker'), node('h3', 'Working Dog Career', 'section-title'),
     node('strong', careerLine(player)), careerProgress(standing),
-    node('p', number(standing.within) + ' / ' + number(standing.span) + ' XP in this level · ' +
-      number(standing.span - standing.within) + ' XP to level ' + number(standing.level + 1)),
-    node('p', number(standing.xp) + ' lifetime XP · ' + number(player.stats.runs) + ' completed runs · ' +
-      meters(player.stats.distance) + ' in the Field Journal'),
-    node('p', standing.nextRank ? 'Next promotion · ' + standing.nextRank.name
-      : 'Marsh Legend · Keep earning career levels.', 'room-note'))
+    node('p', standing.maxed ? number(standing.xp) + ' lifetime XP · Level 100 complete'
+      : number(standing.within) + ' / ' + number(standing.span) + ' XP toward Level ' + (standing.level + 1)),
+    node('p', standing.nextRank ? 'Next rank · ' + standing.nextRank.name + ' at Level ' + standing.nextRank.level
+      : 'Master Hunter · Career rank complete', 'room-note'))
 
   const problems = journalIssues(player)
-  if (player.career.reviewRank) {
-    const claimed = dogRanks[rankIndex(player.career.reviewRank)].name
-    panel.append(node('p', claimed + ' is recorded in this save, but the career requirements could not be verified. Your XP and journal are still available.',
-      'room-note'))
-  }
-  if (problems.length) panel.append(node('p', problems.join(' ') + ' New promotions are paused for this profile.', 'room-note'))
-  if (player.career.legacyLevel > 1) {
-    const legacy = dogRanks[rankIndex(player.career.legacyRank)]
-    const note = (legacy.id === 'pup' ? 'Old level ' : legacy.name + ' · Old level ') + number(player.career.legacyLevel)
-    panel.append(node('p', note + '. The new XP curve recalculates levels. Your lifetime XP, earned rank and gear carry over.',
-      'room-note'))
-  }
-  if (standing.nextRank) {
-    const requirements = node('ul', null, 'career-requirements')
-    for (const requirement of promotionRequirements(standing.nextRank, player, standing.level)) {
-      const entry = node('li')
-      entry.dataset.met = String(requirement.met)
-      entry.append(node('strong', requirement.label), node('span',
-        (requirement.met ? 'Complete · ' : '') + number(requirement.current) + ' / ' + number(requirement.target)))
-      if (!requirement.met && requirement.candidates.length) {
-        entry.append(node('small', 'Qualifying honors still available · ' + requirement.candidates.join(', ')))
-      }
-      requirements.append(entry)
-    }
-    panel.append(requirements, node('p', 'XP keeps accumulating while you finish these requirements. Promotions are awarded after a run.', 'room-note'))
-  }
+  if (problems.length) panel.append(node('p', problems.join(' ') + ' Field Honors are paused for this profile.', 'room-note'))
+  if (player.career.legacyLevel) panel.append(node('p', 'Earlier career · ' +
+    player.career.legacyRank + ' · Level ' + player.career.legacyLevel + ' · ' + number(player.career.legacyXP) + ' XP', 'room-note'))
 
+  const ranks = node('details', null, 'career-ledger')
+  ranks.append(node('summary', 'All ten ranks'))
   const collection = node('div', null, 'career-patches')
   for (const rank of dogRanks) {
     const patch = node('article', null, 'career-patch')
-    const earned = rankIndex(standing.rank.id) >= rankIndex(rank.id)
+    const earned = standing.level >= rank.level
     patch.dataset.earned = String(earned)
     const badge = node('div', null, 'patch-badge')
     badge.append(insignia(rank.emblem))
-    const reward = kennelItems.find(item => item.id === rank.reward)
-    patch.append(badge, node('strong', rank.name),
-      node('span', earned ? 'Earned' : 'Level ' + rank.level),
-      node('small', reward?.name ?? 'Classic field gear'))
+    patch.append(badge, node('strong', rank.name), node('span', 'Level ' + rank.level),
+      node('small', earned ? 'Earned' : number(xpAt(rank.level)) + ' career XP'))
     collection.append(patch)
   }
-  const gear = node('ul', null, 'career-rewards')
-  for (const item of kennelItems) {
-    if (!item.level && !item.rank && !player.kennel.inherited.includes(item.id)) continue
-    const owned = unlocked(item, standing, player.kennel.inherited)
-    gear.append(node('li', item.name + ' · ' + (owned ? 'Unlocked' : gearRequirement(item))))
-  }
-  return [panel, collection, node('h3', 'Kennel rewards', 'section-title section-break'), gear]
+  ranks.append(collection)
+  return [panel, ranks, qualificationCard(player)]
+}
+
+export function nearbyHonor(player) {
+  const values = progressionMetrics(player)
+  const earned = player.progression.honors
+  return localHonors.find(honor => honor.qualifies && !honor.secret && honor.checks.length === 1 &&
+    !Object.hasOwn(earned, honor.id) && honor.checks.every(({ key, target }) => {
+      const value = values.get(key) ?? 0
+      return value > 0 && value < target && value / target >= .86
+    }))
 }
 
 export function fillCareerReport(ui, report, openKennel) {
@@ -88,31 +87,13 @@ export function fillCareerReport(ui, report, openKennel) {
     node('p', after.rank.name + ' · Level ' + number(after.level) +
       (after.level > before.level ? ' · Up ' + number(after.level - before.level) : '')),
     careerProgress(after))
+  if (report.newHonors.length) space.append(node('p', number(report.newHonors.length) + ' new Field Honors'))
+  if (report.boyd) space.append(node('strong', 'Boyd and his Master Hunter kit earned'))
   if (report.gear.length) {
     const button = node('button', 'View in Kennel')
     button.type = 'button'
     button.addEventListener('click', () => openKennel(button))
-    space.append(node('p', 'New gear · ' + report.gear.map(item => item.name).join(', ')), button)
+    space.append(node('p', number(report.gear.length) + ' new equipment options'), button)
   }
-}
-
-export function createPromotion(ui, lodge, insignia, onShow) {
-  const dialog = ui.promotion
-  let rank
-  function show() {
-    rank = dogRanks.find(item => item.id === lodge.current().career.promotions[0])
-    if (!rank) return false
-    ui['promotion-patch'].replaceChildren(insignia(rank.emblem))
-    ui['promotion-title'].textContent = rank.name
-    ui['promotion-reward'].textContent = 'Gear unlocked · ' + kennelItems.find(item => item.id === rank.reward).name
-    if (!dialog.open) dialog.showModal()
-    ui['promotion-continue'].focus({ preventScroll: true })
-    onShow()
-    return true
-  }
-  ui['promotion-continue'].addEventListener('click', () => {
-    lodge.acknowledgePromotion(rank.id)
-    if (!show()) dialog.close()
-  })
-  return { show }
+  if (report.saved === false) space.append(node('p', 'Progress is in memory. Leave this page open to retry saving on your next hunt.', 'room-note'))
 }

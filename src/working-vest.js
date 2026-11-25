@@ -1,4 +1,5 @@
 import * as T from 'three'
+import { tintFieldPattern } from './kennel-material.js'
 
 const smooth = T.MathUtils.smoothstep
 
@@ -175,6 +176,7 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
         }
       `)
   }
+  const decorate = tintFieldPattern(material, 'fitRest.xyz')
   const mesh = new T.SkinnedMesh(geometry, material)
   mesh.name = 'WorkingDogVest'
   mesh.frustumCulled = false
@@ -186,6 +188,7 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
   return style => {
     mesh.visible = style.color !== null
     if (!mesh.visible) return
+    decorate(style)
     material.color.setHex(style.color)
     material.roughness = style.rough
     coarseWeave.value = T.MathUtils.clamp((style.rough - .68) * 4, 0, 1)

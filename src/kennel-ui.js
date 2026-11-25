@@ -1,11 +1,14 @@
 import { careerStanding } from './career.js'
-import { gearRequirement, kennelCatalog, unlocked } from './kennel-catalog.js'
+import { gearRequirement, kennelCatalog, kennelItems, ownedGear, unlocked } from './kennel-catalog.js'
+import { gearRarity } from './collection-gear.js'
 import { node } from './lodge-elements.js'
 import { masterHunter } from './master-hunter.js'
+import { qualificationCard } from './career-ui.js'
 
-const categories = { collar: 'Collars', vest: 'Hunting vests', coat: 'Coats' }
+const categories = { collar: 'Collars', bandana: 'Bandanas', vest: 'Hunting vests', coat: 'Coats' }
+const slot = category => category === 'bandana' ? 'collar' : category
 
-export function kennelRoom(lodge, showAppearance, inspectDogs) {
+export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog) {
   const player = lodge.current()
   const standing = careerStanding(player.career)
   const stage = node('div', null, 'kennel-stage')
@@ -22,39 +25,62 @@ export function kennelRoom(lodge, showAppearance, inspectDogs) {
   const description = node('p', null, 'kennel-preview-status')
   description.setAttribute('role', 'status')
   const fitting = node('div', null, 'kennel-fitting')
-  fitting.append(stage, description, filters)
+  const count = node('p', ownedGear(player, standing).length + ' of ' + kennelItems.length + ' options available', 'room-note')
+  const view = node('div', null, 'board-filters')
+  const ownership = node('select')
+  ownership.setAttribute('aria-label', 'Equipment ownership filter')
+  for (const label of ['All equipment', 'Owned', 'Locked', 'Favorites']) ownership.append(node('option', label))
+  const order = node('select')
+  order.setAttribute('aria-label', 'Sort equipment')
+  for (const label of ['Field order', 'Rarity', 'Name']) order.append(node('option', label))
+  view.append(ownership, order)
+  fitting.append(stage, description, count, filters, view)
 
   const feedback = node('div', null, 'kennel-selection')
   const equip = node('button', 'Equip')
   const peek = node('button', 'View preview')
   const reset = node('button', 'Reset to Classic')
-  equip.type = peek.type = reset.type = 'button'
-  feedback.append(equip, peek, reset)
+  const favorite = node('button', 'Favorite')
+  equip.type = peek.type = reset.type = favorite.type = 'button'
+  feedback.append(equip, peek, favorite, reset)
   let category = 'collar'
   let selected = player.kennel.equipment[category]
   let cards = []
 
-  const available = item => unlocked(item, standing, player.kennel.inherited)
+  const available = item => unlocked(item, standing, player.kennel, player.progression)
+  const equipped = () => player.kennel.equipment[slot(category)]
   function update() {
     for (const { item, button, label } of cards) {
       button.setAttribute('aria-pressed', String(selected === item.id))
-      label.textContent = player.kennel.equipment[category] === item.id ? 'Equipped'
-        : available(item) ? 'Unlocked' : gearRequirement(item)
+      label.textContent = (item.rarity ?? 'Uncommon') + ' · ' + (equipped() === item.id ? 'Equipped'
+        : available(item) ? 'Owned' : gearRequirement(item))
     }
-    const item = kennelCatalog[category].find(item => item.id === selected)
-    const equipped = player.kennel.equipment[category] === selected
-    description.textContent = equipped ? 'Wearing ' + item.name : 'Previewing ' + item.name
-    equip.textContent = equipped ? 'Equipped' : available(item) ? 'Equip' : gearRequirement(item)
-    equip.disabled = equipped || !available(item)
-    showAppearance({ ...player.kennel.equipment, [category]: selected })
+    const item = kennelCatalog[slot(category)].find(item => item.id === selected)
+    const wearing = equipped() === selected
+    const customCoat = category === 'coat' && player.kennel.breed === 'boyd'
+    description.textContent = customCoat ? 'Boyd wears his signature coat.' : item ? (wearing ? 'Wearing ' : 'Previewing ') + item.name : 'Browse equipment'
+    equip.textContent = customCoat ? 'Available on Labrador' : wearing ? 'Equipped' : item && available(item) ? 'Equip' : 'Locked'
+    equip.disabled = customCoat || wearing || !available(item)
+    favorite.disabled = !item
+    favorite.setAttribute('aria-pressed', String(player.kennel.favorites.includes(selected)))
+    if (item && !customCoat && (!item.breed || player.kennel.breed === item.breed))
+      showAppearance({ ...player.kennel.equipment, [slot(category)]: selected })
   }
 
   function switchCategory(value) {
     category = value
-    selected = player.kennel.equipment[category]
+    selected = equipped()
     for (const button of filters.children) button.setAttribute('aria-pressed', String(button.dataset.category === value))
-    cards = kennelCatalog[category].filter(item => category === 'coat' || item.level || item.rank || player.kennel.inherited.includes(item.id))
-      .map(item => {
+    const items = kennelCatalog[slot(category)].filter(item => {
+      if (slot(category) === 'collar' && Boolean(item.bandana) !== (category === 'bandana')) return false
+      if (ownership.value === 'Owned') return available(item)
+      if (ownership.value === 'Locked') return !available(item)
+      return ownership.value !== 'Favorites' || player.kennel.favorites.includes(item.id)
+    })
+    if (order.value === 'Name') items.sort((a, b) => a.name.localeCompare(b.name))
+    if (order.value === 'Rarity') items.sort((a, b) => gearRarity.indexOf(b.rarity) - gearRarity.indexOf(a.rarity))
+    if (!items.some(item => item.id === selected)) selected = items[0]?.id
+    cards = items.map(item => {
         const button = node('button', null, 'gear-option')
         button.type = 'button'
         button.dataset.gear = item.id
@@ -69,7 +95,7 @@ export function kennelRoom(lodge, showAppearance, inspectDogs) {
         })
         return { item, button, label }
       })
-    options.replaceChildren(...cards.map(card => card.button))
+    options.replaceChildren(...(cards.length ? cards.map(card => card.button) : [node('p', 'No equipment in this view.', 'room-note')]))
     update()
   }
 
@@ -80,15 +106,22 @@ export function kennelRoom(lodge, showAppearance, inspectDogs) {
     button.addEventListener('click', () => switchCategory(id))
     filters.append(button)
   }
-  equip.addEventListener('click', () => { if (lodge.equip(category, selected)) update() })
+  ownership.addEventListener('change', () => switchCategory(category))
+  order.addEventListener('change', () => switchCategory(category))
+  equip.addEventListener('click', () => { if (lodge.equip(slot(category), selected)) update() })
+  favorite.addEventListener('click', () => {
+    lodge.favorite(selected)
+    if (ownership.value === 'Favorites') switchCategory(category)
+    else update()
+  })
   peek.addEventListener('click', () => {
     stage.scrollIntoView({ block: 'start' })
     stage.focus({ preventScroll: true })
   })
   reset.addEventListener('click', () => {
     lodge.resetGear()
-    selected = player.kennel.equipment[category]
-    update()
+    showAppearance(player.kennel.equipment)
+    switchCategory(category)
   })
   switchCategory(category)
   const breeds = node('details', null, 'kennel-breeds')
@@ -105,11 +138,21 @@ export function kennelRoom(lodge, showAppearance, inspectDogs) {
   emblem.loading = 'lazy'
   const master = node('article', null, 'kennel-master-hunter')
   const details = node('div')
+  const qualified = Boolean(player.progression.boyd)
   details.append(emblem, node('h3', masterHunter.name + ' · ' + masterHunter.title),
-    node('p', 'Locked · Career Level ' + masterHunter.level + ' and Field Honors'))
+    node('p', qualified ? 'Master Hunter kit earned' : 'Locked · Level 100 and Master Hunter qualification'))
+  if (qualified && !inspectDogs) {
+    const dog = node('button', player.kennel.breed === 'boyd' ? 'Use Labrador' : 'Equip Boyd')
+    dog.type = 'button'
+    dog.addEventListener('click', () => changeDog(player.kennel.breed === 'boyd' ? 'lab' : 'boyd'))
+    details.append(dog)
+  }
   master.append(portrait, details)
   breeds.append(node('summary', 'Working dogs'), node('p', 'Labrador Retriever'),
     node('p', 'German Shorthaired Pointer · Career unlock pending'), master)
+  const checklist = node('details', null, 'career-ledger')
+  checklist.append(node('summary', 'Master Hunter requirements'), qualificationCard(player))
+  breeds.append(checklist)
   if (inspectDogs) {
     const chooser = node('nav', null, 'kennel-inspection')
     chooser.setAttribute('aria-label', 'Development dog inspection')

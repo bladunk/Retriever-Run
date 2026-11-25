@@ -5,10 +5,10 @@ import { join } from 'node:path'
 import test from 'node:test'
 import { offlineWorker } from '../build/offline-worker.js'
 import { buildLabel } from '../src/build-info.js'
-import { kennelItems } from '../src/kennel-catalog.js'
+import { unlocked, kennelItems } from '../src/kennel-catalog.js'
 import { boydAppearance, inspectionBreed, masterHunter } from '../src/master-hunter.js'
 
-test('Boyd preview requires practice and his prestige gear stays outside saved ownership', () => {
+test('Boyd inspection requires practice and his prestige gear requires legitimate qualification', () => {
   assert.equal(inspectionBreed(false, 'boyd'), 'lab')
   assert.equal(inspectionBreed(true, 'boyd'), 'boyd')
   assert.equal(inspectionBreed(true, 'pointer'), 'pointer')
@@ -20,8 +20,12 @@ test('Boyd preview requires practice and his prestige gear stays outside saved o
   assert.equal(active.vest.id, masterHunter.vest)
   assert.equal(collar.vest.color, null)
   assert.equal(scarf.collar.id, masterHunter.bandana)
-  for (const id of [masterHunter.signature, masterHunter.vest, masterHunter.bandana])
-    assert.ok(!kennelItems.some(item => item.id === id))
+  for (const id of [masterHunter.signature, masterHunter.vest, masterHunter.bandana]) {
+    const item = kennelItems.find(item => item.id === id)
+    assert.equal(item.breed, 'boyd')
+    assert.equal(unlocked(item, { level: 100 }, { breed: 'lab', inherited: [] }, {}), false)
+    assert.equal(unlocked(item, { level: 100 }, { breed: 'boyd', inherited: [] }, {}), false)
+  }
 })
 
 async function dogAsset(name) {

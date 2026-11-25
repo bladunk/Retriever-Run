@@ -2,7 +2,7 @@ import { isWaterHazard, laneWidth, traceContact } from './collision.js'
 import { diveWarningLead } from './dive.js'
 import { courseRuleset } from './ruleset.js'
 import { score } from './runner.js'
-import { regionAt } from './expedition.js'
+import { expeditionRegions, regionAt } from './expedition.js'
 import { obstacles } from './obstacles.js'
 import { fieldSpecies, retrieveSpecies } from './wildlife-catalog.js'
 import { rocks } from './rocks.js'
@@ -11,6 +11,7 @@ export const counters = ['treats', 'logs', 'slidesCleared', 'geese', 'ducks', 'p
 export const causes = ['water', 'logs', 'geese', 'other']
 const logTypes = ['log', 'drift']
 const jumpTypes = new Set([...logTypes, 'stream', 'puddle', 'root', 'fence'])
+const expeditionKeys = new Set(expeditionRegions.map(region => region.key))
 
 export const causeNames = { water: 'Water', logs: 'Timber', geese: 'Diving geese', other: 'Other hazards' }
 export function deathCause(hazard) {
@@ -32,6 +33,9 @@ export function createRunStatistics(runId, onSkill = () => {}) {
   const recoveredRoutes = new Map()
   const observed = new Set()
   const wildlife = {}
+  const field = { clears: {}, shifts: 0, routes: 0, chain: 0 }
+  let chain = 0
+  let lastClear = -Infinity
   let finalized = false
   let jumpClears = 0
 
@@ -51,6 +55,7 @@ export function createRunStatistics(runId, onSkill = () => {}) {
     action(move) {
       if (!finalized && move === 'jump') stats.jumps++
       if (!finalized && move === 'slide') stats.slides++
+      if (!finalized && (move === 'left' || move === 'right')) field.shifts++
     },
     discover(region, elapsed) {
       if (finalized || discovered.has(region.key)) return
@@ -64,6 +69,10 @@ export function createRunStatistics(runId, onSkill = () => {}) {
       row.seen++
       row.rare += Number(event.rarity === 'rare' || event.rarity === 'exceptional')
       row.territory ??= event.territory
+      if (expeditionKeys.has(event.territory)) {
+        const regions = row.regions ??= {}
+        regions[event.territory] = (regions[event.territory] ?? 0) + 1
+      }
       onSkill({ kind: 'wildlife-observed', species: event.species, territory: event.territory, rarity: event.rarity })
     },
     pickup(type, entity) {
@@ -82,7 +91,10 @@ export function createRunStatistics(runId, onSkill = () => {}) {
         // Only a small tail of rows is relevant. Entity removal performs the
         // primary idempotency check. The route exit can emit only once.
         if (recoveredRoutes.size > 12) recoveredRoutes.delete(recoveredRoutes.keys().next().value)
-        if (entity.riskExit && count === 3) onSkill({ kind: 'risk-route', rowId: entity.rowId, pattern: entity.pattern, lane: entity.lane })
+        if (entity.riskExit && count === 3) {
+          field.routes++
+          onSkill({ kind: 'risk-route', rowId: entity.rowId, pattern: entity.pattern, lane: entity.lane })
+        }
       }
     },
     passed(before, after, entity) {
@@ -92,10 +104,11 @@ export function createRunStatistics(runId, onSkill = () => {}) {
       const rockSize = type === 'rock' ? rocks[entity.variant].size : null
       const jumping = jumpTypes.has(type) || rockSize === 'small' || rockSize === 'medium'
       const signature = type === 'leaning-tree'
-      const key = goose ? 'geese' : type === 'branch' || signature ? 'slidesCleared' : jumping ? 'jumpClears' : null
+      const lateral = obstacles[type]?.route === 'dodge' && !goose || type === 'rock' && !jumping
+      const key = goose ? 'geese' : type === 'branch' || signature ? 'slidesCleared' : jumping ? 'jumpClears' : lateral ? 'dodge' : null
       if (!key || !entity.hazard) return false
       let state = hazards.get(entity)
-      if (!state && goose && distance - after.distance <= entity.flightSpeed * diveWarningLead &&
+      if (!state && (goose || lateral) && distance - after.distance <= (goose ? entity.flightSpeed * diveWarningLead : 18) &&
         after.distance < distance - 3) {
         state = { lane: before.lane, avoided: false, cleared: false }
         hazards.set(entity, state)
@@ -108,7 +121,7 @@ export function createRunStatistics(runId, onSkill = () => {}) {
         // Compare the accepted pose to the existing solver in the absence of the
         // action. For a goose, also check the lane held when the flock approached.
         const avoided = Boolean(action && wouldHit(before, after, entity)) ||
-          (goose && state && (before.lane !== state.lane || after.lane !== state.lane ||
+          ((goose || lateral) && state && (before.lane !== state.lane || after.lane !== state.lane ||
             Math.abs(after.x - state.lane * laneWidth) > .25) && wouldHit(before, after, entity, state.lane))
         if (avoided) {
           state ??= { cleared: false }
@@ -119,11 +132,15 @@ export function createRunStatistics(runId, onSkill = () => {}) {
       }
       if (!state?.avoided || after.distance <= distance + 3) return false
       state.cleared = true
+      field.clears[type] = (field.clears[type] ?? 0) + 1
+      chain = after.elapsed - lastClear <= 8 ? chain + 1 : 1
+      lastClear = after.elapsed
+      field.chain = Math.max(field.chain, chain)
       onSkill({ kind: 'obstacle-clear', obstacle: type, action: state.action ?? 'dodge', rowId: entity.rowId, pattern: entity.pattern })
       if (jumping || (signature && state.action === 'jump')) {
         jumpClears++
         if (logTypes.includes(type)) stats.logs++
-      } else stats[key]++
+      } else if (key !== 'dodge') stats[key]++
       return true
     },
     preview(run) {
@@ -134,7 +151,7 @@ export function createRunStatistics(runId, onSkill = () => {}) {
     finish(run, hazard) {
       if (finalized) return null
       finalized = true
-      return { ...this.preview(run), wildlife, cause: deathCause(hazard), hazard, bestStreak: run.bestStreak }
+      return { ...this.preview(run), wildlife, field, cause: deathCause(hazard), hazard, bestStreak: run.bestStreak }
     },
   }
 }

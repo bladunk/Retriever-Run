@@ -17,16 +17,14 @@ import { productionSession } from './production-session.js'
 import { createWakeLock } from './mobile-lifecycle.js'
 import { runningBuild } from './build-info.js'
 import { createPerformanceProbe } from './performance-probe.js'
-import { createRewardNotices } from './reward-notices.js'
-import { pendingPatches } from './honors.js'
 import { openLodge } from './lodge-save.js'
 import { createCampTransport } from './camp-transport.js'
 import { createWorldwideCamp } from './worldwide-camp.js'
 import { submissionMessages } from './camp-ui.js'
-import { createLodgeUI, fillReport, insignia, patchName } from './lodge-ui.js'
+import { createLodgeUI, fillReport } from './lodge-ui.js'
 import { createRunStatistics, deathCause } from './field-stats.js'
 import { careerStanding } from './career.js'
-import { careerLine, createPromotion, fillCareerReport } from './career-ui.js'
+import { careerLine, fillCareerReport } from './career-ui.js'
 import { createOnboarding, restoreEnrollment } from './camp-onboarding.js'
 import { createReportRival } from './rival-ui.js'
 import { createKennelView } from './kennel-view.js'
@@ -34,7 +32,6 @@ import {
   advance, collect, courseRuleset, createCourse, getHeight, laneWidth, multiplier, newRun, pickupElevation, touchesPickup,
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
-import { journalIssues } from './career-integrity.js'
 import { expeditionRegions, regionAt } from './expedition.js'
 import { courseStages, distanceAtTime, speedAtTime, stageAt } from './difficulty.js'
 import { placeOnTrail, trailHeight } from './trail.js'
@@ -119,9 +116,9 @@ const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
   Math.min(previewRegion === expeditionRegions.at(-1) ? 180 : 29.95, Number(flags.get('offset')) || 0)) : 0
 const collisionRequested = flags.get('debug') === 'collision' &&
   (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
-const breed = inspectionBreed(collisionRequested, flags.get('breed'))
 const diagnosticsRequested = Boolean(previewRegion) || collisionRequested
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
+const breed = collisionRequested ? inspectionBreed(true, flags.get('breed')) : lodge.current().kennel.breed
 const campfire = createCampfire(diagnosticsRequested ? () => undefined : undefined)
 const camp = createWorldwideCamp(diagnosticsRequested ? null : createCampTransport())
 ui.game.toggleAttribute('data-practice', diagnosticsRequested)
@@ -151,10 +148,6 @@ let signSeed = 7
 let setTerrainSeed = () => {}
 let currentTerritory = null
 let audioGesture = false
-let nextPatchCheck = 0
-let toastUntil = 0
-const seenPatches = new Map()
-const patchNotices = createRewardNotices()
 
 let mode = 'title'
 let run = newRun()
@@ -201,6 +194,7 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   camp,
   onPlayer() {
     profile = lodge.current().profile
+    if (!diagnosticsRequested) dog?.chooseBreed(lodge.current().kennel.breed)
     dog?.appearance(lodge.current().kennel.equipment)
     resize?.()
     sound.settings(profile)
@@ -224,7 +218,6 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   },
 })
 const onboarding = createOnboarding(ui, lodge, camp, showTitleRecord, start)
-const promotion = createPromotion(ui, lodge, insignia, () => sound.play('promotion'))
 const renderReportRival = createReportRival(ui['report-rival'], camp)
 ui['open-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
 ui['report-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
@@ -247,10 +240,11 @@ function initialize() {
   const sightProbe = collisionRequested && flags.get('sight') === '1' ? createWildlifeSightProbe(terrain, () => viewWidth / camera.aspect) : undefined
   if (sightProbe) window.retrieverSightings = () => sightProbe.stamp()
   const mayPrepareWildlife = () => contextReady && mode !== 'running' && !document.hidden &&
-    !ui.lodge.open && !ui.preferences.open && !ui.onboarding.open && !ui.promotion.open && !ui['content-screen'].open
+    !ui.lodge.open && !ui.preferences.open && !ui.onboarding.open && !ui['content-screen'].open
   const wildlife = createLivingWilderness(scene, sound.bird, sound.prepareWildlife, performanceProbe, sightProbe, mayPrepareWildlife)
   performanceProbe?.watch(() => ({
     residentTiles: terrain.count(), residentPacks: terrain.packCount(), surfaces: terrain.landscapeResidency(),
+    dogBreed: dog?.activeBreed() ?? 'loading',
     tileTimings: terrain.measurements(), wildlife: wildlife.active(), wildlifeModels: wildlife.metrics(),
   }))
   const observeWildlife = event => runStatistics?.observe(event)
@@ -261,7 +255,8 @@ function initialize() {
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
       .catch(error => { if (navigator.onLine) console.error(error) })
   }
-  dog = createPlayer(scene, breed, createPickup, flags.get('kit'))
+  dog = createPlayer(scene, breed, createPickup, collisionRequested ? flags.get('kit') ?? 'master' : undefined,
+    () => mode !== 'running')
   if (collisionRequested) window.retrieverInspectDog = {
     breed,
     ready: dog.modelReady,
@@ -340,6 +335,7 @@ function initialize() {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     previousTime = ms
     if (!contextReady) return
+    dog.installPrepared()
     if (ui.lodge.open) {
       if (kennelStage) kennel.render(renderer, dog, ms, reducedMotion.matches)
       return
@@ -349,10 +345,7 @@ function initialize() {
       performanceProbe?.ready()
       ui.primary.disabled = false
       if (mode === 'title') ui.primary.textContent = 'Start run'
-      if (!diagnosticsRequested && mode === 'title') {
-        if (lodge.current().enrollment) promotion.show()
-        else onboarding.open()
-      }
+      if (!diagnosticsRequested && mode === 'title' && !lodge.current().enrollment) onboarding.open()
       if (collisionRequested && flags.get('inspect') === 'kennel') {
         ui['open-lodge'].click()
         ui['tab-kennel'].click()
@@ -538,12 +531,12 @@ function runningSurface() {
 }
 
 function onAction(move) {
+  runStatistics.action(move)
   if (profile.haptics && !reducedMotion.matches) navigator.vibrate?.(move === 'jump' ? 18 : 10)
   if (move === 'left' || move === 'right') {
     lastShift = run.elapsed
     return
   }
-  runStatistics.action(move)
   sound.play(move, runningSurface())
 }
 
@@ -676,7 +669,6 @@ function step(dt) {
       effects.splice(index, 1)
     }
   }
-  checkPatches()
 
 }
 
@@ -750,25 +742,6 @@ function updateHud() {
   hudCache.charge = charge
   hudCache.streak = run.streak
   hudCache.powered = powered
-}
-
-function checkPatches() {
-  if (previewRegion) return
-  if (run.elapsed >= nextPatchCheck) {
-    nextPatchCheck = run.elapsed + .30
-    if (!diagnosticsRequested && journalIssues(lodge.current()).length) return
-    for (const item of pendingPatches(lodge.current(), runStatistics.preview(run), seenPatches)) {
-      const label = patchName(item.patch, item.level)
-      patchNotices.add(label, label + ' · Patch earned')
-    }
-  }
-  if (run.elapsed < toastUntil) return
-  const notice = patchNotices.take()
-  const toast = ui['patch-toast']
-  toast.hidden = !notice
-  if (!notice) return
-  toastUntil = run.elapsed + 2.35
-  toast.textContent = notice
 }
 
 function showTitleRecord() {
@@ -845,7 +818,8 @@ function setMode(value, options = {}) {
         recentTreat: run.elapsed - lastTreat < .65,
       })
       report.impact = { ...contact }
-      fillReport(ui, report, { heckle: line, previousBest, player: previewRegion ? undefined : runner })
+      fillReport(ui, report, { heckle: line, previousBest: report.previousBest ?? previousBest,
+        player: previewRegion ? undefined : lodge.players().find(player => player.id === runPlayer) })
       fillCareerReport(ui, report, button => lodgeUI.open(button, 'kennel'))
       const posting = diagnosticsRequested ? null : connectedRun ? camp.record(runPlayer, report, runPermit) :
         runner.enrollment === 'worldwide' ? { status: 'unranked' } : null
@@ -863,7 +837,6 @@ function setMode(value, options = {}) {
       }
       if (!diagnosticsRequested) {
         renderReportRival(runPlayer, runMetric, report, runRival, posting)
-        queueMicrotask(() => { if (mode === 'over') promotion.show() })
       }
       newRecord = report.improved.includes('score') || report.improved.includes('distance')
     }
@@ -890,7 +863,6 @@ function setMode(value, options = {}) {
   if (!running) {
     flightLabel = ''
     ui['flight-warning'].hidden = true
-    ui['patch-toast'].hidden = true
     calloutAnimation?.cancel()
     ui.callout.textContent = ''
   }
@@ -956,7 +928,7 @@ function resetTrail(seed) {
 
 function start() {
   if (productionSession.locked() || ui['content-screen'].open || mode === 'running' || !trailReady || !contextReady ||
-      ui.onboarding.open || ui.promotion.open ||
+      ui.onboarding.open ||
       (!lodge.current().enrollment && !diagnosticsRequested)) return
   performanceProbe?.restart()
   resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
@@ -968,9 +940,6 @@ function start() {
   runPermit = connectedRun ? camp.beginRun(runPlayer) : null
   runMetric = lodgeUI.rivalMetric()
   runRival = diagnosticsRequested ? null : camp.peekRival(runPlayer, runMetric)
-  nextPatchCheck = toastUntil = 0
-  seenPatches.clear()
-  patchNotices.clear()
   setMode('running', { gesture: true, restart: true })
   populate()
 }
@@ -1055,7 +1024,7 @@ function bindInput() {
     ' ': 'jump', arrowdown: 'slide', s: 'slide' }
   window.addEventListener('keydown', (event) => {
     if (event.altKey || event.metaKey || event.ctrlKey || ui['content-screen'].open || ui.preferences.open || ui.lodge.open ||
-        ui.onboarding.open || ui.promotion.open) return
+        ui.onboarding.open) return
     const key = event.key.toLowerCase()
     if (mode === 'over' && key === ' ' && event.target === ui['report-scroll']) return
     if (key in keys && mode === 'running' && !(key === ' ' && event.target instanceof HTMLButtonElement)) {

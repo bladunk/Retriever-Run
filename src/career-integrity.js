@@ -1,4 +1,4 @@
-import { dogRanks, legacyLevel, levelFromXP, promotionRequirements, rankIndex } from './career.js'
+import { dogRanks, legacyLevel, levelFromXP, promotionRequirements, rankIndex } from './legacy-career.js'
 
 export function journalIssues(player) {
   const { runs, distance, playtime, jumps, slides, ducks, pheasants } = player.stats

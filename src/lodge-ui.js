@@ -1,4 +1,4 @@
-import { fieldSpecies } from './wildlife-catalog.js'
+import { encounterTiers, fieldSpecies, habitatEncounters } from './wildlife-catalog.js'
 import { wildlifePortrait } from './wildlife-portrait.js'
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, honorProgress, medals, patches } from './honors.js'
@@ -8,9 +8,13 @@ import { stageAt } from './difficulty.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
 import { campSwitch, worldwideBoard } from './camp-ui.js'
 import { node, number, meters, date } from './lodge-elements.js'
-import { careerRoom } from './career-ui.js'
+import { careerRoom, nearbyHonor } from './career-ui.js'
 import { kennelRoom } from './kennel-ui.js'
 import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
+import { fieldHonorsRoom } from './honor-ui.js'
+import { checkLabel, localHonors, waterfowlSpecies } from './field-honors.js'
+import { kennelItems } from './kennel-catalog.js'
+import { progressionMetrics } from './progression.js'
 
 function duration(seconds) {
   const total = Math.floor(seconds)
@@ -150,6 +154,19 @@ function journal(player) {
   }
   const guide = node('div', null, 'wildlife-guide')
   let known = 0
+  const scientific = {
+    mallard: 'Anas platyrhynchos', 'wood-duck': 'Aix sponsa', pintail: 'Anas acuta',
+    wigeon: 'Mareca americana', gadwall: 'Mareca strepera', 'green-teal': 'Anas crecca',
+    'blue-teal': 'Spatula discors', shoveler: 'Spatula clypeata', canvasback: 'Aythya valisineria',
+    redhead: 'Aythya americana', ringneck: 'Aythya collaris', scaup: 'Aythya affinis',
+    goldeneye: 'Bucephala clangula', bufflehead: 'Bucephala albeola',
+    'hooded-merganser': 'Lophodytes cucullatus', 'common-merganser': 'Mergus merganser',
+    'canada-goose': 'Branta canadensis', pheasant: 'Phasianus colchicus', eagle: 'Haliaeetus leucocephalus',
+    'snow-goose': 'Anser caerulescens', 'ross-goose': 'Anser rossii',
+    'white-fronted-goose': 'Anser albifrons', 'cackling-goose': 'Branta hutchinsii', crane: 'Antigone canadensis',
+    deer: 'Odocoileus virginianus', heron: 'Ardea herodias', egret: 'Ardea alba',
+    alligator: 'Alligator mississippiensis', moose: 'Alces alces',
+  }
   for (const animal of Object.values(fieldSpecies)) {
     const observation = player.wildlife?.species[animal.id]
     const seen = Boolean(observation?.seen)
@@ -165,14 +182,47 @@ function journal(player) {
     const where = expeditionRegions.find(region => region.key === observation?.territory)?.name
     details.append(node('strong', animal.name), node('p', animal.habitat),
       node('p', seen ? number(observation.seen) + ' observations · ' + (where ?? 'First territory unavailable') : 'Unobserved'))
+    if (scientific[animal.id]) details.append(node('i', scientific[animal.id]))
     if (seen && observation.first) details.append(node('p', 'First seen ' + observation.first.slice(0,10)))
     if (observation?.rare || observation?.retrieves) details.append(node('p',
       [observation.rare ? number(observation.rare) + ' rare sightings' : '',
         observation.retrieves ? number(observation.retrieves) + ' retrieves' : ''].filter(Boolean).join(' · ')))
+    const notes = node('details')
+    notes.append(node('summary', 'Range and honors'))
+    const recorded = []
+    for (const region of expeditionRegions) {
+      const tier = habitatEncounters[region.key].findIndex(species => species.includes(animal.id))
+      if (tier < 0) continue
+      const seenHere = observation?.regions?.[region.key]
+      recorded.push([region.name, encounterTiers[tier] + (seenHere ? ' · ' + number(seenHere) + ' observed' : '')])
+    }
+    const range = node('dl', null, 'field-list')
+    range.append(...rows(recorded))
+    const honors = localHonors.filter(honor => honor.checks.some(check => check.key === 'seen:' + animal.id || check.key === 'retrieve:' + animal.id))
+    const owned = honors.filter(honor => Object.hasOwn(player.progression.honors, honor.id)).length
+    const rewards = kennelItems.filter(item => honors.some(honor => honor.id === item.honor))
+    const source = node('a', 'Species reference')
+    source.href = animal.source
+    source.target = '_blank'
+    source.rel = 'noopener'
+    notes.append(range, node('p', owned + ' of ' + honors.length + ' species honors'), source)
+    if (rewards.length) {
+      const kinds = new Set(rewards.map(item => item.bandana ? 'bandanas' : item.id.endsWith('-vest') ? 'vests' : 'collars'))
+      notes.append(node('p', 'Equipment rewards · ' + [...kinds].join(', ')))
+    }
+    details.append(notes)
     row.append(image, details)
     guide.append(row)
   }
+  const values = progressionMetrics(player)
+  const collections = node('details', null, 'career-ledger')
+  collections.append(node('summary', 'Regional wildlife collections'))
+  const regionList = node('dl', null, 'field-list')
+  regionList.append(...rows(expeditionRegions.map(region => [region.name, values.get('local-species:' + region.key) + ' / ' +
+    new Set(habitatEncounters[region.key].flat()).size])))
+  collections.append(regionList)
   return [node('h3', 'Wildlife · ' + known + ' of ' + Object.keys(fieldSpecies).length + ' observed', 'section-title'),
+    node('p', 'Waterfowl · ' + values.get('waterfowl-count') + ' of ' + waterfowlSpecies.length + ' observed', 'room-note'), collections,
     guide, node('h3', 'Lifetime Field Journal', 'section-title section-break'),
     grid, node('h3', 'The Great Migration · territory time', 'section-title section-break'), migration, ...archive,
     node('h3', 'Field breakdown', 'section-title section-break'), breakdown, ...personalRecords(player)]
@@ -242,13 +292,10 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
     ['Score', number(report.score)], ['Distance', meters(report.distance)],
     ['Personal best', number(Math.max(previousBest, scoreRecord ? report.score : 0))],
   ]))
-  const next = player && fieldHonors.map(patch => ({ patch, ...honorProgress(patch, player) }))
-    .filter(entry => entry.value > 0 && entry.value < entry.goal)
-    .sort((a, b) => b.value / b.goal - a.value / a.goal)[0]
+  const next = player && report.career && nearbyHonor(player)
   const nextHonor = ui['report-next-honor']
   nextHonor.hidden = !next
-  if (next) nextHonor.textContent = 'Next Field Honor · ' + patchName(next.patch, next.earned.length) +
-    ' · ' + number(Math.floor(next.value)) + ' / ' + number(next.goal)
+  if (next) nextHonor.textContent = 'Within reach · ' + next.name + ' · ' + checkLabel(next.checks[0])
   ui['report-tallies'].replaceChildren(...rows([
     ['Cause of death', hazardName(report.hazard)], ['Territory reached', expeditionRegions[report.territory - 1]?.name ?? '—'],
     ['Difficulty reached', 'Stage ' + stage.level + ' · ' + stage.group],
@@ -259,11 +306,13 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
   const highlights = [
     ['Personal records', report.improved.map(key => personalRecordLabels[key])],
     ['New patches', report.earned.map(({ patch, level }) => patchName(patch, level))],
+    ['Field Honors', (report.newHonors ?? []).map(honor => honor.name)],
+    ['Equipment earned', (report.gear ?? []).map(item => item.name)],
     ['Camp placement', report.preview ? [] : placement.length ? placement : ['Outside the local top 20']],
   ]
   ui['report-highlights'].replaceChildren(...highlights.filter(([, items]) => items.length).map(([title, items]) => {
-    const group = node('div', null, 'report-highlight')
-    group.append(node('h3', title), node('p', items.join(' · ')))
+    const group = node(items.length > 3 ? 'details' : 'div', null, 'report-highlight')
+    group.append(node(items.length > 3 ? 'summary' : 'h3', title + (items.length > 3 ? ' · ' + items.length : '')), node('p', items.join(' · ')))
     return group
   }))
 }
@@ -308,9 +357,14 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
       content = isWorldwide ? [switcher, worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart })]
         : [switcher, ...leaderboard(lodge, metric, selectMetric)]
     } else if (room === 'kennel') {
-      ({ content, stage } = kennelRoom(lodge, onAppearance, inspectDogs))
+      ({ content, stage } = kennelRoom(lodge, onAppearance, inspectDogs, breed => {
+        if (!lodge.selectBreed(breed)) return
+        onPlayer()
+        renderRoom()
+        panel.querySelector('.kennel-breeds').open = true
+      }))
     } else if (room === 'career') content = careerRoom(player, insignia)
-    else content = room === 'trophies' ? trophies(player) : room === 'journal' ? journal(player) : personalRecords(player)
+    else content = room === 'trophies' ? fieldHonorsRoom(player, insignia, trophies(player)) : room === 'journal' ? journal(player) : personalRecords(player)
     panel.replaceChildren(...content)
     if (stage) onKennel(stage)
   }

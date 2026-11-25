@@ -411,3 +411,15 @@
   margin-block-start: .8rem;
   color: #edddba;
 }
+
+.career-ledger > summary, .patch-card > summary, .report-highlight > summary {
+  color: var(--cream, #ead9bb);
+  font-weight: 700;
+  cursor: pointer;
+}
+.career-ledger > summary { padding-block: .35rem; }
+.patch-card > summary { display: list-item; line-height: 1.25; }
+.patch-card[data-tier="platinum"] { border-color: #afb9a4; }
+.master-qualification .career-requirements { margin-block: .65rem; }
+.board-filters select { min-width: 0; max-width: 100%; }
+.kennel-master-hunter button { margin-block-start: .65rem; }

@@ -1,3 +1,4 @@
+import { disposeModel as disposeWildlifeModel } from './model-disposal.js'
 import * as T from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
@@ -9,41 +10,7 @@ export const livingModels = {
   deer: { url: new URL('./assets/wildlife/living-deer.glb', import.meta.url).href, face: Math.PI, scaleAxis: 'z' },
 }
 
-export function disposeWildlifeModel(model) {
-  model.root.removeFromParent()
-  model.mix?.stopAllAction()
-  model.mix?.uncacheRoot(model.root)
-  const geometry = new Set()
-  const texture = new Set()
-  const materials = new Set()
-  const skeletons = new Set()
-  model.root.traverse(node => {
-    if (!node.isMesh) return
-    geometry.add(node.geometry)
-    if (node.isSkinnedMesh) skeletons.add(node.skeleton)
-    for (const material of Array.isArray(node.material) ? node.material : [node.material]) {
-      if (materials.has(material)) continue
-      materials.add(material)
-      for (const value of Object.values(material)) if (value?.isTexture) texture.add(value)
-    }
-  })
-  for (const item of geometry) item.dispose()
-  for (const item of materials) item.dispose()
-  // Three uploads a bone DataTexture on the first skinned draw. Material
-  // disposal cannot release it because the skeleton owns it.
-  let boneTextures = 0
-  for (const skeleton of skeletons) {
-    if (skeleton.boneTexture) boneTextures++
-    skeleton.dispose()
-  }
-  const images = new Set()
-  for (const item of texture) {
-    item.dispose()
-    if (item.image?.close) images.add(item.image)
-  }
-  for (const image of images) image.close()
-  return boneTextures
-}
+export { disposeWildlifeModel }
 
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
 export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(url), canPrepare = () => true) {
