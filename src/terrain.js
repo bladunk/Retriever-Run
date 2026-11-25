@@ -229,7 +229,7 @@ export function createTerrain(scene, showSign, probe) {
 
     for (const [mesh, data] of [[tile.ground, packet.ground], [tile.water, packet.water],
       [tile.detail, packet.detail], [tile.solid, packet.solid]]) replaceTileGeometry(mesh, data)
-    tile.ground.material = packet.territory === 'gulf' ? gulfTerrain : terrainMaterial
+    tile.ground.material = packet.index * segmentLength < expeditionRegions[1].fadeTo ? gulfTerrain : terrainMaterial
     tile.solid.visible = Boolean(packet.solid)
     tile.hasWater = Boolean(packet.water)
     yield
