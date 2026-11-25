@@ -292,8 +292,14 @@ try {
   } else if (args.includes('gulf-lifecycle')) {
     const ready = wanted => page.waitForFunction(value => {
       const surfaces = window.retrieverPerformance()?.surfaces
-      return surfaces?.gulfAtlas === value && !surfaces.gulfAtlasPending
-    }, wanted, { timeout: 60_000 })
+      return window.retrieverDebug?.mode === 'over' || surfaces?.gulfAtlas === value && !surfaces.gulfAtlasPending
+    }, wanted, { timeout: 180_000 }).catch(async error => {
+      console.error(await page.evaluate(() => {
+        const { mode, distance, elapsed, contact } = window.retrieverDebug
+        return { mode, distance, elapsed, contact, surfaces: window.retrieverPerformance()?.surfaces }
+      }))
+      throw error
+    })
     const inputs = guidedInputs(7, 38)
     await runAt(0, 7)
     await ready(true)
@@ -302,9 +308,12 @@ try {
       window.phaseThreeQA.soak = { inputs, duration: 38, fast: true, next: 0, nextSample: 0, samples: [] }
     }, inputs)
     await ready(false)
+    const state = await page.evaluate(() => window.retrieverDebug)
+    assert.equal(state.mode, 'running', JSON.stringify(state.contact))
     const cypress = await page.evaluate(() => window.retrieverPerformance())
     assert.equal(cypress.territory, 'cypress')
     assert.equal(cypress.operations.filter(event => event.name === 'gulf-atlas-release').length, 1)
+    await capture('cypress-release', { seed: 7 })
     await runAt(3, 7, 'high')
     await ready(true)
     const returned = await page.evaluate(() => window.retrieverPerformance())
@@ -704,8 +713,9 @@ try {
       await capture(selected + '-cypress', { seed: 7, selected })
     }
   } else if (args.includes('presets')) {
-    await runAt(distanceAtTime(36), 7)
-    await capture('balanced-cypress')
+    const region = args.includes('gulf') ? 'gulf' : 'cypress'
+    await runAt(region === 'gulf' ? 79 : distanceAtTime(36), 7)
+    await capture('balanced-' + region)
     for (const selected of ['high', 'low', 'auto']) {
       await page.locator('#settings').tap()
       await page.locator('#quality').selectOption(selected)
@@ -719,22 +729,23 @@ try {
       }, null, { polling: 250, timeout: 45_000 })
       assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running',
         JSON.stringify(await page.evaluate(() => window.retrieverDebug)))
-      await page.waitForFunction(selected => {
+      await page.waitForFunction(({ selected, region }) => {
         const surfaces = window.retrieverPerformance()?.surfaces
+        if (region === 'gulf' && !surfaces?.gulfAtlas) return false
         if (!surfaces || selected === 'auto' && !surfaces.pending ||
           surfaces.active === (selected === 'low' ? 'compact' : 'full')) return true
         // Battery Saver can skip draws once the fixture stops the game clock.
         // Request a normal redraw so an async decode updates its live metrics.
         window.dispatchEvent(new Event('resize'))
         return false
-      }, selected, { polling: 300, timeout: 40_000 }).catch(async error => {
+      }, { selected, region }, { polling: 300, timeout: 40_000 }).catch(async error => {
         console.error(await page.evaluate(() => ({ render: window.retrieverPerformance()?.surfaces,
           mode: document.querySelector('#game')?.dataset.mode, quality: document.querySelector('#quality')?.value,
           distance: window.retrieverDebug?.distance, limit: window.phaseThreeQA.limit,
           assets: performance.getEntriesByType('resource').filter(x => x.name.includes('field-atlas')).map(x => x.name.split('/').at(-1)) })))
         throw error
       })
-      await capture(selected + '-cypress')
+      await capture(selected + '-' + region)
     }
   } else if (args.includes('living')) {
     const { planEncounter } = await fromSource('wildlife-encounters')

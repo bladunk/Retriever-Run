@@ -78,3 +78,11 @@ See [Phase 04 results and checklist](PHASE_04_REPORT.md) for remaining coverage 
 - Run `node --test test/boyd.test.js test/production-foundation.test.js`, the production build and artifact verifier. The artifact must contain only the approved static files and emitted dependencies.
 - Run `FIELD_BUILD=dist node scripts/phase-three-browser.mjs webkit small boyd-review` against the built Pages subpath for the locked Kennel, active footer, verified offline branding and dog rig, the last card and Labrador → Pointer → Boyd inspection. Use `boyd natural-review video seed=7` for actual trail motion.
 - Run the Phase 05 artifact upgrade using `scripts/production-browser.mjs small from-phase-three update-only partial repair`. Check the pending and current build labels, unchanged cached audio and safe activation. Verify native Home Screen artwork after approval. [Phase 05.1 report](PHASE_05_1_REPORT.md)
+
+## Phase 05.2 Gulf Coast camera and regional map ownership
+
+- Run `node --test test/gulf-art.test.js test/field-ready.test.js` for shared assets, exported topology, bank placement and transferable terrain packets.
+- Use `scripts/phase-three-browser.mjs webkit small balanced gulf-slice` on each build, then `scripts/art/compare-views.py` to assert matching distances and seed. Use `view=cordgrass-shore` with `low` and `high` to compare presets at the same normal camera.
+- Use `scripts/phase-three-browser.mjs small balanced presets gulf` to change High, Battery Saver and Auto during the same paused hunt with the coast pack bound.
+- Use `scripts/phase-three-browser.mjs small balanced gulf-lifecycle fast` to verify the map pair binds, retires across the live Cypress transition and can be brought back. The clock is accelerated for this resource test. Use `natural-review video seed=7 seconds=17 menu=2000` for normal-clock comparison.
+- Run `FIELD_FAULT_ASSET=gulf-field-pbr.webp npm run test:production -- webkit small partial repair journal offline-only` to break a real transfer, repair cache bytes, replay offline and reach the final Kennel card. Use `small from-phase-three update-only partial repair` with the exact Phase 05.1 artifact for safe update and save compatibility. [Phase 05.2 results](PHASE_05_2_REPORT.md)

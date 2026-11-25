@@ -34,3 +34,5 @@ The study decodes Meshopt and dequantizes the two published GLBs in scratch, the
 ## Capture runtime evidence
 
 Use `scripts/phase-three-browser.mjs webkit small balanced gulf-slice` for six paired gameplay cameras. Set `FIELD_BUILD` to the baseline or the candidate directory and `FIELD_QA_OUTPUT` to a new evidence directory. Use `natural-review video seed=7 seconds=17 menu=2000` for uninterrupted normal-clock gameplay in a 320 × 568 viewport. Use `gulf-lifecycle` to drive a live scene into Cypress and assert release of the Gulf maps. For uncached transfer and safe update checks, use `scripts/production-browser.mjs`.
+
+Pair the capture directories with `python scripts/art/compare-views.py baseline-captures candidate-captures review-gallery`. The tool checks the seed, distance and viewport before placing the images side by side.
