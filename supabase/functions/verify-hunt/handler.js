@@ -31,7 +31,7 @@ async function boundedBody(request) {
   finally { reader.releaseLock() }
 }
 
-export function huntHandler({ origin, publishable, service, fetcher = fetch } = {}) {
+export function huntHandler({ origin = '', publishable = '', service = '', fetcher = fetch } = {}) {
   async function rpc(name, body) {
     const response = await fetcher(origin + '/rest/v1/rpc/' + name, {
       method: 'POST', headers: { 'Content-Type': 'application/json', apikey: service, Authorization: 'Bearer ' + service },
@@ -57,7 +57,7 @@ export function huntHandler({ origin, publishable, service, fetcher = fetch } = 
       if (auth.status === 401 || auth.status === 403) return reply(200, { status: 'auth_required' })
       if (!auth.ok) return reply(503, { status: 'unavailable' })
       const user = await auth.json()
-      if (!user.is_anonymous || !idPattern.test(user.id)) return reply(200, { status: 'auth_required' })
+      if (user.is_anonymous !== true || !idPattern.test(user.id)) return reply(200, { status: 'auth_required' })
       const ticket = { p_player: user.id, p_ticket: input.ticket }
       const claim = await rpc('rr_ranked_claim', { ...ticket, p_ticks: input.ticks })
       if (claim.status !== 'ok') return reply(200, claim)
