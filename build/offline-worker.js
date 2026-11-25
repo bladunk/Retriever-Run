@@ -20,6 +20,7 @@ const groups = {
     territories: landscapeProfiles.filter(region => region.licensedGrass).map(region => region.key) },
   'field-surfaces': { label: 'Surface scans and building finishes', license: 'field-surfaces',
     territories: landscapeProfiles.map(({ key }) => key) },
+  'gulf-surfaces': { label: 'Gulf Coast material scans', license: 'gulf-scans', territories: ['gulf'] },
   'woodland-plants': { label: 'Forest and riverbank plants', license: 'living-vegetation',
     territories: ['cypress','timber','ozark','parklands','boreal','foothills'] },
   'wetland-wildlife': { label: 'Wetland wildlife', license: 'living-wildlife', territories: wildlifeTerritories('mallard') },
@@ -47,6 +48,7 @@ function groupFor(file, shell) {
   if (/^field-.*\.mp3$/.test(key)) return 'field-recordings'
   if (key.endsWith('.mp3')) return 'audio'
   if (key.startsWith('field-atlas-')) return 'field-surfaces'
+  if (key.startsWith('gulf-field-color.') || key.startsWith('gulf-field-pbr.')) return 'gulf-surfaces'
   if (key.startsWith('landscape-')) return 'vegetation'
   if (key.endsWith('.webp')) return 'terrain'
   return 'core'

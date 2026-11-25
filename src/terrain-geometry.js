@@ -5,6 +5,7 @@ import { surfaceOrder } from './landscape-surfaces.js'
 import { expeditionBlend, regionAtDistance, snowLevel } from './expedition.js'
 import { shoreHeight, vegetationPocket } from './landforms.js'
 import { dressMigrationLandmark } from './migration-landmarks.js'
+import { gulfGeometry } from './gulf-models.js'
 import { dressNorthernBank } from './expedition-props.js'
 import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
 import { signAnchor } from './sign-placement.js'
@@ -23,6 +24,7 @@ const branchRotation = new T.Quaternion()
 
 export const reedCount = 70
 export const treeCount = 26
+export const gulfGrassCount = 28
 
 function weatheredBank() {
   const geom = new T.IcosahedronGeometry(1, 1)
@@ -102,19 +104,21 @@ export function buildTile(index, seed = 0) {
       geometry.translate(centerAt(at) - base + Math.cos(angle) * x, y, z - Math.sin(angle) * x)
     }
     const count = geometry.attributes.position.count
-    const data = new Float32Array(count * 3)
-    tint.setHex(color).multiplyScalar(between(.84, 1.13))
-    const vertex = geometry.attributes.position
-    for (let i = 0; i < data.length; i += 3) {
-      tint.toArray(data, i)
-      if (sprays.includes(shape)) {
-        const n = i / 3
-        const flake = .88 + .17 * Math.sin(vertex.getX(n) * 6.1 + vertex.getZ(n) * 8.7)
-          + .14 * (vertex.getY(n) - y) / sy
-        for (let k = 0; k < 3; k++) data[i + k] *= flake
+    if (color !== null) {
+      const data = new Float32Array(count * 3)
+      tint.setHex(color).multiplyScalar(between(.84, 1.13))
+      const vertex = geometry.attributes.position
+      for (let i = 0; i < data.length; i += 3) {
+        tint.toArray(data, i)
+        if (sprays.includes(shape)) {
+          const n = i / 3
+          const flake = .88 + .17 * Math.sin(vertex.getX(n) * 6.1 + vertex.getZ(n) * 8.7)
+            + .14 * (vertex.getY(n) - y) / sy
+          for (let k = 0; k < 3; k++) data[i + k] *= flake
+        }
       }
+      geometry.setAttribute('color', new T.BufferAttribute(data, 3))
     }
-    geometry.setAttribute('color', new T.BufferAttribute(data, 3))
     geometry.setAttribute('fieldLayer', new T.BufferAttribute(new Float32Array(count).fill(layer), 1))
     batch.push(geometry)
   }
@@ -340,6 +344,10 @@ export function buildTile(index, seed = 0) {
       const nz = Math.cos(angle)
       const drake = i % 3 !== 0
       const goose = key === 'prairie' && i % 4 === 0
+      if (key === 'gulf') {
+        add(gulfGeometry(drake ? 'MallardDrake' : 'MallardHen'), null, d, -.54, waterZ, .85, .82, .85, 0, -angle)
+        continue
+      }
       add(oval, goose ? 0x827c6c : drake ? 0x6b6c61 : 0x514939, d, -.511, waterZ, goose ? .252 : .162, .075, goose ? .36 : .270, 0, angle)
       add(oval, 0x5b5247, d + nx * .108, -.468, waterZ + nz * .108, .122, .081, .105, 0, angle)
       add(oval, drake ? 0x304535 : 0x5e5140, d + nx * .153, -.409, waterZ + nz * .153, .073, .082, .085, 0, angle)
@@ -365,6 +373,20 @@ export function buildTile(index, seed = 0) {
   const landmark = dressMigrationLandmark({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x),
     waterline, random, branch })
   dressWildBanks({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline })
+  if (key === 'gulf' && index % 3 !== 2) {
+    const debris = seededRandom(Math.imul(index + 67, 0xb19b53) ^ seed)
+    const side = index % 2 ? 1 : -1
+    const z = -12 - debris() * 8
+    for (const offset of [0, .95, 1.9]) {
+      const x = side * (5.45 + offset)
+      const y = earth(start - z, x)
+      if (y < waterline - .18 || y > .3 || landmark && Math.abs(x - landmark.x) < 3.3) continue
+      const driftwood = gulfGeometry('ShoreDriftwood')
+      const size = .73 + debris() * .31
+      add(driftwood, null, x, y, z, size, size, size, 0, side * (1.05 + debris() * .40), 0, false, driftwood.userData.surface)
+      break
+    }
+  }
   if (chimney) {
     const at = start - chimney[2]
     const heading = headingAt(at)
@@ -470,10 +492,33 @@ export function buildTile(index, seed = 0) {
       }
     }
   }
+  const shoreGrass = []
+  if (key === 'gulf') {
+    const shoreline = seededRandom(Math.imul(index + 43, 0x14a4bd) ^ seed)
+    for (const side of [-1, 1]) {
+      let planted = 0
+      for (let patch = 0; patch < 5 && planted < gulfGrassCount / 2; patch++) {
+        const run = start + 2.5 + patch * 5.4 + shoreline() * 2
+        const width = 3.9 + shoreline() * 3.1
+        for (let stem = 0; stem < 5 && planted < gulfGrassCount / 2; stem++) {
+          const at = run + (shoreline() - .5) * 3.2
+          const x = side * (width + (shoreline() - .5) * 1.5)
+          const y = earth(at, x)
+          const heading = headingAt(at)
+          if (Math.abs(x) < 3.7 || y < waterline - .22 || y > .12 ||
+            sign && Math.abs(at - sign.distance) < 3 && Math.sign(sign.width) === side ||
+            landmark && Math.abs(at - landmark.distance) < 4 && Math.abs(x - landmark.x) < 3) continue
+          shoreGrass.push(centerAt(at) - base + Math.cos(heading) * x, y - .025,
+            start - at - Math.sin(heading) * x, .75 + shoreline() * .86)
+          planted++
+        }
+      }
+    }
+  }
   const ground = pack(land)
   const waterPacket = water ? pack(water) : null
   return { index, seed, ground, detail, solid, water: waterPacket, reeds: new Float32Array(reeds), habitats, anchors, landmark: landmark ? { id: key + ':' + index + ':' + seed, ...landmark } : null,
-    plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
+    shoreGrass: new Float32Array(shoreGrass), plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
       : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign }
 }
 

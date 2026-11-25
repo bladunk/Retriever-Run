@@ -69,3 +69,7 @@ Keep one drawn wildlife hero rig, two decoded wildlife rigs and one in-progress 
 ## Phase 05.1 branding and Boyd
 
 The boot shell keeps a 180 KB cap. The installer artwork and small favicon are in the shell. Larger icons, title art, the prestige portrait and Boyd’s model are in verified content with separate digests. Only one dog rig is decoded in each game document. Normal hunts use the Labrador; Boyd and Pointer remain local preview choices. A fully mipmapped 2048 × 2048 RGBA8 coat is about 21.33 MiB in Boyd inspection. The art for the title and loading screen is browser UI imagery outside the WebGL game scene. [Phase 05.1 measurements](PHASE_05_1_REPORT.md)
+
+## Phase 05.2 Gulf Coast slice
+
+The verified pack is 14.22 MB. An intact Phase 05.1 pack needs 2.81 MB of changed required files before HTTP compression. Gulf Coast color and property maps are two 1536 × 512 textures. Budget 8 MiB total additional RGBA8 with mipmaps while the Gulf is visible. Texture ownership ends beyond the Gulf transition, independently of the installed cache. Each tile transfers at most 28 clustered cordgrass transforms and shares the two plant models. Keep the seven-slot terrain budget and the two wildlife rig slots. Balanced ranged from 53–61 draws and 117,071–143,279 triangles across six matching portrait views. A 903 KB UASTC property-map experiment remains an offline study. [Software comparison and native acceptance](PHASE_05_2_REPORT.md)

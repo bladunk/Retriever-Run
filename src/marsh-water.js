@@ -2,6 +2,8 @@ import * as T from 'three'
 import { landscapeMap, landscapeReady } from './landscape-atlas.js'
 import { fieldAtlasShader } from './field-atlas-shader.js'
 import { dawnDirection } from './atmosphere.js'
+import { expeditionRegions } from './expedition.js'
+import { gulfMap, gulfProperties, gulfReady, gulfScans } from './gulf-surfaces.js'
 
 const uniforms = T.UniformsUtils.clone(T.UniformsLib.fog)
 Object.assign(uniforms, {
@@ -11,6 +13,7 @@ Object.assign(uniforms, {
   waterHorizon: { value: new T.Color(0xe3b994) }, waterLight: { value: new T.Color(0xffdaaa) },
   waterSun: { value: dawnDirection }, landscapeMap, landscapeReady,
   waterProfile: { value: new T.Vector4(.60, .42, .67, .78) }, waterWind: { value: 0 },
+  gulfEnd: { value: expeditionRegions[1].marker }, gulfMap, gulfProperties, gulfReady,
 })
 
 export const marshWater = new T.ShaderMaterial({
@@ -34,7 +37,9 @@ export const marshWater = new T.ShaderMaterial({
     uniform vec2 worldOrigin;
     uniform vec4 waterProfile;
     uniform float waterWind;
+    uniform float gulfEnd;
     ${fieldAtlasShader}
+    ${gulfScans}
     uniform vec3 waterSky, waterHorizon, waterSun, waterLight, waterTint;
     varying float bedDepth, bankCanopy;
     varying vec3 waterPoint;
@@ -43,6 +48,7 @@ export const marshWater = new T.ShaderMaterial({
     void main() {
       if (bedDepth <= 0.) discard;
       vec2 p = waterPoint.xz + worldOrigin;
+      float coast = 1. - smoothstep(gulfEnd - 11., gulfEnd + 16., -p.y);
       vec2 flow = normalize(vec2(.26 + waterProfile.y * .43, 1.0));
       vec2 drift = p + vec2(.49 * sin(p.x*.64 + p.y*.38), .44 * cos(p.y*.59-p.x*.73));
       float broad = sin(dot(drift, flow) * 2.23 + waterClock * (.85 + waterProfile.y * 2.6));
@@ -73,15 +79,18 @@ export const marshWater = new T.ShaderMaterial({
         vec2 dx = dFdx(bed), dy = dFdy(bed);
         float close = (1. - smoothstep(.08,.29,max(length(dx), length(dy)))) * (1. - deep);
         if (close > .01) {
-          vec3 sand = scannedSurface(19.,bed,dx,dy);
+          vec3 sand = coast > .5 && gulfReady > .5 ? gulfScan(2.,0.,bed,dx,dy)
+            : scannedSurface(19.,bed,dx,dy);
           mud *= mix(vec3(1.), .69 + .75 * sand, close);
         }
       }
       mud *= 1. + sediment * .15 * (1. - smoothstep(.18,.55,length(fwidth(p))));
       vec3 lake = mix(mud, waterTint, deep);
+      lake = mix(lake, mix(vec3(.105,.093,.052),vec3(.034,.102,.099),deep),coast * .58);
       // Trail crossings use the same water as the banks. Reach a deeper
       // channel color in the middle, and leave the wet gravel edges visible.
-      lake = mix(lake, mix(mud * .72, waterTint * .82, .28 + deep * .63), crossing);
+      vec3 channel = mix(waterTint * .82, vec3(.048,.074,.061), coast);
+      lake = mix(lake, mix(mud * .82, channel, .28 + deep * .63), crossing);
       lake *= 1. - .26 * (1. - smoothstep(.012, .095, depth));
       float rim = smoothstep(.015,.04,depth) * (1. - smoothstep(.073,.115,depth));
       rim *= .77 + .23 * sin(dot(p, vec2(1.77,.97)) + broad * .41);
@@ -101,9 +110,13 @@ export const marshWater = new T.ShaderMaterial({
         float wake = sin(dot(p, flow) * 5.7 + waterClock*2.17 + broad*1.16) * crossWave;
         mirrored *= .94 + wake * .11;
       }
-      vec3 reflectedLight = mirrored + waterLight * (shine + shimmer) * (1. - waterWeather * .76);
+      vec3 reflectedLight = mirrored + waterLight * (shine + shimmer) * (1. - waterWeather * .76) * (1. - coast * .28);
       float reflectivity = fresnel * mix(.50, .92, deep) * mix(1., .64, crossing) * (.58 + waterProfile.z * .67);
       vec3 color = mix(lake, reflectedLight, reflectivity);
+      float wave = smoothstep(.40,.93, crossWave*.7 + broad*.3);
+      float fade = 1. - smoothstep(.16,.43,length(fwidth(p)));
+      color += coast * fade * (rim*.020 + deep * wave * graze * .016) *
+        vec3(.85,.91,.78) * (1. - crossing * .45);
       color *= 1. - min(.69,bankCanopy*.54) * mix(.71,.32,deep);
       color += (broad + crossWave * .6) * (.002 + chop*.003) * vec3(.74,.96,1.);
       color += crossing * rim * vec3(.021,.019,.012);

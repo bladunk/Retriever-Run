@@ -1,5 +1,6 @@
 import { BoxGeometry, BufferGeometry, CylinderGeometry, Float32BufferAttribute, IcosahedronGeometry } from 'three'
 import { segmentLength } from './trail.js'
+import { gulfGeometry } from './gulf-models.js'
 
 const plank = new BoxGeometry()
 const gable = new BufferGeometry()
@@ -133,7 +134,7 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
       put(0x988d75, paneX, paneY, face + .24, width * .21, .046, .036)
       put(0x685748, paneX, paneY - height * .155, face + .24, width * .31, .075, .20)
     }
-    if (gallery || role === 'fish-shack' || role === 'marsh-dock') {
+    if (gallery || role === 'marsh-dock') {
       const porchWidth = gallery ? width * .98 : width * .64
       const porchZ = face + .78
       pier(x, porchZ, porchWidth, 1.57, base - .10)
@@ -158,7 +159,13 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     }
   }
 
-  if (role === 'windmill') {
+  if (role === 'fish-shack') {
+    const deck = Math.max(waterline + .24, ground + .06)
+    for (const name of ['CampWood', 'CampRoof', 'CampRecess']) {
+      const geometry = gulfGeometry(name)
+      add(geometry, null, x, deck, z, 1, 1, 1, 0, -.29, 0, false, geometry.userData.surface)
+    }
+  } else if (role === 'windmill') {
     const y = ground
     const cap = y + 5.3
     for (const side of [-1, 1]) for (const end of [-1, 1]) {
@@ -206,13 +213,6 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     put(0x5a5040, x,y + .20,z,2.4,1.10,1.95)
     put(0x544d39, x,y + 1.07,z,2.74,.16,2.23)
     put(0x201f18, x,y + .58,z + 1.01,2.12,.28,.069)
-  } else if (role === 'fish-shack') {
-    lodge(3.8, 3.1, 1.95, 0x88775c, 0x676c61, 'raised')
-    for (let i = 0; i < 5; i++) {
-      const px = x + 2.3 + i * .38
-      const pz = z - .76 - i * .42
-      add(pole, 0x5b5848, px, waterline + .15, pz, .25, 1.32, .25, 0, 0, -.10, false, 2)
-    }
   } else {
     const palette = {
       'swamp-cabin': [4.2, 3.15, 2.3, 0x66604c, 0x46544b, 'raised'],

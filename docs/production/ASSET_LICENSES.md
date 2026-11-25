@@ -84,3 +84,15 @@ CDmir and TinyWorlds released the skinned doe and its embedded diffuse maps unde
 | `src/assets/boyd.glb` | A separate sculpt and coat treatment derived from the Phase 05 working Labrador’s existing CC BY 4.0 mesh. Retains the CC0 retargeted motion. Uses the licensed base coat atlas and project-authored color, pigment and fur shading. [Underlying mesh and animation credits](../../PORTRAIT.md#asset-credits) |
 | Signature collar, Master Hunter vest and bandana | Project-authored geometry, material finishes and fitted variants. Collar hardware is visually referenced and left blank. |
 | `public/icons/`, `public/branding/`, Phase 05.1 master and art studies | Original derived game illustrations based on the authorized dog references with image-assisted illustration. Marsh scenery, portrait compositions, and emblem were created for Retriever Run. Owner approval covers the final likeness and application artwork. Source photos remain private. |
+
+## Phase 05.2 Gulf Coast art
+
+| Input | Creator and terms | Runtime treatment |
+| --- | --- | --- |
+| [Stony Dirt Path](https://polyhaven.com/a/stony_dirt_path) | eye-candy.xyz, CC0 | Three 2K scans supply compact gravel color, normal XY and roughness |
+| [Muddy Tracks](https://polyhaven.com/a/muddy_tracks) | Amal Kumar, CC0 | Three 2K scans supply damp trail and wheel-rut texture |
+| [Damp Beach Sand 02](https://polyhaven.com/a/damp_beach_sand_02) | Dimitrios Savva, CC0 | Three 2K scans supply wet shoulder and shallow water-bed detail |
+| [Dead Tree Trunk 02](https://polyhaven.com/a/dead_tree_trunk_02) | Jenelle van Heerden and Rico Cilliers, CC0 | Decimated shore debris. Blender bakes the diffuse scan into vertex pigment. The derivative shares the runtime field wood finish |
+| Raised shelter, cattails, cordgrass and drake/hen forms | Original art scripted for Retriever Run | Blender meshes, quantized and merged or instanced in the field. The authored drake also replaces the simple mallard fallback body |
+
+Poly Haven applies CC0 to these assets. Redistribution and adaptation are permitted, with credits retained here. The [input lock](../../art/gulf-inputs.json) records the exact source files, bytes and SHA-256 digests. `src/assets/environment/gulf-field-color.webp` and `gulf-field-pbr.webp` contain resized derivatives. `gulf-meshes.js` contains packed indexed meshes and baked pigments. Source scans, `.blend` work files and experimental KTX2 encodes remain in scratch. The existing prepared mallard, dog meshes, motion clips, Boyd derivatives, and their terms remain as previously registered. [Poly Haven license](https://polyhaven.com/license) · [Release intake procedure](ART_PIPELINE.md)

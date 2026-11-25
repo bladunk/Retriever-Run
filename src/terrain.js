@@ -1,14 +1,16 @@
 import * as T from 'three'
 import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
+import { gulfGeometry } from './gulf-models.js'
+import { prepareGulfSurfaces, regionalSurfaceResidency } from './gulf-surfaces.js'
 import { cornModel } from './corn.js'
 import { environmentAssets, fernTerritories } from './environment-assets.js'
 import { landscapeProfiles } from './migration-landscapes.js'
-import { regionAtDistance } from './expedition.js'
+import { expeditionRegions, regionAtDistance } from './expedition.js'
 import { fieldAtlasShader } from './field-atlas-shader.js'
 import { landscapeMap, landscapeReady, updateLandscapeQuality, landscapeResidency } from './landscape-atlas.js'
 import { fieldMaterials } from './materials.js'
 import { assignForestGeometry, forestModel, forestProfileAt, forestSurface } from './forest-models.js'
-import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
+import { buildTile, createDistantTree, gulfGrassCount, reedCount, treeCount } from './terrain-geometry.js'
 import { createBankPlant } from './marsh-plants.js'
 import { marshWater, updateMarshWater } from './marsh-water.js'
 import { planEncounter } from './wildlife-encounters.js'
@@ -27,7 +29,7 @@ const cropFarMaterial = cropMaterial.clone()
 const cardsReady = new WeakSet()
 const dummy = new T.Object3D()
 
-const { material: terrainMaterial, uniforms: field } = fieldMaterials
+const { material: terrainMaterial, gulfTerrain, uniforms: field } = fieldMaterials
 const detailMaterial = terrainMaterial.clone()
 const landmarkMaterial = terrainMaterial.clone()
 const lodRanges = [[43, 57, 71, 87], [69, 86, 99, 117], [69, 86, 126, 145]]
@@ -174,7 +176,7 @@ export function createTerrain(scene, showSign, probe) {
     trees.name = 'Outer bank trees'
     for (const grove of forest) grove.name = 'Canopy instances'
     const crops = [batch(cropGeometries[0], cropMaterial, 112), batch(cropGeometries[1], cropFarMaterial, 112)]
-    const tufts = batch(vegetation[0][0], reedMaterial, 16)
+    const tufts = batch(vegetation[0][0], reedMaterial, gulfGrassCount)
     const ferns = batch(vegetation[0][0], reedMaterial, 4)
     const reeds = batch(vegetation[0][0], reedMaterial, reedCount)
     const smoke = createChimneySmoke()
@@ -227,6 +229,7 @@ export function createTerrain(scene, showSign, probe) {
 
     for (const [mesh, data] of [[tile.ground, packet.ground], [tile.water, packet.water],
       [tile.detail, packet.detail], [tile.solid, packet.solid]]) replaceTileGeometry(mesh, data)
+    tile.ground.material = packet.index * segmentLength < expeditionRegions[1].fadeTo ? gulfTerrain : terrainMaterial
     tile.solid.visible = Boolean(packet.solid)
     tile.hasWater = Boolean(packet.water)
     yield
@@ -285,7 +288,21 @@ export function createTerrain(scene, showSign, probe) {
     tile.tufts.count = 0
     tile.tufts.geometry = vegetation[packet.plantType][0]
     tile.tufts.material = reedMaterial
-    if (grasses) {
+    const gulf = packet.territory === 'gulf'
+    if (gulf) {
+      tile.tufts.geometry = gulfGeometry('CordgrassLOD1')
+      tile.tufts.count = packet.shoreGrass.length / 4
+      for (let n = 0; n < tile.tufts.count; n++) {
+        const offset = n * 4
+        dummy.position.fromArray(packet.shoreGrass, offset)
+        dummy.rotation.set(.035 * (n % 3), n * 2.39996, .04)
+        dummy.scale.setScalar(packet.shoreGrass[offset + 3])
+        dummy.updateMatrix()
+        tile.tufts.setMatrixAt(n, dummy.matrix)
+        tile.tufts.setColorAt(n, tint.setHex(0xe5e6c6).multiplyScalar(.75 + .065 * (n % 5)))
+      }
+      updateBatch(tile.tufts)
+    } else if (grasses) {
       tile.tufts.geometry = grasses.models[packet.territory === 'farm' || packet.territory === 'prairie' ? 0 : 1]
       tile.tufts.material = grasses.material
       tile.tufts.count = Math.min(16, Math.floor(packet.reeds.length / 24))
@@ -317,6 +334,7 @@ export function createTerrain(scene, showSign, probe) {
     updateBatch(tile.ferns)
     tile.usesFernPack = Boolean(fern)
     tile.plantType = packet.plantType
+    tile.gulf = gulf
     tile.reedTotal = packet.reeds.length / 6
     for (let n = 0; n < tile.reedTotal; n++) {
       const at = n * 6
@@ -428,7 +446,7 @@ export function createTerrain(scene, showSign, probe) {
 
   return {
     packCount: environmentAssets.count,
-    landscapeResidency,
+    landscapeResidency: () => ({ ...landscapeResidency(), ...regionalSurfaceResidency() }),
     sightMeshes(target) {
       target.length = 0
       for (const tile of tiles) {
@@ -490,6 +508,7 @@ export function createTerrain(scene, showSign, probe) {
         probe.operation('atlas-selection', compactAtlas ? 'compact' : 'full')
       }
       updateLandscapeQuality(detail)
+      prepareGulfSurfaces(distance < expeditionRegions[1].marker + 44, probe)
       if (probe && lastAtlas !== landscapeMap.value) {
         lastAtlas = landscapeMap.value
         probe.operation('atlas-swap', landscapeResidency().active)
@@ -520,9 +539,13 @@ export function createTerrain(scene, showSign, probe) {
         tile.crops[1].visible = tile.crops[1].count > 0 &&
           tileStart + segmentLength + 2 > range[0] && tileStart < range[3] + 2
         tile.ferns.visible = detail > 0 && tile.ferns.count > 0 && tileStart < 49
-        tile.tufts.visible = detail > 0 && tile.tufts.count > 0 && tileStart < 38
+        tile.tufts.visible = tile.tufts.count > 0 && (tile.gulf ? tileStart < (detail > 0 ? 44 : 18)
+          : detail > 0 && tileStart < 38)
+        if (tile.gulf) tile.tufts.geometry = gulfGeometry(detail > 1 && tileStart < 15 ? 'CordgrassLOD0' : 'CordgrassLOD1')
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
-        tile.reeds.geometry = vegetation[tile.plantType][richPlants]
+        tile.reeds.geometry = tile.gulf
+          ? gulfGeometry(richPlants && detail > 0 ? 'CattailLOD0' : 'CattailLOD1')
+          : vegetation[tile.plantType][richPlants]
         tile.reeds.count = Math.min(tile.reedTotal, i - center < 2 ? nearCount[detail] : farCount[detail])
       }
       if (requestedEnvironment && !usesHabitatPack && tiles.every(tile => !tile.usesEnvironmentPack)) {
