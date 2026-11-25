@@ -24,7 +24,7 @@ const rewards = {
   milestone: [57, 62, 66],
   promotion: [50, 57, 66, 69, 74],
   territory: [57, 64],
-  prestige: [50, 57, 62, 66, 74],
+  prestige: [50, 57, 62, 66, 69, 76],
 }
 
 export function createSound(onInterruption, probe) {

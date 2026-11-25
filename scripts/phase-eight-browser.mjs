@@ -88,6 +88,7 @@ try {
   await page.reload({ waitUntil:'domcontentloaded' })
   await ready()
   assert.equal(await page.locator('#running-version').textContent(), buildLabel(release.app))
+  assert.deepEqual(await page.evaluate(() => window.retrieverPerformance().build), release.app)
   const warm = await measureReady()
   assert.equal(warm.collectionRequests, 0)
   if (startup) {
@@ -115,6 +116,10 @@ try {
     await shot('main-menu')
     await page.locator('#tutorial-entry').tap()
     await page.getByRole('dialog', { name: 'How to hunt' }).waitFor()
+    const guideTitle = await page.locator('#tutorial-title').boundingBox()
+    const guide = await page.locator('#tutorial').boundingBox()
+    assert.ok(guideTitle.y >= guide.y && guideTitle.y + guideTitle.height <= guide.y + guide.height)
+    assert.equal(await page.locator('#tutorial').evaluate(el => el.scrollTop), 0)
     await shot('first-time-guide')
     await page.locator('#tutorial-close').tap()
     assert.equal((await saved()).players[0].stats?.runs ?? 0,0)

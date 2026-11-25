@@ -140,7 +140,8 @@
 .field-guide { padding: 16px; }
 .field-guide h2 { font: 700 1.76rem Georgia,serif; margin: 0; }
 .field-guide p, .field-guide dd { font-size: .87rem; line-height: 1.42; }
-.field-guide dl { display: grid; gap: 0; }
+.field-guide p { margin: .55rem 0; }
+.field-guide dl { display: grid; gap: 0; margin: .3rem 0 .65rem; }
 .field-guide dl > div { padding-block: .5rem; border-bottom: 1px solid var(--field-stroke); }
 .field-guide dt { font-size: .75rem; letter-spacing: .05em; color: var(--field-gold); }
 .field-guide dd { font-weight: 400; }

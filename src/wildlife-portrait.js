@@ -13,7 +13,7 @@ export function wildlifePortrait(animal, seen) {
   const bill = seen ? (animal.family === 'goose' ? '#989084' : '#c9a253') : head
   const eye = seen ? '#e6d99b' : head
   const large = ['deer','moose'].includes(family)
-  const slim = ['wader','crane','goose'].includes(family)
+  const slim = ['wader','crane','goose','merganser'].includes(family)
   const neck = slim ? 'M45 44 Q62 46 70 24 Q78 22 80 27 L66 46 Q61 54 45 55Z'
     : 'M50 41 Q60 34 68 36 L74 49 Q63 55 51 52Z'
   const silhouette = family === 'alligator' ? `

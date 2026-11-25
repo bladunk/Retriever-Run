@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
+import { createServer } from 'vite'
 import { matchesCollection, primaryRoom, recentlyEarned, roomGroups } from '../src/collection-browser.js'
 import { expeditionRegions } from '../src/expedition.js'
 import { ambienceMix, soundscapes } from '../src/field-soundscapes.js'
@@ -84,4 +85,70 @@ test('all fifteen territories have distinct sound profiles with continuous regio
     assert.ok(before.every((value, layer) => value >= 0 && value <= 1 && Math.abs(value - after[layer]) < .01))
   }
   assert.deepEqual(ambienceMix(600), soundscapes.mountain)
+})
+
+test('audio waits for a gesture, decodes one recording at a time and suspends when hidden', async t => {
+  const vite = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true },
+    server: { middlewareMode: true, watch: null }, appType: 'custom' })
+  t.after(() => vite.close())
+  const { createSound } = await vite.ssrLoadModule('/src/audio.js')
+  const contexts = []
+  const page = { hidden: false }
+  const parameter = () => ({ cancelScheduledValues() {}, setTargetAtTime() {}, setValueAtTime() {}, linearRampToValueAtTime() {} })
+  const output = () => ({ gain: parameter(), frequency: parameter(), playbackRate: {}, connect: output, start() {} })
+  let activeDecodes = 0
+  let peakDecodes = 0
+  let decoded = 0
+  class AudioContext extends EventTarget {
+    constructor() {
+      super()
+      contexts.push(this)
+      this.destination = output()
+      this.state = 'suspended'
+      this.currentTime = 0
+      this.sampleRate = 8000
+    }
+    createGain() { return output() }
+    createBufferSource() { return output() }
+    createBuffer() { return { getChannelData: () => new Float32Array(16) } }
+    createBiquadFilter() { return output() }
+    createDynamicsCompressor() {
+      return Object.assign(output(), { threshold: {}, knee: {}, ratio: {}, attack: {}, release: {} })
+    }
+    async resume() { this.state = 'running'; this.dispatchEvent(new Event('statechange')) }
+    async suspend() { this.state = 'suspended'; this.dispatchEvent(new Event('statechange')) }
+    decodeAudioData(_buffer, finish) {
+      peakDecodes = Math.max(peakDecodes, ++activeDecodes)
+      setImmediate(() => { activeDecodes--; decoded++; finish({ duration: 1 }) })
+    }
+  }
+  t.mock.method(globalThis, 'fetch', async () => ({ ok: true, arrayBuffer: () => new ArrayBuffer(4) }))
+  const windowDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'window')
+  const documentDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'document')
+  Object.defineProperty(globalThis, 'window', { configurable: true, value: { AudioContext } })
+  Object.defineProperty(globalThis, 'document', { configurable: true, value: page })
+  const sound = createSound()
+  t.after(() => {
+    sound.suspend()
+    if (windowDescriptor) Object.defineProperty(globalThis, 'window', windowDescriptor)
+    else delete globalThis.window
+    if (documentDescriptor) Object.defineProperty(globalThis, 'document', documentDescriptor)
+    else delete globalThis.document
+  })
+  sound.selectScene('title')
+  assert.equal(contexts.length, 0)
+  sound.selectScene('running', { gesture: true })
+  for (let i = 0; i < 5; i++) await new Promise(setImmediate)
+  assert.equal(contexts.length, 1)
+  assert.equal(contexts[0].state, 'running')
+  assert.equal(decoded, 4)
+  assert.equal(peakDecodes, 1)
+  page.hidden = true
+  sound.selectScene('paused', { immediate: true })
+  assert.equal(contexts[0].state, 'suspended')
+  page.hidden = false
+  sound.selectScene('running')
+  assert.equal(contexts[0].state, 'suspended')
+  sound.selectScene('running', { gesture: true })
+  assert.equal(contexts[0].state, 'running')
 })
