@@ -204,11 +204,59 @@ test('diagnostics exclude suspended frames and bound frame and transition histor
   probe.ready()
   probe.restart()
   const renderer = { render: { calls: 40, triangles: 998 }, memory: { textures: 9, geometries: 40 } }
-  for (let frame = 0; frame < 800; frame++) probe.frame(frame === 7 ? 900 : 16, 3, renderer, 7, String(frame))
+  for (let frame = 0; frame < 800; frame++) probe.frame(frame === 7 ? 900 : 16, 3, renderer, String(frame))
   const observed = probe.read()
   assert.equal(observed.framesMs.samples, 720)
   assert.equal(observed.framesMs.p95, 16)
   assert.equal(observed.discarded, 1)
   assert.equal(observed.transitions.length, 20)
   assert.equal(observed.draws, 40)
+})
+
+test('slow-frame history retains resource and operation context while hunt totals reset independently', () => {
+  let at = 100
+  const probe = createPerformanceProbe(() => at)
+  const renderer = { render: { calls: 60, triangles: 2000 }, memory: { textures: 8, geometries: 81 }, programs: [{}] }
+  probe.restart()
+  probe.graphics('auto', 1)
+  probe.frame(16, 3, renderer, 'gulf')
+  at += 17
+  probe.frame(17, 4, renderer, 'gulf')
+  at += 28
+  probe.operation('wildlife-load-ready', 'mallard', at - 12)
+  at += 35
+  renderer.memory.textures += 2
+  renderer.programs.push({})
+  probe.frame(63, 24, renderer, 'cypress', at, 18)
+  at += 10
+  probe.operation('audio-decode-ready', 'mallard')
+  probe.pause()
+  at += 5000
+  probe.frame(5010, 2, renderer, 'cypress')
+  let report = probe.read()
+  assert.equal(report.hunt.presentation.samples, 2)
+  assert.equal(report.hunt.presentation.over50, 1)
+  assert.equal(report.hunt.cpu.samples, 4)
+  assert.equal(report.hunt.peakTextures, 10)
+  assert.equal(report.hunt.discarded, 1)
+  assert.deepEqual(report.slowFrames[0].operations.map(entry => entry.name),
+    ['territory', 'wildlife-load-ready', 'territory', 'audio-decode-ready'])
+  assert.equal(report.slowFrames[0].textureDelta, 2)
+  assert.equal(report.slowFrames[0].programDelta, 1)
+  assert.equal(report.slowFrames[0].renderMs, 18)
+  probe.restart()
+  for (let n = 0; n < 800; n++) {
+    at += 52
+    probe.operation('terrain-ready', n)
+    probe.frame(52, 20, renderer, 'gulf')
+  }
+  report = probe.read()
+  assert.equal(report.hunt.id, 2)
+  assert.equal(report.hunt.cpu.samples, 800)
+  assert.equal(report.session.cpu.samples, 804)
+  assert.equal(report.session.presentation.over50, 800)
+  assert.equal(report.presentationMs.samples, 720)
+  assert.equal(report.previousHunts[0].id, 1)
+  assert.equal(report.slowFrames.length, 48)
+  assert.equal(report.operations.length, 48)
 })

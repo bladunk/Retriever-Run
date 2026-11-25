@@ -224,7 +224,43 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('soak')) {
+  if (args.includes('texture-replays')) {
+    const { planEncounter } = await fromSource('wildlife-encounters')
+    const encounter = planEncounter(buildTile(12, 1), 1)
+    assert.equal(encounter.species, 'mallard')
+    // Start far enough away to give the existing prefetch window time to
+    // resolve the skinned rig on every replay, including on software WebGL.
+    const start = encounter.distance - 42
+    await runAt(start, 1)
+    const samples = []
+    for (let hunt = 0; hunt < 5; hunt++) {
+      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, start + 8)
+      await page.waitForFunction(() => window.retrieverDebug?.wildlife?.model && window.retrieverDebug.wildlife.drawn > 0,
+        null, { timeout: 40_000 }).catch(async error => {
+        console.error(await page.evaluate(() => ({ mode: document.querySelector('#game').dataset.mode,
+          distance: window.retrieverDebug.distance, wildlife: window.retrieverDebug.wildlife,
+          assets: window.retrieverPerformance().wildlifeModels })))
+        throw error
+      })
+      const active = await page.evaluate(() => window.retrieverPerformance())
+      await stepTo(encounter.distance + 10)
+      await page.waitForFunction(() => window.retrieverDebug?.wildlife == null)
+      const retired = await page.evaluate(() => window.retrieverPerformance())
+      samples.push({ hunt: hunt + 1, active, retired })
+      console.log(`Hunt ${hunt + 1}: ${active.textures} textures with mallard, ${retired.textures} after retirement`)
+      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, encounter.distance + 65)
+      await page.locator('#run-again').waitFor({ timeout: 35_000 })
+      if (hunt < 4) {
+        await page.locator('#run-again').tap()
+      }
+    }
+    await writeFile(resolve(output, 'texture-replays.json'), JSON.stringify(samples, null, 2) + '\n')
+    if (args.includes('expect-bounded')) {
+      assert.ok(samples.every(({ retired }) => retired.textures <= samples[0].retired.textures), 'replay retained extra textures')
+      assert.ok(samples.every(({ retired }) => retired.wildlifeModels.resident === 0), 'retired wildlife still resident')
+      assert.equal(samples.at(-1).retired.hunt.id, 5)
+    }
+  } else if (args.includes('soak')) {
     const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
     const seed = 7

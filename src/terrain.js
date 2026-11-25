@@ -160,7 +160,7 @@ function updateBatch(mesh) {
   mesh.computeBoundingSphere()
 }
 
-export function createTerrain(scene, showSign) {
+export function createTerrain(scene, showSign, probe) {
   const tint = new T.Color()
   const tiles = Array.from({ length: 7 }, () => {
     const root = new T.Group()
@@ -198,8 +198,17 @@ export function createTerrain(scene, showSign) {
   const seedAt = index => index < 3 ? 0 : terrainSeed
   let requestedEnvironment = false
   let requestedFerns = false
+  let lastAtlas = landscapeMap.value
+  let compactAtlas
   const openingTiles = new Map()
   const activeEncounters = []
+
+  function requestPack(key) {
+    const start = probe?.stamp()
+    probe?.operation('habitat-request', key)
+    const pending = environmentAssets.request(key)
+    if (probe) pending.then(pack => probe.operation(pack ? 'habitat-ready' : 'habitat-unavailable', key, start))
+  }
 
   function* integrate(tile, packet) {
     tile.installing = true
@@ -356,8 +365,9 @@ export function createTerrain(scene, showSign) {
     job.max = Math.max(job.max, duration)
     if (done) {
       job.tile.preparation = { buildMs: job.packet.buildMs, unpackMs: job.total, integrationPeakMs: job.max }
+      probe?.operation('terrain-ready', job.packet.index, start)
       integration = null
-    }
+    } else if (probe && duration > 4) probe.operation('terrain-slice', job.packet.index, start)
   }
 
   function pump() {
@@ -382,6 +392,7 @@ export function createTerrain(scene, showSign) {
           const start = performance.now()
           const packet = buildTile(index, seedAt(index))
           packet.buildMs = performance.now() - start
+          probe?.operation('terrain-main-thread-build', index, start)
           queue(packet)
         }
         building = false
@@ -396,6 +407,7 @@ export function createTerrain(scene, showSign) {
     worker.terminate()
     worker = undefined
     building = false
+    probe?.operation('terrain-worker-fallback', center)
     pump()
   }
 
@@ -445,14 +457,14 @@ export function createTerrain(scene, showSign) {
         coverTypes.has(regionAtDistance(distance + 320).key)
       if (!requestedEnvironment && usesHabitatPack) {
         requestedEnvironment = true
-        environmentAssets.request('trees')
-        environmentAssets.request('grass')
+        requestPack('trees')
+        requestPack('grass')
       }
       const wantsFern = detail > 0 && (fernTerritories.has(regionAtDistance(distance).key) ||
         fernTerritories.has(regionAtDistance(distance + 185).key))
       if (wantsFern && !requestedFerns) {
         requestedFerns = true
-        environmentAssets.request('ferns')
+        requestPack('ferns')
       }
       center = Math.floor(distance / segmentLength)
       const offset = centerAt(distance)
@@ -463,7 +475,15 @@ export function createTerrain(scene, showSign) {
       field.fieldWet.value = weather.wet
       field.fieldFrost.value = weather.frost ?? 0
       field.fieldDetail.value = detail
+      if (probe && compactAtlas !== (detail === 0)) {
+        compactAtlas = detail === 0
+        probe.operation('atlas-selection', compactAtlas ? 'compact' : 'full')
+      }
       updateLandscapeQuality(detail)
+      if (probe && lastAtlas !== landscapeMap.value) {
+        lastAtlas = landscapeMap.value
+        probe.operation('atlas-swap', landscapeResidency().active)
+      }
       for (let i = center - 1; i < center + 6; i++) slot(i).wanted = i
       integrateFrame()
       const range = lodRanges[detail]
@@ -496,12 +516,16 @@ export function createTerrain(scene, showSign) {
         tile.reeds.count = Math.min(tile.reedTotal, i - center < 2 ? nearCount[detail] : farCount[detail])
       }
       if (requestedEnvironment && !usesHabitatPack && tiles.every(tile => !tile.usesEnvironmentPack)) {
+        const started = probe?.stamp()
         environmentAssets.release('trees')
         environmentAssets.release('grass')
+        probe?.operation('habitat-release', 'trees and grass', started)
         requestedEnvironment = false
       }
       if (requestedFerns && !wantsFern && tiles.every(tile => !tile.usesFernPack)) {
+        const started = probe?.stamp()
         environmentAssets.release('ferns')
+        probe?.operation('habitat-release', 'ferns', started)
         requestedFerns = false
       }
       pump()

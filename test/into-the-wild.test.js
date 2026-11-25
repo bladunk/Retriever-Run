@@ -134,6 +134,9 @@ test('sign art and drifting leaves reuse allocations across trail recycling and 
     signs.finish()
   }
   const first = signDistance(0)
+  paint(0, first - 95)
+  assert.equal(painted, 1)
+  assert.equal(models[0].visible, false)
   paint(0, first - 11)
   paint(0, first - 9)
   assert.equal(painted, 1)

@@ -74,7 +74,7 @@ function paint(ctx, sign, seed) {
   ctx.restore()
 }
 
-export function createTrailSigns(scene, makeCanvas = () => document.createElement('canvas')) {
+export function createTrailSigns(scene, makeCanvas = () => document.createElement('canvas'), probe) {
   const board = new T.BoxGeometry(1, 1, .098)
   const face = new T.PlaneGeometry(1, 1)
   const posts = new T.BoxGeometry(.102, 1, .12)
@@ -90,7 +90,7 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
     root.visible = false
     root.add(...supports, backing, plate)
     scene.add(root)
-    return { root, canvas, texture, plate, backing, supports, key: '', seen: false }
+    return { root, canvas, context: null, texture, plate, backing, supports, key: '', seen: false }
   })
 
   return {
@@ -98,12 +98,14 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
       for (const slot of slots) slot.seen = false
     },
     show(anchor, distance, seed) {
-      if (!anchor || anchor.distance - distance > 64 || distance - anchor.distance > 7) return
+      if (!anchor || anchor.distance - distance > 104 || distance - anchor.distance > 7) return
       const slot = slots[anchor.ordinal % slots.length]
       const key = anchor.ordinal + ':' + seed
       if (slot.key !== key) {
+        const started = probe?.stamp()
         const sign = trailSign(anchor, seed)
-        paint(slot.canvas.getContext('2d'), sign, anchor.tile * 5137 + seed)
+        slot.context ??= slot.canvas.getContext('2d')
+        paint(slot.context, sign, anchor.tile * 5137 + seed)
         slot.texture.needsUpdate = true
         const frame = sign.style === 'north' ? [2.73, 1.32, 2.16] : [2.88, 1.38, 2.22]
         const [w, h, y] = frame
@@ -119,7 +121,10 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
         }
         slot.key = key
         slot.root.userData.notice = { ...sign, ...anchor }
+        probe?.operation('sign-paint', anchor.ordinal, started)
       }
+      // Prepare the canvas before it can be submitted for the first upload.
+      if (anchor.distance - distance > 64) return
       placeOnTrail(slot.root.position, anchor.distance, anchor.width, distance)
       slot.root.position.y = anchor.y
       slot.root.rotation.y = headingAt(anchor.distance) - Math.sign(anchor.width) * .36
