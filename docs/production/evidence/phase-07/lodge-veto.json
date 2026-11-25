@@ -1,0 +1,36 @@
+{
+  "engine": "chromium",
+  "baseline": false,
+  "upgrade": false,
+  "disclosure": "14.57 MB to download \u00b7 14.65 MB total",
+  "interruptedAsset": "labrador.glb",
+  "injectedNetworkErrors": 0,
+  "interruption": "The download stopped. Retry to resume from your verified files.",
+  "coldReadyMsIncludingRetry": 17709,
+  "restartMs": 1524,
+  "wallFrameIntervals": {
+    "observations": 4,
+    "median": 16.700000000004366,
+    "p95": 583.4000000000015,
+    "slow": 1
+  },
+  "corruptFileRepaired": true,
+  "offlineReadyMs": 6091,
+  "offlineBuild": {
+    "version": "1.0.0-phase.7",
+    "id": "8496a45"
+  },
+  "lodgeUpdateVeto": true,
+  "update": {
+    "busyHuntProtected": true,
+    "preservedRuns": 4,
+    "unchangedAudioRequests": 1
+  },
+  "renderer": {
+    "draws": 50,
+    "triangles": 93954,
+    "textures": 16,
+    "geometries": 45,
+    "residentTiles": 6
+  }
+}

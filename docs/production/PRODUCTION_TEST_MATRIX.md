@@ -93,3 +93,11 @@ See [Phase 04 results and checklist](PHASE_04_REPORT.md) for remaining coverage 
 - Run `FIELD_BUILD=dist node scripts/phase-six-browser.mjs` for the verified Pages subpath, 320 × 568 career, honors, Journal, Kennel, last-card and locked preview checks. The isolated fixture qualifies through a normal offline hunt and verifies auto-awards, Labrador and Boyd swaps and immediate offline replay.
 - Use `webkit small partial repair journal journal-sighting offline-only` with the production browser script for the interrupted download, actual cache repair, witnessed wildlife, background/resume, and last-card checks. Use `small from-phase-three update-only partial repair` with `FIELD_PHASE_THREE_BUILD` pointing to the Cypress artifact for upgrade and save preservation.
 - Use the iPhone acceptance checklist for native replay and frame-time verification. [Phase 06 report](PHASE_06_REPORT.md) · [Rendered portrait evidence](evidence/phase-06/README.md)
+
+## Phase 07 · The Evolving Hunting Lodge
+
+- Run `npm test` for all five tier boundaries, 25 requirement and image mappings, v5 migration, same-level personalization, favorites and caps, wildlife and retrieval separation, course archives, practice isolation, upgrade receipts, and Boyd’s legitimate gate.
+- Run `FIELD_BUILD=dist node scripts/phase-seven-browser.mjs` for the verified Pages path and the 320 × 568 room flow. Append `webkit` for the second browser or `startup` for the warmed offline startup sample. The isolated fixture earns its tribute and cabin upgrade through normal offline Hunts Over.
+- Set `FIELD_PHASE_THREE_BUILD` to the exact Phase 06 artifact and run the production browser script with `small from-phase-three update-only partial repair phase-six-close`. This reproduces the retired-dialog issue and verifies that an already downloaded update activates after all old clients close, with the saved hunts intact.
+- Run the production browser script with `small partial repair lodge-veto` after the Phase 07 change. It exercises the paused hunt and open Lodge vetoes and the normal all-idle activation path.
+- Review the iPhone checklist for physical scrolling, offline recovery, startup and replay. [Phase 07 report](PHASE_07_REPORT.md) · [Mobile portrait gallery](evidence/phase-07/README.md)

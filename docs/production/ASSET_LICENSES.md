@@ -100,3 +100,7 @@ Poly Haven applies CC0 to these assets. Redistribution and adaptation are permit
 ## Phase 05.3A Cypress canopy
 
 The bald cypress, Spanish moss and palmetto geometry is original project artwork authored with `art/blender/cypress.py`. It reuses the existing forest foliage atlas and shared bark shading. The packed derivative is `src/assets/environment/cypress-meshes.js`. The source scene and intermediate GLBs stay outside the build. [Reproduction commands](../../art/README.md#reproduce-the-cypress-showcase)
+
+## Phase 07 Lodge interiors and objects
+
+The original illustrated interiors, decoy and pheasant carvings, study frames, maps, journals, medals, record plaques, rolled gear and stump are produced by `art/blender/lodge.py` with Blender 4.3.2. All geometry and materials are project-authored. `art/lodge-webp.py` converts the named render outputs into the 15 allowlisted `public/lodge/*.webp` derivatives. The migration chart is original Canvas 2D art. The Lodge reuses the approved derived Boyd portrait and emblem, fitted Kennel models and prior wildlife illustrations. [Reproduction commands](../../art/README.md#reproduce-the-evolving-lodge)

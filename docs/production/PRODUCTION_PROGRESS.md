@@ -2,9 +2,9 @@
 
 ## Resume here
 
-- Active checkpoint is Phase 06 owner review on `codex/retriever-run-phase-06` from integrated Cypress commit `db2565afcc30283b23ab9ac5a246feb36fc53b18`. Public baseline was Phase 05.3A `0ab92b0`. Review candidate `1.0.0-phase.6 · d4be70e`, manifest `53197ea0a3a7f57920ae`. [Draft PR #34](https://github.com/bladunk/Retriever-Run/pull/34) · [Phase 06 report](PHASE_06_REPORT.md)
-- Phase 06 adds the 100-level career, 621 local Field Honors, 25 pending Camp entries, Journal collections, 151 earnable wardrobe options and automatic Boyd qualification. The version 5 Lodge save retains prior progress. The owner accepted the Cypress showcase and reserved remaining environment and character art for the late visual-polish phase.
-- Review the portrait evidence and repeat the acceptance checklist on iPhone before approving. Next development phase is 07 after review. No merge, deployment, database migration or reset was performed.
+- Active checkpoint is Phase 07 owner review on `codex/retriever-run-phase-07`. Integrated Phase 06 is `da8526aeb6dea5c8b96782a4563f84de1ed5ca3c`. Pages served `1.0.0-phase.6 · b8f04c8` when the baseline was checked. Owner merge approval is complete and physical iPhone acceptance remains open. [Phase 06 report](PHASE_06_REPORT.md)
+- Phase 07 review artifact is `1.0.0-phase.7 · 9664832`, manifest `0aa8a085db83cf4490e8`. Five illustrated interiors and 25 earned additions use the existing career data. Trophy pins and recently granted gear live in the versioned Lodge display preferences. The Migration wall carries the actual 15-territory route, and the Phase 06 receipt gates Boyd’s tribute. [Draft PR #35](https://github.com/bladunk/Retriever-Run/pull/35) · [Phase 07 report](PHASE_07_REPORT.md)
+- Resume with the physical iPhone checks in the report. Review the five tiers, personalized shelves, offline favorites, Hunt Over replay and the legitimate Boyd reveal. The branch is at the owner review checkpoint. Phase 08 has not begun.
 
 ## Implemented in Phase 01
 

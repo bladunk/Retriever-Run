@@ -40,3 +40,14 @@ The study decodes Meshopt and dequantizes the two published GLBs in scratch, the
 Use `scripts/phase-three-browser.mjs webkit small balanced gulf-slice` for six paired gameplay cameras. Set `FIELD_BUILD` to the baseline or the candidate directory and `FIELD_QA_OUTPUT` to a new evidence directory. Use `natural-review video seed=7 seconds=17 menu=2000` for uninterrupted normal-clock gameplay in a 320 × 568 viewport. Use `gulf-lifecycle` to drive a live scene into Cypress and assert release of the Gulf maps. For uncached transfer and safe update checks, use `scripts/production-browser.mjs`.
 
 Pair the capture directories with `python scripts/art/compare-views.py baseline-captures candidate-captures review-gallery`. The tool checks the seed, distance and viewport before placing the images side by side.
+
+## Reproduce the Evolving Lodge
+
+The five miniatures and ten small display objects use original procedural Blender geometry and material nodes. Only the compressed derivatives enter the game. Run the commands from the project root. Renders go to the named scratch directory.
+
+```sh
+blender -b -t 4 --python-exit-code 1 --python art/blender/lodge.py -- /tmp/retriever-lodge-art
+python art/lodge-webp.py /tmp/retriever-lodge-art public/lodge
+```
+
+Pass one or more names after the scratch path to render only selected art, such as `tier-4 tier-5 pheasant`. The encoder expects a complete set of the named outputs. The game opens one room image and bounded display objects per view. The build allowlist explicitly names the derivatives. [Lodge report](../docs/production/PHASE_07_REPORT.md)
