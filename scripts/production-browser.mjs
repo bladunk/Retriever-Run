@@ -202,8 +202,15 @@ try {
     log.coldReadyMsIncludingRetry = Math.round(await ready())
     phase('Verified download and title')
     assert.equal(hits.get(previouslyVerified.path), audioHits)
+    if (args.includes('journal-sighting')) await page.evaluate(() => { Math.random = () => 7 / 0x100000000 })
     await play(page)
     await finish(page)
+    if (args.includes('journal-sighting')) {
+      const mallard = await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record'))
+        .players[0].wildlife?.species.mallard)
+      assert.ok(mallard?.seen > 0 && mallard.territory === 'gulf', 'the first hunt should record the observed mallard')
+      log.matchedSighting = mallard
+    }
     if (!shortUpgrade) {
       log.restartMs = await restart(page)
       await page.waitForTimeout(650)

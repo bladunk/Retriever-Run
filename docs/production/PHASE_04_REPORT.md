@@ -31,18 +31,30 @@ Rendered review flagged canopy occlusion and difficult foreground observations. 
 
 The primary development branch is `codex/retriever-run-phase-04`. No release publication or database work occurred on this branch.
 
+## Implementation map
+
+| Area | Main additions and changes |
+| --- | --- |
+| Encounter data and motion | `wildlife-catalog.js`, `wildlife-encounters.js`, `living-wilderness.js`, `wildlife-art.js`, `wildlife-models.js` |
+| Geometry and environment | `terrain.js`, `terrain-geometry.js`, `forest-models.js`, `tile-mesh.js`, `fallen-timber.js`, `marsh-water.js`, `migration-landmarks.js`, `sign-scenery.js`, `art.js` |
+| Loading and audio | `build/offline-worker.js`, `environment-assets.js`, `audio.js`, `audio-samples.js`, five GLBs under `src/assets/wildlife` and four recordings under `src/assets/audio` |
+| Journal and diagnostics | `wildlife-journal.js`, `wildlife-portrait.js`, `lodge-save.js`, `lodge-ui.js`, `lodge.css`, `field-stats.js`, `main.js`, `performance-probe.js` and `index.html` |
+| Reproducible verification | `scripts/phase-three-browser.mjs`, `scripts/production-browser.mjs`, `test/living-wilderness.test.js`, the production reports and rendered evidence |
+
+The Delta shed’s width increases from 4.35 m to 5.18 m and wall height falls from 2.32 m to 1.94 m. The pothole shed is wider and lower, too. Both use a lower roof rise while the raised swamp cabin retains its existing stilts. [Matched shed approach](evidence/phase-04/shed-comparison.webp)
+
 ## Build, asset and hosting measurements
 
 | Local production output | Phase 03B | Phase 04 |
 | --- | ---: | ---: |
 | Files in Pages artifact | 32 | 41 |
-| Total artifact bytes | 5,611,909 | 7,495,121 |
-| Required manifest bytes with duplicate paths | 5,581,420 | 7,457,306 |
-| Unique required bytes by SHA-256 | 5,556,097 | 7,431,983 |
+| Total artifact bytes | 5,611,909 | 7,495,289 |
+| Required manifest bytes with duplicate paths | 5,581,420 | 7,457,474 |
+| Unique required bytes by SHA-256 | 5,556,097 | 7,432,151 |
 | Unique shell bytes | 76,074 | 76,973 |
 | Optional diagnostic module |  | 5,418 |
 
-The isolated Phase 04 verifier reported content version `dfad9518c379538bfb46`. Compared by digest, 17 changed or new required content objects total 3,006,573 bytes. Approximately 4.43 MB of the new working set can be reused from verified Phase 03B files. The figure excludes update metadata, network overhead and corruption repairs. Both landscape texture variants and all required model files are in the offline edition. There is no separate paid or online graphics pack.
+The isolated Phase 04 verifier reported content version `98d7cfa5f1b6a962443c`. Compared by digest, 17 changed or new required content objects total 3,006,741 bytes. Approximately 4.43 MB of the new working set can be reused from verified Phase 03B files. The figure excludes update metadata, network overhead and corruption repairs. Both landscape texture variants and all required model files are in the offline edition. There is no separate paid or online graphics pack.
 
 | New content | Download bytes | Render / decode estimate | In-game purpose |
 | --- | ---: | --- | --- |
@@ -67,17 +79,19 @@ To reproduce the release baseline, use a separate checkout of `f8094b23072151c7b
 
 The baseline Chromium sample rendered 62 active seconds of seed 7 at a 320 × 568 CSS-pixel viewport in Battery Saver. Its last scene reported 59 draws and a range of 1.3–6.2 ms across the seven visible tile integration callbacks. Callback CPU time, excluding initial load, was 2 ms median and 7 ms p95 over the 720-sample rolling window. The test injects the gameplay clock. The baseline report had only that clock for frame intervals.
 
-The first Phase 04 balanced WebKit evidence run sampled all fifteen territories at 390 × 844. The passes ranged from 45–71 draws, 84,353–148,785 submitted triangles, 10–17 renderer textures and 44–59 geometries. It showed at most three shared vegetation packs. With multiple tests sharing the two-core software-rendered host, the largest sampled main-thread integration slice was 33 ms in the Cypress checkpoint. A shorter offline Battery Saver replay on the same shared host observed a 103 ms outlier, so Phase 04 does not establish that runtime hitching has been eliminated. Landmarks and object meshes kept their separate sharing lifetimes.
+The first Phase 04 balanced WebKit evidence run sampled all fifteen territories at 390 × 844. The passes ranged from 45–71 draws, 84,353–148,785 submitted triangles, 10–17 renderer textures and 44–59 geometries. It showed at most three shared vegetation packs. With multiple tests sharing the two-core software-rendered host, the largest sampled main-thread integration slice was 33 ms in the Cypress checkpoint. A shorter offline Battery Saver replay on the same shared host observed a 103 ms outlier, so Phase 04 does not establish that runtime hitching has been eliminated. Landmarks and object meshes kept their separate sharing lifetimes. An accelerated offline replay reached 451.22 seconds and exposed GPU retention of earlier conifer and broadleaf templates. The candidate releases a template’s GPU buffers after the last terrain tile switches away. Its CPU template remains available for replay and re-upload. A dedicated regression asserts that a shared buffer survives its first owner leaving and is disposed after the final owner leaves.
 
 The offline WebKit acceptance flow measured 982 ms from replay input to its first callback displaying the running state and 7.16 seconds from offline reload to availability on the shared host. Its 29 sampled rendered intervals had a 199 ms median and 1,453 ms p95 under concurrent software rendering and first-use work. It reported one adaptive downgrade and a 4.32 s wildlife load window. These wall times include host contention. They establish an offline and instrumentation result. GPU upload time and browser storage verification were not separately isolated. The target remains 60 FPS on capable phones, with a 30 FPS fallback. Mobile Safari thermal behavior, frame pacing and input latency need physical measurements.
 
+The matched accelerated seed 7 offline replay shows the effect of releasing forest buffers. Initial testing had 136 geometry allocations at peak and failed the original limit of 120. The final build reached 466.14 active seconds, including more than 16 seconds of endless wilderness, and passed the residency limit. Across 933 samples it retained 5–7 terrain tiles and up to two shared vegetation packs on Battery Saver. Peak geometries fell to 115, peak textures stayed at 11, and late samples fluctuated between 101 and 115 geometries. The final run reached 70 draws and 155,459 triangles. The separate 30 Hz test-clock run on the pre-fix review build also reached 451.02 active seconds continuously. It confirmed the same 136-geometry peak and the same failed gate. Its event loop preserved scene rendering throughout the route. The final replay used a faster injected clock, reduced test render resolution and the same fixed-step simulation. Its largest sampled tile integration slice was 72 ms. The presentation intervals were 100 ms median, 181 ms p95 and 348 ms p99 on Linux software rendering with an accelerated simulation clock. These are measurements of the host workload and resource lifetime. [Offline endless finish](evidence/phase-04/offline-endless.webp) · [Raw probes](evidence/phase-04/measurements.json)
+
 ## Verification and captures
 
-- `npm test` on the baseline passed all 134 tests. The Phase 04 suite passed 139 tests and adds encounter eligibility, deterministic reruns, animation and visibility bounds, journal migration and idempotence, original obstacle hull consistency and wildlife geometry lifecycle.
+- `npm test` on the baseline passed all 134 tests. The Phase 04 suite passed 140 tests and adds encounter eligibility, deterministic reruns, animation and visibility bounds, journal migration and idempotence, original obstacle hull consistency and wildlife geometry lifecycle.
 - `npm run build` and `npm run verify:production` verified the actual Vite output under `/Retriever-Run/`, including locally hosted Meshopt/WebP assets and every offline content digest.
 - `npm run stress` passed 10,000 seeded hunts and 31,865,525 fixed-step ticks, with 431,143 pickups. `npm run stress:master` verified 100,020 windows across all thirty stages over 69,147,728 ticks. The validation covered all 15 hazard types and the endless extension.
-- The WebKit 320 × 568 offline test interrupted a partial `living-mallard.glb` response, confirmed reuse of unchanged audio on retry, repaired a corrupt cached model, reloaded offline, played and completed a hunt, paused and returned from a visibility change, replayed, and exercised the last Kennel card. It also verified all 29 Journal entries offline. The test injected the network failures it reported.
-- The 390 × 844 WebKit tour used separate seeded approaches through the normal camera. It is rendered checkpoint evidence rather than a continuous native playthrough. Full route, wildlife footage and graphics evidence status are listed with the capture index. [Rendered evidence](evidence/phase-04/README.md)
+- The WebKit 320 × 568 offline test interrupted a partial `living-mallard.glb` response, confirmed reuse of unchanged audio on retry, repaired a corrupt cached model, reloaded offline, played and completed a hunt, paused and returned from a visibility change, replayed, and exercised the last Kennel card. It also verified all 29 Journal entries offline. The test injected the network failures it reported. The final WebKit build also persisted one actual Gulf Coast Mallard observation with zero retrieves after Hunt Over, then displayed the observation after offline reload. Its replay callback arrived in 701 ms in that run. Chromium also completed the same-pipeline offline and repair checks. A separate Chromium update from the Phase 03B artifact retained two completed hunts, reused cached audio and held installation until the paused hunt ended.
+- The 390 × 844 WebKit tour used separate seeded approaches through the normal camera. It is rendered checkpoint evidence rather than a continuous native playthrough. The test crossed all fourteen territory borders and the Stage 30 endless entry. Separate Cypress captures measured 110,283 submitted triangles on Battery Saver, 148,785 on Balanced and 178,179 on High. The showcase includes eight seeded encounters and four closer follow-up captures. Field Journal visibility uses a proximity and projection check, so opaque vegetation can still hide some sightings. [Rendered evidence](evidence/phase-04/README.md)
 
 ## Physical iPhone checklist
 
@@ -93,4 +107,5 @@ The offline WebKit acceptance flow measured 982 ms from replay input to its firs
 - The portfolio has 21 waterfowl, with four authored animated wildlife models across the broader roster. The remaining silhouettes and behaviors are stylized. Wider mammal coverage, full waterfowl realism, richer ecology and weather, additional high-quality canopy assets, bear-with-cubs encounters, eagle fishing and aurora remain open artwork or engineering work.
 - The water treatments stay close to the existing collision floor. An actual terrain cutout and connection to side channels at every crossing require a separate terrain and gameplay validation pass.
 - The file-digest cache holds the offline journey and the model loader bounds current/upcoming wildlife. High-resolution atlas and model residency on devices, per-file CPU/GPU upload times and thermal stability remain unverified.
+- The broad graphics and wildlife quality targets remain open. Phase 05 can consume the species registry, observation events and cached resources. Release readiness still depends on the native iPhone pass and the unresolved art and performance checks.
 - The native iPhone evidence in this report describes the owner's Phase 03B run. The Phase 04 candidate is a draft for review. Completion of the checklist and the remaining rendered and device gates belong in the production checkpoint. [Production progress](PRODUCTION_PROGRESS.md)
