@@ -277,6 +277,10 @@ try {
     const reuse = args.includes('reuse')
     const start = encounter.distance - (reuse ? 58 : 42)
     await runAt(start, seed)
+    if (args.includes('wait-for-warmup')) {
+      await page.waitForFunction(() => window.retrieverPerformance().wildlifeModels.models.some(model =>
+        model.id === 'mallard' && model.prepared.geometries === model.prepared.geometryTotal), null, { timeout: 65_000 })
+    }
     const samples = []
     for (let hunt = 0; hunt < 5; hunt++) {
       await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, start + (reuse ? 25 : 8))
@@ -512,6 +516,25 @@ try {
     await stepTo(fixture.end)
     await capture('sign-near', fixture)
     assert.ok(results.at(-1).signs.some(sign => sign.distance === fixture.sign.distance))
+  } else if (args.includes('dog-actions')) {
+    await runAt(5, 7)
+    await stepTo(6.5)
+    await capture('gallop')
+    await page.keyboard.press('ArrowUp')
+    await stepTo(10.5)
+    await capture('jump')
+    await stepTo(18)
+    await page.keyboard.press('ArrowDown')
+    await stepTo(21)
+    await capture('slide')
+  } else if (args.includes('grain-shed')) {
+    const seed = 7
+    const marker = buildTile(234, seed).landmark
+    assert.equal(marker.role, 'grain-elevator')
+    await runAt(6986, seed)
+    await capture('dakota-grain-approach', { seed, marker })
+    await runAt(7007, seed)
+    await capture('dakota-grain-7007m', { seed, marker })
   } else if (args.includes('neighbor-timber')) {
     const seed = 73
     const target = rowsFor(seed, 59).find(row => row.at > 960 && row.at < 978 && row.entities.filter(entity => entity.type === 'fallen').length === 2)

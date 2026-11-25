@@ -34,7 +34,7 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     out.draw = flush > 0
     out.along += flush * .68
     out.height += Math.min(5.3, flush ** 1.35 * .030)
-    out.lateral += side * (Math.min(5, flush * .086) + Math.max(0, flush - 58) * .69)
+    out.lateral += side * (Math.min(1.8, flush * .030) + Math.max(0, flush - 56) * .61)
     out.yaw = -side * (1.37 - Math.min(.42, flush * .013))
     out.pitch = Math.max(0,.44-flush*.015)
     out.wing = .63 + .35*Math.sin(phase*6.4)
@@ -53,7 +53,7 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     out.rig = animal.family === 'raptor' && Math.sin(phase*.45) > -.31 ? 'Glide' : 'Fly'
   } else if (animal.family === 'deer') {
     const run = Math.max(0, 37 - ahead)
-    out.lateral += side * (Math.min(3.5, run * .059) + Math.max(0, run - 69) * .54)
+    out.lateral += side * (Math.min(1.1, run * .021) + Math.max(0, run - 62) * .50)
     out.along += run * .72
     out.yaw = -side * (run > 0 ? .99 : .51)
     out.rig = run > 0 ? 'Gallop' : 'Eating'
@@ -69,7 +69,7 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     if (animal.id === 'mallard' && ahead < 23 - group) {
       const takeoff = 23 - group - ahead
       out.height += Math.min(5.0, .105 * takeoff ** 1.26)
-      out.lateral += side * takeoff * .10
+      out.lateral += side * (takeoff * .031 + Math.max(0, takeoff - 24) * .26)
       out.along += takeoff * .63
       out.pitch = .22 - Math.min(.20, takeoff * .013)
       out.wing = .48 + .42 * Math.sin(phase * 6.4)

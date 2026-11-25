@@ -389,11 +389,19 @@ export function createCourse(seed = 1, rules = director) {
       random() < Math.max(rules.pairChance * Number(row.entities[0].type === 'stream'), stage.chain)) {
       const type = row.entities[0].type
       pairPending = territory >= 2 && random() < .85 ? (type === 'stream' ? 'branch' : 'stream') : type
-      nextPair = time + (stage.level <= 6 ? Math.max(2.9, 14 - stage.level * .65) : Math.max(2.7, 14 - stage.level * .69))
+      const cooldown = stage.level <= 6 ? Math.max(2.9, 14 - stage.level * .65)
+        : stage.level < 25 ? Math.max(2.7, 14 - stage.level * .69) : 2.03
+      nextPair = time + cooldown
       gap = Math.max(gap, territory >= 5 ? 1.37 : rules.pairGap)
     } else if (row.gate) {
       requiredLane = territory >= 2 && (territory >= 4 || random() < stage.follow)
       gap = Math.max(gap, requiredLane ? (territory >= 6 ? 1.02 : 1.14) : 1.05)
+    } else if (stage.level >= 25 && row.exits.length === 1 && row.pattern === 'two-lane-block' &&
+      nextGoose - time > 2.15 && random() < .67) {
+      // A late blocker can lead directly into a second lane commitment.
+      // Keep enough time for validated lateral reach even at endless pace.
+      requiredLane = true
+      gap = Math.max(gap, 1.10)
     } else if (heavyBlock && nextGoose - time > 2.4 && random() < stage.follow) {
       followAction = true
       gap = Math.max(gap, .93)

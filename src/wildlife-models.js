@@ -205,7 +205,7 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
     },
     metrics() {
       const models = []
-      for (const [id, { root }] of decoded) {
+      for (const [id, { root, warmup }] of decoded) {
         const textures = new Set(), bones = new Set()
         root.traverse(node => {
           if (!node.isMesh) return
@@ -214,7 +214,10 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
             for (const value of Object.values(material)) if (value?.isTexture) textures.add(value)
           }
         })
-        models.push({ id, materialTextures: textures.size, boneTextures: bones.size })
+        models.push({ id, materialTextures: textures.size, boneTextures: bones.size,
+          prepared: { textures: warmup.texture, skeletons: warmup.skeleton,
+            shaders: warmup.shade - Number(warmup.pending), geometries: warmup.geometry,
+            geometryTotal: warmup.geometries.length } })
       }
       return { resident: decoded.size, preparing: waiting ?? null, loadMs, releasedBoneTextures, hits, misses, evictions, limit, models }
     },

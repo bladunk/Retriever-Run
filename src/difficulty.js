@@ -54,9 +54,12 @@ export const courseStages = defineStages(progression).map(stage => {
   if (!pressure) return stage
   return {
     ...stage,
-    gap: stage.gap - .024 * pressure,
+    // The highest speeds require enough travel time to offer genuine next-
+    // lane choices. Compressing those gaps further removes valid switches.
+    gap: stage.gap - .024 * Math.min(3, pressure) + (stage.level >= 25 ? .060 : 0),
     action: Math.min(.97, stage.action + .022 * pressure),
     follow: Math.min(.985, stage.follow + .025 * pressure),
+    reward: stage.reward + (stage.level >= 25 ? .12 : 0),
     flock: stage.flock - .24 * pressure,
   }
 })
