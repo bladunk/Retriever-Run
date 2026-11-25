@@ -2,11 +2,12 @@
 
 ## Resume here
 
-- Active checkpoint is Phase 05 · Working Dogs, Boyd and Wildlife Realism. Branch `codex/retriever-run-phase-05`, baseline and rollback `85f041cebf0ef161f91b68f17575459e02586f2c`, merged PR #29. Application version `1.0.0-phase.5`. [Baseline Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45551610022)
+- Active checkpoint is Phase 05 · Working Dogs, Boyd and Wildlife Realism. Branch `codex/retriever-run-phase-05`, baseline and rollback `85f041cebf0ef161f91b68f17575459e02586f2c`, merged PR #29. Application version `1.0.0-phase.5`, review build `6e28cc3`, runtime commit `69ca4ad0ac6f21fb03da220bffeb4920e935bfe7`. [Draft PR #30](https://github.com/bladunk/Retriever-Run/pull/30) [Baseline Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45551610022)
 - Read the [Phase 05 report](PHASE_05_REPORT.md), [player charter](PLAYER_FIRST_CHARTER.md), [architecture](ARCHITECTURE.md), [obstacle reference](OBSTACLES.md), [territory registry](TERRITORIES.md) and [test matrix](PRODUCTION_TEST_MATRIX.md).
 - The working candidate includes resculpted skinned dogs, 12 Labrador coat previews, refitted equipment, drag rotation, revised tipped-root timber, Dakota utility shed proportions, longer wildlife trajectories, a two-rig preparation/eviction cache, pressure changes for stages 7–30 and the bundled offline build identifier. The Pointer is isolated to local inspection. Boyd references and likeness remain pending.
 - Restore dependencies with `npm ci`. Run `npm test`, `npm run build`, `npm run verify:production`, `npm run stress` and `npm run stress:master`. For rendered verification use `scripts/phase-three-browser.mjs` and `scripts/production-browser.mjs` against built artifacts at `/Retriever-Run/`. Record outcomes in the phase report as each check completes.
-- Next verify fitted equipment and ordinary camera animations, then compare timber and shed shots, record the repeated mallard trace, run the offline update matrix and capture the final rendered migration. Hold at the owner review checkpoint for iPhone performance and visual signoff. Do not start Phase 06 during this review.
+- The current build rendered all fifteen territories offline and continued past 450 seconds. Chromium and WebKit covered the mobile Kennel, cached content and update behavior. Five mallard replays verified staged uploads and bounded reuse. [Evidence and measurements](evidence/phase-05/README.md)
+- Hold at owner review. Compare the Cypress pair, the Northern Dakota shed, and cold versus repeat mallard appearance on physical iPhone using `?perf=1`. Complete the missing Boyd likeness when approved front, side and collar photography arrives. Remaining animation, expanded wildlife art, longer native sightings and art signoff are tracked in the Phase 05 report. Phase 06 is held for owner review.
 
 ## Implemented in Phase 01
 
