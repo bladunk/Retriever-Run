@@ -101,3 +101,10 @@ See [Phase 04 results and checklist](PHASE_04_REPORT.md) for remaining coverage 
 - Set `FIELD_PHASE_THREE_BUILD` to the exact Phase 06 artifact and run the production browser script with `small from-phase-three update-only partial repair phase-six-close`. This reproduces the retired-dialog issue and verifies that an already downloaded update activates after all old clients close, with the saved hunts intact.
 - Run the production browser script with `small partial repair lodge-veto` after the Phase 07 change. It exercises the paused hunt and open Lodge vetoes and the normal all-idle activation path.
 - Review the iPhone checklist for physical scrolling, offline recovery, startup and replay. [Phase 07 report](PHASE_07_REPORT.md) · [Mobile portrait gallery](evidence/phase-07/README.md)
+
+## Phase 08 · Presentation and player experience
+
+- `npm test` covers artwork for the 29-species catalog, exact photo credits and packaged WebP files, search/routing, configured regional audio mixes, grouped rewards, haptic capability and save defaults. It also tests gesture-gated audio, serialized decode and suspension.
+- `FIELD_BUILD=dist node scripts/phase-eight-browser.mjs` exercises the 320 × 568 portrait flow on the production subpath. Use `large webkit` for 430 × 932 or `startup` for the cold install and three offline launches. Use `baseline` with the Phase 07 build for matched comparison screenshots.
+- `FIELD_PHASE_THREE_BUILD=/path/to/phase-seven FIELD_BUILD=dist node scripts/production-browser.mjs small from-phase-three update-only partial repair lodge-veto` uses the generic older-release harness to verify interrupted download recovery, corruption repair, build identity, preservation of actual runs and safety with another tab in Hunt or Lodge.
+- Physical Safari and installed Home Screen audio, legibility, frame pacing, startup and repeated replay remain in the owner checklist. [Phase 08 implementation report](PHASE_08_REPORT.md) · [Portrait gallery](evidence/phase-08/README.md)

@@ -40,8 +40,16 @@ Wind, water, rain, wing flutter, paw movement, and breathing use original filter
 ## Playback
 
 - The three audio files total about 377 kB. The title prefetches the bank, and decoding and playback wait for a player gesture. The audio graph reuses the decoded samples and limits overlapping voices. If a file cannot load, the game continues.
-- Master, music, wildlife and ambience, and effects each have a saved volume. The header mute button restores the last nonzero music setting when unmuted.
+- Master, music, wildlife, environmental ambience, and effects each have a saved volume. The header mute button restores the last nonzero music setting when unmuted.
 - Pausing fades and suspends the audio clock. Backgrounding suspends immediately. Resume uses the same clock and requires a gesture. Where Safari exposes the ambient audio session, the game uses it for the hardware silent switch.
+
+## Phase 08 listening notes
+
+The migration blends 15 regional profiles for wind, moving water, foliage, insects and a recorded creek layer. Listen for the insect-rich Cypress mix, the stronger river layer in Platte, the drier and windier Sandhills, and the quieter foliage and colder wind in mountain country. The existing bird calls still require an actual encounter. Different surfaces reuse the existing footfall and splash variations. Territory boundaries and prestige awards add short cues composed from the existing sampled instruments. No new audio samples are required for this phase.
+
+For a clean soundscape comparison, set Music, Wildlife calls and Gameplay effects to zero and leave Master and Environmental ambience on. Change one channel at a time to check separation. Background the game during a hunt and return to Resume to test suspension. Begin another hunt while the menu music is audible to hear the continuing transport. Repeat on a physical iPhone in Safari and as an installed application. Browser autoplay policy and the iPhone silent switch affect that review.
+
+The reused additional recordings are identified in the [production asset register](docs/production/ASSET_LICENSES.md#phase-04-living-wilderness). The [regional values](src/field-soundscapes.js) and [audio graph](src/audio.js) provide the exact runtime mixes.
 
 ## Build and verification
 
