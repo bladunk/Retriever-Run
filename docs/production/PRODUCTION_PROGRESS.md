@@ -2,8 +2,8 @@
 
 ## Resume here
 
-- Program target is Retriever Run 1.0 — The Great Migration. Phase 03B review version is `1.0.0-phase.3b`. The installed name remains Retriever Run.
-- Development and rollback baseline is deployed Phase 03 `02db9239fbdeb28655eb0ae577fa703bb0bc1789`. The review branch is `codex/retriever-run-phase-03b`. [Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45472889024) · [Draft PR #27](https://github.com/bladunk/Retriever-Run/pull/27)
+- Program target is Retriever Run 1.0 — The Great Migration. Phase 04 review version is `1.0.0-phase.4`. The installed name remains Retriever Run.
+- Development and rollback baseline is deployed Phase 03B `f8094b23072151c7bcc31135b422df74f6a53eb3`. The review branch is `codex/retriever-run-phase-04`. [Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45509931577)
 - Read the [charter](PLAYER_FIRST_CHARTER.md), [architecture](ARCHITECTURE.md), [obstacle reference](OBSTACLES.md), [territory registry](TERRITORIES.md), [test matrix](PRODUCTION_TEST_MATRIX.md) and [Phase 03 report](PHASE_03_REPORT.md).
 - Restore dependencies with `npm ci`. Run `npm test`, `npm run build`, `npm run verify:production`, `npm run stress`, and `npm run stress:master`. Use the [Phase 03B report](PHASE_03B_REPORT.md) for browser, material and scene reproductions.
 
@@ -41,6 +41,14 @@ Phase 03 passed 131 Node tests, 10,000 full stress sessions, and 100,020 route w
 - Preserved Stage 1–30 and endless timing, obstacle decisions, the supported-tree and center-slide geometry contracts, v4 saves and the local-only Camp gate. Added 35 sourced notes to the existing loading UI.
 
 The review build passed 134 Node tests, 10,000 seeded hunts, 100,020 difficulty windows, all rendered borders and a 62-second offline WebKit soak. Chromium passed graphics switching and activated the real Phase 03 update after a paused hunt finished. The report and evidence document the software host and remaining physical iPhone review. [Phase 03B implementation report](PHASE_03B_REPORT.md)
+
+## Phase 04 checkpoint
+
+- Baseline build and all 134 tests were verified from the deployed Phase 03B merge. The owner reported 5:52, 30,040 points, 573 treats and seven retrieves at Stage 24, ending at an uprooted tree. The owner asked to retain the balance and reported stutters, soft sign text, blue-strip crossings and narrow tall sheds.
+- Terrain packets now carry worker-computed bounds. The main thread integrates ground and water, trees, crops and plants, then publishes the finished tile. The previous route and swept collisions remain.
+- The new Phase 04 art uses region-tinted crossings, a replacement continuous root plate with the prior collision volumes, higher-resolution sign lettering and wide low sheds. Platte banks and the Midwest farm layout are retained.
+- Encounter habitat tables, four named tiers, new four animated models, Fern 02 and verified recordings are integrated. The nested official Journal tracks observations and retrieves separately without awarding gameplay credit. The baseline and review artifact paths are recorded in the report.
+- Integrated rendered checks and measurement review are the next checkpoint. See the [Phase 04 report](PHASE_04_REPORT.md) and [wildlife registry](LIVING_WILDERNESS.md).
 
 ## Carry forward
 

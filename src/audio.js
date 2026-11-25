@@ -1,4 +1,5 @@
 import { instrumentSample, sampleUrls } from './audio-samples.js'
+import { regionAt } from './expedition.js'
 import { beatSeconds, musicMix } from './marshland.js'
 import { createMusicTransport } from './music-transport.js'
 import { audioDefaults } from './profile.js'
@@ -46,7 +47,7 @@ export function createSound(onInterruption) {
   let intensity
   const transport = createMusicTransport()
   let lastEnvironment = -Infinity
-  let nextDistant
+  let nextCreek = 0
   let nextBreath
   const buffers = new Map()
   const pending = new Set()
@@ -246,7 +247,7 @@ export function createSound(onInterruption) {
     if (restart) {
       elapsed = 0
       lastEnvironment = -Infinity
-      nextDistant = vary(10, 17)
+      nextCreek = 5
       nextBreath = vary(9, 14)
     }
     if (immediate || document.hidden) {
@@ -291,6 +292,7 @@ export function createSound(onInterruption) {
       if (scene === 'running') {
         void load('goose')
         void load('mallard')
+        void load('creek')
       }
     } catch {
       // Audio availability is independent of play.
@@ -303,15 +305,18 @@ export function createSound(onInterruption) {
   }
 
   function bird(type, { distance, x, movement = 0, near = false, wings = false, vocal = true, volume = 1 }) {
-    if (!canPlay('wildlifeVolume') || (type !== 'goose' && type !== 'mallard')) return
+    if (!canPlay('wildlifeVolume')) return
+    if (type === 'canada-goose') type = 'goose'
+    if (vocal && !Object.hasOwn(sampleUrls,type)) vocal = false
     const attenuation = 1 / (1 + (distance / (near ? 12 : 19)) ** 1.45)
     const pan = clamp(x / Math.max(5, distance * .55), -.84, .84)
     const panTo = clamp(pan + movement * .35, -.90, .90)
     const buffer = buffers.get(type)
     const offset = near && type === 'goose' ? vary(.92, 1.15) : vary(.012, .060)
     if (vocal) {
+      if (!buffer) void load(type)
       voice({ buffer, destination: trail, start: context.currentTime + (near ? .004 : vary(.04, .29)),
-        offset, duration: near ? 1.18 : (type === 'goose' ? 2.70 : 2.95),
+        offset, duration: near ? 1.18 : type === 'goose' ? 2.70 : type === 'crane' ? 5.4 : 2.95,
         volume: (near ? .29 : type === 'goose' ? .27 : .23) * volume * attenuation,
         speed: vary(.967, 1.033), pan, panTo, filter: 'lowpass',
         frequency: clamp(5500 - distance * 78, 850, 5450), attack: .032, release: .13 })
@@ -339,6 +344,9 @@ export function createSound(onInterruption) {
         phase ? .085 : .34)
     },
     bird,
+    prepareWildlife(id) {
+      if (context && Object.hasOwn(sampleUrls, id) && !buffers.has(id)) void load(id)
+    },
     settings(profile) {
       for (const key of Object.keys(levels)) {
         levels[key] = profile[key]
@@ -355,11 +363,13 @@ export function createSound(onInterruption) {
       ramp(wind, (.020 + weather.wind * .073) * breeze, .34)
       ramp(water, wetland ? (.011 + .006 * Math.sin(elapsed * 1.1)) : .002, .36)
       ramp(rain, weather.rain * .053, .34)
-      if (elapsed >= nextDistant) {
-        nextDistant = elapsed + vary(19, 36)
-        bird(Math.random() > .42 ? 'mallard' : 'goose', {
-          distance: vary(40, 61), x: vary(17, 29) * (Math.random() < .5 ? -1 : 1), volume: .82,
-        })
+      const habitat = regionAt(elapsed).kind
+      const openWater = ['tidal','swamp','hardwood','limestone','braids','lacustrine','boreal','alpine'].includes(habitat)
+      if (elapsed >= nextCreek && (wetland || openWater) && canPlay('ambientVolume')) {
+        nextCreek = elapsed + vary(12,21)
+        voice({ buffer: buffers.get('creek'), destination: terrainBed, start: context.currentTime,
+          offset: vary(.3,10), duration: vary(3.1,5.2), volume: habitat === 'limestone' || habitat === 'braids' ? .042 : .025,
+          pan: vary(-.35,.35), filter: 'lowpass', frequency: 2800, attack: .5, release: .9 })
       }
       if (elapsed >= nextBreath && runningOnGround && canPlay('effectsVolume')) {
         nextBreath = elapsed + vary(7, 16)

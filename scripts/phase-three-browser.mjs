@@ -330,6 +330,83 @@ try {
       })
       await capture(selected + '-cypress')
     }
+  } else if (args.includes('living')) {
+    const { planEncounter } = await fromSource('wildlife-encounters')
+    const defaults = [['mallard','gulf'],['pheasant','farm'],['deer','farm'],['crane','platte'],
+      ['canada-goose','sandhills'],['moose','boreal'],['eagle','foothills'],['alligator','cypress']]
+    const selected = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
+    for (const [id, territory] of defaults) {
+      if (selected.length && !selected.includes(id)) continue
+      const region = expeditionRegions.find(row => row.key === territory)
+      const first = Math.ceil(region.marker / 120) * 4
+      const last = Math.floor(distanceAtTime(region.seconds + 29) / 30)
+      let fixture
+      for (let tile = first; tile <= last && !fixture; tile += 4) {
+        const sample = buildTile(tile, 7)
+        for (let seed = 1; seed < 900 && !fixture; seed++) {
+          if (planEncounter(sample, seed)?.species !== id) continue
+          const event = planEncounter(buildTile(tile, tile < 3 ? 0 : seed), seed)
+          if (event?.species !== id) continue
+          const start = Math.max(0, event.distance - 43)
+          const end = event.distance - (id === 'pheasant' ? 10 : 15)
+          let left = 0, right = region.seconds + 35
+          for (let n = 0; n < 30; n++) {
+            const middle = (left + right) * .5
+            if (distanceAtTime(middle) < start) left = middle
+            else right = middle
+          }
+          const run = { ...newRun(), elapsed: right, distance: start, speed: speedAtTime(right) }
+          const hazards = rowsFor(seed,region.seconds+40).flatMap(row => row.entities)
+            .filter(item => item.hazard && item.distance >= start - 30 && item.distance <= end + 30)
+          let hit
+          while (run.distance < end && !hit) {
+            const prior = { ...run }
+            advance(run,tickSeconds)
+            hit = firstContact(prior,run,hazards,{})
+          }
+          if (!hit) fixture = { seed, event, start, end }
+        }
+      }
+      assert.ok(fixture,id)
+      const { seed, event, start, end } = fixture
+      await runAt(start,seed)
+      await stepTo(Math.max(start+1, event.distance-27))
+      await capture(id+'-approach',{ seed, planned: event })
+      await stepTo(end)
+      await capture(id+'-animal',{ seed, planned: event })
+      assert.equal(results.at(-1).wildlife?.species,id)
+      assert.ok(results.at(-1).wildlife.drawn > 0,id)
+    }
+  } else if (args.includes('water-crossings') || args.includes('root-plate')) {
+    const candidates = args.includes('root-plate') ? ['parklands'] : ['gulf','cypress','platte','mountain']
+    const type = args.includes('root-plate') ? 'fallen' : 'stream'
+    for (const key of candidates) {
+      if (args.some(arg => arg.startsWith('only=')) && !args.includes('only=' + key)) continue
+      const region = expeditionRegions.find(item => item.key === key)
+      let fixture
+      for (let seed=1; seed<21 && !fixture; seed++) {
+        const rows = rowsFor(seed,region.seconds+29)
+        const candidates = rows.filter(row=>row.time >= region.seconds+1)
+          .flatMap(row=>row.entities).filter(item=>item.hazard && item.type===type)
+        const hazards = rows.flatMap(row=>row.entities).filter(item=>item.hazard)
+        for (const item of candidates) {
+          const start = item.distance - (type === 'fallen' ? 18 : 15)
+          const end = item.distance - (type === 'fallen' ? 6 : 7.5)
+          let clear = true
+          for (let distance=start; distance<=end && clear; distance+=.4) {
+            const pose = { ...newRun(), distance }
+            clear = !firstContact(pose,pose,hazards,{})
+          }
+          if (clear) { fixture = { seed, item, start, end }; break }
+        }
+      }
+      assert.ok(fixture,key)
+      const { seed, item, start, end } = fixture
+      await runAt(start,seed)
+      await capture(key+'-approach',{ seed, target: item.distance })
+      await stepTo(end)
+      await capture(key+'-close',{ seed, target: item.distance })
+    }
   } else if (args.includes('equipment')) {
     for (const [type, from, to] of [['tractor', 150, 180], ['snowmobile', 392, 449], ['log', 40, 58]]) {
       const selected = args.find(arg => arg.startsWith('only='))

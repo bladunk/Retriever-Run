@@ -1,6 +1,6 @@
 {
   "name": "retriever-run",
-  "version": "1.0.0-phase.3b",
+  "version": "1.0.0-phase.4",
   "private": true,
   "type": "module",
   "scripts": {

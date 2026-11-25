@@ -146,11 +146,17 @@ test('spawn terrain is streamed off the main thread and obsolete packets cannot 
     assert.equal(scene.children.length, 7)
     assert.equal(terrain.count(), 0)
     assert.equal(terrain.readyAt(0), false)
+    const frames = distance => {
+      for (let frame = 0; frame < 4; frame++) terrain.update(distance, 1, weather, 1)
+    }
     assert.deepEqual(sent, [0])
     worker.onmessage({ data: packet(0) })
+    assert.equal(terrain.readyAt(0), false)
+    frames(0)
     assert.equal(terrain.readyAt(0), true)
     assert.deepEqual(sent, [0, -1])
     worker.onmessage({ data: packet(-1) })
+    frames(0)
     assert.equal(terrain.readyAt(-1), true)
     assert.deepEqual(sent, [0, -1, 1])
     terrain.update(300, 1, weather, 1)
@@ -161,11 +167,15 @@ test('spawn terrain is streamed off the main thread and obsolete packets cannot 
     let disposed = 0
     target.geometry.addEventListener('dispose', () => disposed++)
     worker.onmessage({ data: packet(10) })
+    frames(300)
     assert.equal(disposed, 1)
     assert.equal(terrain.readyAt(300), true)
     assert.equal(scene.children.length, 7)
     const firstRemaining = sent.length - 1
-    for (let index = firstRemaining; index < sent.length; index++) worker.onmessage({ data: packet(sent[index]) })
+    for (let index = firstRemaining; index < sent.length; index++) {
+      worker.onmessage({ data: packet(sent[index]) })
+      frames(300)
+    }
 
     const grove = scene.children[10 % 7].children.find(mesh => mesh.name === 'Canopy instances')
     const model = grove.geometry
@@ -184,7 +194,9 @@ test('spawn terrain is streamed off the main thread and obsolete packets cannot 
       assert.equal(grove.visible, 300 - meters < (detail === 0 ? 64 : detail === 1 ? 86 : 106))
     }
     assert.equal(terrain.readyAt(0), false)
-    terrain.update(0, 3, weather, 1)
+    frames(0)
+    frames(0)
+    frames(0)
     assert.ok(terrain.readyAt(0) && terrain.readyAt(-1))
   } finally {
     TextureLoader.prototype.load = loadTexture

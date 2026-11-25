@@ -48,3 +48,26 @@ Phase 03 uses original procedural geometry and the earlier licensed texture and 
 Run `python scripts/prepare-field-atlases.py /path/to/original-jpgs src/assets/environment/field-surfaces` with Pillow to regenerate both variants. Place the 20 registered originals under their `id.jpg` names. The sources total **16,545,971 bytes** before conversion. WebP encodes raster detail only. Geometry is entirely project-authored and uses the existing optimized indexed/instanced formats.
 
 Phase 03B original artwork includes log-course cabins and roof profiles, raised porches and braces, barn door framing, tractor lugs and fenders, conifer and cypress variants, and mountain buttresses. Their source lives in `src/migration-landmarks.js`, `src/expedition-props.js`, `src/art.js`, `src/forest-models.js` and `src/northern-horizon.js`. No new copy of an existing commercial model, photograph or branded object is bundled.
+
+## Phase 04 Living Wilderness
+
+All files are bundled locally for verified offline play. The redistribution sources below were individually checked for CC0, CC BY 4.0 or public-domain status. Credits for the new CC BY files also appear under **Living Wilderness credits** in Settings.
+
+| Redistributed model | Author and license | Original and game sizes | Changes |
+| --- | --- | ---: | --- |
+| `src/assets/wildlife/living-mallard.glb` | vinish.dev · CC BY 4.0 | 2,408,260 → 371,508 bytes | Preserved six actions and field marks. Simplified 48,800 → 14,632 triangles. Meshopt and 1K WebP. [Source and license](https://vinish.dev/free-3d-models/birds) · [Source GLB](https://vinish-models.pages.dev/birds/mallard-duck.glb) |
+| `src/assets/wildlife/living-eagle.glb` | vinish.dev · CC BY 4.0 | 2,999,668 → 419,060 bytes | Preserved six actions and wing markings. Simplified 60,783 → 17,619 triangles. Meshopt and 1K WebP. [Source and license](https://vinish.dev/free-3d-models/birds) · [Source GLB](https://vinish-models.pages.dev/birds/bald-eagle.glb) |
+| `src/assets/wildlife/living-deer.glb` | Quaternius · CC0 1.0 | 1,007,564 → 148,876 bytes | Retained resting, grazing, walking, jumping and gallop clips. Removed duplicated and unused animations, batched materials and used Meshopt. [Model and license](https://poly.pizza/m/T6Cs7tmMHJ) · [Source GLB](https://static.poly.pizza/4b6c2a41-43c7-404c-ae37-e8c4645ff93b.glb) |
+| `src/assets/wildlife/living-pheasant.glb` | warrenblyth · CC BY 4.0 | 4.5 MiB → 494,560 bytes | Retained the rig and animation, re-encoded textures to WebP up to 1536 px, Meshopt. [Original and license](https://sketchfab.com/3d-models/f6d8887011314469b55f03a5807705db) · [Object file](https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-048/f6d8887011314469b55f03a5807705db.glb) |
+| `src/assets/wildlife/living-fern.glb` | Rob Tuytel and Rico Cilliers · CC0 1.0 | 1,146,361 → 161,356 bytes | 1K diffuse, packed AO and roughness, and normal maps. Simplified and repacked with Meshopt and WebP. [Source and license](https://polyhaven.com/a/fern_02) · [Original files](https://api.polyhaven.com/files/fern_02) |
+
+The corresponding manifest references are `living-wildlife`, `living-vegetation` and `living-recordings`. Each recording below was converted to a compatible mono MP3 at 24 kHz. Settings exposes the names and sources.
+
+| Game audio file | Author, source and treatment |
+| --- | --- |
+| `src/assets/audio/field-crane.mp3` | National Park Service Yellowstone Sound Library. Public domain. Trimmed to an eight-second excerpt. [Sandhill Crane recording](https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Sandhill_Crane_-_001.mp3) |
+| `src/assets/audio/field-pheasant.mp3` | US National Park Service recording archived with unknown individual credit. Public domain. [Common Pheasant recording](https://commons.wikimedia.org/wiki/File:Phasianus_colchicus.ogg) |
+| `src/assets/audio/field-eagle.mp3` | US National Park Service Yellowstone recording. Public domain. [Bald Eagle recording](https://commons.wikimedia.org/wiki/File:Bald_Eagle_Yellowstone_National_Park.ogg) |
+| `src/assets/audio/field-creek.mp3` | Fg2. Author dedicated the recording to the public domain. [Flowing water recording](https://commons.wikimedia.org/wiki/File:Flowing-water-100019.ogg) |
+
+[CC BY 4.0 terms](https://creativecommons.org/licenses/by/4.0/) · [CC0 terms](https://creativecommons.org/publicdomain/zero/1.0/)

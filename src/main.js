@@ -41,7 +41,8 @@ import { createTrailSigns } from './sign-scenery.js'
 import { setRockWeather } from './rock-art.js'
 import { createDriftingLeaves } from './drifting-leaves.js'
 import { fallenVariant } from './fallen-timber.js'
-import { createDivingFlocks, createWildlife } from './wildlife.js'
+import { createDivingFlocks } from './wildlife.js'
+import { createLivingWilderness } from './living-wilderness.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
 import './lodge.css'
@@ -84,10 +85,29 @@ let frozen = false
 let calloutAnimation
 
 const flags = new URLSearchParams(location.search)
-const localPerformance = flags.get('perf') === '1' &&
-  (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
+const localPerformance = flags.get('perf') === '1'
 const performanceProbe = localPerformance ? createPerformanceProbe() : null
-if (performanceProbe) window.retrieverPerformance = performanceProbe.read
+if (performanceProbe) {
+  window.retrieverPerformance = performanceProbe.read
+  const controls = document.createElement('details')
+  const label = document.createElement('summary')
+  const snapshot = document.createElement('button')
+  const output = document.createElement('textarea')
+  label.textContent = 'Developer performance'
+  snapshot.type = 'button'
+  snapshot.textContent = 'Capture performance report'
+  output.readOnly = true
+  output.rows = 7
+  output.setAttribute('aria-label', 'Performance report')
+  output.hidden = true
+  snapshot.addEventListener('click', () => {
+    output.value = JSON.stringify(performanceProbe.read(), null, 2)
+    output.hidden = false
+    output.select()
+  })
+  controls.append(label, snapshot, output)
+  ui.preferences.append(controls)
+}
 const wakeLock = createWakeLock(navigator.wakeLock && (() => navigator.wakeLock.request('screen')), () => !document.hidden)
 const previewRegion = import.meta.env.DEV || import.meta.env.MODE === 'migration-qa'
   ? expeditionRegions[Number(flags.get('preview')) - 1] : undefined
@@ -216,7 +236,8 @@ function initialize() {
   const terrain = createTerrain(scene, (anchor, distance) => signs.show(anchor, distance, signSeed))
   setTerrainSeed = terrain.setSeed
   const leaves = createDriftingLeaves(scene)
-  const wildlife = createWildlife(scene, sound.bird)
+  const wildlife = createLivingWilderness(scene, sound.bird, sound.prepareWildlife)
+  const observeWildlife = event => runStatistics?.observe(event)
   const diving = createDivingFlocks(scene)
   if (diagnosticsRequested) {
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
@@ -359,7 +380,8 @@ function initialize() {
       terrain.update(distance, visualTime, weather, preset.detail)
       signs.finish()
       leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reducedMotion.matches)
-      wildlife(visualTime, distance, preset.detail === 0, mode === 'running', display.elapsed)
+      camera.updateMatrixWorld()
+      wildlife(visualTime, distance, preset.detail, mode === 'running', terrain.encounters(), camera, observeWildlife)
       if (!idle && !frozen) {
         updateConditions(weather.name)
         sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
@@ -371,11 +393,15 @@ function initialize() {
     }
     if (mode === 'title' || mode === 'running' || needsRedraw) {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
-        ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps,
+        ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps, wildlife: wildlife.stamp,
       }, camera, signs)
       renderer.render(scene, camera)
-      if (mode === 'running' && performanceProbe) performanceProbe.frame(wall * 1000, performance.now() - renderStart,
-        renderer.info, terrain.count(), regionAt(display.elapsed).key, terrain.packCount(), terrain.landscapeResidency(), terrain.measurements())
+      if (mode === 'running' && performanceProbe) {
+        performanceProbe.presented(performance.now())
+        performanceProbe.graphics(profile.quality, preset.detail, wildlife.active(), wildlife.metrics())
+        performanceProbe.frame(wall * 1000, performance.now() - renderStart, renderer.info, terrain.count(),
+          regionAt(display.elapsed).key, terrain.packCount(), terrain.landscapeResidency(), terrain.measurements())
+      }
       needsRedraw = false
     }
   }
@@ -743,6 +769,7 @@ function setMode(value, options = {}) {
   }
   ui.game.dataset.mode = value
   const running = value === 'running'
+  if (!running) performanceProbe?.pause()
   void wakeLock.set(running)
   const title = value === 'title'
   const over = value === 'over'

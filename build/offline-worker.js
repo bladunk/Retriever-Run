@@ -1,12 +1,15 @@
 import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { habitatEncounters } from '../src/wildlife-catalog.js'
 import { landscapeProfiles } from '../src/migration-landscapes.js'
 import { createContentManifest, installation } from '../src/content-manifest.js'
 
 const worker = readFileSync(new URL('./offline-runtime.js', import.meta.url), 'utf8')
 const publicFiles = ['manifest.webmanifest', 'icons/retriever-192.png', 'icons/retriever-512.png',
   'icons/retriever-maskable-512.png', 'icons/apple-touch-icon.png']
+const wildlifeTerritories = (...species) => Object.entries(habitatEncounters)
+  .filter(([, tiers]) => tiers.some(tier => tier.some(id => species.includes(id)))).map(([territory]) => territory)
 const groups = {
   shell: { label: 'Application shell', license: 'original' },
   core: { label: 'Game engine and trail', license: 'code' },
@@ -15,6 +18,12 @@ const groups = {
     territories: landscapeProfiles.filter(region => region.licensedGrass).map(region => region.key) },
   'field-surfaces': { label: 'Surface scans and building finishes', license: 'field-surfaces',
     territories: landscapeProfiles.map(({ key }) => key) },
+  'woodland-plants': { label: 'Forest and riverbank plants', license: 'living-vegetation',
+    territories: ['cypress','timber','ozark','parklands','boreal','foothills'] },
+  'wetland-wildlife': { label: 'Wetland wildlife', license: 'living-wildlife', territories: wildlifeTerritories('mallard') },
+  'upland-wildlife': { label: 'Fields and woodland wildlife', license: 'living-wildlife', territories: wildlifeTerritories('pheasant','deer') },
+  'sky-wildlife': { label: 'River and northern airspace', license: 'living-wildlife', territories: wildlifeTerritories('eagle') },
+  'field-recordings': { label: 'Wilderness field recordings', license: 'living-recordings' },
   dogs: { label: 'Labrador and animations', license: 'labrador' },
   audio: { label: 'Music and wildlife audio', license: 'game-audio' },
   diagnostics: { label: 'Developer diagnostics', license: 'code' },
@@ -27,6 +36,11 @@ function groupFor(file, shell) {
   const key = cleanId(file)
   if (/^collision-debug/.test(key)) return 'diagnostics'
   if (/^lab(?:rador)?\./.test(key)) return 'dogs'
+  if (key.startsWith('living-fern.')) return 'woodland-plants'
+  if (key.startsWith('living-mallard.')) return 'wetland-wildlife'
+  if (/^living-(deer|pheasant)\./.test(key)) return 'upland-wildlife'
+  if (key.startsWith('living-eagle.')) return 'sky-wildlife'
+  if (/^field-.*\.mp3$/.test(key)) return 'field-recordings'
   if (key.endsWith('.mp3')) return 'audio'
   if (key.startsWith('field-atlas-')) return 'field-surfaces'
   if (key.startsWith('landscape-')) return 'vegetation'

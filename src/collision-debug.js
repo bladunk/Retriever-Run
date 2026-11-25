@@ -175,6 +175,7 @@ export function collisionDebug(scene) {
         window.retrieverDebug.hazards = entities.filter(item => item.hazard && item.distance > run.distance - 1 && item.distance < run.distance + 38)
           .map(({ type, lane, distance }) => ({ type, lane, distance }))
         window.retrieverDebug.world = timings.world?.()
+        window.retrieverDebug.wildlife = timings.wildlife?.()
         camera.updateMatrixWorld()
         window.retrieverDebug.signs = signs.visible().map(face => inspectSign(face, camera))
         window.retrieverDebug.rocks = entities.filter(item => item.type === 'rock' && item.model?.visible &&

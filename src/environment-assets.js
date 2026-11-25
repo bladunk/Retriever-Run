@@ -1,5 +1,6 @@
 import * as T from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
 import { createResourcePool } from './resource-pool.js'
 
 const descriptors = {
@@ -17,7 +18,23 @@ const descriptors = {
 
 export const createEnvironmentCache = createResourcePool
 
+const fernUrl = new URL('./assets/wildlife/living-fern.glb', import.meta.url).href
+export const fernTerritories = new Set(['cypress','timber','ozark','parklands','boreal','foothills'])
+
 async function loadPack(key) {
+  if (key === 'ferns') {
+    const { scene } = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(fernUrl)
+    scene.updateMatrixWorld(true)
+    let source
+    scene.traverse(mesh => { if (mesh.isMesh) source = mesh })
+    if (!source) throw new Error('Fern pack is empty')
+    const mesh = source.geometry
+    mesh.applyMatrix4(source.matrixWorld)
+    mesh.computeBoundingBox()
+    const center = mesh.boundingBox.getCenter(new T.Vector3())
+    mesh.translate(-center.x, -mesh.boundingBox.min.y, -center.z)
+    return { models: [mesh], material: source.material }
+  }
   const descriptor = descriptors[key]
   const [model, atlas] = await Promise.allSettled([
     new GLTFLoader().loadAsync(descriptor.model), new T.TextureLoader().loadAsync(descriptor.atlas),
@@ -47,6 +64,10 @@ async function loadPack(key) {
 
 export const environmentAssets = createEnvironmentCache(loadPack, pack => {
   for (const model of pack.models) model.dispose()
-  pack.material.map.dispose()
+  const textures = new Set(Object.values(pack.material).filter(value => value?.isTexture))
+  for (const texture of textures) {
+    texture.dispose()
+    texture.image?.close?.()
+  }
   pack.material.dispose()
 })

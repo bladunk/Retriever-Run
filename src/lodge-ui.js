@@ -1,3 +1,5 @@
+import { fieldSpecies } from './wildlife-catalog.js'
+import { wildlifePortrait } from './wildlife-portrait.js'
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, honorProgress, medals, patches } from './honors.js'
 import { legacyTerritoryNames } from './lodge-save.js'
@@ -145,7 +147,32 @@ function journal(player) {
     ten.append(...rows(legacyTerritoryNames.map((name, index) => [name, duration(player.legacyMigration.seconds[index])])))
     archive.push(node('h3', 'Earlier ten-territory course', 'section-title section-break'), ten)
   }
-  return [node('h3', 'Lifetime Field Journal', 'section-title'),
+  const guide = node('div', null, 'wildlife-guide')
+  let known = 0
+  for (const animal of Object.values(fieldSpecies)) {
+    const observation = player.wildlife?.species[animal.id]
+    const seen = Boolean(observation?.seen)
+    known += Number(seen)
+    const row = node('article', null, 'wildlife-card')
+    const image = node('img')
+    image.src = wildlifePortrait(animal, seen)
+    image.alt = ''
+    image.width = 100
+    image.height = 70
+    image.loading = 'lazy'
+    const details = node('div')
+    const where = expeditionRegions.find(region => region.key === observation?.territory)?.name
+    details.append(node('strong', animal.name), node('p', animal.habitat),
+      node('p', seen ? number(observation.seen) + ' observations · ' + (where ?? 'First territory unavailable') : 'Unobserved'))
+    if (seen && observation.first) details.append(node('p', 'First seen ' + observation.first.slice(0,10)))
+    if (observation?.rare || observation?.retrieves) details.append(node('p',
+      [observation.rare ? number(observation.rare) + ' rare sightings' : '',
+        observation.retrieves ? number(observation.retrieves) + ' retrieves' : ''].filter(Boolean).join(' · ')))
+    row.append(image, details)
+    guide.append(row)
+  }
+  return [node('h3', 'Wildlife · ' + known + ' of ' + Object.keys(fieldSpecies).length + ' observed', 'section-title'),
+    guide, node('h3', 'Lifetime Field Journal', 'section-title section-break'),
     grid, node('h3', 'The Great Migration · territory time', 'section-title section-break'), migration, ...archive,
     node('h3', 'Field breakdown', 'section-title section-break'), breakdown, ...personalRecords(player)]
 }
@@ -183,6 +210,12 @@ function leaderboard(lodge, metric, selectMetric) {
 }
 
 export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}) {
+  const wildlife = document.getElementById('report-wildlife')
+  if (wildlife) {
+    const names = (report.newWildlife ?? []).map(id => fieldSpecies[id]?.name).filter(Boolean)
+    wildlife.hidden = !names.length
+    wildlife.textContent = names.length ? 'New in the Field Journal · ' + names.join(', ') : ''
+  }
   ui['report-nickname'].textContent = report.nickname
   const stage = stageAt(report.duration)
   const scoreRecord = report.improved.includes('score')

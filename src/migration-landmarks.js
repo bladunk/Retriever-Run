@@ -93,7 +93,7 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
       }
     }
     const spring = base + height
-    const rise = width * (logs ? .38 : barn ? .31 : .228)
+    const rise = width * (role === 'delta-shed' || role === 'pothole-farm' ? .18 : logs ? .38 : barn ? .31 : .228)
     const half = width * .54
     const pitch = Math.atan2(rise, half)
     const run = Math.hypot(half, rise)
@@ -210,10 +210,10 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
   } else {
     const palette = {
       'swamp-cabin': [4.2, 3.15, 2.3, 0x66604c, 0x46544b, 'raised'],
-      'delta-shed': [4.35, 3.45, 2.32, 0x8b6d56, 0x73736b],
+      'delta-shed': [5.18, 3.46, 1.94, 0x8b6d56, 0x73736b],
       'river-camp': [3.48, 2.65, 1.80, 0x7b7b66, 0x555f56, 'bank'],
       farm: [5.0, 4.3, 3.35, 0x817a6a, 0x515853],
-      'pothole-farm': [4.12, 3.4, 2.22, 0x876a53, 0x635648],
+      'pothole-farm': [4.86, 3.56, 1.97, 0x876a53, 0x635648],
       'marsh-dock': [3.28, 2.60, 1.66, 0x5b6c62, 0x525d5b, 'bank'],
       'aspen-cabin': [3.64, 2.85, 2.06, 0x8b7357, 0x66594b],
       snag: [3.82, 2.94, 1.89, 0x655640, 0x4c5757],

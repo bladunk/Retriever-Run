@@ -6,7 +6,10 @@ function unpack(data) {
     geometry.setAttribute(name, new T.BufferAttribute(values, itemSize, normalized))
   }
   if (data.index) geometry.setIndex(new T.BufferAttribute(data.index, 1))
-  geometry.computeBoundingSphere()
+  if (data.bounds) {
+    const [x, y, z, radius] = data.bounds
+    geometry.boundingSphere = new T.Sphere(new T.Vector3(x, y, z), radius)
+  } else geometry.computeBoundingSphere()
   return geometry
 }
 
