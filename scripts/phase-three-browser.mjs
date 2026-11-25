@@ -236,6 +236,21 @@ try {
     await page.locator('#tab-kennel').tap()
     const stage = page.locator('.kennel-stage')
     await stage.locator('canvas').waitFor()
+    if (args.includes('touch-orbit') && engine === chromium) {
+      const box = await stage.boundingBox()
+      const cdp = await context.newCDPSession(page)
+      const x = Math.round(box.x + box.width * .25)
+      const y = Math.round(box.y + box.height * .52)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + 65, y }] })
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      await page.waitForTimeout(450)
+      await stage.screenshot({ path: resolve(output, 'touch-rotation.png'), scale: 'css' })
+      await cdp.detach()
+      await page.locator('#close-lodge').tap()
+      await page.locator('#open-lodge').tap()
+      await page.locator('#tab-kennel').tap()
+    }
     await stage.focus()
     for (const [angle, presses, key] of [['three-quarter', 0, 'ArrowRight'], ['front', 2, 'ArrowLeft'],
       ['side', 3, 'ArrowRight'], ['rear', 3, 'ArrowRight']]) {

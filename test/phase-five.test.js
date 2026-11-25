@@ -38,7 +38,8 @@ test('late pressure keeps the migration schedule and timber selects stable adjac
   assert.equal(primaryDuration, 450)
   assert.equal(stageAt(463).level, 30)
   assert.equal(courseStages[5].gap, 1.23)
-  assert.ok(courseStages[24].gap < .75)
+  assert.ok(courseStages[24].gap < .79 && courseStages[24].gap > courseStages[23].gap)
+  assert.ok(courseStages[24].reward > courseStages[23].reward + .1)
   for (let d = 950; d < 965; d += .33) {
     const models = [-1, 0, 1].map(lane => fallenTimber(fallenVariant(d, lane)))
     assert.equal(new Set(models).size, 3)
