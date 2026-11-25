@@ -103,10 +103,12 @@ export function trophyFor(player, key) {
     const row = player.wildlife.species[id]
     if (!Object.hasOwn(fieldSpecies, id) || !row || !(kind === 'observe' ? row.seen : row.retrieves)) return null
     const watched = kind === 'observe'
+    const count = watched ? row.seen : row.retrieves
+    const noun = watched ? 'field sighting' : 'recorded retrieve'
     return { key, category: watched ? 'wildlife' : 'retrieves', name: fieldSpecies[id].name,
       art: watched ? 'observation' : id === 'pheasant' ? 'pheasant' : 'decoy', species: watched ? id : undefined,
       badge: watched ? 'Field observation' : 'Retrieve display', date: watched ? row.first : null,
-      description: (watched ? row.seen + ' field sightings' : row.retrieves + ' recorded retrieves') }
+      description: count + ' ' + noun + (count === 1 ? '' : 's') }
   }
   if (kind === 'region') {
     const region = expeditionRegions.find(place => place.key === id)

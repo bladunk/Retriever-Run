@@ -99,13 +99,13 @@ export function fillCareerReport(ui, report, openKennel, openLodge) {
     reward.append(visit)
     space.append(reward)
   }
-  if (report.newHonors.length) space.append(node('p', number(report.newHonors.length) + ' new Field Honors'))
+  if (report.newHonors.length) space.append(node('p', number(report.newHonors.length) + ' new Field Honor' + (report.newHonors.length === 1 ? '' : 's')))
   if (report.boyd) space.append(node('strong', 'Boyd and his Master Hunter kit earned'))
   if (report.gear.length) {
     const button = node('button', 'View in Kennel')
     button.type = 'button'
     button.addEventListener('click', () => openKennel(button))
-    space.append(node('p', number(report.gear.length) + ' new equipment options'), button)
+    space.append(node('p', number(report.gear.length) + ' new equipment option' + (report.gear.length === 1 ? '' : 's')), button)
   }
   if (report.saved === false) space.append(node('p', 'Progress is in memory. Leave this page open to retry saving on your next hunt.', 'room-note'))
 }

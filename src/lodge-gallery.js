@@ -252,7 +252,8 @@ function trophyRoom(player, { lodge, target, navigate }) {
 
 function migration(player, lodge, navigate) {
   const completed = completeMigrations(player)
-  const summary = number(player.migration.farthest) + ' of 15 reached · ' + number(completed) + ' complete migrations'
+  const summary = number(player.migration.farthest) + ' of ' + expeditionRegions.length + ' reached · ' + number(completed) +
+    ' complete migration' + (completed === 1 ? '' : 's')
   const panel = node('section', null, 'lodge-map-room')
   const chart = migrationMap()
   const controls = node('div', null, 'lodge-map-controls')
