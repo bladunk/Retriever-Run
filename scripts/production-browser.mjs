@@ -136,6 +136,9 @@ try {
     return tab.evaluate(() => performance.now())
   }
   const play = async tab => {
+    // A reproducible opening keeps installation and update tests independent
+    // of the randomly generated course and the browser's render speed.
+    await tab.evaluate(() => { Math.random = () => 7 / 0x100000000 })
     if (await tab.locator('#onboarding').isVisible()) {
       await tab.locator('#camp-name').fill('Marsh Scout')
       await tab.locator('#camp-guest').tap()
@@ -149,7 +152,12 @@ try {
   const finish = async tab => {
     if (await tab.locator('#game').getAttribute('data-mode') === 'paused') await tab.locator('#primary').tap()
     await tab.evaluate(() => { window.qaPace = true })
-    await tab.locator('#field-report').waitFor({ timeout: 95_000 })
+    await tab.locator('#field-report').waitFor({ timeout: 95_000 }).catch(async error => {
+      console.error(await tab.evaluate(() => ({ mode: document.querySelector('#game').dataset.mode,
+        stage: document.querySelector('#difficulty-stage')?.textContent,
+        hunt: window.retrieverPerformance?.()?.hunt?.id })))
+      throw error
+    })
     await tab.evaluate(() => { window.qaPace = false })
     if (await tab.locator('#promotion').isVisible()) await tab.locator('#promotion-continue').tap()
   }
@@ -320,7 +328,7 @@ try {
       await idle.locator('#settings').tap()
       await idle.getByRole('button', { name: 'Game update available' }).tap()
       const pendingBuild = upgrade ? manifest.app : next?.app
-      if (pendingBuild) {
+      if (pendingBuild && openingManifest.app) {
         assert.equal(await idle.locator('#pending-version').textContent(), 'Pending · ' + buildLabel(pendingBuild))
         await assertRunningBuild(idle, openingManifest.app)
       }

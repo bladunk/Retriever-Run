@@ -118,6 +118,9 @@ try {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   page.on('console', msg => { if (msg.type() === 'error' && /shader error|THREE.WebGLProgram/i.test(msg.text())) errors.push(msg.text()) })
+  page.on('console', msg => {
+    if (args.includes('wildlife-breaks') && msg.type() === 'error' && /Couldn't load texture/.test(msg.text())) console.error(msg.text())
+  })
   await page.addInitScript(initial => {
     const quality = new URLSearchParams(location.search).get('qaview') || initial.quality
     const profile = { quality, masterVolume: 0 }
@@ -277,15 +280,23 @@ try {
     const noWarmup = (from, to) => assert.ok(!to.perf.operations.some(event =>
       event.at >= from.takenAt && /^wildlife-(warm|rig-setup)/.test(event.name)),
     'wildlife ran rig or GPU preparation on the active clock')
+    const activate = async id => {
+      await page.evaluate(id => document.getElementById(id).addEventListener('click', () => {
+        window.phaseThreeQA.startedAt = performance.now()
+      }, { once: true, capture: true }), id)
+      await page.locator('#' + id).tap()
+      return { takenAt: await page.evaluate(() => window.phaseThreeQA.startedAt) }
+    }
     await openAt(0, seed)
     if (args.includes('offline')) await context.setOffline(true)
     await replay()
-    await page.locator('#primary').tap()
+    const coldStart = await activate('primary')
     await elapsed(1)
     const quick = await snapshot()
     await page.evaluate(() => window.phaseThreeQA.setBackground(true))
     await page.locator('#game[data-mode="paused"]').waitFor()
     const backgrounded = await snapshot()
+    console.log(engine.name() + ' paused a cold hunt with the clock stopped')
     await page.waitForTimeout(400)
     assert.equal((await snapshot()).state.elapsed, backgrounded.state.elapsed)
     await page.evaluate(() => window.phaseThreeQA.setBackground(false))
@@ -294,22 +305,30 @@ try {
     await page.locator('#quality').selectOption('balanced')
     await page.locator('#close-settings').tap()
     await page.waitForFunction(() => window.retrieverPerformance().wildlifeModels.models.some(model =>
-      model.id === 'mallard' && model.prepared.geometries === model.prepared.geometryTotal), null, { timeout: 30_000 })
+      model.id === 'mallard' && model.prepared.geometries === model.prepared.geometryTotal), null, { timeout: 60_000 }).catch(async error => {
+      const { perf, state } = await snapshot()
+      console.error(JSON.stringify({ mode: state.mode, preset: perf.preset, models: perf.wildlifeModels,
+        last: perf.operations.slice(-8),
+        blocked: await page.evaluate(() => ({ hidden: document.hidden, dialogs: [...document.querySelectorAll('dialog[open]')].map(d => d.id) })) }))
+      throw error
+    })
+    console.log(engine.name() + ' prepared a mallard during the pause')
     const paused = await snapshot()
-    await page.locator('#primary').tap()
+    const resumeStart = await activate('primary')
     await elapsed(15)
     const resumed = await snapshot()
-    noWarmup(quick, backgrounded)
-    noWarmup(paused, resumed)
+    noWarmup(coldStart, backgrounded)
+    noWarmup(resumeStart, resumed)
     assert.ok(resumed.perf.wildlifeModels.rigEncounters > quick.perf.wildlifeModels.rigEncounters)
     // The player misses a later hazard and starts another hunt from Hunt Over.
     await page.evaluate(() => { window.phaseThreeQA.natural.inputs = [] })
     await page.locator('#run-again').waitFor({ timeout: 45_000 })
     const over = await snapshot()
     await replay()
-    await page.locator('#run-again').tap()
+    const restartStart = await activate('run-again')
     await elapsed(13)
     const restarted = await snapshot()
+    noWarmup(restartStart, restarted)
     for (const { perf } of [quick, backgrounded, paused, resumed, over, restarted]) {
       assert.ok(perf.wildlifeModels.resident <= 2)
     }

@@ -1,5 +1,7 @@
 # Phase 05 rendered evidence
 
+[Targeted visual pass, continuous footage and measured sightings](visual-pass/README.md)
+
 These images and clips are from browser-served builds at the GitHub Pages subpath in Linux Playwright Chromium and WebKit. Seeded practice scenarios use the game camera, controls and simulation. The accelerated migration exercises the gameplay rules and territory transitions. Timing in these recordings is subject to software rendering and the fixture clock.
 
 | Case | Evidence |

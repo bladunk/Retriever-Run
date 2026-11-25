@@ -1,0 +1,596 @@
+{
+  "fixture": "Linux mobile-sized WebKit with seeded controls",
+  "runtime": "e7409c2ac7bf7cf63af0d1e9991e5f014bf0a0e3",
+  "build": "d4a614b",
+  "visibility": [
+    {
+      "case": "deer-inspect",
+      "version": "34f631d",
+      "seed": 13,
+      "from": 151.875,
+      "begin": 12.978244881,
+      "last": 163.00967486631924,
+      "peakTextures": 23,
+      "peakGeometries": 82,
+      "warmOpsInHunt": 0,
+      "maxWarm": 272,
+      "rig": 2,
+      "fallback": 0,
+      "sight": [
+        {
+          "id": "farm:108:deer",
+          "species": "deer",
+          "longest": 5.136,
+          "total": 5.136,
+          "px": [
+            11.1,
+            27.5
+          ],
+          "first": 153.418,
+          "record": 21
+        },
+        {
+          "id": "farm:112:deer",
+          "species": "deer",
+          "longest": 3.6,
+          "total": 3.6,
+          "px": [
+            16.1,
+            30.3
+          ],
+          "first": 159.17,
+          "record": 17
+        }
+      ]
+    },
+    {
+      "case": "deer-release-13",
+      "version": "d4a614b",
+      "seed": 13,
+      "from": 151.875,
+      "begin": 35.223945635999996,
+      "last": 163.90967486631843,
+      "peakTextures": 23,
+      "peakGeometries": 81,
+      "warmOpsInHunt": 0,
+      "maxWarm": 0,
+      "rig": 0,
+      "fallback": 2,
+      "sight": [
+        {
+          "id": "farm:108:deer",
+          "species": "deer",
+          "longest": 4.32,
+          "total": 4.32,
+          "px": [
+            14.4,
+            20.4
+          ],
+          "first": 154.31,
+          "record": 20
+        },
+        {
+          "id": "farm:112:deer",
+          "species": "deer",
+          "longest": 3.84,
+          "total": 3.84,
+          "px": [
+            15.3,
+            22.5
+          ],
+          "first": 159.11,
+          "record": 19
+        }
+      ]
+    },
+    {
+      "case": "rdeer-13",
+      "version": "d4a614b",
+      "seed": 13,
+      "from": 151.875,
+      "begin": 50.972017244,
+      "last": 164.0606748663183,
+      "peakTextures": 22,
+      "peakGeometries": 80,
+      "warmOpsInHunt": 0,
+      "maxWarm": 0,
+      "rig": 0,
+      "fallback": 2,
+      "sight": [
+        {
+          "id": "farm:108:deer",
+          "species": "deer",
+          "longest": 4.032,
+          "total": 4.272,
+          "px": [
+            14.4,
+            20.3
+          ],
+          "first": 154.3,
+          "record": 21
+        },
+        {
+          "id": "farm:112:deer",
+          "species": "deer",
+          "longest": 3.569,
+          "total": 3.569,
+          "px": [
+            15.4,
+            22.2
+          ],
+          "first": 159.292,
+          "record": 19
+        }
+      ]
+    },
+    {
+      "case": "pheasant-9",
+      "version": "34f631d",
+      "seed": 9,
+      "from": 150.625,
+      "begin": 19.035909364,
+      "last": 166.0616836167049,
+      "peakTextures": 23,
+      "peakGeometries": 80,
+      "warmOpsInHunt": 0,
+      "maxWarm": 0,
+      "rig": 1,
+      "fallback": 2,
+      "sight": [
+        {
+          "id": "farm:104:deer",
+          "species": "deer",
+          "longest": 1.752,
+          "total": 1.752,
+          "px": [
+            19.7,
+            25.9
+          ],
+          "first": 150.857,
+          "record": 14
+        },
+        {
+          "id": "farm:108:pheasant",
+          "species": "pheasant",
+          "longest": 3.29,
+          "total": 3.29,
+          "px": [
+            11.3,
+            16.2
+          ],
+          "first": 154.958,
+          "record": 16
+        },
+        {
+          "id": "farm:116:pheasant",
+          "species": "pheasant",
+          "longest": 2.16,
+          "total": 2.16,
+          "px": [
+            11.1,
+            14.6
+          ],
+          "first": 163.902,
+          "record": 10
+        }
+      ]
+    },
+    {
+      "case": "goose-8",
+      "version": "34f631d",
+      "seed": 8,
+      "from": 210,
+      "begin": 33.750857365,
+      "last": 225.07034178735637,
+      "peakTextures": 21,
+      "peakGeometries": 75,
+      "warmOpsInHunt": 0,
+      "maxWarm": 0,
+      "rig": 0,
+      "fallback": 1,
+      "sight": [
+        {
+          "id": "sandhills:160:canada-goose",
+          "species": "canada-goose",
+          "longest": 4.718,
+          "total": 4.718,
+          "px": [
+            13.5,
+            17.9
+          ],
+          "first": 212.94,
+          "record": 33
+        },
+        {
+          "id": "sandhills:164:crane",
+          "species": "crane",
+          "longest": 1.2,
+          "total": 2.16,
+          "px": [
+            13.2,
+            35
+          ],
+          "first": 216.458,
+          "record": 23
+        },
+        {
+          "id": "sandhills:168:pheasant",
+          "species": "pheasant",
+          "longest": 3.092,
+          "total": 3.092,
+          "px": [
+            11.2,
+            16.2
+          ],
+          "first": 221.978,
+          "record": 14
+        }
+      ]
+    },
+    {
+      "case": "mallard-12",
+      "version": "34f631d",
+      "seed": 12,
+      "from": 0,
+      "begin": 31.151549052999997,
+      "last": 18.23166666666666,
+      "peakTextures": 22,
+      "peakGeometries": 72,
+      "warmOpsInHunt": 0,
+      "maxWarm": 375,
+      "rig": 3,
+      "fallback": 0,
+      "sight": [
+        {
+          "id": "gulf:0:mallard",
+          "species": "mallard",
+          "longest": 3.6,
+          "total": 3.6,
+          "px": [
+            10.2,
+            13.6
+          ],
+          "first": 2.392,
+          "record": 26
+        },
+        {
+          "id": "gulf:4:mallard",
+          "species": "mallard",
+          "longest": 3.36,
+          "total": 3.36,
+          "px": [
+            10.1,
+            13.8
+          ],
+          "first": 10.792,
+          "record": 33
+        }
+      ]
+    },
+    {
+      "case": "rcrane-5",
+      "version": "d4a614b",
+      "seed": 5,
+      "from": 180,
+      "begin": 20.361363932,
+      "last": 193.01567994811344,
+      "peakTextures": 24,
+      "peakGeometries": 87,
+      "warmOpsInHunt": 0,
+      "maxWarm": 266,
+      "rig": 0,
+      "fallback": 0,
+      "sight": [
+        {
+          "id": "platte:132:crane",
+          "species": "crane",
+          "longest": 3.839,
+          "total": 3.839,
+          "px": [
+            19.1,
+            33
+          ],
+          "first": 182.527,
+          "record": 18
+        },
+        {
+          "id": "platte:136:cackling-goose",
+          "species": "cackling-goose",
+          "longest": 2.4,
+          "total": 2.4,
+          "px": [
+            10.3,
+            11.5
+          ],
+          "first": 188.018,
+          "record": 28
+        },
+        {
+          "id": "platte:140:snow-goose",
+          "species": "snow-goose",
+          "longest": 0.96,
+          "total": 1.68,
+          "px": [
+            10.8,
+            11.8
+          ],
+          "first": 190.616,
+          "record": 14
+        }
+      ]
+    },
+    {
+      "case": "release-lab",
+      "version": "d4a614b",
+      "seed": 7,
+      "from": 0,
+      "begin": 54.44667482300001,
+      "last": 14.15166666666666,
+      "peakTextures": 19,
+      "peakGeometries": 62,
+      "warmOpsInHunt": 0,
+      "maxWarm": 944,
+      "rig": 1,
+      "fallback": 0,
+      "sight": [
+        {
+          "id": "gulf:0:mallard",
+          "species": "mallard",
+          "longest": 1.92,
+          "total": 1.92,
+          "px": [
+            10.2,
+            12.3
+          ],
+          "first": 1.672,
+          "record": 26
+        },
+        {
+          "id": "gulf:4:heron",
+          "species": "heron",
+          "longest": 1.2,
+          "total": 1.2,
+          "px": [
+            10.7,
+            17.3
+          ],
+          "first": 8.632,
+          "record": 18
+        }
+      ]
+    }
+  ],
+  "safeBreaks": {
+    "version": "d4a614b",
+    "offline": true,
+    "checks": "Clock stopped while hidden, quality toggled during visible pause, zero explicit rig setup or GPU warm operations in the three active clock intervals.",
+    "stages": {
+      "quick": {
+        "gameSeconds": 1.1916666666666662,
+        "decodedRigs": 2,
+        "rigEncounters": 0,
+        "lightweightEncounters": 1,
+        "rendererTextures": 17,
+        "rendererGeometries": 37,
+        "huntPeakTextures": 17,
+        "huntPeakGeometries": 37,
+        "restartMarkerMs": 7614,
+        "prepared": [
+          {
+            "id": "mallard",
+            "textures": 7,
+            "skeletons": 1,
+            "shaders": 8,
+            "geometries": 0,
+            "geometryTotal": 8
+          },
+          {
+            "id": "deer",
+            "textures": 0,
+            "skeletons": 0,
+            "shaders": 0,
+            "geometries": 0,
+            "geometryTotal": 3
+          }
+        ]
+      },
+      "backgrounded": {
+        "gameSeconds": 1.4266666666666654,
+        "decodedRigs": 2,
+        "rigEncounters": 0,
+        "lightweightEncounters": 1,
+        "rendererTextures": 17,
+        "rendererGeometries": 43,
+        "huntPeakTextures": 17,
+        "huntPeakGeometries": 43,
+        "restartMarkerMs": 7614,
+        "prepared": [
+          {
+            "id": "mallard",
+            "textures": 7,
+            "skeletons": 1,
+            "shaders": 8,
+            "geometries": 0,
+            "geometryTotal": 8
+          },
+          {
+            "id": "deer",
+            "textures": 0,
+            "skeletons": 0,
+            "shaders": 0,
+            "geometries": 0,
+            "geometryTotal": 3
+          }
+        ]
+      },
+      "paused": {
+        "gameSeconds": 1.4266666666666654,
+        "decodedRigs": 2,
+        "rigEncounters": 0,
+        "lightweightEncounters": 1,
+        "rendererTextures": 17,
+        "rendererGeometries": 43,
+        "huntPeakTextures": 17,
+        "huntPeakGeometries": 43,
+        "restartMarkerMs": 7614,
+        "prepared": [
+          {
+            "id": "mallard",
+            "textures": 7,
+            "skeletons": 1,
+            "shaders": 8,
+            "geometries": 8,
+            "geometryTotal": 8
+          },
+          {
+            "id": "deer",
+            "textures": 0,
+            "skeletons": 0,
+            "shaders": 0,
+            "geometries": 0,
+            "geometryTotal": 3
+          }
+        ]
+      },
+      "resumed": {
+        "gameSeconds": 15.21999999999999,
+        "decodedRigs": 2,
+        "rigEncounters": 2,
+        "lightweightEncounters": 1,
+        "rendererTextures": 22,
+        "rendererGeometries": 59,
+        "huntPeakTextures": 22,
+        "huntPeakGeometries": 64,
+        "restartMarkerMs": 7614,
+        "prepared": [
+          {
+            "id": "mallard",
+            "textures": 7,
+            "skeletons": 1,
+            "shaders": 8,
+            "geometries": 8,
+            "geometryTotal": 8
+          },
+          {
+            "id": "deer",
+            "textures": 2,
+            "skeletons": 1,
+            "shaders": 0,
+            "geometries": 0,
+            "geometryTotal": 3
+          }
+        ]
+      },
+      "over": {
+        "gameSeconds": 17.610608977283963,
+        "decodedRigs": 2,
+        "rigEncounters": 2,
+        "lightweightEncounters": 1,
+        "rendererTextures": 22,
+        "rendererGeometries": 63,
+        "huntPeakTextures": 22,
+        "huntPeakGeometries": 65,
+        "restartMarkerMs": 7614,
+        "prepared": [
+          {
+            "id": "mallard",
+            "textures": 7,
+            "skeletons": 1,
+            "shaders": 8,
+            "geometries": 8,
+            "geometryTotal": 8
+          },
+          {
+            "id": "deer",
+            "textures": 2,
+            "skeletons": 1,
+            "shaders": 1,
+            "geometries": 0,
+            "geometryTotal": 3
+          }
+        ]
+      },
+      "restarted": {
+        "gameSeconds": 13.135666666666662,
+        "decodedRigs": 2,
+        "rigEncounters": 4,
+        "lightweightEncounters": 1,
+        "rendererTextures": 22,
+        "rendererGeometries": 62,
+        "huntPeakTextures": 22,
+        "huntPeakGeometries": 67,
+        "restartMarkerMs": 109,
+        "prepared": [
+          {
+            "id": "mallard",
+            "textures": 7,
+            "skeletons": 1,
+            "shaders": 8,
+            "geometries": 8,
+            "geometryTotal": 8
+          },
+          {
+            "id": "deer",
+            "textures": 2,
+            "skeletons": 1,
+            "shaders": 3,
+            "geometries": 0,
+            "geometryTotal": 3
+          }
+        ]
+      }
+    }
+  },
+  "earlierCompleteMigration": {
+    "version": "34f631d",
+    "accelerated": true,
+    "offline": true,
+    "seconds": 451.19499999999977,
+    "inputs": 406,
+    "samples": 903,
+    "peaks": {
+      "tiles": 7,
+      "packs": 2,
+      "textures": 11,
+      "geometries": 116,
+      "draws": 74,
+      "triangles": 168992,
+      "tileSliceMs": 112
+    }
+  },
+  "installedStyle": {
+    "version": "862e847",
+    "interruptedAsset": "labrador.glb",
+    "corruptFileRepaired": true,
+    "busyHuntProtected": true,
+    "preservedRuns": 4,
+    "unchangedAudioRequests": 1
+  },
+  "finalMigration": {
+    "version": "d4a614b",
+    "accelerated": true,
+    "offline": true,
+    "seconds": 451.1949999999997,
+    "inputs": 406,
+    "samples": 903,
+    "peaks": {
+      "tiles": 7,
+      "packs": 2,
+      "textures": 11,
+      "geometries": 116,
+      "draws": 72,
+      "triangles": 168978,
+      "tileSliceMs": 453
+    }
+  },
+  "realPhase041Upgrade": {
+    "manifests": [
+      "1c6287a852731c75069d",
+      "4dcff3121a512e161bd8"
+    ],
+    "repaired": true,
+    "busyHuntProtected": true,
+    "preservedRuns": 2,
+    "unchangedAudioRequests": 1
+  }
+}
