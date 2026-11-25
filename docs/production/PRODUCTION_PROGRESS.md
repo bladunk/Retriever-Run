@@ -54,7 +54,7 @@ The review build passed 134 Node tests, 10,000 seeded hunts, 100,020 difficulty 
 - The owner’s Phase 04 iPhone run averaged 59 FPS in the rolling window and reported a 30 ms p99, four intervals over 50 ms and 37 current textures. Phase 04.1 releases wildlife bone textures and replaced material placeholders, avoids duplicate gameplay canvas resizes and paints pooled signs ahead of their first draw.
 - The `?perf=1` report adds bounded slow frames, operation context and separate rolling, hunt and page-session summaries. All 142 tests passed and the matched Chromium replay stayed at 13 textures after five retirements. Verified build `1c6287a852731c75069d` is the owner review candidate in [draft PR #29](https://github.com/bladunk/Retriever-Run/pull/29). See the [Phase 04.1 report](PHASE_04_1_REPORT.md) for measurements and the iPhone retest. The next major phase is Working Dogs & Boyd.
 
-## Carry forward
+## Historical carry-forward notes from Phase 04.1
 
 1. Use the Phase 03B report to reproduce the build and render captures. Test native graphics presets and a continuous hunt on iPhone before publication, paying attention to building approach and departure, atlas switches, and terrain visibility.
 2. Finish owner review of Phase 04.1. Capture native `?perf=1` traces for the same route and for repeated hunts. Use the [Phase 04.1 report](PHASE_04_1_REPORT.md) to distinguish mobile browser checks from native timings. Keep active hazards separate from ambient wildlife and Journal encounters.
