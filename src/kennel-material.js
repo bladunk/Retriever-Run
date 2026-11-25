@@ -6,6 +6,38 @@ export function gearAppearance(equipment = classicGear) {
     [category, items.find(item => item.id === equipment?.[category]) ?? items[0]]))
 }
 
+const patternStyle = { stripe: 1, brush: 2, plaid: 3, border: 4, seam: 5 }
+export function tintFieldPattern(material, point = 'position') {
+  const style = { value: 0 }
+  const accent = { value: new T.Color() }
+  const prior = material.onBeforeCompile
+  material.onBeforeCompile = shader => {
+    prior.call(material, shader)
+    Object.assign(shader.uniforms, { gearPattern: style, gearAccent: accent })
+    shader.vertexShader = 'varying vec3 gearPoint;\n' + shader.vertexShader.replace('#include <begin_vertex>',
+      '#include <begin_vertex>\ngearPoint = ' + point + ';')
+    shader.fragmentShader = 'varying vec3 gearPoint; uniform float gearPattern; uniform vec3 gearAccent;\n' +
+      shader.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
+        if (gearPattern > .5) {
+          vec3 p = gearPoint;
+          float visible = 1. - smoothstep(.021,.105,length(fwidth(p)));
+          float weave = sin(p.x*36. + p.y*14. + p.z*17.);
+          float band = smoothstep(.45,.73,weave);
+          if (gearPattern == 2.) band = smoothstep(.03,.55,sin(p.x*19.+p.y*16.)*cos(p.z*24.-p.y*9.));
+          if (gearPattern == 3.) band = max(band*.85,smoothstep(.55,.82,sin(p.y*54.-p.z*12.))*.65);
+          if (gearPattern == 4.) band = smoothstep(.12,.21,abs(p.x) + abs(p.y)*.58);
+          if (gearPattern == 5.) band = smoothstep(.72,.99,weave)*.48;
+          diffuseColor.rgb = mix(diffuseColor.rgb, gearAccent, band * visible * .76);
+        }
+      `)
+  }
+  material.customProgramCacheKey = () => 'field-gear:' + point
+  return item => {
+    style.value = patternStyle[item.pattern] ?? 0
+    accent.value.setHex(item.panel ?? item.binding ?? item.color ?? 0xffffff)
+  }
+}
+
 export function tintLabradorCoat(material, modelToRest, breed = 'lab') {
   const cream = { value: 0 }
   material.roughness = .91

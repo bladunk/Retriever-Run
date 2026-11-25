@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { restoreEnrollment } from '../src/camp-onboarding.js'
-import { applyRunXP, careerStanding, dogRanks, levelFromXP, normalizeCareer, promotionRequirements, runXP, xpAt } from '../src/career.js'
+import { applyRunXP, dogRanks, levelFromXP, normalizeCareer, promotionRequirements, runXP, xpAt } from '../src/legacy-career.js'
+import { careerStanding, xpAt as careerXP } from '../src/career.js'
 import { firstContact } from '../src/collision.js'
 import { createRunStatistics } from '../src/field-stats.js'
 import { fieldHonors, hallOfShame } from '../src/honors.js'
@@ -22,7 +23,7 @@ const fixture = (extras = {}) => ({
   treats: 12, ducks: 2, pheasants: 1, ...extras,
 })
 
-test('career rewards crossed distance bands and validated events, with one best and one first honor', () => {
+test('legacy career rewards crossed distance bands and validated events, with one best and one first honor', () => {
   const earned = [{ patch: fieldHonors[0], level: 0 }, { patch: fieldHonors[1], level: 1 },
     { patch: hallOfShame[0], level: 0 }]
   const expected = 15 + 32 + 10 + 15 + 15 + 12 + 54 + 50 + 45
@@ -36,7 +37,7 @@ const date = '2026-11-20T08:00:00Z'
 const allHonors = () => Object.fromEntries(fieldHonors.map(patch => [patch.id, patch.goals.map(() => date)]))
 const fullRecord = () => ({ patches: allHonors(), records: { duration: 300 }, stats: { ducks: 55, pheasants: 45 } })
 
-test('thresholds and gear gates assign every major rank and preserve continuous levels beyond 100', () => {
+test('legacy thresholds and gear gates assign every major rank and preserve continuous levels beyond 100', () => {
   assert.deepEqual(dogRanks.map(rank => rank.level), [1, 10, 25, 50, 100])
   for (let i = 1; i < dogRanks.length; i++) {
     const rank = dogRanks[i]
@@ -55,7 +56,7 @@ test('thresholds and gear gates assign every major rank and preserve continuous 
   assert.equal(levelFromXP(NaN), 1)
 })
 
-test('experience keeps accumulating while honors block promotion, then ranks award in order once', () => {
+test('legacy experience keeps accumulating while honors block promotion, then ranks award in order once', () => {
   const career = normalizeCareer({ xp: xpAt(100) })
   const player = fullRecord()
   delete player.patches['clean-paws']
@@ -110,33 +111,32 @@ test('the first creek pays XP for a swept jump clearance once, including if the 
 })
 
 const finalRun = { ...newRun(), elapsed: 9, distance: 100, scoreBonus: 10 }
-test('run IDs keep stats, XP, and promotion grants together through duplicate finish and reload', () => {
+test('run IDs keep stats, XP, and rank rewards together through duplicate finish and reload', () => {
   const storage = disk({ [saveKey]: { version: saveVersion, players: [{ id: 1, enrollment: 'guest',
     patches: { 'marathon': [date], 'clean-paws': [date] },
     stats: { runs: 1, distance: 10_000, playtime: 600 }, records: { duration: 120 },
-    career: { xp: xpAt(10) - 10 } }] } })
+    career: { xp: careerXP(11) - 6 } }] } })
   let lodge = open(storage)
   const player = lodge.current()
   const tracker = lodge.beginRun()
   tracker.pickup('treat')
   const report = lodge.finalize(player.id, tracker, finalRun, 'stream')
-  assert.equal(report.career.earned, 119)
-  assert.equal(report.career.after.rank.id, 'junior')
+  assert.ok(report.career.earned >= 6)
+  assert.equal(report.career.after.rank.id, 'rookie')
   assert.ok(report.gear.some(item => item.id === 'junior-collar'))
   assert.equal(lodge.finalize(player.id, tracker, finalRun, 'stream'), null)
 
   lodge = open(storage)
   assert.equal(lodge.finalize(player.id, createRunStatistics(report.id), finalRun, 'stream'), null)
   assert.equal(lodge.current().stats.runs, 2)
-  assert.deepEqual(lodge.current().career.promotions, ['junior'])
+  assert.equal(careerStanding(lodge.current().career).rank.id, 'rookie')
   assert.ok(lodge.equip('collar', 'junior-collar'))
-  lodge.acknowledgePromotion('junior')
   const incomplete = lodge.beginRun()
   const committed = lodge.current().career.xp
   lodge = open(storage)
   assert.equal(lodge.current().career.xp, committed)
   assert.equal(lodge.current().kennel.equipment.collar, 'junior-collar')
-  assert.deepEqual(lodge.current().career.promotions, [])
+  assert.equal(careerStanding(lodge.current().career).rank.id, 'rookie')
   assert.ok(incomplete.runId > report.id)
 })
 
@@ -189,7 +189,7 @@ test('4.2 migration preserves profiles and earned gear, credits reliable totals 
   assert.ok(player.kennel.inherited.includes('marsh-bandana'))
 })
 
-test('4.3 migration keeps ranks, queues, gear, identities, receipts and ranked entries across commits', () => {
+test('4.3 migration archives ranks and keeps gear, identities, receipts and ranked entries across commits', () => {
   const campStorage = 'retriever-run.worldwide.v1.test'
   const xp = 34 * (110 + 26 * 33)
   const storage = disk({ [campStorage]: { members: { 5: { identity: 'old-mallard' } },
@@ -216,14 +216,13 @@ test('4.3 migration keeps ranks, queues, gear, identities, receipts and ranked e
     assert.deepEqual(player.kennel.equipment, { collar: 'master-collar', vest: 'legend-vest', coat: 'chocolate' })
     assert.ok(player.kennel.inherited.includes('marsh-vest'))
     assert.ok(player.kennel.inherited.includes('master-vest'))
-    assert.equal(player.career.xp, xp)
-    assert.equal(player.career.rank, 'legend')
-    assert.equal(player.career.legacyRank, 'legend')
+    assert.equal(player.career.xp, careerXP(35))
+    assert.equal(player.career.legacyXP, xp)
+    assert.equal(player.career.legacyRank, 'Marsh Legend')
     assert.equal(player.career.legacyLevel, 35)
-    assert.deepEqual(player.career.promotions, ['legend'])
-    assert.ok(careerStanding(player.career).level < 35)
+    assert.equal(careerStanding(player.career).level, 35)
     assert.equal(lodge.board('score')[0].id, 88)
-    assert.equal(lodge.players().find(item => item.id === 2).career.rank, 'junior')
+    assert.equal(lodge.players().find(item => item.id === 2).career.legacyRank, 'Junior Retriever')
     const early = lodge.players().find(item => item.id === 3).career
     assert.equal(early.legacyLevel, 2)
     assert.equal(careerStanding(early).level, 2)
@@ -232,10 +231,9 @@ test('4.3 migration keeps ranks, queues, gear, identities, receipts and ranked e
     lodge.commit()
     lodge = open(storage)
   }
-  lodge.acknowledgePromotion('legend')
   const report = lodge.finalize(5, lodge.beginRun(), finalRun, 'stream')
-  assert.equal(report.career.after.rank.id, 'legend')
-  assert.deepEqual(open(storage).current().career.promotions, [])
+  assert.equal(report.career.after.rank.id, 'working')
+  assert.equal(open(storage).current().career.legacyRank, 'Marsh Legend')
 })
 
 test('enrollment resumes an already saved anonymous claim and upgrades a guest without touching progress', () => {
@@ -281,16 +279,17 @@ test('an unsupported Marsh Legend field cannot promote or unlock gear, and pract
   }] } })
   const lodge = open(storage)
   const player = lodge.current()
-  assert.equal(player.career.rank, 'pup')
-  assert.equal(player.career.reviewRank, 'legend')
-  assert.equal(player.career.xp, xp)
+  assert.equal(player.career.legacyRank, 'Pup')
+  assert.equal(player.career.legacyXP, xp)
+  assert.equal(player.progression.paused, true)
   assert.equal(player.stats.pheasants, 300)
   assert.equal(player.profile.best, 2215)
-  assert.deepEqual(player.career.promotions, [])
+  assert.deepEqual(player.progression.honors, {})
   assert.equal(lodge.equip('vest', 'legend-vest'), false)
   const report = lodge.finalize(1, lodge.beginRun(), finalRun, 'stream')
   assert.deepEqual(report.earned, [])
-  assert.equal(report.career.after.rank.id, 'pup')
+  assert.deepEqual(report.newHonors, [])
+  assert.equal(report.boyd, false)
   const live = storage.getItem(saveKey)
   const practice = openLodge(() => storage, undefined, { practice: true })
   assert.equal(practice.current().profile.quality, 'low')

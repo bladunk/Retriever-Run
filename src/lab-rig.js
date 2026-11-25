@@ -1,8 +1,9 @@
 import * as T from 'three'
 import { createPawPlanting } from './paw-planting.js'
-import { collarBuckle, tintLabradorCoat } from './kennel-material.js'
+import { collarBuckle, tintFieldPattern, tintLabradorCoat } from './kennel-material.js'
 import { createWorkingVest } from './working-vest.js'
 import { masterHunter } from './master-hunter.js'
+import { disposeModel } from './model-disposal.js'
 
 const oneTurn = Math.PI * 2
 const up = new T.Vector3(0, 1, 0)
@@ -68,6 +69,7 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
     return { bone, base: bone.quaternion.clone() }
   })
   const collarMaterial = new T.MeshStandardMaterial({ color: 0x61442d, roughness: .70 })
+  const dressCollar = tintFieldPattern(collarMaterial)
   const strap = new T.LatheGeometry([
     new T.Vector2(.374,-.044), new T.Vector2(.393,-.044), new T.Vector2(.406,-.032),
     new T.Vector2(.406,.032), new T.Vector2(.394,.044), new T.Vector2(.374,.044), new T.Vector2(.374,-.044),
@@ -93,6 +95,7 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
   cloth.setIndex([0,5,1,1,5,6,1,6,2,2,6,3,3,6,7,3,7,4,5,8,6,6,8,7])
   cloth.computeVertexNormals()
   const scarfMaterial = new T.MeshStandardMaterial({ color: 0x616946, roughness: .96, side: T.DoubleSide })
+  const dressScarf = tintFieldPattern(scarfMaterial)
   const bandana = new T.Mesh(cloth, scarfMaterial)
   bandana.position.set(0, .04, .36)
   neck.add(bandana)
@@ -117,8 +120,15 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
 
   return {
     root,
+    dispose() {
+      // Pickup art comes from the trail's shared pool.
+      mouth.removeFromParent()
+      disposeModel({ root, mix: mixer })
+    },
     appearance(gear) {
       collarMaterial.color.setHex(gear.collar.color)
+      dressCollar(gear.collar)
+      dressScarf(gear.collar)
       const wearingSignature = gear.collar.id === masterHunter.signature
       if (signature) signature.visible = wearingSignature
       collar.visible = !wearingSignature

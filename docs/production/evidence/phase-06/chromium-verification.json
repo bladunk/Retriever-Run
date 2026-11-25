@@ -1,0 +1,28 @@
+{
+  "browser": "chromium",
+  "app": {
+    "version": "1.0.0-phase.6",
+    "id": "d4be70e"
+  },
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "replayMs": 939,
+  "xp": 750000,
+  "honors": 479,
+  "sameBuildOffline": true,
+  "firstBoydAward": true,
+  "offlineHunts": 2,
+  "firstFit": {
+    "textures": 12,
+    "geometries": 44,
+    "breed": "boyd"
+  },
+  "secondFit": {
+    "textures": 12,
+    "geometries": 44,
+    "breed": "boyd"
+  },
+  "errors": []
+}

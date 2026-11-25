@@ -1,15 +1,17 @@
 import { completeRun, normalizeProfile } from './profile.js'
 import { causes, counters, createRunStatistics } from './field-stats.js'
 import { awardPatches, patches } from './honors.js'
-import { applyRunXP, careerStanding, legacyLevel, normalizeCareer, serviceCredit } from './career.js'
+import { applyRunXP, careerStanding, normalizeCareer, xpAt } from './career.js'
+import { careerStanding as oldStanding, legacyLevel, normalizeCareer as normalizeLegacyCareer, serviceCredit } from './legacy-career.js'
 import { journalIssues, reviewSavedRank } from './career-integrity.js'
 import { expeditionRegions, migrationSecondsByTerritory, regionAt, territorySeconds } from './expedition.js'
 import { commitWildlife, normalizeWildlife } from './wildlife-journal.js'
 import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
-import { classicGear, kennelCatalog, legacyGear, newGear, normalizeKennel, unlocked } from './kennel-catalog.js'
+import { defaultGear, kennelCatalog, legacyGear, ownedGear, normalizeKennel, unlocked } from './kennel-catalog.js'
+import { advanceFieldwork, awardFieldHonors, masterHunterChecks, normalizeProgression, qualifyBoyd } from './progression.js'
 
 export const saveKey = 'retriever-run.record'
-export const saveVersion = 4
+export const saveVersion = 5
 
 export const legacyTerritoryNames = ['Gulf Coast Marsh', 'Southern Cypress Swamp', 'Mississippi Flyway',
   'Arkansas Flooded Timber', 'Midwest Farm Country', 'Prairie Potholes', 'Dakota Wetlands',
@@ -28,7 +30,7 @@ const validDate = value => typeof value === 'string' && Number.isFinite(Date.par
 const nickname = (value, fallback) => (typeof value === 'string' ? value.trim().slice(0, 24) : '') || fallback
 const emptyCounts = keys => Object.fromEntries(keys.map(key => [key, 0]))
 
-function normalizePlayer(raw, id, schema) {
+function normalizePlayer(raw, id, schema, practice) {
   const legacy = schema === 1
   const base = raw?.stats ?? {}
   const player = {
@@ -62,7 +64,7 @@ function normalizePlayer(raw, id, schema) {
       seconds: legacyTerritoryNames.map((_, index) => Math.min(measure(oldMigration.seconds?.[index]),
         playtime, index < 9 ? total : Infinity)) }
   }
-  const progress = schema === saveVersion ? raw?.migration : null
+  const progress = schema >= 4 ? raw?.migration : null
   const migrationDuration = trackedDuration(progress)
   player.migration = {
     duration: migrationDuration,
@@ -74,10 +76,26 @@ function normalizePlayer(raw, id, schema) {
   player.enrollment = ['guest', 'worldwide', 'returning'].includes(raw?.enrollment)
     ? raw.enrollment : legacy ? 'returning' : null
   const priorLevel = schema === 2 ? legacyLevel(raw?.career?.xp) : undefined
-  player.career = normalizeCareer(raw?.career, legacy ? serviceCredit(player.stats) : 0, priorLevel)
-  reviewSavedRank(player)
+  let previousStanding
+  if (schema < saveVersion) {
+    player.career = normalizeLegacyCareer(raw?.career, legacy ? serviceCredit(player.stats) : 0, priorLevel)
+    reviewSavedRank(player)
+    previousStanding = oldStanding(player.career)
+    const previousLevel = priorLevel ?? previousStanding.level
+    player.career = normalizeCareer({ lastRun: player.career.lastRun,
+      xp: raw?.career ? Math.max(previousStanding.xp, xpAt(previousLevel)) : previousStanding.xp,
+      legacyXP: previousStanding.xp, legacyLevel: raw?.career ? previousLevel : 0,
+      legacyRank: previousStanding.rank.name })
+  } else player.career = normalizeCareer(raw?.career)
+  player.progression = normalizeProgression(practice ? null : raw?.progression)
+  player.progression.paused = Boolean(journalIssues(player).length)
+  if (!practice && !player.progression.paused) {
+    awardFieldHonors(player)
+  }
+  if (player.progression.boyd && (player.progression.paused || !masterHunterChecks(player).every(requirement => requirement.met)))
+    player.progression.boyd = null
   player.kennel = normalizeKennel(legacy ? raw?.kennel ?? legacyGear(player.profile) : raw?.kennel,
-    careerStanding(player.career), priorLevel)
+    careerStanding(player.career), player.progression, previousStanding, priorLevel)
   return player
 }
 
@@ -108,12 +126,12 @@ function retainedEntries(entries) {
   return [...byId.values()].sort((a, b) => a.id - b.id)
 }
 
-function normalizeSave(raw) {
+function normalizeSave(raw, practice) {
   const players = Array.isArray(raw?.players) ? raw.players
-    .filter(player => count(player?.id) > 0).map(player => normalizePlayer(player, player.id, raw.version)) : []
+    .filter(player => count(player?.id) > 0).map(player => normalizePlayer(player, player.id, raw.version, practice)) : []
   const unique = [...new Map(players.map(player => [player.id, player])).values()]
   if (!unique.length) unique.push(normalizePlayer({ profile: raw?.version == null ? raw : null }, 1,
-    raw && raw.version == null && typeof raw === 'object' ? 1 : undefined))
+    raw && raw.version == null && typeof raw === 'object' ? 1 : undefined, practice))
   const known = new Set(unique.map(player => player.id))
   const active = known.has(raw?.active) ? raw.active : unique[0].id
   const entries = new Map()
@@ -143,7 +161,7 @@ function readSave(serialized) {
     const raw = JSON.parse(serialized)
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null
     if (raw.version == null || raw.version > saveVersion) return raw
-    if (![1, 2, 3, saveVersion].includes(raw.version) || !Array.isArray(raw.players) ||
+    if (![1, 2, 3, 4, saveVersion].includes(raw.version) || !Array.isArray(raw.players) ||
         !raw.players.some(player => count(player?.id) > 0)) return null
     return raw
   } catch { return null }
@@ -154,9 +172,11 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
   const backup = key + '.backup'
   let raw
   let recovered = false
+  let lastRead
   try {
     const disk = storage()
-    raw = readSave(disk.getItem(key))
+    lastRead = disk.getItem(key)
+    raw = readSave(lastRead)
     if (!raw) {
       raw = readSave(disk.getItem(backup))
       recovered = Boolean(raw)
@@ -169,7 +189,21 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
     }
   } catch { /* Use an in-memory save. */ }
   const futureSave = Number.isInteger(raw?.version) && raw.version > saveVersion
-  const save = normalizeSave(futureSave ? null : raw)
+  let save = normalizeSave(futureSave ? null : raw, practice)
+  let unsavedProgress = false
+  const liveTrackers = new WeakSet()
+  const refresh = () => {
+    try {
+      if (unsavedProgress) return false
+      const serialized = storage().getItem(key)
+      if (serialized === lastRead) return false
+      const newer = readSave(serialized)
+      if (!newer || newer.version > saveVersion) return false
+      save = normalizeSave(newer, practice)
+      lastRead = serialized
+      return true
+    } catch { return false }
+  }
   const commit = () => {
     if (futureSave) return false
     try {
@@ -177,6 +211,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const previous = disk.getItem(key)
       const prior = readSave(previous)
       if (prior?.version > saveVersion) return false
+      if (lastRead !== undefined && previous !== lastRead) return false
       const next = JSON.stringify(save)
       if (previous === next) return true
       // Write a last-known-good copy before replacing the single-key snapshot.
@@ -184,6 +219,8 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
         try { disk.setItem(backup, previous) } catch { /* The current snapshot remains the priority under quota pressure. */ }
       }
       disk.setItem(key, next)
+      lastRead = next
+      unsavedProgress = false
       return true
     } catch { return false }
   }
@@ -195,7 +232,11 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
     players: () => save.players,
     nameFor: id => save.players.find(player => player.id === id)?.nickname ?? 'Marsh Runner',
     board: (metric, course) => rankRuns(course ? save.entries.filter(run => (run.course ?? 'legacy-10') === course) : save.entries, metric),
-    beginRun: onSkill => createRunStatistics(save.nextRun++, onSkill),
+    beginRun(onSkill) {
+      const tracker = createRunStatistics(save.nextRun++, onSkill)
+      liveTrackers.add(tracker)
+      return tracker
+    },
     enroll(id, name, enrollment) {
       const player = save.players.find(player => player.id === id)
       if (!player) return false
@@ -205,21 +246,37 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
     },
     equip(category, itemId) {
       const player = current()
+      if (category === 'coat' && player.kennel.breed === 'boyd') return false
       const item = kennelCatalog[category]?.find(entry => entry.id === itemId)
-      if (!unlocked(item, careerStanding(player.career), player.kennel.inherited)) return false
+      if (!unlocked(item, careerStanding(player.career), player.kennel, player.progression)) return false
       player.kennel.equipment[category] = itemId
       commit()
       return true
     },
+    favorite(itemId) {
+      if (!Object.values(kennelCatalog).some(items => items.some(item => item.id === itemId))) return false
+      const favorites = current().kennel.favorites
+      const index = favorites.indexOf(itemId)
+      if (index < 0) favorites.push(itemId)
+      else favorites.splice(index, 1)
+      return commit()
+    },
     resetGear() {
-      current().kennel.equipment = { ...classicGear }
+      const kennel = current().kennel
+      kennel.equipment = defaultGear(kennel.breed)
       commit()
     },
-    acknowledgePromotion(id) {
-      const promotions = current().career.promotions
-      if (promotions[0] !== id) return
-      promotions.shift()
+    selectBreed(breed) {
+      const player = current()
+      if (practice || !['lab', 'boyd'].includes(breed) || breed === 'boyd' && !player.progression.boyd) return false
+      if (player.kennel.breed === breed) return true
+      const kennel = player.kennel
+      kennel.outfits[kennel.breed] = kennel.equipment
+      kennel.breed = breed
+      kennel.equipment = kennel.outfits[breed] ?? defaultGear(breed)
+      delete kennel.outfits[breed]
       commit()
+      return true
     },
     select(id) {
       if (!save.players.some(player => player.id === id)) return
@@ -227,7 +284,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       commit()
     },
     newPlayer(name) {
-      const player = normalizePlayer({ nickname: name, enrollment: 'guest' }, save.nextPlayer++)
+      const player = normalizePlayer({ nickname: name, enrollment: 'guest' }, save.nextPlayer++, saveVersion, practice)
       save.players.push(player)
       save.active = player.id
       commit()
@@ -239,14 +296,18 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       commit()
     },
     finalize(id, tracker, run, hazard) {
+      const live = liveTrackers.delete(tracker)
+      const rebased = !futureSave && refresh()
       const player = save.players.find(player => player.id === id)
-      const runId = tracker.runId ?? save.nextRun
+      const runId = live && rebased ? Math.max(tracker.runId, save.nextRun) : tracker.runId ?? save.nextRun
       if (!player || !count(runId) || runId <= player.career.lastRun ||
           save.entries.some(entry => entry.id === runId)) return null
       const result = player && tracker.finish(run, hazard)
       if (!result) return null
       save.nextRun = Math.max(save.nextRun, runId + 1)
       const date = now().toISOString()
+      const previousBest = player.profile.best
+      const oldGear = practice ? [] : ownedGear(player, careerStanding(player.career))
       const newWildlife = practice ? [] : commitWildlife(player.wildlife, result, runId, date)
       const statistics = player.stats
       statistics.runs++
@@ -255,6 +316,8 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       statistics.distance += result.distance
       statistics.playtime += result.duration
       if (!practice) {
+        if (!player.progression.migrations && player.migration.duration >= expeditionRegions.length * territorySeconds)
+          player.progression.migrations = 1
         player.migration.duration = Math.max(player.migration.duration, result.duration)
         player.migration.farthest = Math.max(player.migration.farthest, result.territory)
         for (const [index, seconds] of migrationSecondsByTerritory(result.duration).entries()) {
@@ -281,17 +344,25 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       }
       player.profile = completeRun(player.profile, { ...result, elapsed: result.duration }, result.score)
       const plausible = !journalIssues(player).length
+      player.progression.paused = !plausible
       const earned = plausible || practice ? awardPatches(player, date) : []
-      const career = practice ? null : applyRunXP(player.career, runId, result, improved, earned, player, plausible)
-      const gear = career ? newGear(career.before, career.after, player.kennel.inherited) : []
+      if (!practice && plausible) advanceFieldwork(player.progression, result)
+      const newHonors = !practice && plausible ? awardFieldHonors(player, date, result) : []
+      const career = practice ? null : applyRunXP(player.career, runId, result, improved, newHonors.filter(honor => honor.qualifies).length)
+      const boyd = !practice && plausible && qualifyBoyd(player, date)
+      const previous = new Set(oldGear.map(item => item.id))
+      const gear = career ? ownedGear(player, career.after).filter(item => !previous.has(item.id)) : []
       const entry = { ...result, id: runId, player: id, date }
       delete entry.wildlife
+      delete entry.field
       save.entries = retainedEntries([...save.entries, entry])
       const placements = emptyCounts(metrics)
       const courseEntries = save.entries.filter(run => run.course === entry.course)
       for (const metric of metrics) placements[metric] = rankRuns(courseEntries, metric).findIndex(run => run.id === entry.id) + 1
-      commit()
-      return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements, career, gear, practice, newWildlife }
+      const saved = commit()
+      if (!saved) unsavedProgress = true
+      return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements,
+        career, gear, practice, newWildlife, newHonors, boyd, saved, previousBest }
     },
   }
 }

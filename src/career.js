@@ -1,125 +1,73 @@
-import { careerFieldHonors as fieldHonors } from './honors.js'
-
-const obstacleHonors = ['timber-jumper', 'low-rider', 'goose-whisperer']
-
+export const maxLevel = 100
 export const dogRanks = [
-  { id: 'pup', name: 'Pup', level: 1, emblem: 'paw' },
-  { id: 'junior', name: 'Junior Retriever', level: 10, emblem: 'trail', reward: 'junior-collar',
-    honors: 3 },
-  { id: 'seasoned', name: 'Seasoned Gun Dog', level: 25, emblem: 'bird', reward: 'seasoned-vest',
-    honors: 6, survival: 'clean-paws' },
-  { id: 'master', name: 'Master Retriever', level: 50, emblem: 'star', reward: 'master-buckle',
-    honors: 8, silver: 2, obstacleSilver: 1 },
-  { id: 'legend', name: 'Marsh Legend', level: 100, emblem: 'reeds', reward: 'legend-vest',
-    honors: 8, silver: 3, obstacleGold: 2, lifetime: 'marsh-legend', longestRun: 300, retrieves: 100 },
+  { id: 'pup', name: 'Kennel Pup', level: 1, emblem: 'paw' },
+  { id: 'rookie', name: 'Rookie Retriever', level: 11, emblem: 'trail' },
+  { id: 'marsh-runner', name: 'Marsh Runner', level: 21, emblem: 'reeds' },
+  { id: 'working', name: 'Working Dog', level: 31, emblem: 'bird' },
+  { id: 'seasoned-retriever', name: 'Seasoned Retriever', level: 41, emblem: 'timber' },
+  { id: 'veteran', name: 'Waterfowl Veteran', level: 51, emblem: 'bird' },
+  { id: 'champion', name: 'Flyway Champion', level: 61, emblem: 'trail' },
+  { id: 'elite', name: 'Elite Gundog', level: 71, emblem: 'branch' },
+  { id: 'legendary', name: 'Legendary Retriever', level: 81, emblem: 'star' },
+  { id: 'master-hunter', name: 'Master Hunter', level: 100, emblem: 'star' },
 ]
-
-export const xpRates = { run: 15, distance: 8, jump: 5, slide: 5, goose: 15, treat: 1, retrieve: 18, best: 50, honor: 45 }
-const maxXP = 1_000_000_000_000
-const careerCount = value => Number.isSafeInteger(value) && value >= 0 ? value : 0
-const validXP = value => Math.min(maxXP, careerCount(value))
-const rankOrder = new Map(dogRanks.map((rank, index) => [rank.id, index]))
-export const rankIndex = id => rankOrder.get(id) ?? 0
-const award = (player, id) => player?.patches?.[id]?.length ?? 0
+const milestones = [[1, 0], [2, 110], [10, 9_000], [20, 22_500], [30, 45_000],
+  [40, 90_000], [50, 157_500], [60, 225_000], [70, 355_000], [80, 470_000],
+  [99, 731_000], [100, 750_000]]
+const thresholds = [0]
+for (let i = 1; i < milestones.length; i++) {
+  const [start, low] = milestones[i - 1]
+  const [end, high] = milestones[i]
+  for (let level = start + 1; level <= end; level++)
+    thresholds.push(Math.round(low + (high - low) * (level - start) / (end - start)))
+}
+const count = value => Number.isSafeInteger(value) && value >= 0 ? value : 0
+const cleanXP = value => Math.min(1e12, count(value))
+const positive = value => Number.isFinite(value) && value > 0 ? value : 0
 
 export function xpAt(level) {
-  // Keep the original first milestone so existing level-two dogs do not return to level one.
-  if (level === 2) return 110
-  const steps = level - 1
-  return steps * (165 + 28 * (steps - 1))
+  return thresholds[Math.min(maxLevel, Math.max(1, Math.floor(level || 1))) - 1]
 }
 
-export function legacyLevel(xp) {
-  return 1 + Math.floor((Math.sqrt(84 ** 2 + 104 * validXP(xp)) - 84) / 52)
-}
-
-export function levelFromXP(rawXP) {
-  const xp = validXP(rawXP)
-  let level = 1 + Math.floor((Math.sqrt(137 ** 2 + 112 * xp) - 137) / 56)
-  if (xpAt(level + 1) <= xp) level++
-  if (xpAt(level) > xp) level--
-  return level
+export function levelFromXP(value) {
+  const xp = cleanXP(value)
+  return thresholds.findLastIndex(threshold => threshold <= xp) + 1
 }
 
 export function careerStanding(career) {
-  const xp = validXP(career.xp)
+  const xp = cleanXP(career?.xp)
   const level = levelFromXP(xp)
-  const index = rankIndex(career.rank)
+  const index = dogRanks.findLastIndex(rank => rank.level <= level)
+  const maxed = level === maxLevel
+  const span = maxed ? 1 : xpAt(level + 1) - xpAt(level)
   return { xp, level, rank: dogRanks[index], nextRank: dogRanks[index + 1],
-    within: xp - xpAt(level), span: xpAt(level + 1) - xpAt(level) }
+    within: maxed ? span : xp - xpAt(level), span, maxed }
 }
 
-export function normalizeCareer(raw, welcomeCredit = 0, priorLevel) {
-  const xp = validXP(raw?.xp ?? welcomeCredit)
-  // In schema 2 rank was derived from XP. Keep it and any ceremonies awaiting acknowledgment.
-  const legacy = [1, 6, 13, 21, 31].findLastIndex(level => level <= (priorLevel ?? 0))
-  const index = legacy < 0 ? rankIndex(raw?.rank) : legacy
-  const legacyIndex = legacy < 0 ? Math.min(index, rankIndex(raw?.legacyRank)) : legacy
-  const pending = new Set(Array.isArray(raw?.promotions) ? raw.promotions : [])
-  return {
-    xp,
-    rank: dogRanks[index].id,
-    legacyRank: dogRanks[legacyIndex].id,
-    legacyLevel: priorLevel ?? careerCount(raw?.legacyLevel),
-    lastRun: careerCount(raw?.lastRun),
-    reviewRank: dogRanks[rankIndex(raw?.reviewRank)].id,
-    promotions: dogRanks.filter((rank, i) => i > 0 && i <= index && pending.has(rank.id)).map(rank => rank.id),
-  }
+export function normalizeCareer(raw) {
+  return { xp: cleanXP(raw?.xp), lastRun: count(raw?.lastRun),
+    legacyXP: cleanXP(raw?.legacyXP), legacyLevel: count(raw?.legacyLevel),
+    legacyRank: typeof raw?.legacyRank === 'string' ? raw.legacyRank.slice(0, 80) : '' }
 }
 
-export function promotionRequirements(rank, player, level) {
-  const requirements = []
-  const add = (label, current, target, candidates = []) => requirements.push({
-    label, current: Math.min(target, current), target, met: current >= target, candidates,
-  })
-  const withTier = (choices, tier) => choices.filter(id => award(player, id) >= tier).length
-  const namesBelow = (choices, tier) => fieldHonors
-    .filter(patch => choices.includes(patch.id) && award(player, patch.id) < tier)
-    .map(patch => patch.name)
-  const allHonors = fieldHonors.map(patch => patch.id)
-  const tiered = fieldHonors.filter(patch => patch.goals.length >= 2).map(patch => patch.id)
-  add('Career level', level, rank.level)
-  if (rank.honors) add('Different Field Honors', withTier(allHonors, 1), rank.honors, namesBelow(allHonors, 1))
-  if (rank.survival) add('Clean Paws · one 2-minute run', award(player, rank.survival), 1)
-  if (rank.silver) add('Different Silver-tier Field Honors', withTier(tiered, 2), rank.silver, namesBelow(tiered, 2))
-  if (rank.obstacleSilver) add('Silver obstacle honors', withTier(obstacleHonors, 2), rank.obstacleSilver, namesBelow(obstacleHonors, 2))
-  if (rank.obstacleGold) add('Gold obstacle honors', withTier(obstacleHonors, 3), rank.obstacleGold, namesBelow(obstacleHonors, 3))
-  if (rank.lifetime) add('Gold Marsh Legend Field Honor · 200 km', award(player, rank.lifetime), 3)
-  if (rank.longestRun) add('Longest run · seconds', Math.floor(player?.records?.duration ?? 0), rank.longestRun)
-  if (rank.retrieves) add('Lifetime duck and pheasant retrieves',
-    (player?.stats?.ducks ?? 0) + (player?.stats?.pheasants ?? 0), rank.retrieves)
-  return requirements
+export function runXP(result, improved = [], newHonors = 0) {
+  const time = positive(result.duration)
+  if (time < 2) return 0
+  const pace = Math.min(time * .09, positive(positive(result.distance) - time * 12) * .025)
+  const score = Math.min(time * .10, positive(positive(result.score) - positive(result.distance)) / 240)
+  const maneuvers = positive(result.jumpClears) + positive(result.slidesCleared) + positive(result.geese)
+  const execution = Math.min(time * .20, 2 * maneuvers + 8 * (positive(result.ducks) + positive(result.pheasants)) +
+    3 * positive(result.field?.routes))
+  const milestone = Math.min(time * .12, (improved.includes('score') || improved.includes('distance') ? 12 : 0) +
+    4 * positive(newHonors))
+  return Math.floor(.95 * time + .15 * Math.max(0, time - 45) + pace + score + execution + milestone)
 }
 
-export function serviceCredit(stats) {
-  // A capped service credit uses established totals without reconstructing old events.
-  return Math.min(1_000, stats.runs * 15 + Math.floor(stats.distance / 100) * 5)
-}
-
-export function runXP(result, improved, earned) {
-  if (result.duration < 2) return 0
-  return validXP(xpRates.run + Math.floor(result.distance / 100) * xpRates.distance +
-    result.jumpClears * xpRates.jump + result.slidesCleared * xpRates.slide +
-    result.geese * xpRates.goose + result.treats * xpRates.treat +
-    (result.ducks + result.pheasants) * xpRates.retrieve +
-    Number(improved.includes('score') || improved.includes('distance')) * xpRates.best +
-    earned.filter(({ patch, level }) => level === 0 && fieldHonors.includes(patch)).length * xpRates.honor)
-}
-
-export function applyRunXP(career, id, result, improved, earned, player, promotionAllowed = true) {
+export function applyRunXP(career, id, result, improved, newHonors) {
   if (id <= career.lastRun) return null
   const before = careerStanding(career)
-  career.xp = validXP(career.xp + runXP(result, improved, earned))
+  career.xp = cleanXP(career.xp + runXP(result, improved, newHonors))
   career.lastRun = id
-  const { level } = careerStanding(career)
-  if (result.duration >= 2 && promotionAllowed) {
-    for (const rank of dogRanks.slice(rankIndex(career.rank) + 1)) {
-      if (!promotionRequirements(rank, player, level).every(requirement => requirement.met)) break
-      career.rank = rank.id
-      career.promotions.push(rank.id)
-    }
-  }
-  if (rankIndex(career.reviewRank) <= rankIndex(career.rank)) delete career.reviewRank
   const after = careerStanding(career)
-  return { earned: after.xp - before.xp, before, after }
+  return { before, after, earned: after.xp - before.xp }
 }

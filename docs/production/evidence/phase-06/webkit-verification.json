@@ -1,0 +1,41 @@
+{
+  "engine": "webkit",
+  "baseline": false,
+  "upgrade": false,
+  "disclosure": "14.25 MB to download \u00b7 14.33 MB total",
+  "interruptedAsset": "labrador.glb",
+  "injectedNetworkErrors": 3,
+  "interruption": "The download stopped. Retry to resume from your verified files.",
+  "coldReadyMsIncludingRetry": 7779,
+  "matchedSighting": {
+    "seen": 1,
+    "rare": 0,
+    "retrieves": 0,
+    "first": "2026-11-25T17:17:44.660Z",
+    "territory": "gulf",
+    "regions": {
+      "gulf": 1
+    }
+  },
+  "restartMs": 84,
+  "wallFrameIntervals": {
+    "observations": 14,
+    "median": 51,
+    "p95": 65,
+    "slow": 13
+  },
+  "corruptFileRepaired": true,
+  "offlineReadyMs": 3246,
+  "offlineBuild": {
+    "version": "1.0.0-phase.6",
+    "id": "d4be70e"
+  },
+  "renderer": {
+    "draws": 55,
+    "triangles": 104904,
+    "textures": 13,
+    "geometries": 45,
+    "residentTiles": 7,
+    "dogBreed": "lab"
+  }
+}

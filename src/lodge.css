@@ -369,6 +369,7 @@
 @media (max-width: 400px) {
   .lodge-tabs { gap: 2px; padding-inline: 4px; }
   .lodge-tabs button { padding-inline: 3px; font-size: .7rem; }
+  #tab-worldwide { padding-inline: 0; }
 }
 
 .wildlife-guide {
@@ -411,3 +412,16 @@
   margin-block-start: .8rem;
   color: #edddba;
 }
+
+.career-ledger > summary, .patch-card > summary, .report-highlight > summary {
+  color: var(--cream, #ead9bb);
+  font-weight: 700;
+  cursor: pointer;
+}
+.career-ledger > summary { padding-block: .35rem; }
+.patch-card > summary { display: list-item; line-height: 1.25; }
+.patch-card[data-tier="platinum"] { border-color: #afb9a4; }
+.master-qualification .career-requirements { margin-block: .65rem; }
+.board-filters:has(> select) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.board-filters select { min-width: 0; min-height: 44px; padding-inline: .45rem; }
+.kennel-master-hunter button { margin-block-start: .65rem; }
