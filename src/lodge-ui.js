@@ -530,7 +530,6 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
     trigger?.focus({ preventScroll: true })
   })
   return {
-    rivalMetric: () => rivalMetric,
     open(button, targetRoom = 'overview', detail) {
       trigger = button
       room = targetRoom

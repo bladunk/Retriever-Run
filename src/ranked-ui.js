@@ -177,7 +177,10 @@ function worldwide(camp, player, start, navigate) {
   state.setAttribute('role', 'status')
   let ticket
   const ranked = action('Prepare a ranked hunt', async () => {
-    if (ticket && Date.parse(ticket.expires) > Date.now()) { start(ticket); return }
+    if (ticket && Date.parse(ticket.expires) > Date.now()) {
+      if (!start(ticket)) state.textContent = 'Ranked entry needs prepared game content and a connection.'
+      return
+    }
     ranked.disabled = true
     state.textContent = 'Requesting a ranked entry…'
     const response = await camp.ticket(player.id)

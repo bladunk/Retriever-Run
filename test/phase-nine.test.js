@@ -12,6 +12,10 @@ test('ranked replay terminates at the genuine fixed-step collision, derives scor
   const recorder = recordRankedActions()
   const witness = { score: 95, distance: 35, duration: 3161, retrieves: 0, combo: 5 }
   assert.deepEqual(verifyRankedReplay(0, recorder.finish(380)), witness)
+  const steered = recordRankedActions()
+  steered.add(180, 'left')
+  assert.deepEqual(verifyRankedReplay(0, steered.finish(379)),
+    { score: 55, distance: 35, duration: 3158, retrieves: 0, combo: 2 })
   assert.equal(verifyRankedReplay(0, recorder.finish(379)), null)
   assert.equal(verifyRankedReplay(0, recorder.finish(381)), null)
   assert.equal(verifyRankedReplay(0, { ticks: 380, actions: [5, 1] }), null)

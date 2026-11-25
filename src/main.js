@@ -219,9 +219,10 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   onAppearance(equipment) { dog?.appearance(equipment) },
   onStart(ticket) {
     if (!contextReady || !trailReady || productionSession.locked() ||
-        (ticket && (!navigator.onLine || Date.parse(ticket.expires) <= Date.now()))) return
+        (ticket && (!productionSession.prepared() || !navigator.onLine || Date.parse(ticket.expires) <= Date.now()))) return false
     ui.lodge.close()
     start(ticket)
+    return true
   },
   onJoin(player, member) {
     if (player.enrollment === 'guest' || !player.enrollment) {
@@ -1142,9 +1143,6 @@ function bindInput() {
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) background() })
   window.addEventListener('blur', () => { if (mode === 'running') background() })
-  window.addEventListener('offline', () => {
-    if (mode === 'running' || mode === 'paused') connectedRun = false
-  })
   window.addEventListener('pagehide', background)
   window.addEventListener('pageshow', () => {
     clock.reset()
