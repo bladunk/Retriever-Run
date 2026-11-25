@@ -3,9 +3,12 @@ import { checkLabel, honorCategories, honors, localHonors } from './field-honors
 import { progressionMetrics } from './progression.js'
 import { node, number } from './lodge-elements.js'
 import { kennelItems } from './kennel-catalog.js'
+import { verifiedHonorRequirements } from './ranked-camp.js'
 
-export function fieldHonorsRoom(player, insignia, legacyPanels, category) {
+export function fieldHonorsRoom(player, insignia, legacyPanels, category, competitive = []) {
   const earned = player.progression.honors
+  const verified = new Set(competitive)
+  const owns = honor => Object.hasOwn(earned, honor.id) || verified.has(honor.id)
   const values = progressionMetrics(player)
   const root = node('section', null, 'patch-section')
   const filters = node('div', null, 'board-filters')
@@ -36,17 +39,17 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category) {
   function render() {
     const pool = section.value === 'All local honors' ? localHonors : honors.filter(honor => honor.category === section.value)
     const filtered = pool.filter(honor => {
-      const owned = Object.hasOwn(earned, honor.id)
+      const owned = owns(honor)
       return (status.value === 'All statuses' || owned === (status.value === 'Earned')) &&
         (rarity.value === 'all' || honor.tier === rarity.value) &&
         matchesCollection(search.value, honor.secret && !owned ? 'Secret Field Honor' : honor.name, honor.category)
     })
     if (sort.value === 'recent') filtered.sort((a, b) => recentlyEarned(earned[a.id], earned[b.id]) ||
-      Number(Object.hasOwn(earned, b.id)) - Number(Object.hasOwn(earned, a.id)))
-    if (sort.value === 'name') filtered.sort((a, b) => (a.secret && !Object.hasOwn(earned, a.id) ? 'Secret Field Honor' : a.name)
-      .localeCompare(b.secret && !Object.hasOwn(earned, b.id) ? 'Secret Field Honor' : b.name))
+      Number(owns(b)) - Number(owns(a)))
+    if (sort.value === 'name') filtered.sort((a, b) => (a.secret && !owns(a) ? 'Secret Field Honor' : a.name)
+      .localeCompare(b.secret && !owns(b) ? 'Secret Field Honor' : b.name))
     const articles = filtered.slice(page * size, page * size + size).map(honor => {
-      const owned = Object.hasOwn(earned, honor.id)
+      const owned = owns(honor)
       const hidden = honor.secret && !owned
       const isLegend = honor.category === 'Legendary'
       const details = node('details', null, 'patch-card')
@@ -56,9 +59,12 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category) {
       const badge = node('div', null, 'patch-badge')
       badge.append(insignia(isLegend ? 'star' : honor.category === 'Hall of Shame' ? 'timber' :
         honor.category.includes('Waterfowl') ? 'bird' : 'paw'))
-      details.append(title, badge, node('p', honor.pending ? 'Pending · verified Camp play' :
+      const onlineRequirement = verifiedHonorRequirements[honor.id]
+      details.append(title, badge, node('p', verified.has(honor.id) ? 'Verified · ' + honor.tier :
+        honor.pending && !onlineRequirement ? 'Pending · verified Camp play' :
         owned ? 'Earned · ' + honor.tier : 'Locked · ' + honor.tier, 'patch-state'))
-      if (honor.pending) details.append(node('p', 'Available after the new Camp ruleset and verification are released.'))
+      if (onlineRequirement) details.append(node('p', onlineRequirement))
+      else if (honor.pending) details.append(node('p', 'This Honor is unavailable until its requirement can be verified.'))
       else if (hidden) details.append(node('p', 'Discover this combination on a hunt.'))
       else {
         const list = node('ul', null, 'career-requirements')
@@ -89,6 +95,7 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category) {
   archive.append(node('summary', 'Earlier patches and Hall of Shame'), ...legacyPanels)
   root.append(node('h3', 'Field Honors', 'section-title'),
     node('p', number(Object.keys(earned).length) + ' of ' + number(localHonors.length) + ' local honors earned', 'room-note'),
+    ...(verified.size ? [node('p', number(verified.size) + ' competitive Honors recorded by Camp', 'room-note')] : []),
     tools, pageControls, grid, archive)
   render()
   return [root]

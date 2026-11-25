@@ -1,0 +1,33 @@
+.ranked-camp, .ranked-overview, .ranked-form, .ranked-code, .ranked-entry {
+  display: grid;
+  gap: .55rem;
+}
+.ranked-camp button, .ranked-overview button, .ranked-camp select,
+.ranked-camp input {
+  min-height: 44px;
+}
+.ranked-camp input, .ranked-form input, .ranked-code input {
+  width: 100%;
+  min-width: 0;
+  padding-inline: .65rem;
+  font-size: 16px;
+}
+.ranked-camp .room-note:empty, .ranked-entry small:empty { display: none; }
+.ranked-entry, .ranked-public-profile:not(:empty), .ranked-rivals:not(:empty), .ranked-confirmation {
+  padding: .6rem;
+  border-block-end: 1px solid var(--field-stroke);
+}
+.ranked-camp .ranked-entry small { color: var(--field-gold); }
+.ranked-camp .ranked-player {
+  min-width: 0;
+  padding: .3rem;
+  font-size: .88rem;
+  text-align: left;
+  text-decoration: underline;
+  background: transparent;
+  border-color: transparent;
+}
+.ranked-camps { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ranked-camp :is(h4, p) { margin-block: .25rem; }
+.ranked-confirmation button { margin-inline-end: .3rem; }
+.ranked-camp .own-ranking:empty { display: none; }

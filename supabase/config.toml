@@ -1,0 +1,5 @@
+project_id = "retriever-run"
+
+[functions.verify-hunt]
+# The handler verifies the bearer with Supabase Auth before any service RPC.
+verify_jwt = false

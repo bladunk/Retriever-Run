@@ -9,6 +9,7 @@ import { expeditionRegions } from './expedition.js'
 import { stageAt } from './difficulty.js'
 import { categories, personalRecordLabels } from './lodge-save.js'
 import { worldwideBoard } from './camp-ui.js'
+import { rankedRoom } from './ranked-ui.js'
 import { node, number, meters, date, duration, rows, cards } from './lodge-elements.js'
 import { careerLine, careerRoom, nearbyHonor } from './career-ui.js'
 import { kennelRoom } from './kennel-ui.js'
@@ -360,7 +361,8 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
   }))
 }
 
-export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKennel, onAppearance, onStart, onJoin, inspectDogs }) {
+export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, onClose, onKennel, onAppearance,
+  onStart, onJoin, onErase, inspectDogs }) {
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
   const scroll = dialog.querySelector('.lodge-scroll')
@@ -368,7 +370,8 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   const picker = ui['lodge-room']
   const labels = { overview: 'Lodge overview', collection: 'Trophy room', trophies: 'Field Honors', career: 'Career and Master Hunter',
     records: 'Personal records', migration: 'Great Migration', shame: 'Hall of Shame',
-    kennel: 'Kennel', equipment: 'Equipment room', board: 'Local Camp', worldwide: 'Worldwide Camp' }
+    kennel: 'Kennel', equipment: 'Equipment room', board: 'Local records', worldwide: 'Worldwide rankings', friends: 'Friends',
+    'private-camps': 'Private Camps', 'camp-profile': 'Competitive profile', 'camp-archives': 'Archived standings' }
   const positions = new Map()
   const views = new Map()
   const galleryRooms = new Set(['overview','collection','migration','equipment','shame','records'])
@@ -415,18 +418,20 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
     }
     function selectMetric(value) {
       metric = value
-      if (room === 'worldwide') rivalMetric = value
+      if (room === 'camp-archives') rivalMetric = value
       views.delete(room)
       renderRoom()
       panel.querySelector('[data-metric=' + value + ']')?.focus({ preventScroll: true })
     }
     let content
     let stage
-    if (room === 'board' || room === 'worldwide') {
-      const isWorldwide = room === 'worldwide'
+    if (room === 'board' || room === 'camp-archives') {
+      const isWorldwide = room === 'camp-archives'
       if (isWorldwide) metric = rivalMetric
       content = isWorldwide ? [worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart })]
         : leaderboard(lodge, metric, selectMetric)
+    } else if (primaryRoom(room) === 'board') {
+      content = [rankedRoom(room, rankedCamp, camp, player, { start: onStart, navigate: selectRoom, onJoin, onErase })]
     } else if (room === 'kennel') {
       ({ content, stage } = kennelRoom(lodge, onAppearance, inspectDogs, breed => {
         if (!lodge.selectBreed(breed)) return
@@ -435,7 +440,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
         panel.querySelector('.kennel-breeds').open = true
       }, target))
     } else if (room === 'career') content = careerRoom(player, insignia)
-    else if (room === 'trophies') content = fieldHonorsRoom(player, insignia, trophies(player), target)
+    else if (room === 'trophies') content = fieldHonorsRoom(player, insignia, trophies(player), target, rankedCamp.honors(player.id))
     else if (room === 'journal') content = journal(player)
     else if (galleryRooms.has(room)) {
       if (!gallery) {
@@ -452,7 +457,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
         })
         return
       }
-      content = gallery(room, player, { lodge, target, navigate(value, detail) {
+      content = gallery(room, player, { lodge, target, competitive: rankedCamp.honors(player.id), navigate(value, detail) {
         views.delete('overview')
         selectRoom(value, detail)
         tabs.find(tab => tab.dataset.room === primaryRoom(value))?.focus({ preventScroll: true })
@@ -501,7 +506,7 @@ export function createLodgeUI(ui, lodge, { camp, onPlayer, onOpen, onClose, onKe
   ui['camp-hunt'].addEventListener('click', () => dialog.close())
 
   function onConnectivity() {
-    if (dialog.open && room === 'worldwide') renderRoom()
+    if (dialog.open && primaryRoom(room) === 'board' && room !== 'board') renderRoom()
   }
   window.addEventListener('online', onConnectivity)
   window.addEventListener('offline', onConnectivity)

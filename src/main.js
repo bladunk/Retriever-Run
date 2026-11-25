@@ -21,13 +21,13 @@ import { createPerformanceProbe } from './performance-probe.js'
 import { openLodge } from './lodge-save.js'
 import { createCampTransport } from './camp-transport.js'
 import { createWorldwideCamp } from './worldwide-camp.js'
-import { submissionMessages } from './camp-ui.js'
+import { createRankedCamp, rankedMetrics, verifiedHonorNames } from './ranked-camp.js'
+import { recordRankedActions } from './ranked-replay.js'
 import { createLodgeUI, fillReport } from './lodge-ui.js'
 import { createRunStatistics, deathCause } from './field-stats.js'
 import { careerStanding, xpAt } from './career.js'
 import { careerLine, fillCareerReport } from './career-ui.js'
 import { createOnboarding, restoreEnrollment } from './camp-onboarding.js'
-import { createReportRival } from './rival-ui.js'
 import { createKennelView } from './kennel-view.js'
 import {
   advance, collect, courseRuleset, createCourse, getHeight, laneWidth, multiplier, newRun, pickupElevation, touchesPickup,
@@ -48,6 +48,7 @@ import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
 import './lodge.css'
 import './experience.css'
+import './ranked-camp.css'
 import './top-dog.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
@@ -127,26 +128,19 @@ const diagnosticsRequested = Boolean(previewRegion) || collisionRequested
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
 const breed = collisionRequested ? inspectionBreed(true, flags.get('breed')) : lodge.current().kennel.breed
 const campfire = createCampfire(diagnosticsRequested ? () => undefined : undefined)
-const camp = createWorldwideCamp(diagnosticsRequested ? null : createCampTransport())
+const campTransport = diagnosticsRequested ? null : createCampTransport()
+const camp = createWorldwideCamp(campTransport)
+const rankedCamp = createRankedCamp(campTransport, camp, { safe: () => mode !== 'running' && !document.hidden })
 ui.game.toggleAttribute('data-practice', diagnosticsRequested)
 if (previewRegion) document.querySelector('.practice-status').textContent = 'Territory preview · progress disabled'
-if (!diagnosticsRequested) {
-  restoreEnrollment(lodge, camp)
-  window.addEventListener('online', () => camp.syncPending())
-}
-if (!diagnosticsRequested) {
-  if (document.readyState === 'complete') camp.syncPending()
-  else window.addEventListener('load', () => camp.syncPending(), { once: true })
-}
+if (!diagnosticsRequested) restoreEnrollment(lodge, camp)
 const saveProfile = lodge.commit
 let profile = lodge.current().profile
 setMotionPreference()
 let runPlayer
 let runStatistics
 let runPermit
-let connectedRun = false
-let runRival
-let runMetric
+let runTrace
 let coaching = false
 let lastShift = -Infinity
 let lastTreat = -Infinity
@@ -158,6 +152,14 @@ let currentTerritory = null
 let audioGesture = false
 
 let mode = 'title'
+function syncCamp() {
+  if (!campTransport || mode === 'running' || document.hidden) return
+  void camp.syncPending()
+  void rankedCamp.flush()
+}
+window.addEventListener('online', syncCamp)
+if (document.readyState === 'complete') queueMicrotask(syncCamp)
+else window.addEventListener('load', syncCamp, { once: true })
 let run = newRun()
 samplePose(previous, run, run, 1)
 let nextRow = createCourse(2026)
@@ -200,6 +202,7 @@ function makeRenderer() {
 const lodgeUI = createLodgeUI(ui, lodge, {
   inspectDogs: collisionRequested,
   camp,
+  rankedCamp,
   onPlayer() {
     profile = lodge.current().profile
     setMotionPreference()
@@ -214,10 +217,11 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   onClose() { sound.selectScene(mode) },
   onKennel(stage) { showKennel?.(stage) },
   onAppearance(equipment) { dog?.appearance(equipment) },
-  onStart() {
-    if (!contextReady || !trailReady) return
+  onStart(ticket) {
+    if (!contextReady || !trailReady || productionSession.locked() ||
+        (ticket && (!navigator.onLine || Date.parse(ticket.expires) <= Date.now()))) return
     ui.lodge.close()
-    start()
+    start(ticket)
   },
   onJoin(player, member) {
     if (player.enrollment === 'guest' || !player.enrollment) {
@@ -225,10 +229,10 @@ const lodgeUI = createLodgeUI(ui, lodge, {
       if (mode === 'title') showTitleRecord()
     }
   },
+  onErase(player) { lodge.enroll(player.id, player.nickname, 'guest') },
 })
 const onboarding = createOnboarding(ui, lodge, camp, showTitleRecord, start)
 ui['custom-camp'].addEventListener('click', () => { ui.preferences.close(); onboarding.open() })
-const renderReportRival = createReportRival(ui['report-rival'], camp)
 ui['open-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
 for (const button of ui['title-rooms'].querySelectorAll('[data-entry]'))
   button.addEventListener('click', () => lodgeUI.open(button, button.dataset.entry))
@@ -543,6 +547,7 @@ function runningSurface() {
 }
 
 function onAction(move) {
+  runTrace?.add(ticks, move)
   runStatistics.action(move)
   if (move === 'left' || move === 'right') {
     lastShift = run.elapsed
@@ -833,12 +838,9 @@ function setMode(value, options = {}) {
       : lodge.finalize(runPlayer, runStatistics, run, contact.type)
     if (report) {
       profile = lodge.current().profile
-      const target = runRival?.rival?.[runMetric]
-      const measured = runMetric === 'distance' ? Math.floor(report.distance) : report[runMetric]
       const { line } = campfire.choose({
         hazard: report.hazard, duration: report.duration, score: report.score, previousBest, priorRuns,
         jump: run.jump > 0, slide: run.slide > 0, changingLane: run.elapsed - lastShift < .45,
-        rivalGap: target > 0 ? (target + 1 - measured) / (target + 1) : 0,
         bestStreak: run.bestStreak,
         recentTreat: run.elapsed - lastTreat < .65,
         territory: report.territory, retrieves: report.retrieves, repeated,
@@ -849,23 +851,7 @@ function setMode(value, options = {}) {
       const player = previewRegion ? undefined : lodge.players().find(player => player.id === runPlayer)
       fillReport(ui, report, { heckle: line, previousBest: report.previousBest ?? previousBest, player })
       fillCareerReport(ui, report, player, (button, id) => lodgeUI.open(button, 'kennel', id), button => lodgeUI.open(button))
-      const posting = diagnosticsRequested ? null : connectedRun ? camp.record(runPlayer, report, runPermit) :
-        runner.enrollment === 'worldwide' ? { status: 'unranked' } : null
-      const worldwide = ui['report-worldwide']
-      worldwide.dataset.run = String(report.id)
-      worldwide.hidden = !posting
-      if (posting) {
-        worldwide.textContent = !productionSession.rankedRulesetAvailable ? 'Local result · This course is awaiting a new Camp ruleset.' : submissionMessages[posting.status]
-        posting.done?.then(status => {
-          if (worldwide.dataset.run === String(report.id)) {
-            worldwide.hidden = status === 'none'
-            worldwide.textContent = submissionMessages[status] ?? submissionMessages.pending
-          }
-        })
-      }
-      if (!diagnosticsRequested) {
-        renderReportRival(runPlayer, runMetric, report, runRival, posting)
-      }
+      reportRankedResult()
       newRecord = report.improved.includes('score') || report.improved.includes('distance')
       rewardCue = rewardGroups(report)[0]?.type
       if (rewardCue === 'prestige') hapticFeedback(navigator, profile.haptics, 'prestige')
@@ -887,7 +873,10 @@ function setMode(value, options = {}) {
   ui['pause-actions'].hidden = !paused
   if (!title) ui['title-milestone'].hidden = true
   ui['running-version'].hidden = !title
-  if (title) showTitleRecord()
+  if (title) {
+    showTitleRecord()
+    syncCamp()
+  }
   else ui.record.hidden = true
   ui.eyebrow.textContent = title ? 'THE GREAT MIGRATION' : regionAt(run.elapsed).name.toUpperCase()
   ui['menu-title'].innerHTML = title ? 'Retriever <em>Run</em>' : '<em>Paused</em>'
@@ -960,7 +949,7 @@ function resetTrail(seed) {
   spray.reset()
 }
 
-function start() {
+function start(ticket) {
   if (productionSession.locked() || ui['content-screen'].open || mode === 'running' || !trailReady || !contextReady ||
       ui.onboarding.open || ui.tutorial.open) return
   if (!lodge.current().enrollment && !diagnosticsRequested) {
@@ -968,15 +957,14 @@ function start() {
     lodge.enroll(player.id, player.nickname, 'guest')
   }
   performanceProbe?.restart()
-  resetTrail(debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   runPlayer = lodge.current().id
+  runPermit = !diagnosticsRequested && ticket?.profile === runPlayer &&
+    ticket.owner === camp.member(runPlayer)?.identity ? ticket : null
+  runTrace = runPermit ? recordRankedActions() : null
+  resetTrail(runPermit?.seed ?? debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   coaching = lodge.current().stats.runs < 3
   const onSkill = debug ? event => debug.skill(event) : undefined
   runStatistics = previewRegion ? createRunStatistics(undefined, onSkill) : lodge.beginRun(onSkill)
-  connectedRun = navigator.onLine && !productionSession.gateRanked()
-  runPermit = connectedRun ? camp.beginRun(runPlayer) : null
-  runMetric = lodgeUI.rivalMetric()
-  runRival = diagnosticsRequested ? null : camp.peekRival(runPlayer, runMetric)
   setMode('running', { gesture: true, restart: true })
   populate()
 }
@@ -994,6 +982,35 @@ function move(direction) {
 function pause() {
   if (mode === 'running') setMode('paused')
   else if (mode === 'paused' && contextReady) setMode('running', { gesture: true })
+}
+
+function reportRankedResult() {
+  const summary = ui['report-ranked']
+  const detail = ui['report-worldwide']
+  summary.hidden = detail.hidden = !runPermit
+  if (!runPermit) return
+  const posting = rankedCamp.finish(runPermit, runTrace?.finish(ticks))
+  summary.textContent = detail.textContent = posting.status === 'pending' ? 'Worldwide verification pending' :
+    'Local result saved · This hunt is outside the ranked limits.'
+  const current = runStatistics
+  runPermit = runTrace = null
+  posting.done?.then(receipt => {
+    if (mode !== 'over' || current !== runStatistics) return
+    if (receipt.status === 'ok' || receipt.status === 'duplicate') {
+      const records = (receipt.improved ?? []).map(key => rankedMetrics[key]).filter(Boolean)
+      summary.textContent = records.length ? 'Worldwide best · ' + records.join(', ') : 'Worldwide hunt verified'
+      const honors = verifiedHonorNames(receipt.honors ?? [])
+      detail.textContent = [summary.textContent, ...honors].join(' · ')
+      if (honors.length) {
+        const item = document.createElement('li')
+        item.dataset.reward = 'platinum'
+        item.textContent = honors.length + (honors.length === 1 ? ' Camp Honor' : ' Camp Honors')
+        ui['report-reward-summary'].append(item)
+      }
+    } else if (['invalid_run', 'invalid_ticket', 'expired'].includes(receipt.status)) {
+      summary.textContent = detail.textContent = 'Worldwide result ineligible · Local record saved'
+    }
+  })
 }
 
 function openSettings() {

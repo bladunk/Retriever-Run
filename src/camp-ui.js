@@ -61,7 +61,8 @@ function standingsRow(run, metric, mine) {
 
 export function worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart }) {
   const section = node('section', null, 'worldwide-board')
-  section.append(node('h3', 'Global Camp Leaderboard', 'section-title'))
+  section.append(node('h3', 'Archived Worldwide Standings', 'section-title'), node('p',
+    'These historical records use older scoring validation and remain separate from replay-verified hunts.', 'room-note'))
   if (!camp.available) {
     section.append(node('p', 'Worldwide Camp hasn’t opened on this build. You can still compete in Local Camp.', 'empty-board'))
     return section
@@ -155,7 +156,7 @@ export function worldwideBoard(camp, player, metric, selectMetric, { onJoin, onS
     input.value = camp.member(player.id).nickname
     identityMessage.textContent = result.replaced
       ? 'You’re using a new anonymous identity. Earlier entries remain under the original identity.'
-      : 'Nickname saved. Your next qualifying run can post worldwide.'
+      : 'Nickname saved. See Worldwide rankings for ranked entry availability.'
     updateProfile()
     void load(0)
   })
@@ -220,7 +221,7 @@ export function worldwideBoard(camp, player, metric, selectMetric, { onJoin, onS
     next.hidden = !result.has_more || Boolean(result.offline)
     status.textContent = result.stale
       ? result.offline ? 'You’re offline. Showing recently loaded rankings.' : 'Showing recently loaded rankings.'
-      : roster.children.length ? '' : 'No worldwide records yet. Join camp and set the first one.'
+      : roster.children.length ? '' : 'There are no records in this archive.'
   }
   void load(0)
   return section
