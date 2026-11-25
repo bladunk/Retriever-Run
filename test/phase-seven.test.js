@@ -4,6 +4,7 @@ import test from 'node:test'
 import { lodgeFixture } from '../scripts/lodge-fixtures.mjs'
 import { fixtureDate, nearMasterHunter } from '../scripts/career-fixtures.mjs'
 import { careerStanding, xpAt } from '../src/career.js'
+import { careerLine } from '../src/career-ui.js'
 import { expeditionRegions } from '../src/expedition.js'
 import { honorById, localHonors } from '../src/field-honors.js'
 import { completeMigrations, displayEquipment, earnedTrophies, lodgeProgress, lodgeRequirements, lodgeTier, lodgeTiers, lodgeUpgrades,
@@ -147,6 +148,7 @@ test('the Master Hunter tribute requires the Phase 06 receipt, is awarded once a
   assert.ok(report.lodge.upgrades.some(up => up.id === 'master-hunter-tribute'))
   const saved = open(db)
   assert.ok(displayEquipment(saved.current()).recent.some(item => item.id === masterHunter.signature))
+  assert.equal(careerLine(saved.current()), 'Master Hunter · Level 100')
   assert.ok(lodgeProgress(saved.current()).upgrades.some(up => up.id === 'master-hunter-tribute'))
   assert.equal(trophyFor(saved.current(),'rank:master-hunter').badge,'Career milestone')
   assert.equal(saved.finalize(1,saved.beginRun(),hunt(),'stream').lodge.upgrades.length,0)
@@ -161,6 +163,7 @@ test('the Master Hunter tribute requires the Phase 06 receipt, is awarded once a
 
   const unqualified = open(disk()).players().find(item => item.id === 7)
   assert.equal(careerStanding(unqualified.career).level,100)
+  assert.equal(careerLine(unqualified), 'Level 100 · qualification pending')
   assert.ok(!lodgeProgress(unqualified).upgrades.some(up => up.kind === 'boyd'))
   assert.equal(trophyFor(unqualified,'rank:master-hunter'),null)
   assert.ok(localHonors.length > 600)

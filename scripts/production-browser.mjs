@@ -30,6 +30,7 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.webmanifest': 
 const hits = new Map()
 const manifest = baseline ? null : JSON.parse(await readFile(resolve(root, 'content-manifest.json'), 'utf8'))
 const openingManifest = upgrade ? JSON.parse(await readFile(resolve(original, 'content-manifest.json'), 'utf8')) : manifest
+if (closeLegacyClients) assert.equal(openingManifest.app.version, '1.0.0-phase.6')
 const next = manifest && !upgrade && structuredClone(manifest)
 const replacements = new Map()
 if (next) {
@@ -51,7 +52,8 @@ let blocked = baseline || legacy ? null : openingManifest.assets.find(item => it
 if (!baseline && !legacy) assert.ok(blocked, 'Missing interruption fixture ' + interruptedAsset)
 const server = createServer(async (request, response) => {
   const path = new URL(request.url, 'http://localhost').pathname
-  if (legacy && path === '/qa-worker-boundary') return response.writeHead(200, { 'Content-Type': 'text/html' }).end('Worker boundary')
+  if ((legacy || closeLegacyClients) && path === '/qa-worker-boundary')
+    return response.writeHead(200, { 'Content-Type': 'text/html' }).end('Worker boundary')
   if (!path.startsWith(prefix)) return response.writeHead(404).end()
   const name = path.slice(prefix.length) || 'index.html'
   const serving = legacyActive || (upgrade && !newRelease) ? original : root
@@ -341,7 +343,14 @@ try {
         await assertRunningBuild(idle, openingManifest.app)
       }
       const preparation = idle.getByRole('button', { name: /^(Download|Apply) update$/ })
+      if (closeLegacyClients) blocked = manifest.assets.find(asset => asset.path === 'lodge/tier-1.webp')?.path
       await preparation.tap()
+      if (closeLegacyClients) {
+        await idle.getByText('The download stopped. Retry to resume from your verified files.').waitFor()
+        blocked = null
+        await idle.getByRole('button', { name: 'Retry download' }).tap()
+        log.interruptedLodgeUpdateResumed = true
+      }
       await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 65_000 }).catch(async error => {
         console.error('Update screen:', await idle.locator('#content-status').textContent())
         throw error
@@ -367,9 +376,15 @@ try {
       if (closeLegacyClients) {
         // Already installed Phase 06 has a removed promotion dialog reference.
         // Let the browser activate normally after all old tabs have finished and closed.
+        updated = await context.newPage()
+        await updated.goto(new URL('/qa-worker-boundary', url).href)
+        assert.ok(await updated.evaluate(async scope => {
+          window.qaWaitingWorker = (await navigator.serviceWorker.getRegistration(scope)).waiting
+          return Boolean(window.qaWaitingWorker)
+        }, url))
         await page.close()
         await idle.close()
-        updated = await context.newPage()
+        await updated.waitForFunction(() => window.qaWaitingWorker.state === 'activated', null, { timeout: 30_000 })
         updated.on('pageerror', error => { errors.push(error.message); console.error(error.message) })
         await updated.goto(url + '?perf=1')
         await assertRunningBuild(updated, manifest.app)

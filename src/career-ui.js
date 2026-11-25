@@ -8,12 +8,16 @@ export function careerProgress(standing) {
   const track = node('progress')
   track.max = standing.span
   track.value = standing.within
-  track.setAttribute('aria-label', standing.maxed ? 'Master Hunter level complete' : 'Career XP to level ' + (standing.level + 1))
+  track.setAttribute('aria-label', standing.maxed ? 'Career XP complete' : 'Career XP to level ' + (standing.level + 1))
   return track
 }
 
 export function careerLine(player) {
-  const standing = careerStanding(player.career)
+  return standingLabel(careerStanding(player.career), player.progression.boyd)
+}
+
+function standingLabel(standing, qualified) {
+  if (standing.maxed && !qualified) return 'Level 100 · qualification pending'
   return standing.rank.name + ' · Level ' + number(standing.level)
 }
 
@@ -37,13 +41,14 @@ export function qualificationCard(player) {
 
 export function careerRoom(player, insignia) {
   const standing = careerStanding(player.career)
+  const qualified = Boolean(player.progression.boyd)
   const panel = node('section', null, 'career-ledger')
   panel.append(node('p', player.nickname, 'lodge-kicker'), node('h3', 'Working Dog Career', 'section-title'),
     node('strong', careerLine(player)), careerProgress(standing),
     node('p', standing.maxed ? number(standing.xp) + ' lifetime XP · Level 100 complete'
       : number(standing.within) + ' / ' + number(standing.span) + ' XP toward Level ' + (standing.level + 1)),
     node('p', standing.nextRank ? 'Next rank · ' + standing.nextRank.name + ' at Level ' + standing.nextRank.level
-      : 'Master Hunter · Career rank complete', 'room-note'))
+      : qualified ? 'Master Hunter qualification complete' : 'Check the remaining requirements below.', 'room-note'))
 
   const problems = journalIssues(player)
   if (problems.length) panel.append(node('p', problems.join(' ') + ' Field Honors are paused for this profile.', 'room-note'))
@@ -55,12 +60,13 @@ export function careerRoom(player, insignia) {
   const collection = node('div', null, 'career-patches')
   for (const rank of dogRanks) {
     const patch = node('article', null, 'career-patch')
-    const earned = standing.level >= rank.level
+    const prestige = rank.level === 100
+    const earned = standing.level >= rank.level && (!prestige || qualified)
     patch.dataset.earned = String(earned)
     const badge = node('div', null, 'patch-badge')
     badge.append(insignia(rank.emblem))
     patch.append(badge, node('strong', rank.name), node('span', 'Level ' + rank.level),
-      node('small', earned ? 'Earned' : number(xpAt(rank.level)) + ' career XP'))
+      node('small', earned ? 'Earned' : prestige ? 'Master Hunter qualification' : number(xpAt(rank.level)) + ' career XP'))
     collection.append(patch)
   }
   ranks.append(collection)
@@ -77,14 +83,14 @@ export function nearbyHonor(player) {
     }))
 }
 
-export function fillCareerReport(ui, report, openKennel, openLodge) {
+export function fillCareerReport(ui, report, player, openKennel, openLodge) {
   const space = ui['report-career']
   space.replaceChildren()
   space.hidden = !report.career
   if (!report.career) return
   const { earned, before, after } = report.career
   space.append(node('h3', '+' + number(earned) + ' Career XP'),
-    node('p', after.rank.name + ' · Level ' + number(after.level) +
+    node('p', standingLabel(after, player?.progression.boyd) +
       (after.level > before.level ? ' · Up ' + number(after.level - before.level) : '')),
     careerProgress(after))
   if (report.lodge?.tier || report.lodge?.upgrades.length) {
