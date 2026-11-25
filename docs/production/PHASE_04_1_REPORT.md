@@ -1,6 +1,6 @@
 # Phase 04.1 · Targeted performance polish
 
-The baseline is merged Phase 04, commit `2f7875aaf36d7df6fa2f6b24ac9e132457e3f58e`. The verified live content version was `d492efd2fef0eef77533`. A local build without the deployment’s Camp configuration produced `98d7cfa5f1b6a962443c` and passed all 140 tests. Phase 04.1 uses the isolated branch `codex/retriever-run-phase-04-1`. [Baseline deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45527749359)
+The baseline is merged Phase 04, commit `2f7875aaf36d7df6fa2f6b24ac9e132457e3f58e`. The verified live content version was `d492efd2fef0eef77533`. A local build without the deployment’s Camp configuration produced `98d7cfa5f1b6a962443c` and passed all 140 tests. Phase 04.1 uses the isolated branch `codex/retriever-run-phase-04-1`. [Draft PR #29](https://github.com/bladunk/Retriever-Run/pull/29) · [Baseline deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45527749359)
 
 ## Owner’s iPhone baseline
 
@@ -47,7 +47,7 @@ The resource counts reproduce the retention and show its removal. Host contentio
 ## Verification
 
 - The matched replay command was `node scripts/phase-three-browser.mjs small texture-replays`. The candidate passed `expect-bounded` against its built artifact. It retired the GLB entirely on all five hunts and kept the session and hunt counters distinct.
-- The mobile-sized WebKit offline run retried a partial install, loaded offline, completed a hunt, resumed after a visibility change, and opened the existing Field Journal and last Kennel card. The automated harness measured 283 ms from replay input to the first running callback on that sample.
+- The mobile-sized WebKit offline run retried a partial install, loaded offline, completed a hunt, resumed after a visibility change, and opened the existing Field Journal and last Kennel card. The harness measured 283 ms from replay input to the first running callback on that sample. A separate WebKit pass on the candidate interrupted `living-mallard.glb`, repaired a corrupted copy of that file, and completed the offline hunt and Kennel flow.
 
 - A 2× mobile viewport in WebKit switched live through Balanced, High, Battery Saver and Auto. The quality trace showed one drawing-buffer resize at each changed ratio, 1.22, 1.57, 0.86 and 1.22. The full, compact and restored full atlases appeared at the expected settings.
 - The Chromium update and repair test recovered a corrupt cached asset, preserved both completed hunts and the settings after activation, and reused unchanged audio. A paused hunt blocked activation until its result was saved.
