@@ -71,14 +71,15 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
   return out
 }
 
-export function createLivingWilderness(scene, call, prewarmSound) {
-  const models = createWildlifeModels()
+export function createLivingWilderness(scene, call, prewarmSound, probe) {
+  const models = createWildlifeModels(probe)
   const transform = new T.Object3D()
   const limb = new T.Object3D()
   const matrix = new T.Matrix4()
   const position = new T.Vector3()
   const projected = new T.Vector3()
   const pose = {}
+  const keys = []
   let active
   let prepared
   let previousTime = -1
@@ -96,7 +97,10 @@ export function createLivingWilderness(scene, call, prewarmSound) {
     }
   }
   function prepare(event) {
-    return { event, art: createEncounterArt(fieldSpecies[event.species]), seen: 0, recorded: false, sounded: false }
+    const start = probe?.stamp()
+    const art = createEncounterArt(fieldSpecies[event.species])
+    probe?.operation('wildlife-art', event.species, start)
+    return { event, art, seen: 0, recorded: false, sounded: false }
   }
 
   function update(time, distance, detail, running, events, camera, observation) {
@@ -120,7 +124,7 @@ export function createLivingWilderness(scene, call, prewarmSound) {
     }
     // Once an encounter is shown, keep the selected model until behind the
     // camera. Only prefetch the next reachable appearance.
-    const keys = []
+    keys.length = 0
     if (active?.model) keys.push(active.event.species)
     if (detail > 0 && upcoming && livingModels[upcoming.species] && !keys.includes(upcoming.species)) keys.push(upcoming.species)
     models.retain(keys)
@@ -139,6 +143,7 @@ export function createLivingWilderness(scene, call, prewarmSound) {
         active = prepared
         prepared = undefined
         active.model = model
+        probe?.operation('wildlife-visible', upcoming.species)
         scene.add(active.art.root)
         if (active.model) scene.add(active.model.root)
       }

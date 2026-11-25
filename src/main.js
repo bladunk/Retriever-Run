@@ -49,7 +49,6 @@ import './lodge.css'
 import './top-dog.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
-const sound = createSound(background)
 const volumeKeys = Object.keys(audioDefaults)
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 const format = new Intl.NumberFormat()
@@ -87,6 +86,7 @@ let calloutAnimation
 const flags = new URLSearchParams(location.search)
 const localPerformance = flags.get('perf') === '1'
 const performanceProbe = localPerformance ? createPerformanceProbe() : null
+const sound = createSound(background, performanceProbe)
 if (performanceProbe) {
   window.retrieverPerformance = performanceProbe.read
   const controls = document.createElement('details')
@@ -232,11 +232,15 @@ function initialize() {
   renderer.toneMapping = T.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.15
   const atmosphere = createAtmosphere(scene)
-  const signs = createTrailSigns(scene)
-  const terrain = createTerrain(scene, (anchor, distance) => signs.show(anchor, distance, signSeed))
+  const signs = createTrailSigns(scene, undefined, performanceProbe)
+  const terrain = createTerrain(scene, (anchor, distance) => signs.show(anchor, distance, signSeed), performanceProbe)
   setTerrainSeed = terrain.setSeed
   const leaves = createDriftingLeaves(scene)
-  const wildlife = createLivingWilderness(scene, sound.bird, sound.prepareWildlife)
+  const wildlife = createLivingWilderness(scene, sound.bird, sound.prepareWildlife, performanceProbe)
+  performanceProbe?.watch(() => ({
+    residentTiles: terrain.count(), residentPacks: terrain.packCount(), surfaces: terrain.landscapeResidency(),
+    tileTimings: terrain.measurements(), wildlife: wildlife.active(), wildlifeModels: wildlife.metrics(),
+  }))
   const observeWildlife = event => runStatistics?.observe(event)
   const diving = createDivingFlocks(scene)
   if (diagnosticsRequested) {
@@ -259,6 +263,7 @@ function initialize() {
     if (kennelStage) resize()
   }) : null
   let trailPose
+  const drawingSize = new T.Vector2()
   resize = () => {
     needsRedraw = true
     if (kennelStage) {
@@ -273,8 +278,13 @@ function initialize() {
     camera.aspect = width / Math.max(1, height)
     camera.fov = layout.fov
     camera.updateProjectionMatrix()
-    renderer.setPixelRatio(pixelRatio(width, height, devicePixelRatio, preset))
-    renderer.setSize(width, height, false)
+    const ratio = pixelRatio(width, height, devicePixelRatio, preset)
+    renderer.getSize(drawingSize)
+    if (drawingSize.x !== width || drawingSize.y !== height || renderer.getPixelRatio() !== ratio) {
+      const started = performanceProbe?.stamp()
+      renderer.setDrawingBufferSize(width, height, ratio)
+      if (performanceProbe) performanceProbe.operation('drawing-buffer-resize', `${width}×${height} @ ${ratio}`, started)
+    }
   }
   showKennel = stage => {
     if (stage === kennelStage || (!stage && !kennelStage)) return
@@ -323,6 +333,7 @@ function initialize() {
     if (mode === 'running' && profile.quality === 'auto') {
       const selected = adapt(wall)
       if (selected !== autoPreset) {
+        if (performanceProbe) performanceProbe.operation('auto-quality', `${autoPreset} → ${selected}`)
         autoPreset = selected
         resize()
       }
@@ -395,12 +406,12 @@ function initialize() {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps, wildlife: wildlife.stamp,
       }, camera, signs)
+      const drawStart = performanceProbe?.stamp()
       renderer.render(scene, camera)
       if (mode === 'running' && performanceProbe) {
-        performanceProbe.presented(performance.now())
-        performanceProbe.graphics(profile.quality, preset.detail, wildlife.active(), wildlife.metrics())
-        performanceProbe.frame(wall * 1000, performance.now() - renderStart, renderer.info, terrain.count(),
-          regionAt(display.elapsed).key, terrain.packCount(), terrain.landscapeResidency(), terrain.measurements())
+        const end = performanceProbe.stamp()
+        performanceProbe.graphics(profile.quality, preset.detail)
+        performanceProbe.frame(wall * 1000, end - renderStart, renderer.info, regionAt(display.elapsed).key, end, end - drawStart)
       }
       needsRedraw = false
     }

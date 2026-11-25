@@ -25,7 +25,7 @@ const rewards = {
   promotion: [50, 57, 66, 69, 74],
 }
 
-export function createSound(onInterruption) {
+export function createSound(onInterruption, probe) {
   let context
   let buses
   let trail
@@ -81,6 +81,7 @@ export function createSound(onInterruption) {
   }
 
   function initialize(Audio) {
+    const started = probe?.stamp()
     // Safari can honor the hardware silent switch for ambient audio.
     try { if (navigator.audioSession) navigator.audioSession.type = 'ambient' } catch { /* Optional. */ }
     context = new Audio()
@@ -121,6 +122,7 @@ export function createSound(onInterruption) {
         if (context.state === 'interrupted') onInterruption?.()
       }
     })
+    probe?.operation('audio-initialize', 'Web Audio', started)
   }
 
   function download(name) {
@@ -138,8 +140,11 @@ export function createSound(onInterruption) {
       const buffer = await download(name)
       if (!buffer) return
       // The callback form also works in Safari versions with a prefixed context.
+      const started = probe?.stamp()
+      probe?.operation('audio-decode-start', name)
       const decoded = await new Promise((resolve, reject) => context.decodeAudioData(buffer, resolve, reject))
       buffers.set(name, decoded)
+      probe?.operation('audio-decode-ready', name, started)
     } catch {
       // The game and procedural foley can still run if an audio download fails.
     } finally {

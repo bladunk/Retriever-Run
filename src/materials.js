@@ -23,7 +23,11 @@ export function createFieldMaterial() {
     ['fieldEarth', dirtColorUrl, T.SRGBColorSpace], ['fieldWood', woodColorUrl, T.SRGBColorSpace],
     ['fieldEarthPbr', dirtSurfaceUrl, T.NoColorSpace], ['fieldWoodPbr', woodSurfaceUrl, T.NoColorSpace],
   ]) {
-    const map = loader.load(url, (loaded) => { uniforms[key].value = loaded })
+    const map = loader.load(url, loaded => {
+      const previous = uniforms[key].value
+      uniforms[key].value = loaded
+      if (!Object.values(uniforms).some(uniform => uniform.value === previous)) previous.dispose()
+    })
     map.colorSpace = space
     map.wrapS = map.wrapT = T.RepeatWrapping
     map.anisotropy = 4

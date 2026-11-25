@@ -19,8 +19,10 @@ const manager = createLandscapeAtlas(async key => {
   texture.colorSpace = T.NoColorSpace
   return texture
 }, texture => {
+  const previous = landscapeMap.value
   landscapeMap.value = texture
   landscapeReady.value = 1
+  if (previous === fallback) fallback.dispose()
 }, texture => texture.dispose())
 
 export const updateLandscapeQuality = detail => manager.select(landscapeVariant(detail))

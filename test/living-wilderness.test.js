@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
+import { BufferGeometry, Group, MeshBasicMaterial, Skeleton, SkinnedMesh, Texture } from 'three'
 import { fieldSpecies, habitatEncounters } from '../src/wildlife-catalog.js'
 import { encounterRarity, encounterVisible, planEncounter } from '../src/wildlife-encounters.js'
 import { normalizeWildlife, commitWildlife } from '../src/wildlife-journal.js'
@@ -12,6 +13,7 @@ import { buildTile } from '../src/terrain-geometry.js'
 import { createEncounterArt } from '../src/wildlife-art.js'
 import { encounterPose } from '../src/living-wilderness.js'
 import { assignForestGeometry, forestModel } from '../src/forest-models.js'
+import { disposeWildlifeModel } from '../src/wildlife-models.js'
 
 test('every territory only draws from its own tier and all catalog species are reachable', () => {
   assert.deepEqual(Object.keys(habitatEncounters),expeditionRegions.map(region=>region.key))
@@ -119,4 +121,27 @@ test('forest residency releases a shared GPU buffer when its last terrain tile l
   assignForestGeometry(next,spruce)
   assert.equal(released,1)
   assert.equal(forestModel('willow',true),willow)
+})
+
+test('retiring a wildlife rig frees its shared Three.js bone texture and material images once', () => {
+  const root = new Group()
+  const parent = new Group().add(root)
+  const skeleton = new Skeleton().computeBoneTexture()
+  let bonesReleased = 0
+  let imagesClosed = 0
+  skeleton.boneTexture.addEventListener('dispose', () => bonesReleased++)
+  const image = { close() { imagesClosed++ } }
+  const color = new Texture(image)
+  const alpha = new Texture(image)
+  const material = new MeshBasicMaterial({ map: color, alphaMap: alpha })
+  for (let n = 0; n < 2; n++) {
+    const mesh = new SkinnedMesh(new BufferGeometry(), material)
+    mesh.skeleton = skeleton
+    root.add(mesh)
+  }
+  assert.equal(disposeWildlifeModel({ root }), 1)
+  assert.equal(bonesReleased, 1)
+  assert.equal(imagesClosed, 1)
+  assert.equal(skeleton.boneTexture, null)
+  assert.equal(parent.children.length, 0)
 })
