@@ -11,6 +11,7 @@ import { fallenTimber } from '../src/fallen-timber.js'
 import { buildTile } from '../src/terrain-geometry.js'
 import { createEncounterArt } from '../src/wildlife-art.js'
 import { encounterPose } from '../src/living-wilderness.js'
+import { assignForestGeometry, forestModel } from '../src/forest-models.js'
 
 test('every territory only draws from its own tier and all catalog species are reachable', () => {
   assert.deepEqual(Object.keys(habitatEncounters),expeditionRegions.map(region=>region.key))
@@ -102,4 +103,20 @@ test('pooled animal geometry releases only local buffers', () => {
   assert.equal(released,2)
   assert.equal(other,0)
   second.dispose()
+})
+
+test('forest residency releases a shared GPU buffer when its last terrain tile leaves', () => {
+  const willow = forestModel('willow',true)
+  const spruce = forestModel('spruce',true)
+  const foreground = { geometry: undefined }
+  const next = { geometry: undefined }
+  let released = 0
+  willow.addEventListener('dispose', () => released++)
+  assignForestGeometry(foreground,willow)
+  assignForestGeometry(next,willow)
+  assignForestGeometry(foreground,spruce)
+  assert.equal(released,0)
+  assignForestGeometry(next,spruce)
+  assert.equal(released,1)
+  assert.equal(forestModel('willow',true),willow)
 })

@@ -32,8 +32,23 @@ const shapes = {
 }
 
 const cache = new Map()
+const residents = new Map()
 const conifers = new Set(['spruce', 'fir', 'jackPine', 'snowPine', 'tamarack'])
 const up = new T.Vector3(0, 1, 0)
+
+export function assignForestGeometry(mesh, geometry) {
+  const previous = mesh.geometry
+  if (previous === geometry) return
+  const remaining = residents.get(previous)
+  mesh.geometry = geometry
+  residents.set(geometry, (residents.get(geometry) ?? 0) + 1)
+  if (remaining === 1) {
+    residents.delete(previous)
+    // Keep the CPU template for replay. Three can upload it again if a later
+    // territory requests the same form.
+    previous.dispose()
+  } else if (remaining > 1) residents.set(previous, remaining - 1)
+}
 
 export function forestSurface() {
   const atlas = new T.TextureLoader().load(new URL('./assets/environment/forest-needles.webp', import.meta.url).href)

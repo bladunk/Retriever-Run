@@ -7,7 +7,7 @@ import { regionAtDistance } from './expedition.js'
 import { fieldAtlasShader } from './field-atlas-shader.js'
 import { landscapeMap, landscapeReady, updateLandscapeQuality, landscapeResidency } from './landscape-atlas.js'
 import { fieldMaterials } from './materials.js'
-import { forestModel, forestProfileAt, forestSurface } from './forest-models.js'
+import { assignForestGeometry, forestModel, forestProfileAt, forestSurface } from './forest-models.js'
 import { buildTile, createDistantTree, reedCount, treeCount } from './terrain-geometry.js'
 import { createBankPlant } from './marsh-plants.js'
 import { marshWater, updateMarshWater } from './marsh-water.js'
@@ -234,7 +234,7 @@ export function createTerrain(scene, showSign) {
     tile.trees.material = cards?.material ?? treeMaterial
     tile.trees.count = 0
     for (const [index, mesh] of tile.forest.entries()) {
-      mesh.geometry = forestModel(variants[index], field.fieldDetail.value < 2, Math.abs(packet.index + index) % 2)
+      assignForestGeometry(mesh, forestModel(variants[index], field.fieldDetail.value < 2, Math.abs(packet.index + index) % 2))
       mesh.count = 0
     }
     for (let n = 0; n < packet.trees.length / 7; n++) {
