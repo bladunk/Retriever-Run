@@ -61,12 +61,15 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
   function lodge(width, depth, height, paint, roof, code = 'dry') {
     const standing = code === 'bank' || code === 'raised'
     const logs = ['snag', 'forestry-cabin', 'cairn', 'aspen-cabin'].includes(role)
-    const barn = role === 'farm' || role === 'pothole-farm'
+    const barn = ['farm', 'pothole-farm', 'grain-elevator'].includes(role)
     const gallery = role === 'swamp-cabin' || role === 'river-camp'
     const lift = code === 'raised' ? 1.36 : standing ? .82 : .38
     const base = Math.max(waterline + lift, ground + .29)
     pier(x, z, width * 1.12, depth * 1.15, base - .14)
-    if (!standing) put(0x746b59, x, base - .29, z, width * .98, .59, depth * .96, 0, 6)
+    if (!standing) {
+      const plinth = Math.max(.59, base - ground + .18)
+      put(0x746b59, x, base - plinth * .5, z, width * .98, plinth, depth * .96, 0, 6)
+    }
     put(paint, x, base + height / 2, z, width, height, depth)
     if (logs) {
       for (let row = 0; row < 9; row++) {
@@ -93,7 +96,7 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
       }
     }
     const spring = base + height
-    const rise = width * (role === 'delta-shed' || role === 'pothole-farm' ? .18 : logs ? .38 : barn ? .31 : .228)
+    const rise = width * (role === 'grain-elevator' ? .21 : role === 'delta-shed' || role === 'pothole-farm' ? .18 : logs ? .38 : barn ? .31 : .228)
     const half = width * .54
     const pitch = Math.atan2(rise, half)
     const run = Math.hypot(half, rise)
@@ -186,7 +189,7 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     }
     pier(side * 6.6, z + 4.0, 2.3, 2.8, Math.max(waterline + .23, earth(-z - 4, side * 6.6)))
   } else if (role === 'grain-elevator') {
-    lodge(3.25, 3.5, 4.7, 0x878173, 0x555b53)
+    lodge(4.50, 4.05, 3.2, 0x878173, 0x555b53, 'grain')
     for (let n = 0; n < 2; n++) {
       const sx = x - 3.0 - n * 2.4
       const sy = earth(-z, sx)

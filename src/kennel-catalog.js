@@ -30,6 +30,14 @@ export const kennelCatalog = {
     item('golden', 'Golden Labrador', 16, 0xe5b76d),
     item('fox-red', 'Fox Red Labrador', 24, 0xbb8053, { level: 30 }),
     item('chocolate', 'Dark Chocolate Labrador', 35, 0x695449, { level: 60 }),
+    item('ivory', 'Ivory Cream Labrador', null, 0xfff7e8, { light: .46 }),
+    item('pale-yellow', 'Pale Yellow Labrador', null, 0xffe3bb, { light: .17 }),
+    item('wheat', 'Wheat Yellow Labrador', null, 0xf0cf95, { light: .08 }),
+    item('harvest', 'Harvest Yellow Labrador', null, 0xd7a35b),
+    item('dark-fox-red', 'Dark Fox Red Labrador', null, 0x9e5136),
+    item('milk-chocolate', 'Milk Chocolate Labrador', null, 0x906e62),
+    item('black', 'Black Labrador', null, 0x41424b),
+
   ],
 }
 
@@ -41,7 +49,7 @@ export const unlocked = (item, standing, inherited) => Boolean(item && (
 
 export function gearRequirement(item) {
   if (item.rank) return 'Earn ' + dogRanks[rankIndex(item.rank)].name
-  return item.level === null ? 'Legacy reward' : 'Level ' + item.level
+  return item.level === null ? (item.legacyLevel === null && item.id !== 'marsh-bandana' ? 'Future collection' : 'Legacy reward') : 'Level ' + item.level
 }
 
 export function legacyGear(profile) {

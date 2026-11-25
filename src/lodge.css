@@ -402,3 +402,12 @@
   font-size: .82rem;
   line-height: 1.25;
 }
+
+.kennel-stage { touch-action: pan-y; cursor: grab; }
+.kennel-stage:active { cursor: grabbing; }
+.kennel-breeds {
+  border: 1px solid #c9a96955;
+  padding: .75rem 1rem;
+  margin-block-start: .8rem;
+  color: #edddba;
+}

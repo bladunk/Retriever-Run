@@ -14,6 +14,7 @@ import { createFootSpray } from './spray.js'
 import { audioDefaults } from './profile.js'
 import { productionSession } from './production-session.js'
 import { createWakeLock } from './mobile-lifecycle.js'
+import { runningBuild } from './build-info.js'
 import { createPerformanceProbe } from './performance-probe.js'
 import { createRewardNotices } from './reward-notices.js'
 import { pendingPatches } from './honors.js'
@@ -88,7 +89,8 @@ const localPerformance = flags.get('perf') === '1'
 const performanceProbe = localPerformance ? createPerformanceProbe() : null
 const sound = createSound(background, performanceProbe)
 if (performanceProbe) {
-  window.retrieverPerformance = performanceProbe.read
+  const readPerformance = () => ({ ...performanceProbe.read(), build: runningBuild })
+  window.retrieverPerformance = readPerformance
   const controls = document.createElement('details')
   const label = document.createElement('summary')
   const snapshot = document.createElement('button')
@@ -101,7 +103,7 @@ if (performanceProbe) {
   output.setAttribute('aria-label', 'Performance report')
   output.hidden = true
   snapshot.addEventListener('click', () => {
-    output.value = JSON.stringify(performanceProbe.read(), null, 2)
+    output.value = JSON.stringify(readPerformance(), null, 2)
     output.hidden = false
     output.select()
   })
@@ -246,7 +248,7 @@ function initialize() {
   if (diagnosticsRequested) {
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
   }
-  dog = createPlayer(scene)
+  dog = createPlayer(scene, collisionRequested && flags.get('breed') === 'pointer' ? 'pointer' : 'lab')
   spray = createFootSpray(scene)
   dog.appearance(lodge.current().kennel.equipment)
   sound.settings(profile)
@@ -292,11 +294,13 @@ function initialize() {
     kennelStage = stage
     if (stage) {
       kennel ??= createKennelView()
+      kennel.attach(stage)
       stage.append(ui.trail)
       kennelSize?.observe(stage)
       ui.trail.setAttribute('aria-label', '3D Labrador equipment preview')
       dog.moveTo(kennel.room)
     } else {
+      kennel?.attach(null)
       ui.game.prepend(ui.trail)
       ui.trail.setAttribute('aria-label', '3D wetlands trail')
       dog.moveTo(scene)
@@ -407,6 +411,7 @@ function initialize() {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps, wildlife: wildlife.stamp,
       }, camera, signs)
       const drawStart = performanceProbe?.stamp()
+      if (wall < .027 && mode !== 'paused') wildlife.warm(renderer, camera)
       renderer.render(scene, camera)
       if (mode === 'running' && performanceProbe) {
         const end = performanceProbe.stamp()

@@ -53,6 +53,26 @@ export function createWildlifeModels(probe) {
   const failed = new Set()
   let loadMs = 0
   let releasedBoneTextures = 0
+  let hits = 0
+  let misses = 0
+  let evictions = 0
+  let lastRequested = ''
+  const limit = 2
+
+  function preparation(model) {
+    const textures = new Set()
+    const skeletons = new Set()
+    const shades = []
+    model.root.traverse(node => {
+      if (!node.isMesh) return
+      shades.push(node)
+      if (node.isSkinnedMesh) skeletons.add(node.skeleton)
+      for (const material of Array.isArray(node.material) ? node.material : [node.material]) {
+        for (const value of Object.values(material)) if (value?.isTexture) textures.add(value)
+      }
+    })
+    return { textures: [...textures], skeletons: [...skeletons], shades, texture: 0, skeleton: 0, shade: 0, pending: false }
+  }
 
   function release(id, model) {
     const started = probe?.stamp()
@@ -65,6 +85,14 @@ export function createWildlifeModels(probe) {
     if (waiting) return
     const id = wanted.find(key => !decoded.has(key) && !failed.has(key))
     if (!id) return
+    if (decoded.size >= limit) {
+      const stale = [...decoded].find(([key, model]) => !wanted.includes(key) && !model.warmup.pending)?.[0]
+      if (!stale) return
+      release(stale, decoded.get(stale))
+      decoded.delete(stale)
+      evictions++
+      probe?.operation('wildlife-evict', stale)
+    }
     waiting = id
     const desc = livingModels[id]
     const start = performance.now()
@@ -82,6 +110,7 @@ export function createWildlifeModels(probe) {
       const actions = Object.fromEntries(animations.map(clip => [clip.name, mix.clipAction(clip)]))
       if (id === 'pheasant') actions.Fly = actions['Take 001']
       const model = { root, mix, scale, actions }
+      model.warmup = preparation(model)
       probe?.operation('wildlife-rig-setup', id, setup)
       if (wanted.includes(id)) decoded.set(id, model)
       else release(id, model)
@@ -95,13 +124,49 @@ export function createWildlifeModels(probe) {
   return {
     retain(ids) {
       wanted = ids
-      for (const [id, model] of decoded) if (!wanted.includes(id)) {
-        release(id, model)
-        decoded.delete(id)
+      const enquiry = ids.join(',')
+      if (enquiry !== lastRequested) {
+        lastRequested = enquiry
+        for (const id of ids) {
+          const model = decoded.get(id)
+          if (model) {
+            hits++
+            decoded.delete(id)
+            decoded.set(id, model)
+          } else misses++
+        }
       }
       prepare()
     },
     get: id => decoded.get(id),
+    warm(renderer, camera, scene, activeModel) {
+      for (const id of wanted) {
+        const model = decoded.get(id)
+        if (!model || model === activeModel) continue
+        const work = model.warmup
+        if (work.pending) return
+        const started = probe?.stamp()
+        if (work.texture < work.textures.length) {
+          renderer.initTexture(work.textures[work.texture++])
+          probe?.operation('wildlife-warm-texture', id, started)
+          return
+        }
+        if (work.skeleton < work.skeletons.length) {
+          const skeleton = work.skeletons[work.skeleton++]
+          if (!skeleton.boneTexture) skeleton.computeBoneTexture()
+          renderer.initTexture(skeleton.boneTexture)
+          probe?.operation('wildlife-warm-skeleton', id, started)
+          return
+        }
+        if (work.shade < work.shades.length) {
+          work.pending = true
+          renderer.compileAsync(work.shades[work.shade++], camera, scene)
+            .catch(() => {}).finally(() => { work.pending = false; prepare() })
+          probe?.operation('wildlife-warm-shader', id, started)
+          return
+        }
+      }
+    },
     metrics() {
       const models = []
       for (const [id, { root }] of decoded) {
@@ -115,7 +180,7 @@ export function createWildlifeModels(probe) {
         })
         models.push({ id, materialTextures: textures.size, boneTextures: bones.size })
       }
-      return { resident: decoded.size, preparing: waiting ?? null, loadMs, releasedBoneTextures, models }
+      return { resident: decoded.size, preparing: waiting ?? null, loadMs, releasedBoneTextures, hits, misses, evictions, limit, models }
     },
   }
 }

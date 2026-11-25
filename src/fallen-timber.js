@@ -4,45 +4,9 @@ import { hazardHull } from './hazard-hull.js'
 import { seededRandom } from './trail.js'
 
 export const fallenTimbers = [
-  {
-    name: 'Peat root plate', bark: 0xa1815f, wood: 0xe0b786, earth: 0x78614d, moss: 0x778153,
-    mass: [[-.22, .87, -.015, .67, .90, .38], [-.37, 1.66, -.115, .43, .62, .31], [.10, 1.20, -.06, .40, .48, .30]],
-    trunk: [[-.65, .94, -.05, .37], [-.20, .78, .06, .40], [.32, .61, .16, .33], [.87, .59, .32, .28]],
-    roots: [
-      [[-.31, 1.98, .23, .097], [-.53, 1.69, .32, .10], [-.55, 1.39, .375, .082], [-.79, 1.03, .30, .03]],
-      [[-.51, 1.44, .25, .13], [-.32, 1.17, .36, .10], [-.43, .75, .425, .057], [-.32, .21, .41, .019]],
-      [[-.08, 1.63, .25, .14], [.27, 1.45, .34, .097], [.30, 1.12, .34, .06], [.51, .75, .34, .018]],
-      [[.21, 1.27, .31, .067], [.03, .96, .40, .069], [.09, .60, .435, .045], [-.07, .15, .36, .019]],
-      [[-.56, .82, .27, .11], [-.76, .60, .355, .072], [-.68, .24, .405, .055], [-.93, .045, .46, .024]],
-      [[.28, .66, .18, .10], [.52, .71, .13, .083], [.69, .89, -.055, .032], [.76, 1.07, -.07, .018]],
-    ],
-  },
-  {
-    name: 'Silt-split roots', bark: 0x9c826a, wood: 0xe4bf97, earth: 0x7c6b5c, moss: 0x727c56,
-    mass: [[-.27, 1.01, .005, .56, .95, .35], [-.40, 1.72, .005, .37, .47, .27], [.12, 1.30, .02, .29, .49, .23]],
-    trunk: [[-.70, .78, .025, .33], [-.16, .71, .13, .37], [.28, .66, .18, .35], [.84, .57, .36, .22]],
-    roots: [
-      [[-.48, 2.10, .045, .072], [-.65, 1.78, .16, .10], [-.75, 1.48, .245, .073], [-.57, 1.06, .30, .035]],
-      [[-.54, 1.52, .23, .12], [-.36, 1.19, .38, .092], [-.17, .75, .38, .044], [-.42, .37, .415, .019]],
-      [[-.21, 1.80, .245, .093], [-.05, 1.55, .355, .087], [.25, 1.37, .31, .061], [.31, .97, .35, .019]],
-      [[.20, 1.49, .18, .078], [.32, 1.21, .26, .068], [.16, .96, .35, .053], [.23, .74, .37, .015]],
-      [[-.35, .79, .31, .091], [-.54, .52, .38, .057], [-.72, .36, .38, .045], [-.67, .10, .42, .017]],
-      [[.38, .75, .195, .11], [.55, .91, .107, .081], [.59, 1.13, -.055, .038], [.52, 1.29, -.10, .014]],
-    ],
-  },
-  {
-    name: 'Mossbound crown', bark: 0x917d59, wood: 0xd4b688, earth: 0x72644f, moss: 0x899456,
-    mass: [[-.20, .98, .026, .64, .96, .38], [-.08, 1.72, -.065, .42, .53, .33], [-.55, 1.42, .01, .30, .46, .25]],
-    trunk: [[-.65, .92, -.02, .36], [-.16, .75, -.08, .39], [.26, .55, -.05, .31], [.84, .47, .18, .24]],
-    roots: [
-      [[-.18, 2.23, -.09, .072], [-.26, 1.91, .23, .11], [-.51, 1.67, .34, .10], [-.51, 1.29, .395, .025]],
-      [[-.50, 1.80, .205, .096], [-.65, 1.50, .34, .078], [-.73, 1.08, .36, .071], [-.66, .63, .425, .024]],
-      [[.20, 1.66, .24, .10], [.09, 1.39, .41, .093], [.20, .99, .425, .072], [.38, .68, .39, .019]],
-      [[-.39, 1.23, .375, .11], [-.22, .96, .46, .087], [-.25, .49, .438, .058], [-.47, .06, .47, .021]],
-      [[-.11, .70, .37, .11], [-.11, .45, .47, .069], [.07, .22, .44, .038], [.37, .07, .32, .017]],
-      [[.07, .64, -.12, .102], [.41, .72, -.22, .086], [.57, .93, -.35, .035], [.53, 1.11, -.38, .012]],
-    ],
-  },
+  { name: 'Cypress washout', bark: 0x967554, wood: 0xd4ac76, earth: 0x645039, moss: 0x727746, side: 1, lift: 2.24, rake: .23 },
+  { name: 'Split bank cottonwood', bark: 0x998274, wood: 0xdfbb86, earth: 0x795e4c, moss: 0x62744f, side: -1, lift: 2.13, rake: .33 },
+  { name: 'Storm-tipped pine', bark: 0x826349, wood: 0xe5be7f, earth: 0x6b5643, moss: 0x79845b, side: 1, lift: 2.15, rake: .40 },
 ]
 const cache = new Map()
 const vertical = new T.Vector3(0, 1, 0)
@@ -61,48 +25,6 @@ function textureGeometry(positions, uvs, colors, layers, indices) {
   geometry.setIndex(indices)
   geometry.computeVertexNormals()
   return geometry
-}
-
-function sculptedEarth(mass, palette, random, detail, tone = palette.earth) {
-  const [x, y, z, width, height, depth] = mass
-  const shape = new T.IcosahedronGeometry(1, detail)
-  const pos = shape.attributes.position
-  const points = [], color = new T.Color(), mossColor = new T.Color(palette.moss)
-  const roughness = random() * 6
-  for (let i = 0; i < pos.count; i++) {
-    const a = pos.getX(i), b = pos.getY(i), c = pos.getZ(i)
-    const ripple = 1 + .17 * Math.sin(a * 8.1 + c * 5.3 + roughness) * Math.cos(b * 11.4)
-    const crumb = .96 + .11 * Math.cos(c * 13.6 - b * 10.1 + a * 4.8)
-    const px = x + width * (a * ripple - b * .11 + a * b * .13)
-    pos.setXYZ(i, px, Math.max(.015, y + height * b * crumb), z + depth * c * ripple - b * .08)
-    const moss = Math.max(0, (b + .46 - Math.abs(a + .19)) * (.35 + .31 * Math.cos(a * 8.6 + c * 14)))
-    color.setHex(tone).lerp(mossColor, moss)
-      .multiplyScalar((.93 + .14 * crumb + .15 * Math.sin(a * 12 + c * 19)) * (.94 + b * .13)).toArray(points, points.length)
-  }
-  shape.setAttribute('color', new T.Float32BufferAttribute(points, 3))
-  shape.setAttribute('fieldLayer', new T.Float32BufferAttribute(new Float32Array(pos.count).fill(detail ? 1 : 0), 1))
-  shape.setIndex(Array.from({ length: pos.count }, (_, index) => index))
-  shape.computeVertexNormals()
-  if (detail) {
-    const normals = shape.attributes.normal
-    const wells = new Map()
-    const keys = []
-    for (let i = 0; i < pos.count; i++) {
-      const key = [pos.getX(i), pos.getY(i), pos.getZ(i)].map(value => Math.round(value * 10_000)).join(',')
-      if (!wells.has(key)) wells.set(key, new T.Vector3())
-      const sum = wells.get(key)
-      sum.x += normals.getX(i)
-      sum.y += normals.getY(i)
-      sum.z += normals.getZ(i)
-      keys.push(key)
-    }
-    for (const sum of wells.values()) sum.normalize()
-    for (const [index, key] of keys.entries()) {
-      const normal = wells.get(key)
-      normals.setXYZ(index, normal.x, normal.y, normal.z)
-    }
-  }
-  return shape
 }
 
 export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = false, collision, light = false) {
@@ -173,86 +95,82 @@ export function curvedWood(guide, tint, endColor, random, fractured, bothEnds = 
   return textureGeometry(values, uvs, colors, layers, indices)
 }
 
-// Form the exposed soil as one torn, tapered plate. Cross-sections cover
-// the existing soil footprint, with the lower edge buried into the trail.
-function rootPlate(palette, random, variant) {
-  const rings = 11
-  const sides = 20
+// The tipped soil wedge spreads out from the root collar. Individual exposed
+// roots follow the folds of the plate, then pick up thinner broken branches.
+function rootFan(palette, random, volumes) {
   const positions = [], colors = [], uvs = [], layers = [], indices = []
-  const shade = new T.Color()
+  const shadow = new T.Color(palette.earth).multiplyScalar(.58)
+  const earth = new T.Color(palette.earth)
   const moss = new T.Color(palette.moss)
-  const earth = new T.Color(palette.earth).multiplyScalar(.62)
-  const top = Math.max(...palette.mass.map(([, y, , , ry]) => y + ry))
-  for (let row = 0; row <= rings; row++) {
-    const y = top * row / rings
-    const active = palette.mass.map(([x, cy, z, rx, ry, rz]) => {
-      const section = Math.sqrt(Math.max(0, 1 - ((y - cy) / ry) ** 2))
-      return { x, z, width: rx * section, depth: rz * section }
-    }).filter(section => section.width > .003)
-    const left = active.length ? Math.min(...active.map(({ x, width }) => x - width)) : -.36
-    const right = active.length ? Math.max(...active.map(({ x, width }) => x + width)) : -.35
-    const depth = active.length ? Math.max(...active.map(({ depth }) => depth)) : .012
-    for (let n = 0; n <= sides; n++) {
-      const angle = n / sides * Math.PI * 2
-      const ridge = Math.sin(angle * 4 + y * 5 + variant * .8) * .081 + Math.sin(angle * 9 - y * 6) * .055
-      const curl = Math.cos(y * 4 + variant) * .031
-      const x = (right + left) / 2 + Math.cos(angle) * Math.max(.011,(right - left) * .475) * (1 + ridge)
-      const z = -y * .035 + Math.sin(angle) * depth * (1 + ridge * 1.81) + curl
-      const vertical = Math.max(-.035, y + ridge * .29 * Math.sin(row / rings * Math.PI))
-      positions.push(x, vertical, z)
-      uvs.push(x * 1.41 + Math.cos(angle) * .13, vertical * 1.22 + z * .21)
-      const earthLine = Math.sin(x * 18 + y * 17) * Math.sin(y * 21 - z * 7)
-      shade.copy(earth).lerp(moss, Math.max(0, (.31 + .54 * y / top) * earthLine) * .42)
-        .multiplyScalar(.75 + random() * .44 + earthLine * .14).toArray(colors, colors.length)
-      layers.push(1)
-      if (row && n) {
-        const here = row * (sides + 1) + n
-        const back = here - sides - 1
-        indices.push(here, back, here - 1, here - 1, back, back - 1)
+  const shade = new T.Color()
+  const rows = 6, columns = 18
+  const rim = Array.from({ length: columns + 1 }, (_, i) =>
+    .72 + .16 * Math.sin(i * 1.68 + palette.rake * 11) + random() * .19)
+  const crown = Math.max(...rim.map((leaf, index) => Math.sin(Math.PI * index / columns) * leaf))
+  const outline = []
+  for (let row = 0; row <= rows; row++) {
+    const r = row / rows
+    for (let column = 0; column <= columns; column++) {
+      const theta = Math.PI * (column / columns)
+      const leaf = rim[column]
+      const flare = Math.sin(theta) * r * leaf / crown
+      const x = palette.side * (-.38 + (.71 * Math.cos(theta) * r * leaf) + .36 * flare)
+      const y = Math.max(.015, .17 * (1 - r) + flare * palette.lift + .08 * Math.cos(theta * 3) * r)
+      const z = .41 + Math.cos(theta) * .20 * r - palette.rake * y + .07 * Math.sin(theta * 9 + r * 7) * r
+      if (row === rows) outline.push([x, y, z])
+      shade.copy(shadow).lerp(earth, .36 + leaf * .38 + random() * .16)
+      if (column % 4 === 1) shade.lerp(moss, r * .39)
+      for (const back of [false, true]) {
+        positions.push(x, y, z + (back ? -.21 + r * .10 : 0))
+        uvs.push(x * 1.7, y * 1.4)
+        shade.toArray(colors, colors.length)
+        layers.push(1)
+      }
+      if (row && column) {
+        const at = positions.length / 3 - 2
+        const prior = at - (columns + 1) * 2
+        const front = [at, prior, at - 2, prior, prior - 2, at - 2]
+        const back = [at + 1, at - 1, prior + 1, prior + 1, at - 1, prior - 1]
+        indices.push(...(palette.side === 1 ? front : front.reverse()), ...(palette.side === 1 ? back : back.reverse()))
       }
     }
   }
-  return textureGeometry(positions, uvs, colors, layers, indices)
+  const plate = textureGeometry(positions, uvs, colors, layers, indices)
+  for (let i = 0; i < columns; i += 3) {
+    const points = [new T.Vector3(-palette.side * .38, .17, .40), new T.Vector3(-palette.side * .38, .17, .19)]
+    for (const [x,y,z] of outline.slice(i, i + 4)) {
+      points.push(new T.Vector3(x,y,z), new T.Vector3(x,y,z-.13))
+    }
+    volumes.push(hazardHull('root fan', points))
+  }
+  return { plate, outline }
 }
 
 export function fallenTimber(variant = 0) {
   const type = ((variant % fallenTimbers.length) + fallenTimbers.length) % fallenTimbers.length
   if (cache.has(type)) return cache.get(type)
   const palette = fallenTimbers[type]
-  const collisionSeed = seededRandom(71282 + type * 3779)
-  // The Phase 03B swept envelopes still drive collision. Keep the original
-  // sample sequence so neither timing nor route clearance changes.
-  const volumes = palette.mass.map((mass, index) => {
-    const part = sculptedEarth(mass, palette, collisionSeed, index === 0 ? 2 : 1)
-    const position = part.attributes.position
-    const volume = hazardHull('soil and roots',
-      Array.from({ length: position.count }, (_, i) => new T.Vector3().fromBufferAttribute(position, i)))
-    part.dispose()
-    return volume
-  })
-  for (let n = 0; n < 7; n++) for (let k = 0; k < 5; k++) collisionSeed()
-  const trunk = curvedWood(palette.trunk, palette.bark, palette.wood, collisionSeed, true, false, volumes)
   const random = seededRandom(84082 + type * 59)
-  const parts = [rootPlate(palette, random, type), trunk]
-  // Forks start in the trunk shoulder and push through dirt in irregular
-  // bundles. The ends are narrow, broken and partially buried.
-  const flank = [[-.88,.16,.23],[-.81,1.29,.24],[-.57,1.88,.15],[-.15,2.04,.11],
-    [.23,1.58,.29],[.34,.74,.37],[-.16,.12,.32],[-.53,.27,-.24]]
-  for (const [index, tip] of flank.entries()) {
-    const x = tip[0] + (random() - .5) * .12
-    const y = tip[1] - type * .053 + random() * .09
-    const depth = tip[2]
-    const back = index === 7 ? -1 : 1
-    const stem = [[-.21,.77,.08,.12 + (index % 3) * .036],
-      [-.22 + (x + .22) * .33,.81+(y-.81)*.34,depth * .85,.086],
-      [x + (index % 2 ? -.12 : .14), y * .86 + .09, depth + .015 * back,.049],
-      [x,y,depth,.023 + random() * .018]]
-    parts.push(curvedWood(stem, palette.bark, palette.wood, random, false))
-    if (index % 2 === 0) {
-      const [sx, sy, sz] = stem[2]
-      parts.push(curvedWood([[sx,sy,sz,.037],[sx+.094,sy-.10,sz+.018,.027],
-        [sx+.17,Math.max(.02,sy-.21),sz * .91,.012]], 0x79654c, palette.wood, random, false, false, undefined, true))
-    }
+  const volumes = []
+  const turn = (x, y, z, width) => [palette.side*x, y, z, width]
+  const { plate, outline } = rootFan(palette, random, volumes)
+  const parts = [plate, curvedWood([
+    turn(-.62,.60,.26,.29), turn(-.45,.56,.12,.38),
+    turn(.03,.44,-.18,.33), turn(.42,.32,-.47,.28),
+    turn(.84,.29,-.73,.21),
+  ], palette.bark, palette.wood, random, true, false, volumes)]
+  for (let n = 1; n < outline.length - 1; n += 2) {
+    const [x, y, z] = outline[n]
+    const start = [-palette.side * .42,.57,.39,.113 + random() * .047]
+    const mid = [(x + start[0])*.52,(y+.65)*.49,z+.20,.081]
+    parts.push(curvedWood([start, mid, [x*.93,y*.83,z+.085,.048], [x,y,z,.017]],
+      palette.bark, palette.wood, random, false, false, undefined, true))
+    if (n % 4 === 1) parts.push(curvedWood([mid, [x-.08,y*.69,z+.11,.03],
+      [x+.13,y*.54,z+.07,.012]], palette.bark, palette.wood, random, false, false, undefined, true))
+  }
+  for (const [side, y, offset] of [[-1,.58,-.24],[1,.43,-.47]]) {
+    parts.push(curvedWood([turn(.14,.42,offset,.115), turn(.39,y,offset+side*.17,.072),
+      turn(.62,y+.09,offset+side*.27,.025)], palette.bark, palette.wood, random, false))
   }
   const geometry = mergeGeometries(parts)
   for (const part of parts) part.dispose()

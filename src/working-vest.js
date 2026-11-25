@@ -38,13 +38,13 @@ function clipEdge(a, b) {
   }
 }
 
-export function createWorkingVest(body) {
+export function createWorkingVest(body, restSpace = body.matrixWorld) {
   const source = body.geometry
   const { position, normal, skinIndex, skinWeight } = source.attributes
   const joint = new T.Vector4()
   const weight = new T.Vector4()
   const vertices = Array.from({ length: position.count }, (_, i) => {
-    const rest = body.getVertexPosition(i, new T.Vector3()).applyMatrix4(body.matrixWorld)
+    const rest = new T.Vector3().fromBufferAttribute(position, i).applyMatrix4(restSpace)
     joint.fromBufferAttribute(skinIndex, i)
     weight.fromBufferAttribute(skinWeight, i)
     return {

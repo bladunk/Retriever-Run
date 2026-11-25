@@ -363,7 +363,7 @@ export function createCourse(seed = 1, rules = director) {
       random() * rules.spacingVariation * (1 - progress * .38)
     if (!row.gate && row.exits.length === 1) gap -= .04 * progress
     const overtime = Math.max(0, time - rules.stages.length * stageSeconds)
-    gap -= .075 * (1 - Math.exp(-overtime / 95))
+    gap -= .095 * (1 - Math.exp(-overtime / 95))
     const wasPaired = Boolean(pairPending)
     pairPending = undefined
     requiredLane = false
@@ -389,7 +389,7 @@ export function createCourse(seed = 1, rules = director) {
       random() < Math.max(rules.pairChance * Number(row.entities[0].type === 'stream'), stage.chain)) {
       const type = row.entities[0].type
       pairPending = territory >= 2 && random() < .85 ? (type === 'stream' ? 'branch' : 'stream') : type
-      nextPair = time + Math.max(2.9, 14 - stage.level * .65)
+      nextPair = time + (stage.level <= 6 ? Math.max(2.9, 14 - stage.level * .65) : Math.max(2.7, 14 - stage.level * .69))
       gap = Math.max(gap, territory >= 5 ? 1.37 : rules.pairGap)
     } else if (row.gate) {
       requiredLane = territory >= 2 && (territory >= 4 || random() < stage.follow)

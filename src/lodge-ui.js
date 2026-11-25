@@ -10,6 +10,7 @@ import { campSwitch, worldwideBoard } from './camp-ui.js'
 import { node, number, meters, date } from './lodge-elements.js'
 import { careerRoom } from './career-ui.js'
 import { kennelRoom } from './kennel-ui.js'
+import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
 
 function duration(seconds) {
   const total = Math.floor(seconds)
@@ -187,26 +188,34 @@ function leaderboard(lodge, metric, selectMetric) {
     button.addEventListener('click', () => selectMetric(id))
     controls.append(button)
   }
-  const entries = lodge.board(metric)
-  const list = node('ol', null, 'camp-board')
-  entries.forEach((entry, index) => {
-    const row = node('li')
-    const rank = node('span', String(index + 1), 'board-rank')
-    rank.setAttribute('aria-label', 'Rank ' + (index + 1))
-    const who = node('div', null, 'board-runner')
-    who.append(node('strong', lodge.nameFor(entry.player)), node('time', date(entry.date)))
-    const highlight = node('strong', metric === 'distance' ? meters(entry.distance) : number(entry[metric]), 'board-score')
-    const detail = node('p', [
-      number(entry.score) + ' pts', meters(entry.distance), number(entry.retrieves) + ' retrieves',
-      number(entry.treats) + ' treats', number(entry.logs) + ' logs', number(entry.geese) + ' geese',
-      entry.course && (entry.course === 'legacy-10' ? 'Earlier course' : 'Great Migration'),
-    ].filter(Boolean).join(' · '), 'board-detail')
-    row.append(rank, who, highlight, detail)
-    list.append(row)
-  })
+  function board(entries) {
+    const list = node('ol', null, 'camp-board')
+    entries.forEach((entry, index) => {
+      const row = node('li')
+      const rank = node('span', String(index + 1), 'board-rank')
+      rank.setAttribute('aria-label', 'Rank ' + (index + 1))
+      const who = node('div', null, 'board-runner')
+      who.append(node('strong', lodge.nameFor(entry.player)), node('time', date(entry.date)))
+      const highlight = node('strong', metric === 'distance' ? meters(entry.distance) : number(entry[metric]), 'board-score')
+      const detail = node('p', [
+        number(entry.score) + ' pts', meters(entry.distance), number(entry.retrieves) + ' retrieves',
+        number(entry.treats) + ' treats', number(entry.logs) + ' logs', number(entry.geese) + ' geese',
+      ].filter(Boolean).join(' · '), 'board-detail')
+      row.append(rank, who, highlight, detail)
+      list.append(row)
+    })
+    return list
+  }
+  const entries = lodge.board(metric, courseRuleset)
   const empty = node('p', 'Finish a run to post the first score.', 'empty-board')
+  const archived = [[legacyMigrationRuleset, 'Previous Great Migration'], ['legacy-10', 'Earlier ten-territory course']]
+    .flatMap(([course, label]) => {
+      const past = lodge.board(metric, course)
+      return past.length ? [node('h3', label, 'section-title section-break'), board(past)] : []
+    })
   return [node('h3', 'Camp Leaderboard', 'section-title'),
-    node('p', 'Local to this device · Top 20 per category', 'room-note'), controls, entries.length ? list : empty]
+    node('p', 'Local to this device · Top 20 per category and course', 'room-note'), controls,
+    entries.length ? board(entries) : empty, ...archived]
 }
 
 export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}) {

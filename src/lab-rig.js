@@ -9,7 +9,7 @@ const up = new T.Vector3(0, 1, 0)
 const pitchAxis = new T.Vector3(1, 0, 0)
 const bankAxis = new T.Vector3(0, 0, 1)
 
-export function createLabradorRig(gltf) {
+export function createLabradorRig(gltf, breed = 'lab') {
   const root = gltf.scene
   root.updateMatrixWorld(true)
   const bounds = new T.Box3().setFromObject(root, true)
@@ -18,13 +18,23 @@ export function createLabradorRig(gltf) {
 
   const meshes = []
   const dressMesh = []
+  const restSpaces = []
   root.traverse((node) => {
     if (!node.isSkinnedMesh) return
     node.frustumCulled = false
     meshes.push(node)
-    dressMesh.push(tintLabradorCoat(node.material))
+    // Meshopt folds the uniform position dequantization into inverse bind
+    // matrices. Recover the baked bind coordinates once for both garments
+    // and coat details so fitting remains independent of the animated pose.
+    node.geometry.computeBoundingBox()
+    const encoded = node.geometry.boundingBox
+    const scale = (bounds.max.z - bounds.min.z) / (encoded.max.z - encoded.min.z)
+    const offset = bounds.getCenter(new T.Vector3()).addScaledVector(encoded.getCenter(new T.Vector3()), -scale)
+    const rest = new T.Matrix4().makeScale(scale, scale, scale).setPosition(offset)
+    restSpaces.push(rest)
+    dressMesh.push(tintLabradorCoat(node.material, rest, breed))
   })
-  const dressVest = meshes.map(createWorkingVest)
+  let dressVest
   const planting = createPawPlanting(root, meshes)
   const mixer = new T.AnimationMixer(root)
   root.scale.setScalar(scale)
@@ -43,10 +53,14 @@ export function createLabradorRig(gltf) {
     return { bone, base: bone.quaternion.clone() }
   })
   const collarMaterial = new T.MeshStandardMaterial({ color: 0x61442d, roughness: .70 })
-  const collar = new T.Mesh(new T.TorusGeometry(.399, .025, 7, 32), collarMaterial)
+  const strap = new T.LatheGeometry([
+    new T.Vector2(.374,-.044), new T.Vector2(.393,-.044), new T.Vector2(.406,-.032),
+    new T.Vector2(.406,.032), new T.Vector2(.394,.044), new T.Vector2(.374,.044), new T.Vector2(.374,-.044),
+  ], 36)
+  const collar = new T.Mesh(strap, collarMaterial)
   collar.position.set(0, .20, .002)
-  collar.scale.y = 1.065
-  collar.rotation.x = Math.PI / 2
+  collar.scale.z = 1.065
+  if (breed === 'pointer') collar.scale.multiplyScalar(.92)
   neck.add(collar)
   const brass = new T.MeshStandardMaterial({ color: 0xbb9755, roughness: .48, metalness: .45 })
   const tag = new T.Mesh(new T.CylinderGeometry(.097, .097, .027, 10), brass)
@@ -55,8 +69,15 @@ export function createLabradorRig(gltf) {
   neck.add(tag)
   const buckle = collarBuckle(brass)
   neck.add(buckle)
-  const bandana = new T.Mesh(new T.ConeGeometry(.40, .51, 3), collarMaterial)
-  bandana.rotation.z = Math.PI
+  const cloth = new T.BufferGeometry()
+  cloth.setAttribute('position', new T.Float32BufferAttribute([
+    -.31,.13,.03, -.16,.11,.13, 0,.10,.16, .16,.11,.13, .31,.13,.03,
+    -.13,-.10,.14, 0,-.13,.18, .13,-.10,.14, 0,-.34,.14,
+  ], 3))
+  cloth.setIndex([0,5,1,1,5,6,1,6,2,2,6,3,3,6,7,3,7,4,5,8,6,6,8,7])
+  cloth.computeVertexNormals()
+  const scarfMaterial = new T.MeshStandardMaterial({ color: 0x616946, roughness: .96, side: T.DoubleSide })
+  const bandana = new T.Mesh(cloth, scarfMaterial)
   bandana.position.set(0, .04, .36)
   neck.add(bandana)
 
@@ -83,16 +104,18 @@ export function createLabradorRig(gltf) {
     appearance(gear) {
       collarMaterial.color.setHex(gear.collar.color)
       bandana.visible = Boolean(gear.collar.bandana)
+      scarfMaterial.color.setHex(gear.collar.color)
       buckle.visible = Boolean(gear.collar.buckle)
       tag.visible = !buckle.visible
       for (const dress of dressMesh) dress(gear.coat)
-      for (const dress of dressVest) dress(gear.vest)
+      if (gear.vest.color !== null) dressVest ??= meshes.map((mesh, index) => createWorkingVest(mesh, restSpaces[index]))
+      for (const dress of dressVest ?? []) dress(gear.vest)
     },
     reset() {
       air = groundCorrection = compression = earFollow = banking = 0
       idle = 0
     },
-    pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing, ground, wet = 0 }) {
+    pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing, ground, wet = 0, gait = 'idle' }) {
       const blend = -Math.expm1(-15 * dt)
       idle += (Number(resting) - idle) * blend
       air += (Number(airborne) - air) * -Math.expm1(-34 * dt)
@@ -105,8 +128,15 @@ export function createLabradorRig(gltf) {
       weights[2] = (1 - idle) * air
       weights[3] = grounded * low
 
-      action(animations.Idle, time / animations.Idle.getClip().duration % 1, weights[0])
-      action(animations.Gallop, stride / oneTurn % 1, weights[1])
+      const alert = idle * (.12 + .31 * Math.max(0, Math.sin(time * .33)))
+      const walk = gait === 'walk' ? idle : 0
+      action(animations.Idle, time / animations.Idle.getClip().duration % 1, Math.max(0, weights[0] - alert - walk))
+      action(animations.Alert, time / animations.Alert.getClip().duration % 1, Math.max(0, alert - walk))
+      action(animations.Walk, time / animations.Walk.getClip().duration % 1, walk)
+      const recovery = Math.min(weights[1] * .28, compression * .24)
+      action(animations.Gallop, stride / oneTurn % 1, weights[1] - recovery)
+      action(animations.Land, 1 - Math.min(.97, compression), recovery)
+      action(animations.Fail, .1, 0)
       action(animations.Jump, jumpPhase, weights[2])
       action(animations.Low, .58, weights[3])
       // Restore the blended layer before applying the next procedural adjustment.

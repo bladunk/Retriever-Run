@@ -5,7 +5,7 @@ import { applyRunXP, careerStanding, legacyLevel, normalizeCareer, serviceCredit
 import { journalIssues, reviewSavedRank } from './career-integrity.js'
 import { expeditionRegions, migrationSecondsByTerritory, regionAt, territorySeconds } from './expedition.js'
 import { commitWildlife, normalizeWildlife } from './wildlife-journal.js'
-import { courseRuleset } from './ruleset.js'
+import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
 import { classicGear, kennelCatalog, legacyGear, newGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 
 export const saveKey = 'retriever-run.record'
@@ -93,8 +93,17 @@ export function rankRuns(entries, metric) {
 
 function retainedEntries(entries) {
   const byId = new Map()
-  for (const metric of metrics) {
-    for (const entry of rankRuns(entries, metric)) byId.set(entry.id, entry)
+  const courses = new Map()
+  for (const entry of entries) {
+    const course = entry.course ?? 'legacy-10'
+    const group = courses.get(course) ?? []
+    group.push(entry)
+    courses.set(course, group)
+  }
+  for (const group of courses.values()) {
+    for (const metric of metrics) {
+      for (const entry of rankRuns(group, metric)) byId.set(entry.id, entry)
+    }
   }
   return [...byId.values()].sort((a, b) => a.id - b.id)
 }
@@ -111,11 +120,11 @@ function normalizeSave(raw) {
   for (const item of Array.isArray(raw?.entries) ? raw.entries : []) {
     if (!count(item?.id) || !known.has(item.player) || !validDate(item.date)) continue
     const fields = Object.fromEntries([...metrics, 'duration', ...counters].map(key => [key, measure(item[key])]))
-    const current = item.course === courseRuleset
+    const current = item.course === courseRuleset || item.course === legacyMigrationRuleset
     const place = current ? regionAt(fields.duration).index + 1 : Math.min(10, Math.floor(fields.duration / territorySeconds) + 1)
     if (count(item.territory) === place) {
       fields.territory = place
-      fields.course = current ? courseRuleset : 'legacy-10'
+      fields.course = current ? item.course : 'legacy-10'
       fields.territoryKey = current ? regionAt(fields.duration).key : undefined
     }
     entries.set(item.id, { id: item.id, player: item.player, date: item.date, ...fields })
@@ -185,7 +194,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
     commit,
     players: () => save.players,
     nameFor: id => save.players.find(player => player.id === id)?.nickname ?? 'Marsh Runner',
-    board: metric => rankRuns(save.entries, metric),
+    board: (metric, course) => rankRuns(course ? save.entries.filter(run => (run.course ?? 'legacy-10') === course) : save.entries, metric),
     beginRun: onSkill => createRunStatistics(save.nextRun++, onSkill),
     enroll(id, name, enrollment) {
       const player = save.players.find(player => player.id === id)
@@ -279,7 +288,8 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       delete entry.wildlife
       save.entries = retainedEntries([...save.entries, entry])
       const placements = emptyCounts(metrics)
-      for (const metric of metrics) placements[metric] = rankRuns(save.entries, metric).findIndex(run => run.id === entry.id) + 1
+      const courseEntries = save.entries.filter(run => run.course === entry.course)
+      for (const metric of metrics) placements[metric] = rankRuns(courseEntries, metric).findIndex(run => run.id === entry.id) + 1
       commit()
       return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements, career, gear, practice, newWildlife }
     },

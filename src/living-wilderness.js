@@ -6,6 +6,12 @@ import { createEncounterArt } from './wildlife-art.js'
 import { createWildlifeModels, livingModels } from './wildlife-models.js'
 
 const flightFamily = new Set(['crane','goose','raptor'])
+const approaches = {
+  deer: [64, 56], pheasant: [62, 42], goose: [78, 88], duck: [52, 36],
+  crane: [70, 56], raptor: [67, 50],
+}
+const defaultApproach = [47, 12]
+export const encounterApproach = species => approaches[fieldSpecies[species]?.family] ?? defaultApproach
 
 export function encounterPose(event, animal, ahead, elapsed, unit, out) {
   const side = Math.sign(event.lateral)
@@ -24,17 +30,20 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
   out.rig = 'Idle'
   out.draw = true
   if (animal.family === 'pheasant') {
-    const flush = Math.max(0, 23 - ahead)
+    const flush = Math.max(0, 43 - ahead)
     out.draw = flush > 0
-    out.height += Math.min(6.25, flush ** 1.53 * .10)
-    out.lateral += side * (.026 * flush ** 1.55)
+    out.along += flush * .68
+    out.height += Math.min(5.3, flush ** 1.35 * .030)
+    out.lateral += side * (Math.min(5, flush * .086) + Math.max(0, flush - 58) * .69)
     out.yaw = -side * (1.37 - Math.min(.42, flush * .013))
     out.pitch = Math.max(0,.44-flush*.015)
     out.wing = .63 + .35*Math.sin(phase*6.4)
     out.rig = 'Fly'
   } else if (flight) {
-    const crossing = 29 - ahead
-    out.lateral += side * crossing * .19
+    const crossing = 49 - ahead
+    const forward = Math.max(0, crossing)
+    out.along += forward * .70
+    out.lateral += side * (Math.max(-1.3, crossing * .045) + Math.max(0, forward - 80) * .47)
     out.height += Math.sin(phase * .47) * .27 + .016 * crossing
     if (animal.family === 'crane' || animal.family === 'raptor') out.height += 3.05
     out.roll = side * .082 * Math.sin(crossing*.16)
@@ -43,9 +52,9 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     out.wing = (animal.family === 'raptor' ? .34 : .51) * (.72 + .28*Math.sin(phase*.46)) * Math.sin(phase*4.8)
     out.rig = animal.family === 'raptor' && Math.sin(phase*.45) > -.31 ? 'Glide' : 'Fly'
   } else if (animal.family === 'deer') {
-    const run = Math.max(0, 22 - ahead)
-    out.lateral += side * Math.min(4.2,run*.15)
-    out.along += run * .21
+    const run = Math.max(0, 37 - ahead)
+    out.lateral += side * (Math.min(3.5, run * .059) + Math.max(0, run - 69) * .54)
+    out.along += run * .72
     out.yaw = -side * (run > 0 ? .99 : .51)
     out.rig = run > 0 ? 'Gallop' : 'Eating'
     out.height += Math.max(0, Math.sin(phase*5.0)) * Math.min(.11, run * .033)
@@ -61,6 +70,7 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
       const takeoff = 23 - group - ahead
       out.height += Math.min(5.0, .105 * takeoff ** 1.26)
       out.lateral += side * takeoff * .10
+      out.along += takeoff * .63
       out.pitch = .22 - Math.min(.20, takeoff * .013)
       out.wing = .48 + .42 * Math.sin(phase * 6.4)
       out.rig = 'Fly'
@@ -116,9 +126,9 @@ export function createLivingWilderness(scene, call, prewarmSound, probe) {
     let nearest = Infinity
     for (const event of events) {
       const ahead = event.distance - distance
-      if (ahead >= -8 && ahead < nearest && ahead < 82) { upcoming = event; nearest = ahead }
+      if (event.id !== active?.event.id && ahead >= -3 && ahead < nearest && ahead < 110) { upcoming = event; nearest = ahead }
     }
-    if (active && active.event.distance - distance < -8) {
+    if (active && active.event.distance - distance < -encounterApproach(active.event.species)[1]) {
       retire(active)
       active = undefined
     }
@@ -139,7 +149,7 @@ export function createLivingWilderness(scene, call, prewarmSound, probe) {
       }
       const model = detail > 0 ? models.get(upcoming.species) : undefined
       const waitingForModel = detail > 0 && livingModels[upcoming.species] && !model && nearest > 30
-      if (running && nearest < 39 && !waitingForModel) {
+      if (running && nearest < encounterApproach(upcoming.species)[0] && !waitingForModel) {
         active = prepared
         prepared = undefined
         active.model = model
@@ -169,7 +179,7 @@ export function createLivingWilderness(scene, call, prewarmSound, probe) {
         projected.copy(position)
         projected.y += art.legs ? animal.size * .35 : .13
         projected.project(camera)
-        const visible = encounterVisible(ahead, projected.x, projected.y, projected.z, running)
+        const visible = encounterVisible(ahead + pose.along, projected.x, projected.y, projected.z, running)
         leaderInFrame = visible
         active.seen = visible ? active.seen + dt : Math.max(0, active.seen - dt)
         if (!active.recorded && active.seen >= .22) {
@@ -224,6 +234,7 @@ export function createLivingWilderness(scene, call, prewarmSound, probe) {
     art.bodyMesh.instanceMatrix.needsUpdate = Boolean(bodies)
     art.appendageMesh.instanceMatrix.needsUpdate = Boolean(limbs)
   }
+  update.warm = (renderer, camera) => models.warm(renderer, camera, scene, active?.model)
   update.active = () => count
   update.metrics = models.metrics
   update.stamp = () => active ? { ...active.event, drawn: count, model: Boolean(active.model),

@@ -4,6 +4,7 @@ import { createServer } from 'node:http'
 import { readFile, mkdir, writeFile } from 'node:fs/promises'
 import { extname, resolve, sep } from 'node:path'
 import { chromium, devices, webkit } from 'playwright'
+import { buildLabel } from '../src/build-info.js'
 
 const args = process.argv.slice(2)
 const safari = args.includes('webkit')
@@ -30,6 +31,7 @@ const openingManifest = upgrade ? JSON.parse(await readFile(resolve(original, 'c
 const next = manifest && !upgrade && structuredClone(manifest)
 const replacements = new Map()
 if (next) {
+  if (next.app) next.app.id = next.app.id === '0123456' ? '7654321' : '0123456'
   const index = (await readFile(resolve(root, 'index.html'), 'utf8')).replace('</head>', '<meta name="qa-release" content="second"></head>')
   const entry = next.assets.find(item => item.path === 'index.html')
   entry.bytes = Buffer.byteLength(index)
@@ -110,6 +112,12 @@ try {
   })
   page.on('console', message => { if (message.type() === 'error') console.error(message.text()) })
   const phase = message => { if (process.env.FIELD_QA_TRACE) console.error(message) }
+  const assertRunningBuild = async (tab, app) => {
+    if (!app) return
+    const footer = tab.locator('#running-version')
+    assert.equal(await footer.textContent(), buildLabel(app))
+    assert.deepEqual(await tab.evaluate(() => window.retrieverPerformance().build), app)
+  }
   const log = { engine: safari ? 'webkit' : 'chromium', baseline, upgrade: phaseThree ? 'phase-three' : phaseTwo ? 'phase-two' : upgrade ? 'phase-one' : false }
   const ready = async (tab = page) => {
     await tab.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
@@ -200,6 +208,7 @@ try {
     blocked = null
     await page.getByRole('button', { name: 'Retry download' }).tap()
     log.coldReadyMsIncludingRetry = Math.round(await ready())
+    await assertRunningBuild(page, openingManifest.app)
     phase('Verified download and title')
     assert.equal(hits.get(previouslyVerified.path), audioHits)
     if (args.includes('journal-sighting')) await page.evaluate(() => { Math.random = () => 7 / 0x100000000 })
@@ -245,6 +254,14 @@ try {
       await context.setOffline(true)
       await page.reload({ waitUntil: 'domcontentloaded' })
       log.offlineReadyMs = Math.round(await ready())
+      await assertRunningBuild(page, openingManifest.app)
+      if (openingManifest.app) {
+        assert.ok(await page.locator('#running-version').evaluate(footer => {
+          const bounds = footer.getBoundingClientRect()
+          return bounds.top > 0 && bounds.bottom <= innerHeight && bounds.height > 0
+        }))
+        log.offlineBuild = openingManifest.app
+      }
       phase('Verified offline launch')
       await page.screenshot({ path: resolve(output, 'offline-camp.png'), scale: 'css' })
       await page.locator('#settings').tap()
@@ -296,6 +313,10 @@ try {
       await idle.locator('#content-open').filter({ hasText: 'Game update available' }).waitFor({ state: 'attached', timeout: 35_000 })
       await idle.locator('#settings').tap()
       await idle.getByRole('button', { name: 'Game update available' }).tap()
+      if (next?.app) {
+        assert.equal(await idle.locator('#pending-version').textContent(), 'Pending · ' + buildLabel(next.app))
+        await assertRunningBuild(idle, openingManifest.app)
+      }
       const preparation = idle.getByRole('button', { name: /^(Download|Apply) update$/ })
       await preparation.tap()
       await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 65_000 })
@@ -322,6 +343,7 @@ try {
       phase('Activated candidate content')
       await idle.bringToFront()
       await ready(idle)
+      if (upgrade) await assertRunningBuild(idle, manifest.app)
       await page.bringToFront()
       await migrated(page)
       await idle.bringToFront()

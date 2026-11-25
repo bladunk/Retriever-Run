@@ -20,6 +20,7 @@
       <p class="content-brand">Retriever Run</p>
       <h1 id="content-title">Download the trail</h1>
       <p id="content-description">Save the terrain, Labrador and sounds on this device so you can hunt offline.</p>
+    <p id="pending-version" class="build-version" hidden></p>
       <p id="content-size"></p>
       <div id="content-progress" hidden>
         <label id="content-step" for="content-meter">Checking trail files…</label>
@@ -83,6 +84,7 @@
         <button id="open-lodge" class="lodge-entry" type="button">Outfitter’s Lodge</button>
         <p id="local-status" class="control-hint" hidden></p>
         <p class="control-hint" id="hint">Swipe or use arrows to steer, jump, and duck.</p>
+        <p id="running-version" class="build-version"></p>
       </div>
     </section>
     <dialog id="onboarding" aria-labelledby="onboarding-title">
@@ -113,6 +115,7 @@
         <h2 id="preferences-title">Field settings</h2>
         <button id="close-settings" type="button" aria-label="Close settings">×</button>
       </div>
+      <p id="settings-version" class="build-version"></p>
       <label class="setting-row">Master volume <input id="masterVolume" type="range" min="0" max="100" step="1"></label>
       <label class="setting-row">Music <input id="musicVolume" type="range" min="0" max="100" step="1"></label>
       <label class="setting-row">Wildlife calls <input id="wildlifeVolume" type="range" min="0" max="100" step="1"></label>

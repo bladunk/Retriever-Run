@@ -151,8 +151,8 @@ try {
     })
   }, quality)
 
-  async function runAt(distance, seed, sceneQuality = quality) {
-    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality,
+  async function openAt(distance, seed, sceneQuality = quality) {
+    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + (args.includes('pointer') ? '&breed=pointer' : ''),
       { waitUntil: 'domcontentloaded' })
     if (await page.locator('#content-screen').isVisible()) {
       if (args.includes('offline')) {
@@ -162,6 +162,10 @@ try {
     await page.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
       null, { timeout: 60_000 })
     await page.addStyleTag({ content: '#collision-debug, #game[data-practice] .practice-status, #callout, #patch-toast { display: none }' })
+  }
+
+  async function runAt(distance, seed, sceneQuality = quality) {
+    await openAt(distance, seed, sceneQuality)
     await page.locator('#primary').tap()
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running', null, { timeout: 40_000 })
     if (args.includes('offline')) await context.setOffline(true)
@@ -224,14 +228,54 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('texture-replays')) {
+  if (args.includes('working-dogs')) {
+    const breed = args.includes('pointer') ? 'pointer' : 'lab'
+    await openAt(0, 7)
+    await page.screenshot({ path: resolve(output, 'title.png'), scale: 'css' })
+    await page.locator('#open-lodge').tap()
+    await page.locator('#tab-kennel').tap()
+    const stage = page.locator('.kennel-stage')
+    await stage.locator('canvas').waitFor()
+    await stage.focus()
+    for (const [angle, presses, key] of [['three-quarter', 0, 'ArrowRight'], ['front', 2, 'ArrowLeft'],
+      ['side', 3, 'ArrowRight'], ['rear', 3, 'ArrowRight']]) {
+      for (let step = 0; step < presses; step++) await page.keyboard.press(key)
+      await page.waitForTimeout(500)
+      await stage.screenshot({ path: resolve(output, angle + '.png'), scale: 'css' })
+    }
+    await page.locator('[data-category="vest"]').tap()
+    await page.locator('[data-gear="blaze-vest"]').tap()
+    await page.locator('.kennel-selection').getByRole('button', { name: 'View preview' }).tap()
+    await page.keyboard.press('ArrowLeft')
+    await page.keyboard.press('ArrowLeft')
+    await page.waitForTimeout(450)
+    await stage.screenshot({ path: resolve(output, 'vest.png'), scale: 'css' })
+    await page.locator('[data-category="coat"]').tap()
+    const coats = page.locator('.kennel-items button')
+    const coatCount = await coats.count()
+    for (let index = 0; index < coatCount; index++) {
+      const card = coats.nth(index)
+      const id = await card.getAttribute('data-gear')
+      await card.tap()
+      await page.locator('.kennel-selection').getByRole('button', { name: 'View preview' }).tap()
+      await page.waitForTimeout(120)
+      if (breed === 'lab') await stage.screenshot({ path: resolve(output, 'coat-' + id + '.png'), scale: 'css' })
+    }
+    await page.locator('#close-lodge').tap()
+    await page.locator('#primary').tap()
+    await settle(0, quality)
+    await capture('gameplay', { breed })
+    console.log(`Rendered ${breed} at four angles, ${coatCount} coat cards and gameplay`)
+  } else if (args.includes('texture-replays')) {
     const { planEncounter } = await fromSource('wildlife-encounters')
-    const encounter = planEncounter(buildTile(12, 1), 1)
+    const seed = args.includes('reuse') ? 23 : 1
+    const encounter = planEncounter(buildTile(12, seed), seed)
     assert.equal(encounter.species, 'mallard')
     // Start far enough away to give the existing prefetch window time to
     // resolve the skinned rig on every replay, including on software WebGL.
-    const start = encounter.distance - 42
-    await runAt(start, 1)
+    const reuse = args.includes('reuse')
+    const start = encounter.distance - (reuse ? 58 : 42)
+    await runAt(start, seed)
     const samples = []
     for (let hunt = 0; hunt < 5; hunt++) {
       await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, start + 8)
@@ -243,12 +287,12 @@ try {
         throw error
       })
       const active = await page.evaluate(() => window.retrieverPerformance())
-      await stepTo(encounter.distance + 10)
+      await stepTo(encounter.distance + (reuse ? 40 : 10))
       await page.waitForFunction(() => window.retrieverDebug?.wildlife == null)
       const retired = await page.evaluate(() => window.retrieverPerformance())
       samples.push({ hunt: hunt + 1, active, retired })
       console.log(`Hunt ${hunt + 1}: ${active.textures} textures with mallard, ${retired.textures} after retirement`)
-      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, encounter.distance + 65)
+      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, encounter.distance + (reuse ? 150 : 65))
       await page.locator('#run-again').waitFor({ timeout: 35_000 })
       if (hunt < 4) {
         await page.locator('#run-again').tap()
@@ -257,7 +301,8 @@ try {
     await writeFile(resolve(output, 'texture-replays.json'), JSON.stringify(samples, null, 2) + '\n')
     if (args.includes('expect-bounded')) {
       assert.ok(samples.every(({ retired }) => retired.textures <= samples[0].retired.textures), 'replay retained extra textures')
-      assert.ok(samples.every(({ retired }) => retired.wildlifeModels.resident === 0), 'retired wildlife still resident')
+      assert.ok(samples.every(({ retired }) => retired.wildlifeModels.resident <= (reuse ? 2 : 0)), 'wildlife residency exceeded its limit')
+      if (reuse) assert.ok(samples.at(-1).retired.wildlifeModels.hits > 0, 'no decoded rigs reused')
       assert.equal(samples.at(-1).retired.hunt.id, 5)
     }
   } else if (args.includes('soak')) {
@@ -459,7 +504,7 @@ try {
     await capture('sign-near', fixture)
     assert.ok(results.at(-1).signs.some(sign => sign.distance === fixture.sign.distance))
   } else if (args.includes('water-crossings') || args.includes('root-plate')) {
-    const candidates = args.includes('root-plate') ? ['parklands'] : ['gulf','cypress','platte','mountain']
+    const candidates = args.includes('root-plate') ? ['cypress','delta','parklands'] : ['gulf','cypress','platte','mountain']
     const type = args.includes('root-plate') ? 'fallen' : 'stream'
     for (const key of candidates) {
       if (args.some(arg => arg.startsWith('only=')) && !args.includes('only=' + key)) continue

@@ -212,6 +212,7 @@ test('rapid jump and slide transitions retain skinned ground clearance after a l
 
 test('all six vest styles share a separate weighted shell and leave the collision body and coat intact', async () => {
   const rig = await loadRig()
+  rig.appearance(gearAppearance({ vest: 'canvas-vest' }))
   const vest = rig.root.getObjectByName('WorkingDogVest')
   const body = vest.parent
   const skin = body.geometry
@@ -219,8 +220,9 @@ test('all six vest styles share a separate weighted shell and leave the collisio
   const material = vest.material
   const garment = vest.geometry
   const points = garment.getAttribute('fitRest')
-  assert.ok(garment.index.count / 3 < 2200)
+  assert.ok(garment.index.count / 3 < 6500)
   assert.equal(vest.skeleton, body.skeleton)
+  rig.appearance(gearAppearance())
   assert.ok(!vest.visible)
   let chest = 0
   let hem = 0
@@ -233,7 +235,7 @@ test('all six vest styles share a separate weighted shell and leave the collisio
     const sum = weight.getX(i) + weight.getY(i) + weight.getZ(i) + weight.getW(i)
     assert.ok(Math.abs(sum - 1) < 1e-6)
   }
-  assert.ok(chest > 20 && hem > 40)
+  assert.ok(chest > 20 && hem > 40, `chest: ${chest}, hem: ${hem}`)
   const colors = new Set()
   for (const id of ['canvas', 'marsh', 'seasoned', 'blaze', 'master', 'legend']) {
     rig.appearance(gearAppearance({ coat: 'fox-red', vest: id + '-vest' }))

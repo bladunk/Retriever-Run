@@ -47,7 +47,19 @@ export function defineStages(entries, stagesPerTerritory = 2) {
   })
 }
 
-export const courseStages = defineStages(progression)
+// Increase decision density in the latter migration while keeping the
+// same speed integral, territory boundaries and measured clearance windows.
+export const courseStages = defineStages(progression).map(stage => {
+  const pressure = Math.max(0, Math.ceil(stage.level / 6) - 1)
+  if (!pressure) return stage
+  return {
+    ...stage,
+    gap: stage.gap - .024 * pressure,
+    action: Math.min(.97, stage.action + .022 * pressure),
+    follow: Math.min(.985, stage.follow + .025 * pressure),
+    flock: stage.flock - .24 * pressure,
+  }
+})
 export const primaryDuration = courseStages.length * stageSeconds
 export const difficultyCurve = courseStages.map(({ start, pace }) => [start, pace])
 

@@ -28,14 +28,47 @@ export function createKennelView() {
   const pose = { x: 0, z: 0, height: 0, ground: 0, heading: 0, turn: 0, stride: 0, sliding: 0,
     airborne: false, jumpPhase: 1, idle: true, landing: 0, time: 0, dt: 0 }
   let previous = -Infinity
+  let angle = 1.06
+  let targetAngle = angle
+  let pointer
+  let touchX
+  let stage
+
+  function rotate(event) {
+    if (event.pointerId !== pointer) return
+    targetAngle -= (event.clientX - touchX) * .016
+    touchX = event.clientX
+  }
+  function start(event) {
+    if (!event.isPrimary || event.button !== 0) return
+    pointer = event.pointerId
+    touchX = event.clientX
+    stage.setPointerCapture(pointer)
+  }
+  function stop() { pointer = undefined }
+  function onKey(event) {
+    if (!['ArrowRight', 'ArrowLeft'].includes(event.key)) return
+    event.preventDefault()
+    targetAngle += (event.key === 'ArrowRight' ? 1 : -1) * Math.PI / 6
+  }
+
+  function bind(target, method) {
+    for (const [name, listener] of [['pointerdown', start], ['pointermove', rotate], ['pointerup', stop],
+      ['pointercancel', stop], ['lostpointercapture', stop], ['keydown', onKey]]) target[method](name, listener)
+  }
 
   return {
     room,
+    attach(target) {
+      if (stage) bind(stage, 'removeEventListener')
+      stop()
+      stage = target
+      if (stage) bind(stage, 'addEventListener')
+    },
     resize(renderer, width, height) {
       orbit.aspect = width / Math.max(1, height)
       orbit.updateProjectionMatrix()
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 1.15))
-      renderer.setSize(width, height, false)
+      renderer.setDrawingBufferSize(width, height, Math.min(devicePixelRatio, 1.35))
       previous = -Infinity
     },
     render(renderer, dog, ms, reduced) {
@@ -45,7 +78,7 @@ export function createKennelView() {
       previous = ms
       pose.time += reduced ? 0 : dt
       pose.dt = dt
-      const angle = 1.06 + (reduced ? 0 : .19 * Math.sin(pose.time * .37))
+      angle += (targetAngle - angle) * (reduced ? 1 : -Math.expm1(-13 * dt))
       const radius = Math.max(3.5, 6.05 / Math.max(.81, orbit.aspect))
       orbit.position.set(Math.sin(angle) * radius, 1.51, -Math.cos(angle) * radius)
       orbit.lookAt(0, .78, -.11)
