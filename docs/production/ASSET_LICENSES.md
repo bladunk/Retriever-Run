@@ -96,3 +96,7 @@ CDmir and TinyWorlds released the skinned doe and its embedded diffuse maps unde
 | Raised shelter, cattails, cordgrass and drake/hen forms | Original art scripted for Retriever Run | Blender meshes, quantized and merged or instanced in the field. The authored drake also replaces the simple mallard fallback body |
 
 Poly Haven applies CC0 to these assets. Redistribution and adaptation are permitted, with credits retained here. The [input lock](../../art/gulf-inputs.json) records the exact source files, bytes and SHA-256 digests. `src/assets/environment/gulf-field-color.webp` and `gulf-field-pbr.webp` contain resized derivatives. `gulf-meshes.js` contains packed indexed meshes and baked pigments. Source scans, `.blend` work files and experimental KTX2 encodes remain in scratch. The existing prepared mallard, dog meshes, motion clips, Boyd derivatives, and their terms remain as previously registered. [Poly Haven license](https://polyhaven.com/license) · [Release intake procedure](ART_PIPELINE.md)
+
+## Phase 05.3A Cypress canopy
+
+The bald cypress, Spanish moss and palmetto geometry is original project artwork authored with `art/blender/cypress.py`. It reuses the existing forest foliage atlas and shared bark shading. The packed derivative is `src/assets/environment/cypress-meshes.js`. The source scene and intermediate GLBs stay outside the build. [Reproduction commands](../../art/README.md#reproduce-the-cypress-showcase)

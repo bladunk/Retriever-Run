@@ -22,6 +22,10 @@ npm run verify:production
 
 Omit `--render` to skip the Eevee review images. Open `gulf-source.blend` in Blender for geometry, vertex pigment and UV inspection. The author exports come from seeded scripts. Review output diffs when switching Blender, Meshoptimizer or WebP encoder versions. Source digests pin the input bytes. PNG device evidence comes from the built app, separately from the Blender stills.
 
+## Reproduce the Cypress showcase
+
+With the same tool directory, run `blender -b -t 3 --python-exit-code 1 --python art/blender/cypress.py -- "$art_work/cypress"`, then `node scripts/art/pack-gulf.mjs "$art_work/cypress" "$art_work/tools" cypress`. The authored trees and palmetto use the existing forest atlas and vertex colors. Keep the resulting `.blend` and intermediate GLBs in scratch. Use `scripts/phase-three-browser.mjs webkit small balanced cypress-showcase` on both builds for the four matched game cameras.
+
 ## Review the working dog rig
 
 ```sh

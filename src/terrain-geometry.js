@@ -6,6 +6,7 @@ import { expeditionBlend, regionAtDistance, snowLevel } from './expedition.js'
 import { shoreHeight, vegetationPocket } from './landforms.js'
 import { dressMigrationLandmark } from './migration-landmarks.js'
 import { gulfGeometry } from './gulf-models.js'
+import { cypressStand } from './cypress-stands.js'
 import { dressNorthernBank } from './expedition-props.js'
 import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
 import { signAnchor } from './sign-placement.js'
@@ -397,17 +398,18 @@ export function buildTile(index, seed = 0) {
 
   const landmarkZ = landmark ? start - landmark.distance : 0
   const landmarkX = landmark ? centerAt(landmark.distance) - base + landmark.x : 0
+  const scenicTrees = key === 'cypress' ? cypressStand(index, seed, earth, landmark, sign) : trees
   if (water) {
     const positions = water.attributes.position
     const canopy = water.attributes.marshCanopy
     for (let i = 0; i < positions.count; i++) {
       const x = positions.getX(i), z = positions.getZ(i)
       let reflection = 0
-      for (let n = 0; n < trees.length; n += 7) {
-        const height = trees[n + 3]
-        const dx = (x - trees[n]) / (height * .41 + .25)
-        const dz = (z - trees[n + 2] - height * .17) / (height * .61 + .35)
-        const patch = .90 - dx * dx - dz * dz
+      for (let n = 0; n < scenicTrees.length; n += 7) {
+        const height = scenicTrees[n + 3]
+        const dx = (x - scenicTrees[n]) / (height * .41 + .25)
+        const dz = (z - scenicTrees[n + 2] - height * .17) / (height * .61 + .35)
+        const patch = .90 - dx * dx * (key === 'cypress' ? 2.5 : 1) - dz * dz
         if (patch > reflection) reflection = patch
       }
       canopy.setX(i, Math.min(1, canopy.getX(i) * .40 + reflection))
@@ -419,14 +421,15 @@ export function buildTile(index, seed = 0) {
   for (let i = 0; i < landPoints.count; i++) {
     const x = landPoints.getX(i), z = landPoints.getZ(i)
     let shade = 0
-    for (let at = 0; at < trees.length; at += 7) {
-      const dx = x - trees[at], dz = z - trees[at + 2]
-      const length = trees[at + 3] * 1.22
+    for (let at = 0; at < scenicTrees.length; at += 7) {
+      const dx = x - scenicTrees[at], dz = z - scenicTrees[at + 2]
+      const length = scenicTrees[at + 3] * 1.22
       const along = dx * .58 + dz * .82
       const across = dx * .82 - dz * .58
-      const root = Math.max(0, 1 - Math.hypot(dx, dz) / 1.45)
-      const canopyShadow = Math.max(0, 1 - Math.abs(along - length * .43) / length) * Math.max(0, 1 - Math.abs(across) / 1.08)
-      shade = Math.max(shade, root * .24 + canopyShadow * .15)
+      const root = Math.max(0, 1 - Math.hypot(dx, dz) / (key === 'cypress' ? 2.6 : 1.45))
+      const canopyShadow = Math.max(0, 1 - Math.abs(along - length * .43) / length) *
+        Math.max(0, 1 - Math.abs(across) / (key === 'cypress' ? 1.86 : 1.08))
+      shade = Math.max(shade, root * .24 + canopyShadow * (key === 'cypress' ? .41 : .15))
     }
     if (landmark && Math.abs(z - landmarkZ) < 5.4) {
       const contact = Math.max(0, 1 - Math.hypot((x - landmarkX) / 4.5, (z - landmarkZ) / 4.1))
@@ -514,11 +517,27 @@ export function buildTile(index, seed = 0) {
         }
       }
     }
+  } else if (key === 'cypress') {
+    const bank = seededRandom(Math.imul(index + 119, 0xa4b51) ^ seed)
+    for (const side of [-1, 1]) {
+      for (let patch = 0; patch < 4; patch++) {
+        const clump = start + 1.8 + patch * 6.9 + bank() * 2
+        for (let stem = 0; stem < 2; stem++) {
+          const at = clump + bank() * 1.7
+          const x = side * (3.94 + bank() * .86)
+          const y = earth(at, x)
+          if (y < waterline - .30 || y > .34 || sign && Math.abs(at - sign.distance) < 3.6 && Math.sign(sign.width) === side) continue
+          const heading = headingAt(at)
+          shoreGrass.push(centerAt(at) - base + Math.cos(heading) * x, y - .025,
+            start - at - Math.sin(heading) * x, .94 + bank() * .38)
+        }
+      }
+    }
   }
   const ground = pack(land)
   const waterPacket = water ? pack(water) : null
   return { index, seed, ground, detail, solid, water: waterPacket, reeds: new Float32Array(reeds), habitats, anchors, landmark: landmark ? { id: key + ':' + index + ':' + seed, ...landmark } : null,
-    shoreGrass: new Float32Array(shoreGrass), plantType, trees: new Float32Array(trees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
+    shoreGrass: new Float32Array(shoreGrass), plantType, trees: new Float32Array(scenicTrees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
       : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign }
 }
 
