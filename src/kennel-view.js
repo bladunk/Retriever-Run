@@ -33,6 +33,7 @@ export function createKennelView() {
   let pointer
   let touchX
   let stage
+  let framing
 
   function rotate(event) {
     if (event.pointerId !== pointer) return
@@ -59,6 +60,11 @@ export function createKennelView() {
 
   return {
     room,
+    inspect({ yaw, height = 1.51, focus = .78, distance, lateral = 0 }) {
+      framing = { height, focus, distance, lateral }
+      angle = targetAngle = yaw
+      previous = -Infinity
+    },
     attach(target) {
       if (stage) bind(stage, 'removeEventListener')
       stop()
@@ -79,9 +85,10 @@ export function createKennelView() {
       pose.time += reduced ? 0 : dt
       pose.dt = dt
       angle += (targetAngle - angle) * (reduced ? 1 : -Math.expm1(-13 * dt))
-      const radius = Math.max(3.5, 6.05 / Math.max(.81, orbit.aspect))
-      orbit.position.set(Math.sin(angle) * radius, 1.51, -Math.cos(angle) * radius)
-      orbit.lookAt(0, .78, -.11)
+      const radius = framing?.distance ?? Math.max(3.5, 6.05 / Math.max(.81, orbit.aspect))
+      const lateral = framing?.lateral ?? 0
+      orbit.position.set(Math.sin(angle) * radius, framing?.height ?? 1.51, -Math.cos(angle) * radius + lateral)
+      orbit.lookAt(0, framing?.focus ?? .78, -.11 + lateral)
       dog.pose(pose)
       renderer.render(room, orbit)
     },

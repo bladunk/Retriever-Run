@@ -2,8 +2,9 @@ import * as T from 'three'
 import { contactShadow } from './contact-shadow.js'
 import { createDog } from './dog.js'
 import { gearAppearance } from './kennel-material.js'
+import { boydAppearance } from './master-hunter.js'
 
-export function createPlayer(scene, breed = 'lab', createPickup) {
+export function createPlayer(scene, breed = 'lab', createPickup, kit) {
   const fallback = createDog(scene)
   const shadow = contactShadow()
   shadow.rotation.order = 'YXZ'
@@ -11,7 +12,8 @@ export function createPlayer(scene, breed = 'lab', createPickup) {
   const root = new T.Group()
   scene.add(root)
   let rig
-  let gear = gearAppearance()
+  const signature = breed === 'boyd' ? boydAppearance(kit) : undefined
+  let gear = signature ?? gearAppearance()
   import('./lab.js').then(({ loadLabrador }) => loadLabrador(breed, createPickup)).then((loaded) => {
     rig = loaded
     rig.root.visible = false
@@ -22,11 +24,12 @@ export function createPlayer(scene, breed = 'lab', createPickup) {
   })
 
   return {
+    modelReady: () => Boolean(rig),
     canCarry: () => Boolean(rig),
     reset() { fallback.reset(); rig?.reset() },
     moveTo(target) { target.add(root, shadow, fallback.root) },
     appearance(value) {
-      gear = gearAppearance(value)
+      gear = signature ?? gearAppearance(value)
       fallback.appearance(gear)
       rig?.appearance(gear)
     },

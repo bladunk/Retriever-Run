@@ -3,8 +3,8 @@ import { resolve } from 'node:path'
 import { Quaternion, Vector3 } from 'three'
 
 const [sources, tools, breed = 'lab'] = process.argv.slice(2)
-if (!sources || !tools || !['lab', 'pointer'].includes(breed)) {
-  throw new Error('Usage: node scripts/prepare-working-dog.mjs <source directory> <gltf tool directory> [lab|pointer]')
+if (!sources || !tools || !['lab', 'pointer', 'boyd'].includes(breed)) {
+  throw new Error('Usage: node scripts/prepare-working-dog.mjs <source directory> <gltf tool directory> [lab|pointer|boyd]')
 }
 const require = createRequire(resolve(tools, 'package.json'))
 const { NodeIO } = require('@gltf-transform/core')
@@ -66,6 +66,21 @@ for (let i = 0; i < positions.length; i += 3) {
   positions[i + 2] = z + muzzle * (pointer ? .23 : -.015)
   if (pointer && z < -1.54) positions[i + 2] += (-1.54 - z) * .71 * tail
   else if (!pointer && z < -1.56) positions[i] *= 1 + .17 * tail
+  if (breed === 'boyd') {
+    // Fit the narrower working head, rounded stop, folded ears and lean flank
+    // in bind coordinates. Preserve the joint positions and the stride clips.
+    const head = smoothstep(1.53, 1.94, z) * smoothstep(1.95, 2.27, y)
+    const brow = Math.exp(-(((z - 2.00) / .30) ** 2)) * smoothstep(2.27, 2.62, y)
+    const jaw = muzzle * (1 - smoothstep(2.23, 2.47, y))
+    const lowerLip = smoothstep(2.08, 2.36, z) * smoothstep(1.94, 2.04, y) * (1 - smoothstep(2.10, 2.19, y))
+    const eye = Math.exp(-(((z - 2.04) / .16) ** 2)) * Math.exp(-(((y - 2.46) / .095) ** 2))
+    const earTip = ear * (1 - smoothstep(2.34, 2.61, y))
+    const flank = barrel * Math.exp(-(((z + .60) / .72) ** 2))
+    const hock = (1 - smoothstep(.23, .64, y)) * smoothstep(.16, .69, -z)
+    positions[i] *= 1 - .088 * head - .05 * jaw + .036 * eye - .062 * flank - .045 * hock + .035 * earTip
+    positions[i + 1] += .052 * brow + .058 * jaw + .044 * lowerLip + .105 * belly * loin - .094 * earTip + .14 * tail
+    positions[i + 2] += .101 * muzzle - .096 * earTip + .12 * tail
+  }
 }
 
 // Average neighboring face normals across texture seams to keep the coat continuous.
@@ -93,7 +108,9 @@ for (let i = 0; i < keys.length; i++) a.copy(accumulated.get(keys[i])).normalize
 primitive.setAttribute('NORMAL', art.createAccessor('Smoothed coat normals', buffer).setType('VEC3').setArray(smooth))
 
 for (const texture of root.listTextures()) {
-  texture.setImage(await sharp(texture.getImage()).resize(1536, 1536).jpeg({ quality: 91, mozjpeg: true }).toBuffer())
+  const size = breed === 'boyd' ? 2048 : 1536
+  texture.setImage(await sharp(texture.getImage()).resize(size, size)
+    .jpeg({ quality: breed === 'boyd' ? 92 : 91, mozjpeg: true }).toBuffer())
 }
 
 const selected = new Map([['Idle', 'Idle'], ['Gallop', 'Gallop'], ['Gallop_Jump', 'Jump'], ['Idle_2_HeadLow', 'Low'], ['Idle_2', 'Alert'], ['Walk', 'Walk'],
@@ -141,7 +158,7 @@ for (const source of motion.getRoot().listAnimations()) {
   }
 }
 await MeshoptSimplifier.ready
-await art.transform(dedup(), weld(), simplify({ simplifier: MeshoptSimplifier, ratio: .43, error: .012 }),
+await art.transform(dedup(), weld(), simplify({ simplifier: MeshoptSimplifier, ratio: breed === 'boyd' ? .65 : .43, error: .012 }),
   prune(), quantize({ quantizePosition: 14, quantizeNormal: 10, quantizeTexcoord: 13, quantizeWeight: 8 }), meshopt({ encoder: MeshoptEncoder, level: 'medium' }))
 console.log('triangles', root.listMeshes()[0].listPrimitives()[0].getIndices().getCount() / 3)
-await io.write(breed === 'pointer' ? 'src/assets/pointer.glb' : 'src/assets/labrador.glb', art)
+await io.write('src/assets/' + (breed === 'lab' ? 'labrador' : breed) + '.glb', art)

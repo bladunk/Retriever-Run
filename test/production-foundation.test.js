@@ -114,7 +114,7 @@ test('manifest identity and authored icon sizes stay stable on the GitHub Pages 
   assert.equal(new URL(manifest.scope, new URL('manifest.webmanifest', scope)).href, scope.href)
   assert.equal(new URL(manifest.id, new URL('manifest.webmanifest', scope)).href, scope.href)
   assert.equal(manifest.display, 'standalone')
-  for (const item of [...manifest.icons, { src: 'icons/apple-touch-icon.png', sizes: '180x180' }]) {
+  for (const item of [...manifest.icons, { src: 'icons/boyd-apple-touch-180.png', sizes: '180x180' }]) {
     const image = await readFile(new URL('../public/' + item.src, import.meta.url))
     assert.equal(image.toString('ascii', 1, 4), 'PNG')
     assert.equal(image.readUInt32BE(16) + 'x' + image.readUInt32BE(20), item.sizes)

@@ -5,3 +5,7 @@ dist/
 !.env.example
 
 qa-output/
+
+private-references/
+/docs/production/references/boyd/*
+!/docs/production/references/boyd/README.md

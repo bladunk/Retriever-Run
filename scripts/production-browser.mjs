@@ -334,7 +334,10 @@ try {
       }
       const preparation = idle.getByRole('button', { name: /^(Download|Apply) update$/ })
       await preparation.tap()
-      await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 65_000 })
+      await idle.getByText('Finish or leave any open hunt').waitFor({ timeout: 65_000 }).catch(async error => {
+        console.error('Update screen:', await idle.locator('#content-status').textContent())
+        throw error
+      })
       phase('Verified paused tab veto')
       const releaseMarker = phaseTwo ? 'meta[name="course-ruleset"]' : upgrade ? '#swipe' : 'meta[name="qa-release"]'
       const migrated = tab => phaseThree

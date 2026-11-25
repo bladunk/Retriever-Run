@@ -187,7 +187,8 @@ try {
   }, { quality, vest: args.includes('vest') })
 
   async function openAt(distance, seed, sceneQuality = quality) {
-    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + (args.includes('pointer') ? '&breed=pointer' : '') + (args.includes('sight') ? '&sight=1' : ''),
+    const breed = args.includes('boyd') ? 'boyd' : args.includes('pointer') ? 'pointer' : 'lab'
+    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + '&breed=' + breed + (args.includes('sight') ? '&sight=1' : ''),
       { waitUntil: 'domcontentloaded' })
     if (await page.locator('#content-screen').isVisible()) {
       if (args.includes('offline')) {
@@ -267,7 +268,88 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('wildlife-breaks')) {
+  if (args.includes('boyd-review')) {
+    const release = JSON.parse(await readFile(resolve(root, 'content-manifest.json'), 'utf8'))
+    const runtimeModel = release.assets.find(asset => asset.id === 'boyd.glb').path
+    const visitor = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor: .70 })
+    await visitor.route(/.*/, route => route.request().url().startsWith(origin) ? route.continue() : route.abort())
+    const ordinary = await visitor.newPage()
+    const ordinaryRequests = []
+    ordinary.on('request', request => ordinaryRequests.push(new URL(request.url()).pathname))
+    await ordinary.goto(origin + prefix + '?breed=boyd&perf=1')
+    await ordinary.locator('#content-online').tap()
+    await ordinary.waitForFunction(() => Boolean(window.retrieverPerformance?.()?.build))
+    assert.equal(await ordinary.evaluate(() => window.retrieverInspectDog), undefined)
+    assert.equal(await ordinary.locator('#game[data-practice]').count(), 0)
+    assert.ok(!ordinaryRequests.some(path => path.endsWith('/' + runtimeModel)))
+    await visitor.close()
+
+    const startUrl = origin + prefix + '?perf=1&debug=collision&volumes=off&breed=boyd&kit=signature'
+    await page.goto(origin + prefix + '?perf=1')
+    await page.locator('.content-art').evaluate(image => image.decode())
+    await page.screenshot({ path: resolve(output, 'install.png'), scale: 'css' })
+    await page.locator('#content-download').tap()
+    await page.waitForFunction(() => navigator.serviceWorker.controller && !document.querySelector('#game').hidden,
+      null, { timeout: 65_000 })
+    await context.setOffline(true)
+    await page.goto(startUrl)
+    await page.waitForFunction(() => window.retrieverInspectDog?.ready(), null, { timeout: 65_000 })
+    for (const asset of release.assets.filter(asset => /^(icons|branding)\//.test(asset.path))) {
+      assert.ok(await page.evaluate(async path => (await fetch(new URL(path, document.baseURI))).ok, asset.path), asset.id)
+    }
+    await page.addStyleTag({ content: '#collision-debug, .practice-status { display: none }' })
+    await page.waitForFunction(() => !document.getElementById('primary').disabled)
+    await page.locator('#running-version').filter({ hasText: release.app.id }).waitFor()
+    await page.locator('#running-version').evaluate(footer => {
+      const box = footer.getBoundingClientRect()
+      if (box.top < 0 || box.bottom > innerHeight) throw new Error('Clipped footer')
+    })
+    await page.screenshot({ path: resolve(output, 'title.png'), scale: 'css' })
+    await page.locator('#open-lodge').tap()
+    await page.locator('#tab-kennel').tap()
+    await page.locator('.kennel-breeds summary').tap()
+    const prestige = page.locator('.kennel-master-hunter')
+    await prestige.getByText('Locked · Career Level 100 and Field Honors').waitFor()
+    await prestige.locator('img').first().evaluate(image => image.decode())
+    await prestige.screenshot({ path: resolve(output, 'master-hunter.png'), scale: 'css' })
+    const last = page.locator('.kennel-items button').last()
+    await last.scrollIntoViewIfNeeded()
+    await last.tap()
+    assert.ok(await page.locator('.kennel-selection').isVisible())
+    const stage = page.locator('.kennel-stage')
+    const counts = []
+    const full = { distance: 6.05, height: 1.28, focus: .78 }
+    const view = async (name, yaw, framing = full) => {
+      // Give the selected view a larger inspected stage without changing the
+      // shipping small-screen Kennel or its equipment controls.
+      await page.addStyleTag({ content: '.kennel-stage { height: 278px }' })
+      await stage.scrollIntoViewIfNeeded()
+      await page.evaluate(framing => window.retrieverInspectDog.orbit(framing), { ...framing, yaw })
+      await page.waitForTimeout(450)
+      await stage.screenshot({ path: resolve(output, name + '.png'), scale: 'css' })
+    }
+    for (const [name, yaw] of [
+      ['front', 0], ['left', Math.PI / 2], ['right', -Math.PI / 2], ['rear', Math.PI],
+      ['front-quarter', .62], ['rear-quarter', 2.38],
+    ]) await view('boyd-' + name, yaw)
+    await view('boyd-face', .18, { distance: 2.60, height: 1.40, focus: 1.21, lateral: -.97 })
+    await view('boyd-collar', .65, { distance: 2.65, height: 1.06, focus: .99, lateral: -.63 })
+    counts.push(await page.evaluate(() => window.retrieverInspectDog.resources()))
+    for (const [label, breed, name] of [
+      ['Labrador', 'lab', 'lab-front-quarter'], ['Pointer', 'pointer', 'pointer-front-quarter'],
+      ['Boyd + vest', 'boyd', 'boyd-vest'], ['Master Hunter bandana', 'boyd', 'boyd-bandana'],
+    ]) {
+      if (await page.locator('.kennel-breeds').getAttribute('open') === null) await page.locator('.kennel-breeds summary').tap()
+      await Promise.all([page.waitForNavigation(), page.getByRole('link', { name: label, exact: true }).tap()])
+      await page.waitForFunction(breed => window.retrieverInspectDog?.breed === breed && window.retrieverInspectDog.ready(),
+        breed, { timeout: 65_000 })
+      await view(name, .66)
+      counts.push(await page.evaluate(() => window.retrieverInspectDog.resources()))
+    }
+    assert.ok(counts.every(sample => sample.geometries < 120 && sample.textures < 32))
+    await writeFile(resolve(output, 'boyd-review.json'), JSON.stringify({ build: release.app, offline: true, counts }, null, 2))
+    console.log(engine.name() + ' verified locked Boyd, offline branding and Labrador → Pointer → Boyd inspection')
+  } else if (args.includes('wildlife-breaks')) {
     const seed = 14
     const inputs = guidedInputs(seed, 16)
     const replay = () => page.evaluate(inputs => {

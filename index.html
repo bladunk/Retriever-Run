@@ -4,8 +4,8 @@
   <meta name="course-ruleset" content="migration-30-phase-03">
   <meta charset="utf-8">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icons/retriever-192.png" type="image/png">
-  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="icon" href="./icons/favicon.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="./icons/boyd-apple-touch-180.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Retriever Run">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,6 +17,7 @@
 <body>
   <dialog id="content-screen" open aria-labelledby="content-title">
     <section class="content-card">
+      <img class="content-art" src="./branding/boyd-install.webp" width="520" height="248" alt="" decoding="async">
       <p class="content-brand">Retriever Run</p>
       <h1 id="content-title">Download the trail</h1>
       <p id="content-description">Save the terrain, Labrador and sounds on this device so you can hunt offline.</p>
@@ -42,6 +43,7 @@
   </dialog>
   <main id="game" aria-label="Retriever Run" hidden>
     <canvas id="trail" aria-label="3D wetlands trail"></canvas>
+    <div class="boyd-title-art" aria-hidden="true"></div>
     <div class="vignette" aria-hidden="true"></div>
     <header>
       <div class="brand"><span aria-hidden="true">◆</span> RETRIEVER RUN</div>

@@ -1,13 +1,15 @@
 import { createHash } from 'node:crypto'
-import { readFileSync, writeFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { relative, resolve } from 'node:path'
 import { habitatEncounters } from '../src/wildlife-catalog.js'
 import { landscapeProfiles } from '../src/migration-landscapes.js'
 import { createContentManifest, installation } from '../src/content-manifest.js'
 
 const worker = readFileSync(new URL('./offline-runtime.js', import.meta.url), 'utf8')
-const publicFiles = ['manifest.webmanifest', 'icons/retriever-192.png', 'icons/retriever-512.png',
-  'icons/retriever-maskable-512.png', 'icons/apple-touch-icon.png']
+const publicShell = ['manifest.webmanifest', 'icons/favicon.png', 'branding/boyd-install.webp']
+const publicFiles = [...publicShell, 'icons/boyd-192.png', 'icons/boyd-512.png',
+  'icons/boyd-maskable-512.png', 'icons/boyd-apple-touch-180.png', 'branding/boyd-portrait.webp', 'branding/boyd-menu.webp',
+  'branding/master-hunter.png']
 const wildlifeTerritories = (...species) => Object.entries(habitatEncounters)
   .filter(([, tiers]) => tiers.some(tier => tier.some(id => species.includes(id)))).map(([territory]) => territory)
 const groups = {
@@ -25,6 +27,7 @@ const groups = {
   'sky-wildlife': { label: 'River and northern airspace', license: 'living-wildlife', territories: wildlifeTerritories('eagle') },
   'field-recordings': { label: 'Wilderness field recordings', license: 'living-recordings' },
   dogs: { label: 'Labrador and animations', license: 'labrador' },
+  branding: { label: 'Boyd artwork and icons', license: 'boyd-artwork' },
   audio: { label: 'Music and wildlife audio', license: 'game-audio' },
   diagnostics: { label: 'Developer diagnostics', license: 'code' },
 }
@@ -35,7 +38,8 @@ function groupFor(file, shell) {
   if (shell.has(file)) return 'shell'
   const key = cleanId(file)
   if (/^collision-debug/.test(key)) return 'diagnostics'
-  if (/^(?:lab(?:rador)?|pointer)\./.test(key)) return 'dogs'
+  if (/^(?:lab(?:rador)?|pointer|boyd)\./.test(key)) return 'dogs'
+  if (/^(branding|icons)\//.test(file)) return 'branding'
   if (key.startsWith('living-fern.')) return 'woodland-plants'
   if (key.startsWith('living-mallard.')) return 'wetland-wildlife'
   if (/^living-(deer|pheasant)\./.test(key)) return 'upland-wildlife'
@@ -49,12 +53,22 @@ function groupFor(file, shell) {
 }
 
 export function offlineWorker(app) {
+  let publicDir
   return {
     name: 'retriever-offline',
     apply: 'build',
     enforce: 'post',
+    configResolved(config) { publicDir = config.publicDir },
+    buildStart() {
+      const approved = new Set(publicFiles)
+      for (const file of readdirSync(publicDir, { recursive: true, withFileTypes: true })) {
+        if (file.isDirectory()) continue
+        const path = relative(publicDir, resolve(file.parentPath, file.name)).replaceAll('\\', '/')
+        if (file.isSymbolicLink() || !approved.has(path)) this.error('Only registered release assets may be copied from public/')
+      }
+    },
     writeBundle(output, bundle) {
-      const shell = new Set(publicFiles)
+      const shell = new Set(publicShell)
       function addShell(file) {
         if (shell.has(file) || !bundle[file]) return
         shell.add(file)
@@ -75,7 +89,8 @@ export function offlineWorker(app) {
         const bytes = readFileSync(resolve(output.dir, file))
         const group = groupFor(file, shell)
         const id = cleanId(file)
-        const license = item?.type === 'chunk' ? 'code' : id === 'forest-needles.webp' ? 'original' : groups[group].license
+        const license = item?.type === 'chunk' ? 'code' : id === 'forest-needles.webp' ? 'original'
+          : /^(branding|icons)\//.test(file) ? 'boyd-artwork' : groups[group].license
         const references = item?.type === 'chunk' ? [...item.imports, ...(item.viteMetadata?.importedCss ?? []),
           ...(item.viteMetadata?.importedAssets ?? [])] : []
         return { id, path: file, group, sha256: digest(bytes), bytes: bytes.length,

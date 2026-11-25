@@ -184,6 +184,16 @@
 .kennel-preview-status { margin: 6px 9px 8px; color: #ead6b1; font-size: .84rem; }
 
 .kennel-selection button { min-height: 44px; padding: 0 10px; }
+.kennel-master-hunter { display: grid; grid-template-columns: minmax(82px, 38%) 1fr;
+  align-items: center; background: #202f25; border: 1px solid #a9925b69; border-radius: 6px; overflow: hidden; }
+.kennel-master-hunter > img { width: 100%; height: auto; display: block; }
+.kennel-master-hunter > div { padding: 10px; }
+.kennel-master-hunter h3 { margin: 5px 0; color: #f0d7a9; font: 600 1.04rem/1.18 Georgia, serif; }
+.kennel-master-hunter p { font-size: .76rem; }
+.master-hunter-emblem { display: block; }
+.kennel-inspection { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.kennel-inspection a { color: #f4deb6; min-height: 44px; padding: 5px 9px; display: inline-grid; place-items: center;
+  border: 1px solid #a9925b69; border-radius: 5px; }
 
 
 @media (max-height: 680px) {

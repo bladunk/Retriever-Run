@@ -19,6 +19,14 @@ const installed = installation(manifest)
 const bytes = assets => assets.reduce((sum, asset) => sum + asset.bytes, 0)
 const unique = assets => new Map(assets.map(asset => [asset.sha256, asset.bytes])).values()
 const files = (await readdir(root, { recursive: true, withFileTypes: true })).filter(file => file.isFile())
+const allowed = new Set([manifestPath, 'offline-sw.js', ...manifest.assets.map(asset => asset.path)])
+for (const file of files) {
+  // Vite copies public/ directly. Even unreferenced files there are deployable.
+  const path = resolve(file.parentPath, file.name).slice(root.length + 1).replaceAll('\\', '/')
+  assert.ok(allowed.has(path), 'An unapproved file would be published outside the verified manifest')
+  assert.ok(!/(?:^|\/)(?:private-references|references)(?:\/|$)/i.test(path) &&
+    !/\.(?:jpe?g|heic|heif|dng|tiff?)$/i.test(path), 'Reference-photo files are forbidden in production')
+}
 const total = await Promise.all(files.map(file => readFile(resolve(file.parentPath, file.name)).then(data => data.length)))
 const shell = manifest.assets.filter(asset => asset.cache === 'release')
 console.log(JSON.stringify({

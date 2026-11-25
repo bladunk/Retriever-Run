@@ -2,6 +2,7 @@ import * as T from 'three'
 import { createPawPlanting } from './paw-planting.js'
 import { collarBuckle, tintLabradorCoat } from './kennel-material.js'
 import { createWorkingVest } from './working-vest.js'
+import { masterHunter } from './master-hunter.js'
 
 const oneTurn = Math.PI * 2
 const up = new T.Vector3(0, 1, 0)
@@ -51,7 +52,8 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
   const mouth = new T.Group()
   const face = head.getWorldQuaternion(new T.Quaternion()).invert().multiply(root.getWorldQuaternion(new T.Quaternion()))
   const headPitch = pitchAxis.clone().applyQuaternion(face)
-  mouth.position.copy(head.worldToLocal(root.localToWorld(new T.Vector3(0, 2.17, breed === 'pointer' ? 2.57 : 2.37))))
+  mouth.position.copy(head.worldToLocal(root.localToWorld(new T.Vector3(0, 2.17,
+    breed === 'pointer' ? 2.57 : breed === 'boyd' ? 2.46 : 2.37))))
   mouth.quaternion.copy(face)
   head.add(mouth)
   const carry = createPickup ? ['mallard', 'pheasant'].map(species => {
@@ -82,6 +84,7 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
   neck.add(tag)
   const buckle = collarBuckle(brass)
   neck.add(buckle)
+  const signature = breed === 'boyd' ? createSignatureCollar(neck) : undefined
   const cloth = new T.BufferGeometry()
   cloth.setAttribute('position', new T.Float32BufferAttribute([
     -.31,.13,.03, -.16,.11,.13, 0,.10,.16, .16,.11,.13, .31,.13,.03,
@@ -116,10 +119,13 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
     root,
     appearance(gear) {
       collarMaterial.color.setHex(gear.collar.color)
+      const wearingSignature = gear.collar.id === masterHunter.signature
+      if (signature) signature.visible = wearingSignature
+      collar.visible = !wearingSignature
       bandana.visible = Boolean(gear.collar.bandana)
       scarfMaterial.color.setHex(gear.collar.color)
-      buckle.visible = Boolean(gear.collar.buckle)
-      tag.visible = !buckle.visible
+      buckle.visible = !wearingSignature && Boolean(gear.collar.buckle)
+      tag.visible = !wearingSignature && !buckle.visible
       for (const dress of dressMesh) dress(gear.coat)
       if (gear.vest.color !== null) dressVest ??= meshes.map((mesh, index) => createWorkingVest(mesh, restSpaces[index]))
       for (const dress of dressVest ?? []) dress(gear.vest)
@@ -173,6 +179,8 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
       body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105 + jumpPitch))
       body.quaternion.premultiply(lean.setFromAxisAngle(bankAxis, banking))
       head.quaternion.multiply(lean.setFromAxisAngle(up, -turn * .08 + (resting ? .07 * Math.sin(time * .8) : 0)))
+      if (breed === 'boyd' && resting)
+        head.quaternion.multiply(lean.setFromAxisAngle(bankAxis, .043 * Math.sin(time * .54) * idle))
       head.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, compression * .040 - .026 * air * Math.sin(jumpPhase * Math.PI)))
       const reaching = !resting && sinceRetrieve < .31 ? Math.sin(Math.PI * Math.max(0, sinceRetrieve) / .31) : 0
       head.quaternion.multiply(lean.setFromAxisAngle(headPitch, reaching * .28 * (1 - .82 * Math.max(low, air))))
@@ -200,4 +208,46 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
       for (const mesh of meshes) mesh.material.roughness = .91 - wet * .19
     },
   }
+}
+
+function createSignatureCollar(neck) {
+  const collar = new T.Group()
+  collar.name = 'BoydSignatureCollar'
+  collar.position.set(0, .208, .003)
+  collar.scale.set(.968, 1, 1.018)
+
+  const webbing = new T.MeshStandardMaterial({ color: 0x272c29, roughness: .95 })
+  const thread = new T.MeshStandardMaterial({ color: 0x9a9b88, roughness: .92 })
+  const hardware = new T.MeshStandardMaterial({ color: 0x9a7950, metalness: .52, roughness: .48 })
+  const band = new T.LatheGeometry([
+    new T.Vector2(.369,-.033), new T.Vector2(.403,-.033), new T.Vector2(.407,-.025),
+    new T.Vector2(.407,.025), new T.Vector2(.403,.033), new T.Vector2(.369,.033), new T.Vector2(.369,-.033),
+  ], 48)
+  collar.add(new T.Mesh(band, webbing))
+
+  const stitches = new T.InstancedMesh(new T.BoxGeometry(.026,.005,.003), thread, 64)
+  const stitch = new T.Object3D()
+  for (let i = 0; i < stitches.count; i++) {
+    const angle = Math.PI * (i % 32) / 16
+    stitch.position.set(.407 * Math.sin(angle), i < 32 ? -.019 : .019, .407 * Math.cos(angle))
+    stitch.rotation.y = angle
+    stitch.updateMatrix()
+    stitches.setMatrixAt(i, stitch.matrix)
+  }
+  collar.add(stitches)
+  const clasp = collarBuckle(hardware)
+  clasp.position.set(.267, -.006, .313)
+  clasp.rotation.y = .70
+  clasp.scale.set(.67,.53,.90)
+  clasp.visible = true
+  collar.add(clasp)
+
+  const ring = new T.Mesh(new T.TorusGeometry(.045,.009,8,24), hardware)
+  ring.position.set(0,-.048,.409)
+  const tag = new T.Mesh(new T.CylinderGeometry(.044,.044,.012,8), hardware)
+  tag.rotation.x = Math.PI / 2
+  tag.position.set(0,-.114,.428)
+  collar.add(ring, tag)
+  neck.add(collar)
+  return collar
 }
