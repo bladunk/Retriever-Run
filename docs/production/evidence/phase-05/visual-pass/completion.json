@@ -592,5 +592,15 @@
     "busyHuntProtected": true,
     "preservedRuns": 2,
     "unchangedAudioRequests": 1
+  },
+  "chromiumDraftUpgrade": {
+    "manifests": [
+      "d22e506d3918bb6cefa1",
+      "4dcff3121a512e161bd8"
+    ],
+    "repaired": true,
+    "busyHuntProtected": true,
+    "preservedRuns": 2,
+    "unchangedAudioRequests": 1
   }
 }
