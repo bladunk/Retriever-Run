@@ -293,12 +293,17 @@ try {
     await page.locator('.content-art').evaluate(image => image.decode())
     await page.screenshot({ path: resolve(output, 'install.png'), scale: 'css' })
     await page.locator('#content-download').tap()
-    await page.waitForFunction(() => navigator.serviceWorker.controller && !document.querySelector('#game').hidden,
+    await page.waitForFunction(() => navigator.serviceWorker.controller &&
+      !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
       null, { timeout: 65_000 })
+    // Allow the initial game document to finish opening its worker and audio
+    // before changing the browser's network state.
+    await page.waitForTimeout(700)
     await context.setOffline(true)
     await page.goto(startUrl)
     await page.waitForFunction(() => window.retrieverInspectDog?.ready(), null, { timeout: 65_000 })
-    for (const asset of release.assets.filter(asset => /^(icons|branding)\//.test(asset.path))) {
+    for (const asset of release.assets.filter(asset => /^(icons|branding)\//.test(asset.path) ||
+      asset.id === 'terrain-worker.js' || asset.id === 'instruments.mp3')) {
       assert.ok(await page.evaluate(async path => (await fetch(new URL(path, document.baseURI))).ok, asset.path), asset.id)
     }
     await page.addStyleTag({ content: '#collision-debug, .practice-status { display: none }' })

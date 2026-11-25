@@ -75,3 +75,12 @@ The corresponding manifest references are `living-wildlife`, `living-vegetation`
 ## Phase 05 Deer Female
 
 CDmir and TinyWorlds released the skinned doe and its embedded diffuse maps under CC0. Retriever Run converted the 5,359,688-byte Blender source into `src/assets/wildlife/living-deer.glb`, a 529,648-byte GLB with 4,784 triangles and two 1024-pixel WebP maps. The conversion recreated the diffuse material links, omitted the source camera, lights and ground, and kept baked idle, grazing and gallop clips. The rig is drawn as the leader of the existing deer encounter when prepared. Settings lists the original authors. CC0 permits redistribution and adaptation. [Creator's individual license and source](https://opengameart.org/content/deer-female) · [Blender source](https://opengameart.org/sites/default/files/doe.blend)
+
+## Phase 05.1 Boyd and official branding
+
+| File or family | Provenance and publication |
+| --- | --- |
+| Private photographic references | Six photos supplied by Boyd’s owner for approved visual derivation. Original photographs, backgrounds, personal inscriptions and metadata are excluded from the game and public evidence. Use the private intake policy for any additional photos. |
+| `src/assets/boyd.glb` | A separate sculpt and coat treatment derived from the Phase 05 working Labrador’s existing CC BY 4.0 mesh. Retains the CC0 retargeted motion. Uses the licensed base coat atlas and project-authored color, pigment and fur shading. [Underlying mesh and animation credits](../../PORTRAIT.md#asset-credits) |
+| Signature collar, Master Hunter vest and bandana | Project-authored geometry, material finishes and fitted variants. Collar hardware is visually referenced and left blank. |
+| `public/icons/`, `public/branding/`, Phase 05.1 master and art studies | Original derived game illustrations based on the authorized dog references with image-assisted illustration. Marsh scenery, portrait compositions, and emblem were created for Retriever Run. Owner approval covers the final likeness and application artwork. Source photos remain private. |

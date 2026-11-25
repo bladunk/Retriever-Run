@@ -1,9 +1,9 @@
 # Boyd reference intake
 
-Boyd is the locked Master Hunter reward. Keep the current locked Kennel entry until the owner approves the likeness and its in-game presentation.
+Boyd is the locked Master Hunter reward. Review the likeness and its game presentation before adding career ownership.
 
-Send original photos as private task attachments. Include an eye-level front portrait, both sides, a rear three-quarter view, a standing full-body profile and clear images of the collar from both sides. Natural diffuse light helps evaluate coat, eyes, muzzle, ears and everyday markings. A short side-on walking or trotting clip is optional.
+Send future photography as private task attachments. Useful angles are an eye-level front portrait, both sides, a rear three-quarter view, a standing full-body profile and unengraved views of the collar hardware. Keep original photos and verification scratch files outside the repository and release tree. If a private in-repository scratch folder is needed, use `private-references/`, which Git ignores.
 
-Record which photos the owner authorizes for private modeling reference. Obtain separate approval before publishing a reference or deriving public portraits or icon art from it. Keep the raw photos and their metadata outside the public repository. The model record should name the reference set and summarize the owner's approvals without exposing private attachment URLs.
+The Phase 05.1 intake kept six lossless private copies. The JPEG scan data, ICC color profiles and any necessary orientation values were retained. The remaining EXIF, thumbnails, comments and application metadata were removed. Decoded pixels and orientations matched the originals. Backgrounds and any readable hardware markings are excluded from the derived character and brand artwork. Public evidence contains only derivatives or game renders.
 
-Start from the repository's weighted Labrador rig. Use the reference views to adjust head proportions, coat, markings and collar fit. Check front, side and rear views and review the result at the normal gameplay distance. Keep the existing collision volumes, equipment gates and gameplay movement. Export an offline-ready GLB and optional portrait only after the owner approves the likeness and redistribution. Update the manifest, attribution and asset budget with the approved derivatives.
+All six originals appeared in public Git history before this phase. The presence and exposure of GPS fields and the steps required to remediate past commits are recorded without values or photo filenames. [Phase 05.1 privacy report](../../PHASE_05_1_REPORT.md#reference-privacy)
