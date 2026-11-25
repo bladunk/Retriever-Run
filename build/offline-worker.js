@@ -35,7 +35,7 @@ function groupFor(file, shell) {
   if (shell.has(file)) return 'shell'
   const key = cleanId(file)
   if (/^collision-debug/.test(key)) return 'diagnostics'
-  if (/^lab(?:rador)?\./.test(key)) return 'dogs'
+  if (/^(?:lab(?:rador)?|pointer)\./.test(key)) return 'dogs'
   if (key.startsWith('living-fern.')) return 'woodland-plants'
   if (key.startsWith('living-mallard.')) return 'wetland-wildlife'
   if (/^living-(deer|pheasant)\./.test(key)) return 'upland-wildlife'
@@ -48,7 +48,7 @@ function groupFor(file, shell) {
   return 'core'
 }
 
-export function offlineWorker() {
+export function offlineWorker(app) {
   return {
     name: 'retriever-offline',
     apply: 'build',
@@ -82,8 +82,8 @@ export function offlineWorker() {
           required: group !== 'diagnostics', variant: group === 'field-surfaces' ? id.replace('field-atlas-', '').split('.')[0] : 'universal', dependencies: [...new Set(references)].map(cleanId),
           license, cache: group === 'shell' ? 'release' : 'immutable' }
       })
-      const version = digest(JSON.stringify({ groups, assets }) + worker).slice(0, 20)
-      const manifest = createContentManifest({ schema: 1, version, groups, assets })
+      const version = digest(JSON.stringify({ groups, assets, app }) + worker).slice(0, 20)
+      const manifest = createContentManifest({ schema: 1, version, groups, assets, app })
       if (installation(manifest).filter(asset => asset.cache === 'release').reduce((sum, asset) => sum + asset.bytes, 0) > 180_000)
         this.error('The boot shell exceeds 180 KB. Keep the game behind a dynamic import.')
       writeFileSync(resolve(output.dir, 'content-manifest.json'), JSON.stringify(manifest))

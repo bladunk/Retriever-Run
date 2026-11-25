@@ -62,3 +62,13 @@ The revision tests the fifteen-stage-pair route, all boundary seams, bounded ter
 | Performance | Presented-frame diagnostics, adaptive events, worker and installation timing, runtime model decode and renderer residency | Record `?perf=1` output on physical iPhone after a long run and repeated replays |
 
 See [Phase 04 results and checklist](PHASE_04_REPORT.md) for remaining coverage and measured limits.
+
+## Phase 05 additions
+
+- Run `node --test test/phase-five.test.js test/audio-slide.test.js test/portrait.test.js` for build labels, course archives, the two-rig cache, staged renderer work, bark-and-root shape selection, shared wearable fitting and decoded character motion.
+- Run `FIELD_BUILD=dist node scripts/phase-three-browser.mjs webkit small working-dogs offline`. Add `pointer` for the development-only Pointer inspection. Use `neighbor-timber video` for the matched Cypress case, seed 73 at about 955 m, and `living video` for regional animal approaches.
+- Run `FIELD_BUILD=dist node scripts/phase-three-browser.mjs webkit small texture-replays reuse expect-bounded wait-for-warmup` for repeated skinned mallard use. The tallied resources include idle members of the two-rig cache. Compare all five hunts before treating stable idle counts as leaks.
+- Run `FIELD_BUILD=dist node scripts/phase-three-browser.mjs webkit small low soak seconds=451 offline fast territory-evidence` to render all thirty stages and the start of endless play. The harness advances an accelerated clock with real buffered input and collision. Do not use it as an iPhone frame-rate benchmark.
+- In the production browser matrix, use `webkit small offline-only partial repair journal` and `small from-phase-three update-only partial repair` with `FIELD_PHASE_THREE_BUILD` pointing to the Phase 04.1 artifact. Check the old pause-time update veto, cache reuse, migrated records, offline version identification and the bottom Kennel card.
+
+- For the visual pass use `webkit small balanced natural-review sight video` with the seeds from the targeted evidence. Use `menu=0` for quick start or a short normal title dwell for the prepared-rig path. The gameplay clock runs on normal browser frames. Use `webkit small balanced offline wildlife-breaks` to assert cold play, background pause, paused quality changes, a prepared encounter on resume and two-rig capacity on replay. Use `npm run stress:master` for the full course and hull validation. [Visual-pass results](evidence/phase-05/visual-pass/README.md)

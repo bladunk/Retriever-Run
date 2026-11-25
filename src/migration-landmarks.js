@@ -13,6 +13,7 @@ const hewnLog = new CylinderGeometry(.47,.5,1,8)
 const rock = new IcosahedronGeometry(1, 0)
 const pole = new CylinderGeometry(.41, .5, 1, 9)
 const tank = new CylinderGeometry(.5, .5, 1, 14)
+const fillPad = new CylinderGeometry(.43, .56, 1, 12)
 const steel = 0x656962
 const oak = 0x816b55
 const trim = 0x9d8e72
@@ -61,12 +62,15 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
   function lodge(width, depth, height, paint, roof, code = 'dry') {
     const standing = code === 'bank' || code === 'raised'
     const logs = ['snag', 'forestry-cabin', 'cairn', 'aspen-cabin'].includes(role)
-    const barn = role === 'farm' || role === 'pothole-farm'
+    const barn = ['farm', 'pothole-farm', 'grain-elevator'].includes(role)
     const gallery = role === 'swamp-cabin' || role === 'river-camp'
     const lift = code === 'raised' ? 1.36 : standing ? .82 : .38
     const base = Math.max(waterline + lift, ground + .29)
     pier(x, z, width * 1.12, depth * 1.15, base - .14)
-    if (!standing) put(0x746b59, x, base - .29, z, width * .98, .59, depth * .96, 0, 6)
+    if (!standing) {
+      const plinth = Math.max(.59, base - ground + .18)
+      put(0x746b59, x, base - plinth * .5, z, width * .98, plinth, depth * .96, 0, 6)
+    }
     put(paint, x, base + height / 2, z, width, height, depth)
     if (logs) {
       for (let row = 0; row < 9; row++) {
@@ -93,7 +97,7 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
       }
     }
     const spring = base + height
-    const rise = width * (role === 'delta-shed' || role === 'pothole-farm' ? .18 : logs ? .38 : barn ? .31 : .228)
+    const rise = width * (role === 'grain-elevator' ? .21 : role === 'delta-shed' || role === 'pothole-farm' ? .18 : logs ? .38 : barn ? .31 : .228)
     const half = width * .54
     const pitch = Math.atan2(rise, half)
     const run = Math.hypot(half, rise)
@@ -186,10 +190,12 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     }
     pier(side * 6.6, z + 4.0, 2.3, 2.8, Math.max(waterline + .23, earth(-z - 4, side * 6.6)))
   } else if (role === 'grain-elevator') {
-    lodge(3.25, 3.5, 4.7, 0x878173, 0x555b53)
+    const pad = Math.max(waterline + .14, ground)
+    add(fillPad, 0x777566, x - 2.2, pad - .48, z, 13.0, .96, 6.8, 0, 0, 0, false, 6)
+    lodge(4.50, 4.05, 3.2, 0x878173, 0x555b53, 'grain')
     for (let n = 0; n < 2; n++) {
       const sx = x - 3.0 - n * 2.4
-      const sy = earth(-z, sx)
+      const sy = Math.max(pad, earth(-z, sx))
       add(tank, 0x94978e, sx, sy + 1.78, z, 2.13, 3.6, 2.13, 0, 0, 0, false, 5)
       add(pole, 0x6a706b, sx, sy + 3.87, z, 2.18, .61, 2.18)
       for (let rib = 0; rib < 7; rib++) add(tank, 0x7b8079, sx, sy + .24 + rib * .47, z, 2.15, .039, 2.15)

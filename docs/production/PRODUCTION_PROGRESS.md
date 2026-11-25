@@ -2,10 +2,12 @@
 
 ## Resume here
 
-- Program target is Retriever Run 1.0 — The Great Migration. Phase 04.1 review version is `1.0.0-phase.4.1`. The installed name remains Retriever Run.
-- Development and rollback baseline is deployed Phase 04 `2f7875aaf36d7df6fa2f6b24ac9e132457e3f58e`. The review branch is `codex/retriever-run-phase-04-1`. [Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45527749359)
-- Read the [charter](PLAYER_FIRST_CHARTER.md), [architecture](ARCHITECTURE.md), [obstacle reference](OBSTACLES.md), [territory registry](TERRITORIES.md), [test matrix](PRODUCTION_TEST_MATRIX.md) and [Phase 03 report](PHASE_03_REPORT.md).
-- Restore dependencies with `npm ci`. Run `npm test`, `npm run build`, `npm run verify:production`, `npm run stress`, and `npm run stress:master`. Use the [Phase 03B report](PHASE_03B_REPORT.md) for browser, material and scene reproductions.
+- Active checkpoint is Phase 05 owner review. Branch `codex/retriever-run-phase-05`, runtime `e7409c2ac7bf7cf63af0d1e9991e5f014bf0a0e3`, version `1.0.0-phase.5`, local build `d4a614b`. The merged Phase 04.1 baseline and rollback is `85f041cebf0ef161f91b68f17575459e02586f2c`. [Draft PR #30](https://github.com/bladunk/Retriever-Run/pull/30) · [CI](https://github.com/bladunk/Retriever-Run/pull/30/checks) · [Baseline Pages deployment](https://github.com/bladunk/Retriever-Run/actions/runs/45551610022)
+- Read the [Phase 05 report](PHASE_05_REPORT.md), [player charter](PLAYER_FIRST_CHARTER.md), [architecture](ARCHITECTURE.md), [obstacle reference](OBSTACLES.md), [territory registry](TERRITORIES.md) and [test matrix](PRODUCTION_TEST_MATRIX.md).
+- The working candidate includes resculpted skinned dogs, 12 Labrador coat previews, refitted equipment, drag rotation, revised tipped-root timber, Dakota utility shed proportions, longer wildlife trajectories, a two-rig preparation/eviction cache, pressure changes for stages 7–30 and the bundled offline build identifier. The Pointer is isolated to local inspection. Boyd references and likeness remain pending.
+- Restore dependencies with `npm ci`. Run `npm test`, `npm run build`, `npm run verify:production`, `npm run stress` and `npm run stress:master`. For rendered verification use `scripts/phase-three-browser.mjs` and `scripts/production-browser.mjs` against built artifacts at `/Retriever-Run/`. Record outcomes in the phase report as each check completes.
+- The final pass adds a CC0 textured deer, a witnessed retrieve/carry and vested motion review, multi-seed wildlife timing, safe-break wildlife preparation, and matched Cypress and Dakota scenes. Course verification ran 10,000 hunts and 100,020 windows. The report records the rendered offline route, installation and upgrade evidence and exact remaining visual and native limitations. [Targeted footage and measurements](evidence/phase-05/visual-pass/README.md)
+- Hold at owner review. Compare the Cypress pair, the Northern Dakota shed, and cold versus repeat mallard appearance on physical iPhone using `?perf=1`. Complete the missing Boyd likeness when approved photography arrives. [Reference intake](references/boyd/README.md) Remaining animation, expanded wildlife art, longer native sightings and art signoff are tracked in the Phase 05 report. Phase 06 is held for owner review.
 
 ## Implemented in Phase 01
 

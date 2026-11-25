@@ -36,6 +36,12 @@ function birdBody(animal) {
   put(small, wing, 0,.019,pheasant ? .37 : .30,pheasant ? .075 : .116,.037,
     pheasant ? .325 : family === 'pintail' ? .215 : .137,pheasant ? .15 : -.12)
   if (pheasant || family === 'pintail') put(small, wing, 0,-.015,.47,.036,.016,.205,.19)
+  if (pheasant) {
+    for (const side of [-1, 1]) {
+      put(small, 0x795039, side * .055, -.014, .49, .028, .016, .265, .10)
+      put(small, 0xc08946, side * .137, .037, .112, .036, .058, .188, .14)
+    }
+  }
   const headZ = long ? -.365 : -.275
   const headY = long ? .185 * neck : .143 + (neck - 1) * .12
   const neckColor = wader ? body : head
@@ -99,6 +105,7 @@ function mammalArt(animal) {
   const parts = []
   const { family, body, head, wing } = animal
   const low = family === 'alligator'
+  const deer = family === 'deer'
   append(parts, round, body, 0,low ? .13 : .43,0,low ? .128 : .169,low ? .104 : .185,.32)
   append(parts, round, body, 0,low ? .16 : .49,-.21,.145,low ? .055 : .178,.154)
   append(parts, round, head, 0,low ? .18 : .62,-.37,.098,low ? .061 : .112,.175,low ? 0 : .31)
@@ -109,13 +116,25 @@ function mammalArt(animal) {
   } else {
     for (const side of [-1,1]) {
       append(parts, small, head,side*.102,.734,-.35,.035,.079,.049,.26)
+      if (deer) {
+        append(parts, small, 0xd9bea6, side*.123,.752,-.348,.013,.056,.034,.27)
+        append(parts, small, 0x302519, side*.091,.664,-.418,.017,.012,.017)
+        append(parts, small, 0xc5a98a, side*.10,.321,.107,.06,.046,.164)
+      }
       if (family === 'moose') append(parts, round, 0x9a886a,side*.17,.755,-.325,.14,.017,.064,-.38)
     }
     append(parts,small,0xdec9b1,0,.485,.327,.071,.068,.081,.66)
   }
   const legParts = []
-  append(legParts, shaft, head, 0,-.095,0,low ? .046 : .033,.25,.036,.31)
-  append(legParts, small, wing, 0,-.22,.035,.039,.036,.07)
+  if (deer) {
+    append(legParts, shaft, head, 0,-.070,-.015,.045,.179,.045,-.31)
+    append(legParts, small, body, 0,-.154,-.041,.031,.036,.026)
+    append(legParts, shaft, 0x847260, 0,-.238,-.008,.023,.17,.021,.34)
+    append(legParts, small, 0x423a31, 0,-.322,.021,.030,.025,.041)
+  } else {
+    append(legParts, shaft, head, 0,-.095,0,low ? .046 : .033,.25,.036,.31)
+    append(legParts, small, wing, 0,-.22,.035,.039,.036,.07)
+  }
   return { body: bake(parts), appendage: bake(legParts), legs: true }
 }
 

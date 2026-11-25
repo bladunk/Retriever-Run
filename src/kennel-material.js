@@ -6,19 +6,20 @@ export function gearAppearance(equipment = classicGear) {
     [category, items.find(item => item.id === equipment?.[category]) ?? items[0]]))
 }
 
-export function tintLabradorCoat(material) {
+export function tintLabradorCoat(material, modelToRest, breed = 'lab') {
   const cream = { value: 0 }
   material.roughness = .91
   material.metalness = 0
   material.onBeforeCompile = shader => {
     shader.uniforms.coatCream = cream
-    shader.vertexShader = 'varying vec3 coatRest;\n' + shader.vertexShader.replace('#include <begin_vertex>',
-      '#include <begin_vertex>\ncoatRest = position;')
+    shader.uniforms.modelToRest = { value: modelToRest }
+    shader.vertexShader = 'uniform mat4 modelToRest; varying vec3 coatRest;\n' + shader.vertexShader.replace('#include <begin_vertex>',
+      '#include <begin_vertex>\ncoatRest = (modelToRest * vec4(position, 1.)).xyz;')
     // These coordinates match the existing GLB bind scale and origin. The baked
     // coat still supplies anatomical detail, including eyelids and paw pads.
     shader.fragmentShader = 'varying vec3 coatRest; uniform float coatCream;\n' + shader.fragmentShader
       .replace('#include <map_fragment>', `#include <map_fragment>
-        vec3 p = coatRest * 2.7186 + vec3(0.,1.3702,-.1586);
+        vec3 p = coatRest;
         vec3 naturalCoat = diffuseColor.rgb / max(diffuse, vec3(.01));
         float warmFur = smoothstep(.09,.37,naturalCoat.r) * smoothstep(.020,.132,naturalCoat.r-naturalCoat.b);
         float muzzle = smoothstep(1.91,2.38,p.z) * (1. - smoothstep(2.34,2.50,p.y));
@@ -42,6 +43,14 @@ export function tintLabradorCoat(material) {
         coatShading += vec3(.041,.032,.015)*shoulder;
         fur *= coatShading * (1. + (.071*shortFur + .037*smallFur) * grainFade);
         diffuseColor.rgb = mix(preserveDark, fur, warmFur);
+        ${breed === 'pointer' ? `
+          float spot = sin(p.x*11. + p.y*5.) * sin(p.z*8. - p.y*5.);
+          float ticking = step(.74, sin(p.x*153. + p.z*137.) * cos(p.y*143. - p.z*68.)) * grainFade;
+          float liver = max(.90*smoothstep(1.48,1.94,p.z),max(smoothstep(.41,.66,spot),ticking*.75));
+          float blaze = (1. - smoothstep(.05,.13,abs(p.x + .033))) * smoothstep(2.07,2.29,p.y);
+          vec3 pointerFur = mix(vec3(.87,.82,.72),vec3(.21,.094,.064),liver*(1.-blaze));
+          diffuseColor.rgb = mix(diffuseColor.rgb,pointerFur * coatShading,warmFur);
+        ` : ''}
         float dark = 1. - smoothstep(.046,.22,naturalCoat.r);
         float nose = smoothstep(2.29,2.48,p.z) * smoothstep(2.05,2.34,p.y);
         float eye = smoothstep(1.65,1.89,p.z) * (1. - smoothstep(2.11,2.32,p.z))

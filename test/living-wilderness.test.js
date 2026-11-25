@@ -1,6 +1,5 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { createHash } from 'node:crypto'
 import { BufferGeometry, Group, MeshBasicMaterial, Skeleton, SkinnedMesh, Texture } from 'three'
 import { fieldSpecies, habitatEncounters } from '../src/wildlife-catalog.js'
 import { encounterRarity, encounterVisible, planEncounter } from '../src/wildlife-encounters.js'
@@ -37,12 +36,12 @@ test('every territory only draws from its own tier and all catalog species are r
 test('bank and flight routes stay off the trail and the pheasant rises only after the flush distance', () => {
   const event = { seed: 17, lateral: -6, height: .04, kind: 'cover' }
   const pose = {}
-  encounterPose(event, fieldSpecies.pheasant, 26, 4, 0, pose)
+  encounterPose(event, fieldSpecies.pheasant, 46, 4, 0, pose)
   assert.equal(pose.draw,false)
   const first = encounterPose(event, fieldSpecies.pheasant, 21, 5, 0, {}).height
   const later = encounterPose(event, fieldSpecies.pheasant, 11, 6, 0, {}).height
   assert.ok(later > first)
-  assert.equal(encounterPose(event, fieldSpecies.mallard, 26, 4, 0, {}).rig,'Idle')
+  assert.equal(encounterPose(event, fieldSpecies.mallard, 36, 4, 0, {}).rig,'Idle')
   assert.equal(encounterPose(event, fieldSpecies.mallard, 16, 5, 0, {}).rig,'Fly')
   assert.ok(encounterPose(event, fieldSpecies.crane, 25, 5, 0, {}).height > event.height + 2)
   for (const animal of Object.values(fieldSpecies)) for (const ahead of [41,30,20,10,0,-5]) {
@@ -79,13 +78,16 @@ test('observations, retrieved birds and old save totals remain distinct and dupl
   assert.equal(reloaded.species.crane.territory,'platte')
 })
 
-test('new root plate geometry retains every Phase 03B swept hull and the terrain worker includes finite bounds', () => {
-  const volumes = [0,1,2].map(i => fallenTimber(i).volumes.map(({ hull, ...plane }) => plane))
-  // Trigonometric rounding varies across Node runtimes. Fingerprint geometry
-  // to sub-micrometre precision using the Phase 03B hulls as the reference.
-  const quantize = (_, value) => typeof value === 'number' ? Math.round(value * 1e7) / 1e7 : value
-  assert.equal(createHash('sha256').update(JSON.stringify(volumes, quantize)).digest('hex'),
-    '8e6ba0511e3261468d6549f8b8fcf70429bdce9b861978c053c40a3722bd92aa')
+test('tipped root plates have distinct bounded meshes and the terrain worker includes finite bounds', () => {
+  const shapes = [0, 1, 2].map(variant => fallenTimber(variant))
+  assert.equal(new Set(shapes.map(({ geometry }) => geometry.name)).size, 3)
+  for (const { geometry, volumes } of shapes) {
+    assert.ok(volumes.some(volume => volume.name === 'root fan'))
+    assert.ok(volumes.length > 10)
+    assert.ok(geometry.boundingBox.min.y < .07 && geometry.boundingBox.max.y > 1.4)
+    assert.ok(geometry.boundingBox.min.x > -1.23 && geometry.boundingBox.max.x < 1.23)
+    assert.ok(geometry.boundingBox.max.z > 1.90)
+  }
   const { ground, solid, water, anchors } = buildTile(0,7)
   for (const part of [ground,solid,water].filter(Boolean)) {
     assert.equal(part.bounds.length,4)

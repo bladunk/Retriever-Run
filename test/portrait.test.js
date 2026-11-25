@@ -94,16 +94,24 @@ test('prior profiles retain records, cosmetics and settings with comfort enabled
   assert.equal(normalizeProfile({ quality: 'balanced' }).quality, 'balanced')
 })
 
-test('the compressed Labrador includes an actual skin, embedded coat and each pose', async () => {
-  const bytes = await readFile(new URL('../src/assets/labrador.glb', import.meta.url))
-  assert.equal(bytes.toString('ascii', 0, 4), 'glTF')
-  const size = bytes.readUInt32LE(12)
-  const asset = JSON.parse(bytes.toString('utf8', 20, 20 + size))
-  assert.ok(bytes.length < 350_000)
-  assert.ok(asset.skins[0].joints.length > 30)
-  assert.ok(asset.meshes[0].primitives[0].attributes.WEIGHTS_0 !== undefined)
-  assert.equal(asset.images[0].mimeType, 'image/jpeg')
-  assert.deepEqual(asset.animations.map((clip) => clip.name).sort(), ['Gallop', 'Idle', 'Jump', 'Low'])
+test('both working dogs have skinned geometry, offline coats and compatible poses', async () => {
+  const geometry = []
+  for (const breed of ['labrador', 'pointer']) {
+    const bytes = await readFile(new URL(`../src/assets/${breed}.glb`, import.meta.url))
+    assert.equal(bytes.toString('ascii', 0, 4), 'glTF')
+    const size = bytes.readUInt32LE(12)
+    const asset = JSON.parse(bytes.toString('utf8', 20, 20 + size))
+    assert.ok(bytes.length < 1_000_000)
+    assert.ok(asset.skins[0].joints.length > 30)
+    const attributes = asset.meshes[0].primitives[0].attributes
+    assert.ok(attributes.WEIGHTS_0 !== undefined)
+    assert.equal(asset.images[0].mimeType, 'image/jpeg')
+    assert.deepEqual(asset.animations.map(clip => clip.name).sort(), ['Alert', 'Fail', 'Gallop', 'Idle', 'Jump', 'Land', 'Low', 'Walk'])
+    const accessor = asset.accessors[attributes.POSITION]
+    const view = asset.bufferViews[accessor.bufferView]
+    geometry.push(bytes.subarray(28 + size + (view.byteOffset ?? 0), 28 + size + (view.byteOffset ?? 0) + view.byteLength))
+  }
+  assert.notDeepEqual(...geometry)
 })
 
 test('wildlife continues to recycle moving geese with independently flapping wings', () => {

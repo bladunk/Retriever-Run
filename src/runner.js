@@ -261,9 +261,12 @@ export function createCourse(seed = 1, rules = director) {
     const overhead = previousGateType === 'branch' ? .24 : .43 + Math.min(10, territory) * .024
     const gateType = gate ? pairPending || (index > 5 && random() < overhead ? 'branch' : 'stream') : null
     const adjacent = reachable.filter(slot => Math.abs(slot - previous.lane) === 1)
-    const chuteSwitch = gateType === 'branch' && index > 10 && adjacent.length && random() < Math.min(.96, .80 * progress + Math.max(0, stage.level - 20) * .015)
+    const crossingSlide = stage.level >= 19 && pairPending === 'branch' && gateType === 'branch' && previous.gateAhead
+    const farChute = crossingSlide && stage.level >= 25 && previous.lane !== 0 && reachable.includes(-previous.lane)
+    const chuteSwitch = gateType === 'branch' && index > 10 && adjacent.length &&
+      (crossingSlide || random() < Math.min(.96, .80 * progress + Math.max(0, stage.level - 20) * .015))
     const nextLanes = requiredLane ? reachable.filter(slot => slot !== previous.lane) : reachable
-    const lane = signature ? 1 : chuteSwitch ? pick(adjacent) : index < 2 || gate ? previous.lane :
+    const lane = signature ? 1 : farChute ? -previous.lane : chuteSwitch ? pick(adjacent) : index < 2 || gate ? previous.lane :
       pick(nextLanes.length ? nextLanes : reachable.length ? reachable : [previous.lane])
     const row = { at, time, lane, id: index, pattern: 'single', exits: [lane], entities: [] }
     const add = (type, slot, distance, hazard = false, wide = false) => {
@@ -307,7 +310,8 @@ export function createCourse(seed = 1, rules = director) {
     } else if (gate) {
       const type = gateType
       row.pattern = type === 'branch' ? chuteSwitch ? 'switch-and-slide' : 'timber-chute' : 'creek-crossing'
-      if (pairPending) row.pattern += '-followup'
+      if (farChute) row.pattern = 'cross-trail-slide-followup'
+      else if (pairPending) row.pattern += '-followup'
       const action = type === 'branch' ? 'slide' : 'jump'
       const duration = action === 'slide' ? slideDuration : jumpDuration
       add(type, type === 'stream' ? 0 : lane, at, true, type === 'stream')
@@ -363,7 +367,7 @@ export function createCourse(seed = 1, rules = director) {
       random() * rules.spacingVariation * (1 - progress * .38)
     if (!row.gate && row.exits.length === 1) gap -= .04 * progress
     const overtime = Math.max(0, time - rules.stages.length * stageSeconds)
-    gap -= .075 * (1 - Math.exp(-overtime / 95))
+    gap -= .095 * (1 - Math.exp(-overtime / 95))
     const wasPaired = Boolean(pairPending)
     pairPending = undefined
     requiredLane = false
@@ -389,11 +393,20 @@ export function createCourse(seed = 1, rules = director) {
       random() < Math.max(rules.pairChance * Number(row.entities[0].type === 'stream'), stage.chain)) {
       const type = row.entities[0].type
       pairPending = territory >= 2 && random() < .85 ? (type === 'stream' ? 'branch' : 'stream') : type
-      nextPair = time + Math.max(2.9, 14 - stage.level * .65)
+      const cooldown = stage.level <= 6 ? Math.max(2.9, 14 - stage.level * .65)
+        : stage.level < 25 ? Math.max(2.7, 14 - stage.level * .69) : 2.03
+      nextPair = time + cooldown
       gap = Math.max(gap, territory >= 5 ? 1.37 : rules.pairGap)
+      if (stage.level >= 25 && pairPending === 'branch') gap = Math.max(gap, 1.48)
     } else if (row.gate) {
       requiredLane = territory >= 2 && (territory >= 4 || random() < stage.follow)
       gap = Math.max(gap, requiredLane ? (territory >= 6 ? 1.02 : 1.14) : 1.05)
+    } else if (stage.level >= 19 && row.exits.length === 1 && row.pattern === 'two-lane-block' &&
+      nextGoose - time > 2.15 && random() < (stage.level >= 25 ? .76 : .31)) {
+      // A late blocker can lead directly into a second lane commitment.
+      // Keep enough time for validated lateral reach even at endless pace.
+      requiredLane = true
+      gap = Math.max(gap, 1.10)
     } else if (heavyBlock && nextGoose - time > 2.4 && random() < stage.follow) {
       followAction = true
       gap = Math.max(gap, .93)

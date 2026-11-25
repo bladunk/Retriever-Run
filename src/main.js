@@ -14,6 +14,7 @@ import { createFootSpray } from './spray.js'
 import { audioDefaults } from './profile.js'
 import { productionSession } from './production-session.js'
 import { createWakeLock } from './mobile-lifecycle.js'
+import { runningBuild } from './build-info.js'
 import { createPerformanceProbe } from './performance-probe.js'
 import { createRewardNotices } from './reward-notices.js'
 import { pendingPatches } from './honors.js'
@@ -43,6 +44,7 @@ import { createDriftingLeaves } from './drifting-leaves.js'
 import { fallenVariant } from './fallen-timber.js'
 import { createDivingFlocks } from './wildlife.js'
 import { createLivingWilderness } from './living-wilderness.js'
+import { createWildlifeSightProbe } from './wildlife-sight-probe.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
 import './lodge.css'
@@ -88,7 +90,8 @@ const localPerformance = flags.get('perf') === '1'
 const performanceProbe = localPerformance ? createPerformanceProbe() : null
 const sound = createSound(background, performanceProbe)
 if (performanceProbe) {
-  window.retrieverPerformance = performanceProbe.read
+  const readPerformance = () => ({ ...performanceProbe.read(), build: runningBuild })
+  window.retrieverPerformance = readPerformance
   const controls = document.createElement('details')
   const label = document.createElement('summary')
   const snapshot = document.createElement('button')
@@ -101,7 +104,7 @@ if (performanceProbe) {
   output.setAttribute('aria-label', 'Performance report')
   output.hidden = true
   snapshot.addEventListener('click', () => {
-    output.value = JSON.stringify(performanceProbe.read(), null, 2)
+    output.value = JSON.stringify(readPerformance(), null, 2)
     output.hidden = false
     output.select()
   })
@@ -140,6 +143,8 @@ let runMetric
 let coaching = false
 let lastShift = -Infinity
 let lastTreat = -Infinity
+let lastRetrieve = -Infinity
+let carriedBird
 let signSeed = 7
 let setTerrainSeed = () => {}
 let currentTerritory = null
@@ -236,7 +241,11 @@ function initialize() {
   const terrain = createTerrain(scene, (anchor, distance) => signs.show(anchor, distance, signSeed), performanceProbe)
   setTerrainSeed = terrain.setSeed
   const leaves = createDriftingLeaves(scene)
-  const wildlife = createLivingWilderness(scene, sound.bird, sound.prepareWildlife, performanceProbe)
+  const sightProbe = collisionRequested && flags.get('sight') === '1' ? createWildlifeSightProbe(terrain, () => viewWidth / camera.aspect) : undefined
+  if (sightProbe) window.retrieverSightings = () => sightProbe.stamp()
+  const mayPrepareWildlife = () => contextReady && mode !== 'running' && !document.hidden &&
+    !ui.lodge.open && !ui.preferences.open && !ui.onboarding.open && !ui.promotion.open && !ui['content-screen'].open
+  const wildlife = createLivingWilderness(scene, sound.bird, sound.prepareWildlife, performanceProbe, sightProbe, mayPrepareWildlife)
   performanceProbe?.watch(() => ({
     residentTiles: terrain.count(), residentPacks: terrain.packCount(), surfaces: terrain.landscapeResidency(),
     tileTimings: terrain.measurements(), wildlife: wildlife.active(), wildlifeModels: wildlife.metrics(),
@@ -246,7 +255,7 @@ function initialize() {
   if (diagnosticsRequested) {
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
   }
-  dog = createPlayer(scene)
+  dog = createPlayer(scene, collisionRequested && flags.get('breed') === 'pointer' ? 'pointer' : 'lab', createPickup)
   spray = createFootSpray(scene)
   dog.appearance(lodge.current().kennel.equipment)
   sound.settings(profile)
@@ -292,11 +301,13 @@ function initialize() {
     kennelStage = stage
     if (stage) {
       kennel ??= createKennelView()
+      kennel.attach(stage)
       stage.append(ui.trail)
       kennelSize?.observe(stage)
       ui.trail.setAttribute('aria-label', '3D Labrador equipment preview')
       dog.moveTo(kennel.room)
     } else {
+      kennel?.attach(null)
       ui.game.prepend(ui.trail)
       ui.trail.setAttribute('aria-label', '3D wetlands trail')
       dog.moveTo(scene)
@@ -308,6 +319,7 @@ function initialize() {
 
   const present = adaptivePresentation()
   let lastRenderMs
+  let lastWildlifeWarm = -Infinity
 
   const stepOnTerrain = dt => terrain.readyAt(run.distance) && step(dt)
 
@@ -380,6 +392,7 @@ function initialize() {
       trailPose = {
         x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
         time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing, wet: weather.wet,
+        lateralSpeed: display.lateralSpeed, retrieve: carriedBird, sinceRetrieve: visualTime - lastRetrieve,
         airborne: display.jump > 0, jumpPhase: display.jump > 0 ? 1 - display.jump / jumpDuration : 1,
       }
       dog.pose(trailPose)
@@ -392,7 +405,7 @@ function initialize() {
       signs.finish()
       leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reducedMotion.matches)
       camera.updateMatrixWorld()
-      wildlife(visualTime, distance, preset.detail, mode === 'running', terrain.encounters(), camera, observeWildlife)
+      wildlife(visualTime, distance, preset.detail, mode, terrain.encounters(), camera, observeWildlife)
       if (!idle && !frozen) {
         updateConditions(weather.name)
         sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
@@ -415,6 +428,10 @@ function initialize() {
       }
       needsRedraw = false
     }
+    if (mayPrepareWildlife() && ms - lastWildlifeWarm >= 80 && !navigator.scheduling?.isInputPending?.()) {
+      lastWildlifeWarm = ms
+      wildlife.warmBreak(renderer, camera, mode, preset.detail, run.distance, terrain.encounters())
+    }
   }
 
   window.addEventListener('resize', resize)
@@ -428,6 +445,7 @@ function initialize() {
     ui['menu-copy'].textContent = 'Graphics were interrupted. Waiting for the renderer to recover.'
   })
   ui.trail.addEventListener('webglcontextrestored', () => {
+    wildlife.invalidateGPU()
     contextReady = true
     ui.primary.disabled = !trailReady
     ui.pause.disabled = false
@@ -606,6 +624,10 @@ function step(dt) {
       const treat = entity.type === 'treat'
       if (treat) lastTreat = run.elapsed
       const retrieve = entity.type === 'mallard' || entity.type === 'pheasant'
+      if (retrieve) {
+        lastRetrieve = run.elapsed
+        carriedBird = entity.type
+      }
       entity.duration = retrieve ? .72 : .30
       entity.remaining = entity.duration
       const combo = treat && run.streak <= 15 && run.streak % 5 === 0
@@ -615,7 +637,8 @@ function step(dt) {
       else if (result.activated) announce('Good Boy!  ·  Double pickup points', 3)
       else if (!treat) announce(pickupNames[entity.type] + '  +' + result.points, 3)
       else announce('+' + result.points + (multiplier(run.streak) > 1 ? '  ·  ' + multiplier(run.streak) + '× streak' : ''), 1)
-      effects.push(entity)
+      if (retrieve && dog.canCarry()) release(entity)
+      else effects.push(entity)
       entities.splice(index--, 1)
     } else if (ahead < (entity.type === 'treat' ? -1 : -8 - (entity.span ?? 0) * .5)) {
       if (entity.type === 'treat' && !entity.comboOptional) run.streak = 0
@@ -904,6 +927,8 @@ function resetTrail(seed) {
   cuePriority = 0
   lastShift = -Infinity
   lastTreat = -Infinity
+  lastRetrieve = -Infinity
+  carriedBird = undefined
   introduced.clear()
   follow.heading = null
   follow.offset = 0

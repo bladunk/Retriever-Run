@@ -4,6 +4,9 @@ export const manifestPath = 'content-manifest.json'
 export function createContentManifest(value) {
   if (value?.schema !== 1 || !/^[a-f0-9]{20}$/.test(value.version) ||
       !value.groups || !Array.isArray(value.assets) || !value.assets.length) throw new Error('Unsupported game content manifest')
+  if (value.app != null && (typeof value.app.version !== 'string' ||
+      !/^\d+\.\d+\.\d+(?:-\w+(?:[.\-]\w+)*)?$/.test(value.app.version) ||
+      !/^[a-f0-9]{7}$/.test(value.app.id))) throw new Error('Invalid application build metadata')
   const ids = new Map()
   const paths = new Set()
   for (const asset of value.assets) {

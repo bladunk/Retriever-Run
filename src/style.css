@@ -170,3 +170,13 @@ legend { color: var(--brass); font: 700 .82rem Georgia, serif; padding: 0 4px; }
   .control-hint { margin-top: 7px; }
   #controls button { width: 44px; height: 44px; }
 }
+
+.build-version {
+  color: #e1d0ad;
+  font-size: .68rem;
+  letter-spacing: .035em;
+  margin: .65rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.menu .build-version { text-align: center; }
+[data-mode="paused"] #running-version { display: none; }

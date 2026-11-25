@@ -1,0 +1,297 @@
+{
+  "method": "Real browser animation clock. Conservative interval sum of consecutive clear samples at most 0.49 game seconds apart. Perspective span at least 10 CSS pixels and one clear terrain/vegetation ray. One seed per case. 320 \u00d7 568 Linux WebKit.",
+  "visibility": [
+    {
+      "build": "647704b",
+      "seed": 13,
+      "encounter": "farm:108:deer",
+      "fromGameSeconds": 151.875,
+      "endGameSeconds": 162.12367486632007,
+      "firstClear": 153.66167486632776,
+      "lastClear": 159.0286748663229,
+      "totalClearSeconds": 5.367,
+      "longestClearSeconds": 5.367,
+      "projectedCssPixels": [
+        12.0,
+        27.6
+      ],
+      "measurements": 41
+    },
+    {
+      "build": "ca9db1a",
+      "seed": 19,
+      "encounter": "farm:108:pheasant",
+      "fromGameSeconds": 150.875,
+      "endGameSeconds": 163.17967423801872,
+      "firstClear": 154.46667423802666,
+      "lastClear": 158.2646742380232,
+      "totalClearSeconds": 3.798,
+      "longestClearSeconds": 3.798,
+      "projectedCssPixels": [
+        10.6,
+        16.2
+      ],
+      "measurements": 47
+    },
+    {
+      "build": "9249422",
+      "seed": 21,
+      "encounter": "sandhills:160:canada-goose",
+      "fromGameSeconds": 211,
+      "endGameSeconds": 225.03568129296613,
+      "firstClear": 212.3266812929777,
+      "lastClear": 220.87068129296992,
+      "totalClearSeconds": 8.544,
+      "longestClearSeconds": 8.544,
+      "projectedCssPixels": [
+        10.6,
+        17.9
+      ],
+      "measurements": 59
+    },
+    {
+      "build": "647704b",
+      "seed": 14,
+      "encounter": "gulf:4:mallard",
+      "fromGameSeconds": 0,
+      "endGameSeconds": 20.17266666666666,
+      "firstClear": 11.014666666666669,
+      "lastClear": 14.215666666666657,
+      "totalClearSeconds": 3.201,
+      "longestClearSeconds": 3.201,
+      "projectedCssPixels": [
+        10.0,
+        13.9
+      ],
+      "measurements": 77
+    },
+    {
+      "build": "647704b",
+      "seed": 48,
+      "encounter": "platte:132:crane",
+      "fromGameSeconds": 180,
+      "endGameSeconds": 192.1936799481142,
+      "firstClear": 181.6466799481238,
+      "lastClear": 186.33367994811954,
+      "totalClearSeconds": 4.687,
+      "longestClearSeconds": 4.687,
+      "projectedCssPixels": [
+        17.0,
+        33.3
+      ],
+      "measurements": 45
+    }
+  ],
+  "performance": {
+    "vest-final": {
+      "build": "647704b",
+      "titleRigs": {
+        "resident": 2,
+        "preparing": null,
+        "loadMs": 85,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 2,
+        "evictions": 0,
+        "limit": 2,
+        "models": [
+          {
+            "id": "mallard",
+            "materialTextures": 7,
+            "boneTextures": 1,
+            "prepared": {
+              "textures": 7,
+              "skeletons": 1,
+              "shaders": 8,
+              "geometries": 8,
+              "geometryTotal": 8
+            }
+          },
+          {
+            "id": "deer",
+            "materialTextures": 1,
+            "boneTextures": 1,
+            "prepared": {
+              "textures": 1,
+              "skeletons": 1,
+              "shaders": 7,
+              "geometries": 7,
+              "geometryTotal": 7
+            }
+          }
+        ]
+      },
+      "duringRunRigs": {
+        "resident": 2,
+        "preparing": null,
+        "loadMs": 85,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 2,
+        "evictions": 0,
+        "limit": 2,
+        "models": [
+          {
+            "id": "mallard",
+            "materialTextures": 7,
+            "boneTextures": 1,
+            "prepared": {
+              "textures": 7,
+              "skeletons": 1,
+              "shaders": 8,
+              "geometries": 8,
+              "geometryTotal": 8
+            }
+          },
+          {
+            "id": "deer",
+            "materialTextures": 1,
+            "boneTextures": 1,
+            "prepared": {
+              "textures": 1,
+              "skeletons": 1,
+              "shaders": 7,
+              "geometries": 7,
+              "geometryTotal": 7
+            }
+          }
+        ]
+      },
+      "warmOperationsAfterStart": 0,
+      "skinnedSightings": [
+        "mallard"
+      ]
+    },
+    "mallard-final": {
+      "build": "647704b",
+      "titleRigs": {
+        "resident": 2,
+        "preparing": null,
+        "loadMs": 39,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 2,
+        "evictions": 0,
+        "limit": 2,
+        "models": [
+          {
+            "id": "mallard",
+            "materialTextures": 7,
+            "boneTextures": 0,
+            "prepared": {
+              "textures": 1,
+              "skeletons": 0,
+              "shaders": 0,
+              "geometries": 0,
+              "geometryTotal": 8
+            }
+          },
+          {
+            "id": "deer",
+            "materialTextures": 1,
+            "boneTextures": 0,
+            "prepared": {
+              "textures": 0,
+              "skeletons": 0,
+              "shaders": 0,
+              "geometries": 0,
+              "geometryTotal": 7
+            }
+          }
+        ]
+      },
+      "duringRunRigs": {
+        "resident": 2,
+        "preparing": null,
+        "loadMs": 39,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 2,
+        "evictions": 0,
+        "limit": 2,
+        "models": [
+          {
+            "id": "mallard",
+            "materialTextures": 7,
+            "boneTextures": 1,
+            "prepared": {
+              "textures": 7,
+              "skeletons": 1,
+              "shaders": 0,
+              "geometries": 0,
+              "geometryTotal": 8
+            }
+          },
+          {
+            "id": "deer",
+            "materialTextures": 1,
+            "boneTextures": 0,
+            "prepared": {
+              "textures": 0,
+              "skeletons": 0,
+              "shaders": 0,
+              "geometries": 0,
+              "geometryTotal": 7
+            }
+          }
+        ]
+      },
+      "warmOperationsAfterStart": 0,
+      "skinnedSightings": []
+    }
+  },
+  "courseSurvey": {
+    "seeds": 64,
+    "bands": [
+      "Stages 19\u201324",
+      "Stages 25\u201330",
+      "Endless 450\u2013540 seconds"
+    ],
+    "previous": [
+      {
+        "rows": 5220,
+        "slidesAfterJumps": 452,
+        "shiftSlidesAfterJump": 271,
+        "twoLaneSlidesAfterJump": 0,
+        "riskRoutes": 415
+      },
+      {
+        "rows": 5177,
+        "slidesAfterJumps": 429,
+        "shiftSlidesAfterJump": 371,
+        "twoLaneSlidesAfterJump": 0,
+        "riskRoutes": 593
+      },
+      {
+        "rows": 5312,
+        "slidesAfterJumps": 446,
+        "shiftSlidesAfterJump": 426,
+        "twoLaneSlidesAfterJump": 0,
+        "riskRoutes": 538
+      }
+    ],
+    "candidate": [
+      {
+        "rows": 5239,
+        "slidesAfterJumps": 434,
+        "shiftSlidesAfterJump": 434,
+        "twoLaneSlidesAfterJump": 0,
+        "riskRoutes": 441
+      },
+      {
+        "rows": 5129,
+        "slidesAfterJumps": 455,
+        "shiftSlidesAfterJump": 455,
+        "twoLaneSlidesAfterJump": 283,
+        "riskRoutes": 553
+      },
+      {
+        "rows": 5261,
+        "slidesAfterJumps": 413,
+        "shiftSlidesAfterJump": 413,
+        "twoLaneSlidesAfterJump": 270,
+        "riskRoutes": 542
+      }
+    ]
+  }
+}

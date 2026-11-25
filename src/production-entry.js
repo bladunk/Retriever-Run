@@ -1,3 +1,4 @@
+import { buildLabel } from './build-info.js'
 import { createContentManifest } from './content-manifest.js'
 import { createContentStore, loadContentManifest } from './content-store.js'
 import { createFieldNotes } from './field-notes.js'
@@ -7,6 +8,7 @@ import './production.css'
 const screen = document.querySelector('#content-screen')
 const game = document.querySelector('#game')
 const select = id => document.getElementById(id)
+for (const id of ['running-version', 'settings-version']) select(id).textContent = buildLabel()
 const title = select('content-title')
 const description = select('content-description')
 const size = select('content-size')
@@ -115,6 +117,8 @@ async function examine({ autoStart = false, update = false } = {}) {
   const target = update ? updateManifest : manifest
   if (!target) return
   title.textContent = update ? 'A new trail update' : 'Download the trail'
+  select('pending-version').hidden = !update
+  if (update) select('pending-version').textContent = 'Pending · ' + (target.app ? buildLabel(target.app) : target.version.slice(0, 7))
   description.textContent = update ? 'Prepare changed files and apply the update between hunts.'
     : 'Save the terrain, Labrador and sounds on this device so you can hunt offline.'
   inspected = await store.inspect(target)

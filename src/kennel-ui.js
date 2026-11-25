@@ -9,7 +9,7 @@ export function kennelRoom(lodge, showAppearance) {
   const standing = careerStanding(player.career)
   const stage = node('div', null, 'kennel-stage')
   stage.setAttribute('aria-label', 'Labrador equipment preview')
-  stage.tabIndex = -1
+  stage.tabIndex = 0
 
   const filters = node('div', null, 'board-filters')
   filters.setAttribute('role', 'group')
@@ -52,7 +52,7 @@ export function kennelRoom(lodge, showAppearance) {
     category = value
     selected = player.kennel.equipment[category]
     for (const button of filters.children) button.setAttribute('aria-pressed', String(button.dataset.category === value))
-    cards = kennelCatalog[category].filter(item => item.level || item.rank || player.kennel.inherited.includes(item.id))
+    cards = kennelCatalog[category].filter(item => category === 'coat' || item.level || item.rank || player.kennel.inherited.includes(item.id))
       .map(item => {
         const button = node('button', null, 'gear-option')
         button.type = 'button'
@@ -90,5 +90,9 @@ export function kennelRoom(lodge, showAppearance) {
     update()
   })
   switchCategory(category)
-  return { content: [fitting, options, feedback], stage }
+  const breeds = node('details', null, 'kennel-breeds')
+  breeds.append(node('summary', 'Working dogs'), node('p', 'Labrador Retriever · Active breed'),
+    node('p', 'German Shorthaired Pointer · Career unlock pending'),
+    node('p', 'Boyd · Master Hunter · Career Level 100 and field honors'))
+  return { content: [fitting, options, feedback, breeds], stage }
 }

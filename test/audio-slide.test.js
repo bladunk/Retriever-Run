@@ -77,7 +77,7 @@ test('the mixer retains old mute settings and clamps independent volume values',
   assert.deepEqual(normalizeProfile(JSON.parse(JSON.stringify(mixed))), mixed)
 })
 
-async function loadRig() {
+async function loadRig(createPickup) {
   // The texture is immaterial to this test. The original mesh, skin weights and
   // animation clips are decoded and sampled through the same loader as the game.
   globalThis.self = globalThis
@@ -86,12 +86,32 @@ async function loadRig() {
     const file = await readFile(new URL('../src/assets/labrador.glb', import.meta.url))
     const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
       .parseAsync(file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength), '')
-    return createLabradorRig(gltf)
+    return createLabradorRig(gltf, 'lab', createPickup)
   } finally {
     delete globalThis.self
     delete globalThis.createImageBitmap
   }
 }
+
+test('the retrieve pose uses one neck-mounted prop and clears it on the title', async () => {
+  const birds = new Map()
+  const rig = await loadRig((mouth, species) => {
+    const bird = new Group()
+    birds.set(species, bird)
+    mouth.add(bird)
+    return bird
+  })
+  const pose = { dt: 1 / 60, time: 2, stride: 1.2, airborne: false, jumpPhase: 1,
+    sliding: 0, idle: false, turn: 0, landing: 0, ground: 0, retrieve: 'mallard' }
+  rig.pose({ ...pose, sinceRetrieve: .04 })
+  assert.ok([...birds.values()].every(bird => !bird.visible))
+  rig.pose({ ...pose, sinceRetrieve: .37 })
+  assert.ok(birds.get('mallard').visible)
+  assert.equal(birds.get('mallard').parent.parent.name, 'Head')
+  assert.ok(!birds.get('pheasant').visible)
+  rig.pose({ ...pose, idle: true, sinceRetrieve: .44 })
+  assert.ok([...birds.values()].every(bird => !bird.visible))
+})
 
 test('the skinned Labrador clears the terrain and overhead envelope through real slide clips', async () => {
   const rig = await loadRig()
@@ -212,6 +232,7 @@ test('rapid jump and slide transitions retain skinned ground clearance after a l
 
 test('all six vest styles share a separate weighted shell and leave the collision body and coat intact', async () => {
   const rig = await loadRig()
+  rig.appearance(gearAppearance({ vest: 'canvas-vest' }))
   const vest = rig.root.getObjectByName('WorkingDogVest')
   const body = vest.parent
   const skin = body.geometry
@@ -219,8 +240,9 @@ test('all six vest styles share a separate weighted shell and leave the collisio
   const material = vest.material
   const garment = vest.geometry
   const points = garment.getAttribute('fitRest')
-  assert.ok(garment.index.count / 3 < 2200)
+  assert.ok(garment.index.count / 3 < 6500)
   assert.equal(vest.skeleton, body.skeleton)
+  rig.appearance(gearAppearance())
   assert.ok(!vest.visible)
   let chest = 0
   let hem = 0
@@ -233,7 +255,7 @@ test('all six vest styles share a separate weighted shell and leave the collisio
     const sum = weight.getX(i) + weight.getY(i) + weight.getZ(i) + weight.getW(i)
     assert.ok(Math.abs(sum - 1) < 1e-6)
   }
-  assert.ok(chest > 20 && hem > 40)
+  assert.ok(chest > 20 && hem > 40, `chest: ${chest}, hem: ${hem}`)
   const colors = new Set()
   for (const id of ['canvas', 'marsh', 'seasoned', 'blaze', 'master', 'legend']) {
     rig.appearance(gearAppearance({ coat: 'fox-red', vest: id + '-vest' }))

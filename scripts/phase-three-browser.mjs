@@ -27,7 +27,10 @@ const server = createServer(async (request, response) => {
   const path = new URL(request.url, 'http://localhost').pathname
   const file = resolve(root, path.slice(prefix.length) || 'index.html')
   if (!path.startsWith(prefix) || !file.startsWith(root + sep)) return response.writeHead(404).end()
-  try { response.writeHead(200, { 'Content-Type': types[extname(file)] ?? 'application/octet-stream' }).end(await readFile(file)) }
+  try {
+    const body = await readFile(file)
+    response.writeHead(200, { 'Content-Type': types[extname(file)] ?? 'application/octet-stream' }).end(body)
+  }
   catch { response.writeHead(404).end() }
 })
 await new Promise(done => server.listen(0, '127.0.0.1', done))
@@ -50,8 +53,15 @@ function rowsFor(seed, stop) {
 
 // Drive the same guided route used in collision stress checks. Store the
 // resulting keyboard inputs so the browser still owns movement and contacts.
-function guidedInputs(seed, duration) {
+function guidedInputs(seed, duration, start = 0) {
   const run = newRun()
+  let low = 0, high = duration
+  for (let i = 0; i < 45; i++) {
+    const mid = (low + high) / 2
+    if (distanceAtTime(mid) < start) low = mid
+    else high = mid
+  }
+  if (start) Object.assign(run, { distance: start, elapsed: high, speed: speedAtTime(high) })
   const controls = createRunControls()
   const course = createCourse(seed)
   const inputs = []
@@ -63,6 +73,7 @@ function guidedInputs(seed, duration) {
     inputs.push({ at: run.elapsed, key: arrows[action] })
   }
   let next = course(), released = -1, laneReady = 0, usedGate = false
+  while ((next.end ?? next.at) < start - 2) next = course()
   while (run.elapsed < duration) {
     while (next.at < run.distance + 102) {
       rows.push(next)
@@ -107,18 +118,35 @@ try {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   page.on('console', msg => { if (msg.type() === 'error' && /shader error|THREE.WebGLProgram/i.test(msg.text())) errors.push(msg.text()) })
+  page.on('console', msg => {
+    if (args.includes('wildlife-breaks') && msg.type() === 'error' && /Couldn't load texture/.test(msg.text())) console.error(msg.text())
+  })
   await page.addInitScript(initial => {
-    const quality = new URLSearchParams(location.search).get('qaview') || initial
-    localStorage.setItem('retriever-run.record.practice', JSON.stringify({ quality, masterVolume: 0 }))
-    Object.defineProperty(document, 'hidden', { get: () => false })
+    const quality = new URLSearchParams(location.search).get('qaview') || initial.quality
+    const profile = { quality, masterVolume: 0 }
+    const save = initial.vest ? { version: 4, active: 1, players: [{ id: 1, profile,
+      kennel: { equipment: { vest: 'blaze-vest' }, inherited: ['blaze-vest'] } }] } : profile
+    localStorage.setItem('retriever-run.record.practice', JSON.stringify(save))
+    let hidden = false
+    Object.defineProperty(document, 'hidden', { get: () => hidden })
     const native = window.requestAnimationFrame.bind(window)
     let stamp
     const qa = window.phaseThreeQA = { limit: -1, elapsed: [], rendered: 0 }
+    qa.setBackground = value => {
+      hidden = value
+      document.dispatchEvent(new Event('visibilitychange'))
+    }
     qa.landmarkFrames = []
     window.requestAnimationFrame = callback => native(ms => {
       const state = window.retrieverDebug
       if (stamp === undefined) stamp = ms
-      if (state?.mode !== 'running') stamp += 40
+      if (qa.natural) {
+        const take = qa.natural
+        while (state?.mode === 'running' && take.inputs[take.next]?.at <= state.elapsed + .022) {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: take.inputs[take.next++].key }))
+        }
+        stamp = ms
+      } else if (state?.mode !== 'running') stamp += 40
       else if (qa.soak && state.elapsed < qa.soak.duration) {
         const replay = qa.soak
         while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
@@ -126,10 +154,17 @@ try {
         }
         const toNext = (replay.inputs[replay.next]?.at - state.elapsed) * 1000
         stamp += replay.fast && toNext > 0 ? Math.max(16, Math.min(124, toNext)) : replay.fast ? 124 : 1000 / 30
-      } else if (state.distance < qa.limit) stamp += 25
+      } else if (state.distance < qa.limit) stamp += qa.advanceBy ?? 25
       else if (qa.limit < 0 && quality === 'low') stamp += .10
       const start = performance.now()
       callback(stamp)
+      const frame = window.retrieverDebug
+      if (qa.natural && frame?.mode === 'running' && frame.elapsed !== state?.elapsed) {
+        qa.natural.samples.push({ t: frame.elapsed, ms, distance: frame.distance, jump: frame.jump,
+          slide: frame.slide, lane: frame.lane, wildlife: frame.wildlife, cpu: performance.now() - start })
+        const sight = window.retrieverSightings?.()
+        if (sight && sight.t !== qa.natural.sights.at(-1)?.t) qa.natural.sights.push(sight)
+      }
       if (qa.inspectLandmark && window.retrieverDebug?.mode === 'running') {
         const frame = window.retrieverDebug
         const tile = frame.world?.find(t => t.index === qa.inspectLandmark)
@@ -149,10 +184,10 @@ try {
         qa.rendered++
       }
     })
-  }, quality)
+  }, { quality, vest: args.includes('vest') })
 
-  async function runAt(distance, seed, sceneQuality = quality) {
-    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality,
+  async function openAt(distance, seed, sceneQuality = quality) {
+    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + (args.includes('pointer') ? '&breed=pointer' : '') + (args.includes('sight') ? '&sight=1' : ''),
       { waitUntil: 'domcontentloaded' })
     if (await page.locator('#content-screen').isVisible()) {
       if (args.includes('offline')) {
@@ -162,6 +197,14 @@ try {
     await page.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled,
       null, { timeout: 60_000 })
     await page.addStyleTag({ content: '#collision-debug, #game[data-practice] .practice-status, #callout, #patch-toast { display: none }' })
+  }
+
+  async function runAt(distance, seed, sceneQuality = quality) {
+    await openAt(distance, seed, sceneQuality)
+    if (args.includes('wait-for-warmup')) {
+      await page.waitForFunction(() => window.retrieverPerformance().wildlifeModels.models.some(model =>
+        model.id === 'mallard' && model.prepared.geometries === model.prepared.geometryTotal), null, { timeout: 65_000 })
+    }
     await page.locator('#primary').tap()
     await page.waitForFunction(() => window.retrieverDebug?.mode === 'running', null, { timeout: 40_000 })
     if (args.includes('offline')) await context.setOffline(true)
@@ -224,17 +267,180 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('texture-replays')) {
+  if (args.includes('wildlife-breaks')) {
+    const seed = 14
+    const inputs = guidedInputs(seed, 16)
+    const replay = () => page.evaluate(inputs => {
+      window.phaseThreeQA.natural = { inputs, next: 0, samples: [], sights: [] }
+    }, inputs)
+    const elapsed = time => page.waitForFunction(time =>
+      window.retrieverDebug?.mode === 'running' && window.retrieverDebug.elapsed >= time, time, { timeout: 60_000 })
+    const snapshot = () => page.evaluate(() => ({ perf: window.retrieverPerformance(),
+      state: window.retrieverDebug, takenAt: performance.now() }))
+    const noWarmup = (from, to) => assert.ok(!to.perf.operations.some(event =>
+      event.at >= from.takenAt && /^wildlife-(warm|rig-setup)/.test(event.name)),
+    'wildlife ran rig or GPU preparation on the active clock')
+    const activate = async id => {
+      await page.evaluate(id => document.getElementById(id).addEventListener('click', () => {
+        window.phaseThreeQA.startedAt = performance.now()
+      }, { once: true, capture: true }), id)
+      await page.locator('#' + id).tap()
+      return { takenAt: await page.evaluate(() => window.phaseThreeQA.startedAt) }
+    }
+    await openAt(0, seed)
+    if (args.includes('offline')) await context.setOffline(true)
+    await replay()
+    const coldStart = await activate('primary')
+    await elapsed(1)
+    const quick = await snapshot()
+    await page.evaluate(() => window.phaseThreeQA.setBackground(true))
+    await page.locator('#game[data-mode="paused"]').waitFor()
+    const backgrounded = await snapshot()
+    console.log(engine.name() + ' paused a cold hunt with the clock stopped')
+    await page.waitForTimeout(400)
+    assert.equal((await snapshot()).state.elapsed, backgrounded.state.elapsed)
+    await page.evaluate(() => window.phaseThreeQA.setBackground(false))
+    await page.locator('#settings').tap()
+    await page.locator('#quality').selectOption('low')
+    await page.locator('#quality').selectOption('balanced')
+    await page.locator('#close-settings').tap()
+    await page.waitForFunction(() => window.retrieverPerformance().wildlifeModels.models.some(model =>
+      model.id === 'mallard' && model.prepared.geometries === model.prepared.geometryTotal), null, { timeout: 60_000 }).catch(async error => {
+      const { perf, state } = await snapshot()
+      console.error(JSON.stringify({ mode: state.mode, preset: perf.preset, models: perf.wildlifeModels,
+        last: perf.operations.slice(-8),
+        blocked: await page.evaluate(() => ({ hidden: document.hidden, dialogs: [...document.querySelectorAll('dialog[open]')].map(d => d.id) })) }))
+      throw error
+    })
+    console.log(engine.name() + ' prepared a mallard during the pause')
+    const paused = await snapshot()
+    const resumeStart = await activate('primary')
+    await elapsed(15)
+    const resumed = await snapshot()
+    noWarmup(coldStart, backgrounded)
+    noWarmup(resumeStart, resumed)
+    assert.ok(resumed.perf.wildlifeModels.rigEncounters > quick.perf.wildlifeModels.rigEncounters)
+    // The player misses a later hazard and starts another hunt from Hunt Over.
+    await page.evaluate(() => { window.phaseThreeQA.natural.inputs = [] })
+    await page.locator('#run-again').waitFor({ timeout: 45_000 })
+    const over = await snapshot()
+    await replay()
+    const restartStart = await activate('run-again')
+    await elapsed(13)
+    const restarted = await snapshot()
+    noWarmup(restartStart, restarted)
+    for (const { perf } of [quick, backgrounded, paused, resumed, over, restarted]) {
+      assert.ok(perf.wildlifeModels.resident <= 2)
+    }
+    assert.ok(restarted.perf.wildlifeModels.rigEncounters > resumed.perf.wildlifeModels.rigEncounters)
+    await writeFile(resolve(output, 'wildlife-breaks.json'), JSON.stringify({ quick, backgrounded, paused, resumed, over, restarted }))
+    console.log(engine.name() + ' passed wildlife preparation and replay across safe breaks')
+  } else if (args.includes('natural-review')) {
+    const seed = Number(args.find(a => a.startsWith('seed='))?.slice(5) ?? 7)
+    const requested = Number(args.find(a => a.startsWith('from='))?.slice(5) ?? 0)
+    const duration = Number(args.find(a => a.startsWith('seconds='))?.slice(8) ?? 22)
+    const dwell = Number(args.find(a => a.startsWith('menu='))?.slice(5) ?? 0)
+    const finish = requested + duration
+    let from = requested
+    let inputs, lastError
+    for (let shift = 0; shift <= (from ? 4 : 0) && !inputs; shift += .125) {
+      try {
+        from = Math.max(0, requested - shift)
+        inputs = guidedInputs(seed, finish + 1, distanceAtTime(from))
+      } catch (error) { lastError = error }
+    }
+    if (!inputs) throw lastError
+    const distance = distanceAtTime(from)
+    await openAt(distance, seed)
+    await page.evaluate(inputs => { window.phaseThreeQA.natural = { inputs, next: 0, samples: [], sights: [] } }, inputs)
+    if (args.includes('version-proof')) {
+      const footer = page.locator('#running-version')
+      assert.ok(await footer.evaluate(element => {
+        const box = element.getBoundingClientRect()
+        return box.top >= 0 && box.bottom <= innerHeight && box.height > 0
+      }))
+      await page.screenshot({ path: resolve(output, 'version-footer.png'), scale: 'css' })
+    }
+    // Ordinary title dwell models a player looking at the menu before starting.
+    // The run always advances on the real browser frame clock.
+    if (dwell) await page.waitForTimeout(dwell)
+    const begin = (performance.now() - recordingStarted) / 1000
+    const before = await page.evaluate(() => window.retrieverPerformance())
+    await page.locator('#primary').tap()
+    await page.waitForFunction(finish => window.retrieverDebug?.mode === 'over' || window.retrieverDebug?.elapsed >= finish,
+      finish, { timeout: (duration * 3 + 30) * 1000 })
+    const after = await page.evaluate(() => ({ state: window.retrieverDebug, perf: window.retrieverPerformance(),
+      samples: window.phaseThreeQA.natural.samples, sights: window.phaseThreeQA.natural.sights }))
+    await writeFile(resolve(output, 'natural.json'), JSON.stringify({ seed, from, finish, begin, before, ...after }))
+    assert.equal(after.state.mode, 'running', JSON.stringify(after.state.contact))
+    await capture('natural-end', { seed })
+  } else if (args.includes('working-dogs')) {
+    const breed = args.includes('pointer') ? 'pointer' : 'lab'
+    await openAt(0, 7)
+    await page.screenshot({ path: resolve(output, 'title.png'), scale: 'css' })
+    await page.locator('#open-lodge').tap()
+    await page.locator('#tab-kennel').tap()
+    const stage = page.locator('.kennel-stage')
+    await stage.locator('canvas').waitFor()
+    if (args.includes('touch-orbit') && engine === chromium) {
+      const box = await stage.boundingBox()
+      const cdp = await context.newCDPSession(page)
+      const x = Math.round(box.x + box.width * .25)
+      const y = Math.round(box.y + box.height * .52)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + 65, y }] })
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      await page.waitForTimeout(450)
+      await stage.screenshot({ path: resolve(output, 'touch-rotation.png'), scale: 'css' })
+      await cdp.detach()
+      await page.locator('#close-lodge').tap()
+      await page.locator('#open-lodge').tap()
+      await page.locator('#tab-kennel').tap()
+    }
+    await stage.focus()
+    for (const [angle, presses, key] of [['three-quarter', 0, 'ArrowRight'], ['front', 2, 'ArrowLeft'],
+      ['side', 3, 'ArrowRight'], ['rear', 3, 'ArrowRight']]) {
+      if (args.includes('baseline-dog') && angle !== 'three-quarter') break
+      for (let step = 0; step < presses; step++) await page.keyboard.press(key)
+      await page.waitForTimeout(500)
+      await stage.screenshot({ path: resolve(output, angle + '.png'), scale: 'css' })
+    }
+    await page.locator('[data-category="vest"]').tap()
+    await page.locator('[data-gear="blaze-vest"]').tap()
+    await page.locator('.kennel-selection').getByRole('button', { name: 'View preview' }).tap()
+    await page.keyboard.press('ArrowLeft')
+    await page.keyboard.press('ArrowLeft')
+    await page.waitForTimeout(450)
+    await stage.screenshot({ path: resolve(output, 'vest.png'), scale: 'css' })
+    await page.locator('[data-category="coat"]').tap()
+    const coats = page.locator('.kennel-items button')
+    const coatCount = await coats.count()
+    for (let index = 0; index < coatCount; index++) {
+      const card = coats.nth(index)
+      const id = await card.getAttribute('data-gear')
+      await card.tap()
+      await page.locator('.kennel-selection').getByRole('button', { name: 'View preview' }).tap()
+      await page.waitForTimeout(120)
+      if (breed === 'lab') await stage.screenshot({ path: resolve(output, 'coat-' + id + '.png'), scale: 'css' })
+    }
+    await page.locator('#close-lodge').tap()
+    await page.locator('#primary').tap()
+    await settle(0, quality)
+    await capture('gameplay', { breed })
+    console.log(`Rendered ${breed} at four angles, ${coatCount} coat cards and gameplay`)
+  } else if (args.includes('texture-replays')) {
     const { planEncounter } = await fromSource('wildlife-encounters')
-    const encounter = planEncounter(buildTile(12, 1), 1)
+    const seed = args.includes('reuse') ? 23 : 1
+    const encounter = planEncounter(buildTile(12, seed), seed)
     assert.equal(encounter.species, 'mallard')
     // Start far enough away to give the existing prefetch window time to
     // resolve the skinned rig on every replay, including on software WebGL.
-    const start = encounter.distance - 42
-    await runAt(start, 1)
+    const reuse = args.includes('reuse')
+    const start = encounter.distance - (reuse ? 58 : 42)
+    await runAt(start, seed)
     const samples = []
     for (let hunt = 0; hunt < 5; hunt++) {
-      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, start + 8)
+      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, start + (reuse ? 25 : 8))
       await page.waitForFunction(() => window.retrieverDebug?.wildlife?.model && window.retrieverDebug.wildlife.drawn > 0,
         null, { timeout: 40_000 }).catch(async error => {
         console.error(await page.evaluate(() => ({ mode: document.querySelector('#game').dataset.mode,
@@ -243,13 +449,17 @@ try {
         throw error
       })
       const active = await page.evaluate(() => window.retrieverPerformance())
-      await stepTo(encounter.distance + 10)
+      await stepTo(encounter.distance + (reuse ? 53 : 10))
       await page.waitForFunction(() => window.retrieverDebug?.wildlife == null)
       const retired = await page.evaluate(() => window.retrieverPerformance())
       samples.push({ hunt: hunt + 1, active, retired })
       console.log(`Hunt ${hunt + 1}: ${active.textures} textures with mallard, ${retired.textures} after retirement`)
-      await page.evaluate(distance => { window.phaseThreeQA.limit = distance }, encounter.distance + 65)
-      await page.locator('#run-again').waitFor({ timeout: 35_000 })
+      await page.evaluate(({ distance, reuse }) => {
+        window.phaseThreeQA.limit = distance + (reuse ? 150 : 65)
+        if (reuse) window.phaseThreeQA.advanceBy = 116
+      }, { distance: encounter.distance, reuse })
+      await page.locator('#run-again').waitFor({ timeout: 120_000 })
+      await page.evaluate(() => { window.phaseThreeQA.advanceBy = undefined })
       if (hunt < 4) {
         await page.locator('#run-again').tap()
       }
@@ -257,7 +467,8 @@ try {
     await writeFile(resolve(output, 'texture-replays.json'), JSON.stringify(samples, null, 2) + '\n')
     if (args.includes('expect-bounded')) {
       assert.ok(samples.every(({ retired }) => retired.textures <= samples[0].retired.textures), 'replay retained extra textures')
-      assert.ok(samples.every(({ retired }) => retired.wildlifeModels.resident === 0), 'retired wildlife still resident')
+      assert.ok(samples.every(({ retired }) => retired.wildlifeModels.resident <= (reuse ? 2 : 0)), 'wildlife residency exceeded its limit')
+      if (reuse) assert.ok(samples.at(-1).retired.wildlifeModels.hits > 0, 'no decoded rigs reused')
       assert.equal(samples.at(-1).retired.hunt.id, 5)
     }
   } else if (args.includes('soak')) {
@@ -276,6 +487,10 @@ try {
       console.log(`Rendered ${state.elapsed.toFixed(2)} seconds (${state.mode})`)
       await writeFile(resolve(output, 'soak-checkpoint.json'), JSON.stringify({ elapsed: state.elapsed, stage: stageAt(state.elapsed).level,
         quality, acceleratedClock: args.includes('fast'), offline: args.includes('offline') }) + '\n')
+      if (args.includes('territory-evidence') && state.mode === 'running' && checkpoint % 30 === 15) {
+        const region = expeditionRegions[Math.floor(checkpoint / 30)]
+        if (region) await capture('journey-' + region.key, { sampledAfter: checkpoint })
+      }
       if (checkpoint === duration || state.mode !== 'running') break
     }
     const soak = await page.evaluate(() => ({ ...window.phaseThreeQA.soak, state: window.retrieverDebug }))
@@ -458,8 +673,37 @@ try {
     await stepTo(fixture.end)
     await capture('sign-near', fixture)
     assert.ok(results.at(-1).signs.some(sign => sign.distance === fixture.sign.distance))
+  } else if (args.includes('dog-actions')) {
+    await runAt(5, 7)
+    await stepTo(6.5)
+    await capture('gallop')
+    await page.keyboard.press('ArrowUp')
+    await stepTo(10.5)
+    await capture('jump')
+    await stepTo(18)
+    await page.keyboard.press('ArrowDown')
+    await stepTo(21)
+    await capture('slide')
+  } else if (args.includes('grain-shed')) {
+    const seed = 7
+    const marker = buildTile(234, seed).landmark
+    assert.equal(marker.role, 'grain-elevator')
+    await runAt(6986, seed)
+    await capture('dakota-grain-approach', { seed, marker })
+    await runAt(7007, seed)
+    await capture('dakota-grain-7007m', { seed, marker })
+  } else if (args.includes('neighbor-timber')) {
+    const seed = 73
+    const target = rowsFor(seed, 59).find(row => row.at > 960 && row.at < 978 && row.entities.filter(entity => entity.type === 'fallen').length === 2)
+    assert.ok(target)
+    await runAt(target.at - 23, seed)
+    await capture('paired-approach', { seed, target: target.at })
+    await stepTo(target.at - 11)
+    await capture('paired-955m', { seed, target: target.at })
+    await stepTo(target.at - 5)
+    await capture('paired-close', { seed, target: target.at })
   } else if (args.includes('water-crossings') || args.includes('root-plate')) {
-    const candidates = args.includes('root-plate') ? ['parklands'] : ['gulf','cypress','platte','mountain']
+    const candidates = args.includes('root-plate') ? ['cypress','flyway','parklands'] : ['gulf','cypress','platte','mountain']
     const type = args.includes('root-plate') ? 'fallen' : 'stream'
     for (const key of candidates) {
       if (args.some(arg => arg.startsWith('only=')) && !args.includes('only=' + key)) continue

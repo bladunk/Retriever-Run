@@ -3,7 +3,7 @@ import { contactShadow } from './contact-shadow.js'
 import { createDog } from './dog.js'
 import { gearAppearance } from './kennel-material.js'
 
-export function createPlayer(scene) {
+export function createPlayer(scene, breed = 'lab', createPickup) {
   const fallback = createDog(scene)
   const shadow = contactShadow()
   shadow.rotation.order = 'YXZ'
@@ -12,7 +12,7 @@ export function createPlayer(scene) {
   scene.add(root)
   let rig
   let gear = gearAppearance()
-  import('./lab.js').then(({ loadLabrador }) => loadLabrador()).then((loaded) => {
+  import('./lab.js').then(({ loadLabrador }) => loadLabrador(breed, createPickup)).then((loaded) => {
     rig = loaded
     rig.root.visible = false
     rig.appearance(gear)
@@ -22,6 +22,7 @@ export function createPlayer(scene) {
   })
 
   return {
+    canCarry: () => Boolean(rig),
     reset() { fallback.reset(); rig?.reset() },
     moveTo(target) { target.add(root, shadow, fallback.root) },
     appearance(value) {
