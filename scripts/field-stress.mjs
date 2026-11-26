@@ -9,6 +9,7 @@ import { createRunControls } from '../src/run-controls.js'
 import { createRunStatistics } from '../src/field-stats.js'
 import { runXP, xpAt } from '../src/career.js'
 import { canPostRun } from '../src/camp-rules.js'
+import { recordRankedActions, verifyRankedReplay } from '../src/ranked-replay.js'
 
 const wallPatterns = [
   [1 / 60],
@@ -23,7 +24,9 @@ const deaths = {}
 const totals = { sessions: 0, guided: 0, freePlay: 0, deaths: 0, survived: 0, ticks: 0, pickups: 0,
   jumps: 0, slides: 0, pauses: 0, longest: [] }
 
-function session(seed, duration, guided, policy, weather, pauseInterval) {
+function session(seed, duration, guided, policy, weather, pauseInterval, coastAt = Infinity) {
+  const tape = Number.isFinite(coastAt) ? recordRankedActions() : null
+  let steps = 0
   const rng = seededRandom(seed ^ 0xaffb320a)
   const course = createCourse(seed)
   const run = newRun()
@@ -48,6 +51,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
 
   function performed(action) {
     statistics.action(action)
+    tape?.add(steps, action)
     if (action === 'jump') totals.jumps++
     if (action === 'slide') totals.slides++
   }
@@ -62,7 +66,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
 
   function tick(dt) {
     if (run.elapsed >= duration) return false
-    if (guided) {
+    if (guided && run.elapsed < coastAt) {
       const next = rows[0]
       if (next) {
         if (run.elapsed - released >= reactionWindow && run.lane !== next.lane && run.elapsed >= laneReady) {
@@ -74,7 +78,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
           controls.enqueue(next.gate.action)
         }
       }
-    } else if (run.elapsed >= nextInput) {
+    } else if (!guided && run.elapsed >= nextInput) {
       // Idle, repeated, alternating and slightly diagonal touch inputs come
       // from the seeded policy. Browser gesture events are tested separately.
       const action = moves[Math.floor(rng() * moves.length)]
@@ -89,6 +93,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
     samplePose(previous, run, run, 1)
     advance(run, dt)
     totals.ticks++
+    steps++
     for (const item of active) {
       if (item.hazard && item.distance >= previous.distance - 3 && item.distance <= run.distance + 3) hazardKinds.add(item.type)
     }
@@ -173,7 +178,22 @@ function session(seed, duration, guided, policy, weather, pauseInterval) {
     const result = statistics.preview(run)
     samples[group].push({ ...result, xp: runXP(result, [], []) })
   }
-  return { elapsed: run.elapsed, distance: run.distance, killer: killer ? { ...hit } : null }
+  if (!tape) return { elapsed: run.elapsed, distance: run.distance, killer: killer ? { ...hit } : null }
+  assert.ok(killer)
+  const trace = tape.finish(steps)
+  const started = performance.now()
+  const verified = verifyRankedReplay(seed, trace)
+  const verifierMs = performance.now() - started
+  assert.deepEqual(verified, { score: score(run), distance: Math.floor(run.distance), duration: Math.round(run.elapsed * 1000),
+    retrieves: run.retrieves, combo: run.bestStreak })
+  return { seed, ticks: steps, actions: trace.actions.length, verifierMs: +verifierMs.toFixed(2), ...verified }
+}
+
+if (process.argv.includes('ranked-replay')) {
+  for (const [seed, coastAt] of [[0, 450], [1, 600], [2, 860]]) {
+    console.log(JSON.stringify(session(seed, 899, true, 0, [.12], 75, coastAt)))
+  }
+  process.exit(0)
 }
 
 const count = Number(process.argv[2] ?? 10000)

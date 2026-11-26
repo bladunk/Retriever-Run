@@ -190,6 +190,14 @@ export function createWorldwideCamp(transport, {
     online,
     season: () => active.season,
     member: profile => members.get(profile),
+    forget(profile, owner) {
+      if (members.get(profile)?.identity !== owner) return
+      members.delete(profile)
+      queue = queue.filter(run => run.profile !== profile)
+      retryAt.delete(profile)
+      expireBoard()
+      persist()
+    },
     pending: profile => candidates(profile).length,
     rival: rivals.read,
     peekRival: rivals.peek,

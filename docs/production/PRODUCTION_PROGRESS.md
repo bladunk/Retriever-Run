@@ -2,9 +2,9 @@
 
 ## Resume here
 
-- Active checkpoint is Phase 08 owner review on `codex/retriever-run-phase-08`, based on the accepted Phase 07 merge `358c2e723e2710f9206f1aad2dc9240449e49df4`. The deployed build at baseline was `1.0.0-phase.7 · 995272c`. [Phase 07 report](PHASE_07_REPORT.md)
-- Phase 08 groups the Lodge’s navigation, makes large collections searchable, adds a one-screen Hunt Over with immediate replay, and ships an optional guide, regional audio and three licensed Journal portraits. Review build `1.0.0-phase.8 · a8b6e41` passed 185 automated tests, production verification, two offline portrait browser checks and the Phase 07 update rehearsal. [Draft PR #36](https://github.com/bladunk/Retriever-Run/pull/36) · [Phase 08 report](PHASE_08_REPORT.md) · [Portrait gallery](evidence/phase-08/README.md)
-- Owner acceptance starts with the small-screen replay, guest guide, Trophy Room, Journal and native audio/launch checks. The consolidated visual production queue sits in Phase 08B. Phase 09 is still pending. [Visual backlog](FINAL_VISUAL_BACKLOG.md)
+- Phase 09 is at owner review in `codex/retriever-run-phase-09`, based on the approved Phase 08 merge `3d4ce2f`. The baseline Pages build was `1.0.0-phase.8 · 93cecaa`. Phase 08’s native iPhone acceptance remains open. [Phase 08 report](PHASE_08_REPORT.md)
+- The new Great Migration 1 competition has replay-verified results, five boards, consensual friends, private Camps and server-issued awards. Review build `1.0.0-phase.9 · 63116ab` uses closed-by-default migrations. Release operations and existing saves are independent. [Draft PR #37](https://github.com/bladunk/Retriever-Run/pull/37) · [Phase 09 report](PHASE_09_REPORT.md) · [Owner operations](PHASE_09_DEPLOYMENT.md)
+- The next review work is isolated hosted Supabase, native iPhone acceptance and owner approval. Phase 08B is the next major production phase. The production launch and any approved reset remain assigned to Phase 10. [Final visual backlog](FINAL_VISUAL_BACKLOG.md)
 
 ## Implemented in Phase 01
 

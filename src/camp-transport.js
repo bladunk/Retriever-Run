@@ -80,8 +80,50 @@ export function createCampTransport(settings = config, {
     return data
   }
 
+  async function asMember(profile, owner) {
+    const api = await client(profile)
+    const active = await session(api)
+    return active && active.user.id === owner ? { api, active } : null
+  }
+
   return {
     namespace,
+    async rankedBoard(profile, owner, args) {
+      let membership
+      try { if (owner) membership = await asMember(profile, owner) }
+      catch { /* Public rankings may still be reachable during an Auth outage. */ }
+      if (!membership && args.p_scope !== 'worldwide') return { status: 'reconnect' }
+      return rpc(membership?.api ?? await client(), 'rr_ranked_board', args)
+    },
+    async rankedTicket(profile, owner, course) {
+      const membership = await asMember(profile, owner)
+      if (!membership) return { status: 'reconnect' }
+      return rpc(membership.api, 'rr_ranked_ticket', { p_course: course })
+    },
+    async rankedVerify(profile, owner, body) {
+      const membership = await asMember(profile, owner)
+      if (!membership) return { status: 'reconnect' }
+      const response = await campFetch(settings.url + '/functions/v1/verify-hunt', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + membership.active.access_token,
+          apikey: settings.key, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+      })
+      if (!response.ok) return { status: response.status === 429 ? 'rate_limited' : 'unavailable' }
+      return response.json()
+    },
+    async rankedProfile(nickname) {
+      return rpc(await client(), 'rr_ranked_profile', { p_nickname: nickname })
+    },
+    async social(profile, owner, action, options = {}) {
+      const membership = await asMember(profile, owner)
+      if (!membership) return { status: 'reconnect' }
+      return rpc(membership.api, 'rr_camp_social', { p_action: action, p_camp: options.camp ?? null,
+        p_value: options.value ?? null, p_target: options.target ?? null })
+    },
+    async erase(profile, owner, confirm) {
+      const membership = await asMember(profile, owner)
+      if (!membership) return { status: 'reconnect' }
+      return rpc(membership.api, 'rr_camp_erase', { p_confirm: confirm })
+    },
     async nickname(profile, name) {
       const api = await client(profile)
       let active = await session(api)

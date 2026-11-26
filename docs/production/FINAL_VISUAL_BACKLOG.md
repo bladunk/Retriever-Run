@@ -14,6 +14,15 @@ Start with the recognizable figures players see most often. Keep Boyd’s approv
 | 2 | Day, fog and bounced light still rely on limited regional rendering | Affordably improve contact shadows, fog layers, sky, contrast, surface roughness and water highlights while maintaining hazard recognition across presets | Prefer shared materials and baked lighting when appropriate. Approve native frame stability before expanding draw calls or atlas residency. Use original or license-checked textures |
 | 3 | Menu and awards use approved hero art and text-first reward cues | Keep Boyd composition. Improve rank insignia, field-report illustrations, Lodge transitions, and an optional brief prestige flourish. Review anonymous onboarding and a multi-award restart | Respect reduced motion and immediate Play Again. Serve separate small responsive derivatives. Approved Boyd artwork and original presentation only |
 
+## Worldwide Camp visual pass
+
+| Priority | Current limit | Production target | Runtime and rights |
+| --- | --- | --- | --- |
+| 2 | Verified rank and rivalry display use text and existing timber panels | Clear personal-rank, neighboring-rival, authoritative-record and archived-course hierarchy | Use SVG or baked small emblems with text labels. Keep page size, lazy profile loads and stable color contrast |
+| 2 | Competitive awards reuse the Lodge's current ornament | Authored rank emblems, First Verified Hunt trophy and distinct score, duration, distance and retrieve motifs | Reuse the existing Lodge art pipeline and lazy plate derivatives. Do not award recognition without a server receipt |
+| 3 | Friends, private Camps and profiles use shared fields and row treatments | Recognizable invitation, member/owner states and public record presentation, with owner-only invite visibility | Keep exact-code workflow and capability limits. Do not depict private rosters in public screenshots |
+| 3 | Legendary competitive recognition is a future eligibility decision | Distinctive, optional prestige presentation once a legitimate long-term server-verified measure exists | Use original game art. Never infer career rank or Boyd ownership from client declarations |
+
 ## Territory production sequence
 
 This pass starts at the normal running camera and adjusts environment art without changing the validated course. Inspect draw calls and resident packs through each matching territory’s departure.

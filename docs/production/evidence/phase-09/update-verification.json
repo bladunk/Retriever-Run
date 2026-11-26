@@ -1,0 +1,21 @@
+{
+  "engine": "chromium",
+  "baseline": false,
+  "upgrade": "phase-three",
+  "disclosure": "14.7 MB to download · 14.76 MB total",
+  "interruptedAsset": "labrador.glb",
+  "injectedNetworkErrors": 0,
+  "interruption": "The download stopped. Retry to resume from your verified files.",
+  "coldReadyMsIncludingRetry": 7050,
+  "corruptFileRepaired": true,
+  "lodgeUpdateVeto": true,
+  "updateVersions": [
+    "76410e07639c4145653b",
+    "5abc7323339f07dd9c58"
+  ],
+  "update": {
+    "busyHuntProtected": true,
+    "preservedRuns": 2,
+    "unchangedAudioRequests": 1
+  }
+}

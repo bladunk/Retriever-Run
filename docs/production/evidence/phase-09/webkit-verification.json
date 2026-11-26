@@ -1,0 +1,26 @@
+{
+  "build": {
+    "version": "1.0.0-phase.9",
+    "id": "8548f06"
+  },
+  "manifest": "b146d0d6001176ea56dd",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "engine": "webkit",
+  "isolated": true,
+  "verified": {
+    "score": 95,
+    "rank": 2,
+    "ticks": 380,
+    "honors": [
+      "camp-first-hunt"
+    ]
+  },
+  "replayMs": 1712,
+  "offline": true,
+  "verifiedAfterReconnect": true,
+  "localCareerIsolation": true,
+  "errors": []
+}

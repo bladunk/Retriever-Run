@@ -3,7 +3,8 @@ import './lodge-gallery.css'
 import { careerStanding } from './career.js'
 import { qualificationCard } from './career-ui.js'
 import { expeditionRegions } from './expedition.js'
-import { checkLabel } from './field-honors.js'
+import { checkLabel, honorById } from './field-honors.js'
+import { verifiedHonorRequirements } from './ranked-camp.js'
 import { causes, causeNames } from './field-stats.js'
 import { duration, rows, cards, node, number, meters, date } from './lodge-elements.js'
 import { migrationMap } from './lodge-map.js'
@@ -14,8 +15,8 @@ import { fieldSpecies } from './wildlife-catalog.js'
 import { wildlifePortrait } from './wildlife-portrait.js'
 
 const categoryNames = { honors: 'Field Honors', legend: 'Legendary', wildlife: 'Wildlife observations',
-  retrieves: 'Retrieves', regional: 'Regional displays', career: 'Career milestones', hall: 'Hall of Shame' }
-const categoryOrder = { legend: 0, regional: 1, retrieves: 2, wildlife: 3, career: 4, honors: 5, hall: 6 }
+  retrieves: 'Retrieves', regional: 'Regional displays', career: 'Career milestones', hall: 'Hall of Shame', competitive: 'Worldwide Camp' }
+const categoryOrder = { legend: 0, competitive: 1, regional: 2, retrieves: 3, wildlife: 4, career: 5, honors: 6, hall: 7 }
 const medals = { Platinum: 4, Gold: 3, Silver: 2, Bronze: 1 }
 const occurred = trophy => trophy.date ? Date.parse(trophy.date) : 0
 const awardOrder = (a, b) => occurred(b) - occurred(a) || categoryOrder[a.category] - categoryOrder[b.category] ||
@@ -122,7 +123,7 @@ function tribute(player) {
   return [plaque, requirements]
 }
 
-function overview(player, { navigate }) {
+function overview(player, { navigate, competitive = [] }) {
   const standing = careerStanding(player.career)
   const progress = lodgeProgress(player, standing)
   const tier = progress.tier
@@ -161,12 +162,15 @@ function overview(player, { navigate }) {
   shelf.append(heading('On display', pins.length ? 'Your pinned trophies take the front shelf.' :
     chosen.length ? 'Pin an earned trophy to put it here.' : 'The first shelf is ready for a field discovery or earned Honor.'))
   if (chosen.length) shelf.append(displayShelf(chosen, entry => navigate('collection', entry.key), 'Trophy shelf'))
+  if (competitive.length) shelf.append(node('p', number(competitive.length) + ' awards recorded by Worldwide Camp', 'room-note'))
   shelf.append(action('Open the trophy room', () => navigate('collection')))
   return [room, additions, shelf, master, requirements]
 }
 
-function trophyRoom(player, { lodge, target, navigate }) {
-  const trophies = earnedTrophies(player).sort(awardOrder)
+function trophyRoom(player, { lodge, target, navigate, competitive = [] }) {
+  const online = competitive.map(id => ({ key: 'competitive:' + id, category: 'competitive', name: honorById.get(id).name,
+    badge: honorById.get(id).tier, art: 'legend', description: 'Worldwide Camp · ' + verifiedHonorRequirements[id] }))
+  const trophies = [...earnedTrophies(player), ...online].sort(awardOrder)
   const room = node('section', null, 'lodge-display-room')
   const significant = trophies.filter(item => item.category === 'legend' || item.badge === 'Platinum' ||
     (item.category === 'honors' && item.badge === 'Gold' && item.date))
@@ -228,7 +232,7 @@ function trophyRoom(player, { lodge, target, navigate }) {
         about.append(criteria)
       }
       if (item.date) about.append(node('p', 'Recorded ' + date(item.date)))
-      if (!lodge.practice) about.append(action(pins.includes(item.key) ? 'Unpin trophy' : 'Pin trophy', () => {
+      if (!lodge.practice && item.category !== 'competitive') about.append(action(pins.includes(item.key) ? 'Unpin trophy' : 'Pin trophy', () => {
         const changed = lodge.toggleTrophy(player.id, item.key)
         status.textContent = changed ? (pins.includes(item.key) ? 'Trophy unpinned.' : 'Trophy pinned to your shelf.')
           : pins.length >= trophyLimit ? 'Unpin a trophy to make room for another.' : 'Unable to save that display.'
