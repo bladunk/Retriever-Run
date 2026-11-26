@@ -1,0 +1,242 @@
+{
+  "scenarios": 100020,
+  "seeds": 3334,
+  "ticks": 69305723,
+  "reactions": [
+    0.32,
+    0.38,
+    0.42,
+    0.45,
+    0.47
+  ],
+  "stageStats": [
+    {
+      "level": 1,
+      "territory": "Gulf Coast Marsh",
+      "scenarios": 3334,
+      "generated": 30006,
+      "transitions": 851
+    },
+    {
+      "level": 2,
+      "territory": "Gulf Coast Marsh",
+      "scenarios": 3334,
+      "generated": 30393,
+      "transitions": 1238
+    },
+    {
+      "level": 3,
+      "territory": "Southern Cypress Swamp",
+      "scenarios": 3334,
+      "generated": 35312,
+      "transitions": 974
+    },
+    {
+      "level": 4,
+      "territory": "Southern Cypress Swamp",
+      "scenarios": 3334,
+      "generated": 34379,
+      "transitions": 1034
+    },
+    {
+      "level": 5,
+      "territory": "Mississippi Delta",
+      "scenarios": 3334,
+      "generated": 36814,
+      "transitions": 996
+    },
+    {
+      "level": 6,
+      "territory": "Mississippi Delta",
+      "scenarios": 3334,
+      "generated": 38695,
+      "transitions": 1000
+    },
+    {
+      "level": 7,
+      "territory": "Arkansas Flooded Timber",
+      "scenarios": 3334,
+      "generated": 39775,
+      "transitions": 1011
+    },
+    {
+      "level": 8,
+      "territory": "Arkansas Flooded Timber",
+      "scenarios": 3334,
+      "generated": 41074,
+      "transitions": 1010
+    },
+    {
+      "level": 9,
+      "territory": "Ozark River Country",
+      "scenarios": 3334,
+      "generated": 41943,
+      "transitions": 980
+    },
+    {
+      "level": 10,
+      "territory": "Ozark River Country",
+      "scenarios": 3334,
+      "generated": 42625,
+      "transitions": 993
+    },
+    {
+      "level": 11,
+      "territory": "Midwest Farm Country",
+      "scenarios": 3334,
+      "generated": 42709,
+      "transitions": 966
+    },
+    {
+      "level": 12,
+      "territory": "Midwest Farm Country",
+      "scenarios": 3334,
+      "generated": 42946,
+      "transitions": 975
+    },
+    {
+      "level": 13,
+      "territory": "Platte River Valley",
+      "scenarios": 3334,
+      "generated": 44338,
+      "transitions": 964
+    },
+    {
+      "level": 14,
+      "territory": "Platte River Valley",
+      "scenarios": 3334,
+      "generated": 44631,
+      "transitions": 967
+    },
+    {
+      "level": 15,
+      "territory": "Nebraska Sandhills",
+      "scenarios": 3334,
+      "generated": 45122,
+      "transitions": 980
+    },
+    {
+      "level": 16,
+      "territory": "Nebraska Sandhills",
+      "scenarios": 3334,
+      "generated": 44658,
+      "transitions": 957
+    },
+    {
+      "level": 17,
+      "territory": "Dakota Prairie Potholes",
+      "scenarios": 3334,
+      "generated": 44402,
+      "transitions": 983
+    },
+    {
+      "level": 18,
+      "territory": "Dakota Prairie Potholes",
+      "scenarios": 3334,
+      "generated": 44468,
+      "transitions": 1000
+    },
+    {
+      "level": 19,
+      "territory": "Northern Dakota Wetlands",
+      "scenarios": 3334,
+      "generated": 44586,
+      "transitions": 967
+    },
+    {
+      "level": 20,
+      "territory": "Northern Dakota Wetlands",
+      "scenarios": 3334,
+      "generated": 44560,
+      "transitions": 972
+    },
+    {
+      "level": 21,
+      "territory": "Manitoba Marshlands",
+      "scenarios": 3334,
+      "generated": 44376,
+      "transitions": 984
+    },
+    {
+      "level": 22,
+      "territory": "Manitoba Marshlands",
+      "scenarios": 3334,
+      "generated": 44365,
+      "transitions": 970
+    },
+    {
+      "level": 23,
+      "territory": "Saskatchewan Parklands",
+      "scenarios": 3334,
+      "generated": 44439,
+      "transitions": 953
+    },
+    {
+      "level": 24,
+      "territory": "Saskatchewan Parklands",
+      "scenarios": 3334,
+      "generated": 44280,
+      "transitions": 984
+    },
+    {
+      "level": 25,
+      "territory": "Canadian Boreal Forest",
+      "scenarios": 3334,
+      "generated": 42790,
+      "transitions": 1003
+    },
+    {
+      "level": 26,
+      "territory": "Canadian Boreal Forest",
+      "scenarios": 3334,
+      "generated": 42624,
+      "transitions": 994
+    },
+    {
+      "level": 27,
+      "territory": "Rocky Mountain Foothills",
+      "scenarios": 3334,
+      "generated": 43364,
+      "transitions": 972
+    },
+    {
+      "level": 28,
+      "territory": "Rocky Mountain Foothills",
+      "scenarios": 3334,
+      "generated": 43365,
+      "transitions": 989
+    },
+    {
+      "level": 29,
+      "territory": "Canadian Mountain Wilderness",
+      "scenarios": 3334,
+      "generated": 43520,
+      "transitions": 974
+    },
+    {
+      "level": 30,
+      "territory": "Canadian Mountain Wilderness",
+      "scenarios": 3334,
+      "generated": 130660,
+      "transitions": 98
+    }
+  ],
+  "types": [
+    "branch",
+    "drift",
+    "fallen",
+    "fence",
+    "goose",
+    "leaning-tree",
+    "log",
+    "puddle",
+    "rock",
+    "root",
+    "snowmobile",
+    "stream",
+    "tractor",
+    "tree",
+    "washout"
+  ],
+  "wallSeconds": 380.82
+}

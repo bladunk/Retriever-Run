@@ -643,6 +643,7 @@ try {
     const cycles = Number(args.find(argument => argument.startsWith('cycles='))?.slice(7) ?? 60)
     assert.ok(Number.isInteger(cycles) && cycles >= 1 && cycles <= 100)
     await openAt(0, 7)
+    if (args.includes('offline')) await context.setOffline(true)
     const before = await page.evaluate(() => localStorage.getItem('retriever-run.record'))
     const samples = []
     for (let cycle = 0; cycle < cycles; cycle++) {
@@ -650,7 +651,11 @@ try {
         window.phaseThreeQA.soak = { inputs: [], duration: 12, fast: true, precise: true, next: 0, nextSample: 0, samples: [] }
       })
       await page.locator(cycle ? '#run-again' : '#primary').click()
-      await page.locator('#field-report').waitFor({ timeout: 45_000 })
+      await page.locator('#field-report').waitFor({ timeout: 120_000 }).catch(async error => {
+        console.error(await page.evaluate(() => ({ mode:window.retrieverDebug?.mode, elapsed:window.retrieverDebug?.elapsed,
+          hunt:window.retrieverPerformance()?.hunt, errors:document.querySelector('#content-screen')?.open })))
+        throw error
+      })
       const result = await page.evaluate(() => {
         const p = window.retrieverPerformance()
         return { hunt: p.hunt, restart: p.restart, restartTrace: p.restartTrace,
@@ -676,7 +681,10 @@ try {
     await page.evaluate(({ inputs, duration, fast, precise }) => {
       window.phaseThreeQA.soak = { inputs, duration, fast, precise, next: 0, nextSample: 0, samples: [] }
     }, { inputs, duration, fast: args.includes('fast'), precise })
-    if (precise) await page.locator('#primary').tap()
+    if (precise) {
+      if (args.includes('offline')) await context.setOffline(true)
+      await page.locator('#primary').tap()
+    }
     for (let checkpoint = Math.min(15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
       await page.waitForFunction(value => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
         window.retrieverDebug?.elapsed >= value, checkpoint, { timeout: 240_000 })

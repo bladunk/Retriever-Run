@@ -1,0 +1,97 @@
+{
+  "engine": "webkit",
+  "samples": [
+    {
+      "version": "before",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "settings": {
+        "x": 239.375,
+        "y": 14,
+        "width": 63.625,
+        "height": 44
+      },
+      "hunt": {
+        "x": 22,
+        "y": 393.8125,
+        "width": 276,
+        "height": 46
+      },
+      "build": {
+        "version": "1.0.0-rc.1",
+        "id": "1687883"
+      }
+    },
+    {
+      "version": "after",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "settings": {
+        "x": 201.4375,
+        "y": 472,
+        "width": 63.53125,
+        "height": 44
+      },
+      "hunt": {
+        "x": 22,
+        "y": 374.8125,
+        "width": 276,
+        "height": 46
+      },
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    },
+    {
+      "version": "before",
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "settings": {
+        "x": 335.375,
+        "y": 14,
+        "width": 77.625,
+        "height": 44
+      },
+      "hunt": {
+        "x": 23,
+        "y": 748.8125,
+        "width": 384,
+        "height": 52
+      },
+      "build": {
+        "version": "1.0.0-rc.1",
+        "id": "1687883"
+      }
+    },
+    {
+      "version": "after",
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "settings": {
+        "x": 202.4375,
+        "y": 833,
+        "width": 63.53125,
+        "height": 44
+      },
+      "hunt": {
+        "x": 23,
+        "y": 729.8125,
+        "width": 384,
+        "height": 52
+      },
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    }
+  ]
+}

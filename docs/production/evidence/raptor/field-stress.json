@@ -1,0 +1,66 @@
+{
+  "sessions": 10000,
+  "guided": 6001,
+  "freePlay": 3999,
+  "deaths": 3998,
+  "survived": 6002,
+  "ticks": 31865173,
+  "pickups": 430662,
+  "jumps": 23122,
+  "slides": 11610,
+  "pauses": 30638,
+  "longest": [
+    {
+      "seed": 0,
+      "seconds": 465,
+      "distance": 12023
+    },
+    {
+      "seed": 1,
+      "seconds": 600,
+      "distance": 15938
+    },
+    {
+      "seed": 2,
+      "seconds": 1200,
+      "distance": 33335
+    },
+    {
+      "seed": 3,
+      "seconds": 1800,
+      "distance": 50732
+    }
+  ],
+  "fromSeed": 0,
+  "hazards": [
+    "branch",
+    "drift",
+    "fallen",
+    "fence",
+    "goose",
+    "leaning-tree",
+    "log",
+    "puddle",
+    "rock",
+    "root",
+    "snowmobile",
+    "stream",
+    "tractor",
+    "tree",
+    "washout"
+  ],
+  "deathsBy": {
+    "stream": 3398,
+    "drift": 43,
+    "log": 134,
+    "puddle": 78,
+    "tree": 50,
+    "fence": 71,
+    "fallen": 26,
+    "leaning-tree": 36,
+    "branch": 29,
+    "root": 68,
+    "rock": 65
+  },
+  "wallSeconds": 75.5
+}

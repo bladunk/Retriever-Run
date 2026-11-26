@@ -1,0 +1,103 @@
+{
+  "engine": "chromium",
+  "samples": [
+    {
+      "version": "before",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "settings": {
+        "x": 237.765625,
+        "y": 14,
+        "width": 65.234375,
+        "height": 44
+      },
+      "hunt": {
+        "x": 22,
+        "y": 391.8125,
+        "width": 276,
+        "height": 46
+      },
+      "build": {
+        "version": "1.0.0-rc.1",
+        "id": "1687883"
+      }
+    },
+    {
+      "version": "after",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "settings": {
+        "x": 212.03125,
+        "y": 467,
+        "width": 65.28125,
+        "height": 44
+      },
+      "hunt": {
+        "x": 22,
+        "y": 369.8125,
+        "width": 276,
+        "height": 46
+      },
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    },
+    {
+      "version": "before",
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "settings": {
+        "x": 333.765625,
+        "y": 14,
+        "width": 79.234375,
+        "height": 44
+      },
+      "hunt": {
+        "x": 23,
+        "y": 746.8125,
+        "width": 384,
+        "height": 52
+      },
+      "build": {
+        "version": "1.0.0-rc.1",
+        "id": "1687883"
+      }
+    },
+    {
+      "version": "after",
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "settings": {
+        "x": 213.03125,
+        "y": 828,
+        "width": 65.28125,
+        "height": 44
+      },
+      "hunt": {
+        "x": 23,
+        "y": 724.8125,
+        "width": 384,
+        "height": 52
+      },
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    },
+    {
+      "studio": true,
+      "previewIsolated": true,
+      "breed": "boyd",
+      "territory": 13
+    }
+  ]
+}
