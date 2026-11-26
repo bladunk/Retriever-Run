@@ -130,7 +130,9 @@ const breed = collisionRequested ? inspectionBreed(true, flags.get('breed')) : l
 const campfire = createCampfire(diagnosticsRequested ? () => undefined : undefined)
 const campTransport = diagnosticsRequested ? null : createCampTransport()
 const camp = createWorldwideCamp(campTransport)
-const rankedCamp = createRankedCamp(campTransport, camp, { safe: () => mode !== 'running' && !document.hidden })
+if (!campTransport) performanceProbe?.operation('worldwide-config', 'unconfigured')
+const rankedCamp = createRankedCamp(campTransport, camp, { safe: () => mode !== 'running' && !document.hidden,
+  onStatus: performanceProbe ? (operation, status) => performanceProbe.operation('worldwide-' + operation, status) : undefined })
 ui.game.toggleAttribute('data-practice', diagnosticsRequested)
 if (previewRegion) document.querySelector('.practice-status').textContent = 'Territory preview · progress disabled'
 if (!diagnosticsRequested) restoreEnrollment(lodge, camp)
@@ -999,7 +1001,7 @@ function reportRankedResult() {
     if (mode !== 'over' || current !== runStatistics) return
     if (receipt.status === 'ok' || receipt.status === 'duplicate') {
       const records = (receipt.improved ?? []).map(key => rankedMetrics[key]).filter(Boolean)
-      summary.textContent = records.length ? 'Worldwide best · ' + records.join(', ') : 'Worldwide hunt verified'
+      summary.textContent = records.length ? 'New Worldwide personal best · ' + records.join(', ') : 'Worldwide hunt verified'
       const honors = verifiedHonorNames(receipt.honors ?? [])
       detail.textContent = [summary.textContent, ...honors].join(' · ')
       if (honors.length) {
@@ -1010,6 +1012,10 @@ function reportRankedResult() {
       }
     } else if (['invalid_run', 'invalid_ticket', 'expired'].includes(receipt.status)) {
       summary.textContent = detail.textContent = 'Worldwide result ineligible · Local record saved'
+    } else if (receipt.status === 'verifier_missing' || receipt.status === 'schema_missing') {
+      detail.textContent = 'Worldwide verification is awaiting server configuration. Your eligible result is queued.'
+    } else if (receipt.status === 'reconnect' || receipt.status === 'auth_required') {
+      detail.textContent = 'Reconnect your Worldwide identity from Competitive profile. Your eligible result is queued.'
     }
   })
 }

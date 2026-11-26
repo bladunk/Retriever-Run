@@ -58,11 +58,9 @@ function paintProgress({ complete, received, total, group, retrying }) {
 function networkUI() {
   online.disabled = !navigator.onLine || Boolean(task)
   const hint = select('local-status')
-  hint.hidden = navigator.onLine && productionSession.rankedRulesetAvailable &&
-    (productionSession.prepared() || !import.meta.env.PROD)
+  hint.hidden = navigator.onLine && (productionSession.prepared() || !import.meta.env.PROD)
   hint.textContent = !navigator.onLine ? 'Offline · Solo hunts and career progress are available.'
-    : productionSession.rankedRulesetAvailable ? 'Local play · Save game content to enter Worldwide runs.'
-      : 'This course plays locally. Previous Worldwide standings are still available.'
+    : 'Prepare the game files to enter ranked hunts.'
 }
 
 function openScreen() {

@@ -85,7 +85,11 @@ test('Phase 09 migrations impose PostgreSQL role, ownership and namespace restri
     assert.ok(first.honors.includes('camp-retrieves-1'))
     assert.deepEqual((await board(null)).rows.map(row => row.nickname),['Marsh Runner','Cedar Scout'])
     assert.equal((await board(two)).rivals[0].rank,1)
+    assert.equal((await board(two)).total_ranked,2)
+    assert.equal((await board(two)).percentile,0)
+    assert.equal((await board(one)).percentile,100)
     assert.equal((await board(null)).mine,null)
+    assert.equal((await board(null)).percentile,null)
     assert.equal((await board(null)).rivals.length,0)
     const second = await award(two,{score:2500,duration:2800,distance:30,retrieves:1,combo:4})
     assert.deepEqual(second.improved,['score'])
@@ -153,5 +157,24 @@ test('Phase 09 migrations impose PostgreSQL role, ownership and namespace restri
     assert.equal((await board(one)).mine.rank,1)
     assert.equal((await social(two,'profile')).status,'profile_required')
     assert.equal((await as(null,null,'select count(*)::int as n from auth.users')).rows[0].n,3)
+  })
+
+  await t.test('the public list ends at 100 and the signed-in rank and population include positions below it', async () => {
+    // Synthetic rows exercise pagination only in this disposable PostgreSQL engine.
+    await as(null,null,`with generated as (select gen_random_uuid() id, n from generate_series(1,105) n),
+      new_users as (insert into auth.users (id) select id from generated returning id),
+      new_players as (insert into retriever_camp.players (player_id,nickname,renamed_at)
+        select g.id,'QA Rank ' || g.n,statement_timestamp() from generated g join new_users u on u.id=g.id returning player_id)
+      insert into retriever_camp.ranked_bests (season,metric,player_id,value,recorded_at)
+      select 'great-migration-1','score',g.id,3000+g.n,statement_timestamp()
+      from generated g join new_players p on p.player_id=g.id`)
+    const pages = await Promise.all([0,25,50,75].map(offset => board(one,'score',offset)))
+    assert.equal(pages[0].total_ranked,106)
+    assert.equal(pages[0].mine.rank,106)
+    assert.equal(pages[0].percentile,0)
+    assert.equal(pages[3].has_more,false)
+    const pageRows = pages.flatMap(page => page.rows)
+    assert.deepEqual(pageRows.map(row => row.rank),Array.from({length:100},(_,i) => i+1))
+    assert.equal(new Set(pageRows.map(row => row.nickname)).size,100)
   })
 })

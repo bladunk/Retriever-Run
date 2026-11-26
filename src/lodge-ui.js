@@ -397,6 +397,10 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
     onKennel(null)
     const player = lodge.current()
     const group = primaryRoom(room)
+    const title = ui['lodge-title']
+    if (group === 'overview') title.replaceChildren('The Outfitter’s ', node('em', 'Lodge'))
+    else title.textContent = { kennel: 'Kennel', journal: 'Field Journal', worldwide: 'Worldwide', board: 'Camp' }[group]
+    ui['close-lodge'].setAttribute('aria-label', 'Close ' + title.textContent)
     panel.setAttribute('aria-labelledby', 'tab-' + group)
     for (const tab of tabs) {
       if (tab.dataset.room === group) tab.setAttribute('aria-current', 'page')
@@ -430,7 +434,7 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
       if (isWorldwide) metric = rivalMetric
       content = isWorldwide ? [worldwideBoard(camp, player, metric, selectMetric, { onJoin, onStart })]
         : leaderboard(lodge, metric, selectMetric)
-    } else if (primaryRoom(room) === 'board') {
+    } else if (group === 'board' || group === 'worldwide') {
       content = [rankedRoom(room, rankedCamp, camp, player, { start: onStart, navigate: selectRoom, onJoin, onErase })]
     } else if (room === 'kennel') {
       ({ content, stage } = kennelRoom(lodge, onAppearance, inspectDogs, breed => {
@@ -506,7 +510,7 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
   ui['camp-hunt'].addEventListener('click', () => dialog.close())
 
   function onConnectivity() {
-    if (dialog.open && primaryRoom(room) === 'board' && room !== 'board') renderRoom()
+    if (dialog.open && ['worldwide', 'friends', 'private-camps', 'camp-profile', 'camp-archives'].includes(room)) renderRoom()
   }
   window.addEventListener('online', onConnectivity)
   window.addEventListener('offline', onConnectivity)

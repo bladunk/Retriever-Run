@@ -2,7 +2,11 @@
 
 ## Resume here
 
-- Phase 09 is at owner review in `codex/retriever-run-phase-09`, based on the approved Phase 08 merge `3d4ce2f`. The baseline Pages build was `1.0.0-phase.8 · 93cecaa`. Phase 08’s native iPhone acceptance remains open. [Phase 08 report](PHASE_08_REPORT.md)
+- The Worldwide owner directive is ready for review in [draft PR #38](https://github.com/bladunk/Retriever-Run/pull/38). Main has the original Phase 09 merge `7137b60`. Worldwide is now a direct primary destination, with Camp's social functions separate.
+- The Pages public ranking endpoint returned PGRST202. Applying the owner-reviewed consolidated SQL and configuring the hosted verifier remain owner operations. The real local Supabase run verified three identities, rank replacement, restart persistence and reconnect. [Follow-up report](PHASE_09_REPORT.md#dedicated-worldwide-follow-up) · [Copy-ready migration](../../supabase/ops/phase-nine-install.sql) · [Mobile review](evidence/phase-09/worldwide/README.md)
+
+
+- The original Phase 09 was merged from `codex/retriever-run-phase-09`, based on the approved Phase 08 merge `3d4ce2f`. The baseline Pages build was `1.0.0-phase.8 · 93cecaa`. Phase 08’s native iPhone acceptance remains open. [Phase 08 report](PHASE_08_REPORT.md)
 - The new Great Migration 1 competition has replay-verified results, five boards, consensual friends, private Camps and server-issued awards. Review build `1.0.0-phase.9 · 63116ab` uses closed-by-default migrations. Release operations and existing saves are independent. [Draft PR #37](https://github.com/bladunk/Retriever-Run/pull/37) · [Phase 09 report](PHASE_09_REPORT.md) · [Owner operations](PHASE_09_DEPLOYMENT.md)
 - The next review work is isolated hosted Supabase, native iPhone acceptance and owner approval. Phase 08B is the next major production phase. The production launch and any approved reset remain assigned to Phase 10. [Final visual backlog](FINAL_VISUAL_BACKLOG.md)
 

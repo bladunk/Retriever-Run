@@ -2,6 +2,31 @@
 
 Phase 09 adds new tables and functions alongside the existing Camp API. The migration seeds the new competition **closed**. This document describes owner operations after review. The Phase 09 review used PGlite, Node, Deno tooling and fixture browser requests. No hosted Supabase project was used for writes.
 
+## Resolve the live PGRST202
+
+The Phase 09 Pages build returned HTTP 404 and PostgREST `PGRST202` for the real `rr_ranked_board` call using the deployed publishable configuration. The legacy `rr_camp_season` probe also returned `PGRST202`. The owner must confirm the project selected in SQL Editor is the same HTTPS project configured under the repository's `SUPABASE_URL` GitHub Actions variable. The existing `SUPABASE_PUBLISHABLE_KEY` remains a publishable key. No service role key goes in GitHub Actions variables or in the PWA.
+
+### Inspect before applying SQL
+
+Run the following read-only query in the intended project's SQL Editor. Keep the database backup described below available.
+
+```sql
+select
+  to_regclass('retriever_camp.players') as base_players,
+  to_regprocedure('retriever_camp.caller()') as base_caller,
+  to_regclass('retriever_camp.ranked_control') as ranked_control,
+  to_regclass('retriever_camp.private_camps') as private_camps,
+  to_regprocedure('public.rr_ranked_board(text,integer,text,uuid)') as ranked_board;
+```
+
+1. If both base values are null, apply the [original Camp base migration](../../supabase/migrations/202611220001_worldwide_camp.sql) first. The Worldwide fix requires the base player table and Auth caller helper. The older Rivals and Season One migrations are optional for this repair. They support legacy archives independently.
+2. If the two base values exist and the three Phase 09 values are null, open the [single consolidated install script](../../supabase/ops/phase-nine-install.sql), copy its entire contents and run it in SQL Editor as one query. It installs the replay tables and grants, private Camp/friend functions, and ranking API updates in one transaction, then asks PostgREST to refresh its schema. Ranked issuance defaults to closed.
+3. If some Phase 09 objects already exist, apply only missing [ranked](../../supabase/migrations/202611250001_verified_camp.sql), [social](../../supabase/migrations/202611250002_camp_social.sql) or [board/profile](../../supabase/migrations/202611250003_ranked_board.sql) files in that order, then apply the safe [rank summary replacement](../../supabase/migrations/202611260001_worldwide_rank_summary.sql). Applying the whole consolidated script over mixed objects would stop and roll back the transaction.
+4. If the ranking function already exists but the API still returns `PGRST202`, check that `public` is exposed in the Supabase Data API configuration and `retriever_camp` is private. Run the [verification query](../../supabase/ops/phase-nine-verify.sql), then send `notify pgrst, 'reload schema';` in SQL Editor. Wait for the schema cache to refresh and use Refresh in Worldwide. Verify that the API returns status `ok`, course `migration-30-phase-05`, `open=false` when still in launch review, and the category count. A fresh namespace returns zero ranks. Existing legitimate ranks should keep their actual count.
+5. Install the packaged `verify-hunt` Edge entry using the instructions below in an isolated review project before arranging hosted acceptance. SQL alone exposes rankings and keeps issuance closed. Signed hunt verification requires the function. Opening the production namespace requires separate approval under the Phase 10 plan.
+
+The combined script contains additive setup and the public summary replacement. It neither clears records nor changes the ranked open flag after initialization. For rollback, keep records and APIs available, stop new tickets with the existing closed control, and select the previous approved app build if needed. Keep the original ranking and Auth namespaces separate.
+
 ## Prerequisites and application order
 
 1. Verify you are in the intended Supabase project. Keep `retriever_camp` out of the exposed Data API schema list. Enable anonymous sign-in using the existing Auth configuration. Review Supabase Auth safeguards before opening public competition. Keep keys, DB passwords, backups, auth data and connection strings out of repository history and screenshots.

@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { createRankedCamp, verifiedHonorIds, verifiedHonorRequirements } from '../src/ranked-camp.js'
 import { recordRankedActions, verifyRankedReplay, lastRankedTick } from '../src/ranked-replay.js'
 import { honors, localHonors } from '../src/field-honors.js'
+import { createCampTransport } from '../src/camp-transport.js'
 
 const course = 'migration-30-phase-05'
 const season = 'great-migration-1'
@@ -73,4 +74,18 @@ test('the 25 stable Camp Honor IDs remain outside all local award and Master Hun
   assert.equal(verifiedHonorIds.size,15)
   assert.equal(Object.keys(verifiedHonorRequirements).length,15)
   assert.ok([...verifiedHonorIds].every(id => camp.some(honor => honor.id === id && !honor.qualifies)))
+})
+
+test('Worldwide distinguishes an unavailable RPC from an empty board and signed-out standings', async () => {
+  let rpcError = { code:'PGRST202' }
+  const transport = createCampTransport({ url:'https://isolated.example',key:'fixture' }, {
+    loadSdk: async () => ({ createClient: () => ({ auth: { getSession: async () => ({ data:{ session:null } }) },
+      rpc: async () => rpcError ? { error:rpcError } : { data:{ status:'ok',rows:[] } } }) }),
+  })
+  const args = { p_metric:'score',p_scope:'worldwide' }
+  assert.deepEqual(await transport.rankedBoard(1,null,args),{status:'schema_missing'})
+  rpcError = null
+  assert.equal((await transport.rankedBoard(1,'inactive identity',args)).authStatus,'reconnect')
+  assert.deepEqual(await transport.rankedBoard(1,'inactive identity',{...args,p_scope:'friends'}),{status:'reconnect'})
+  assert.deepEqual((await transport.rankedBoard(1,null,args)).rows,[])
 })

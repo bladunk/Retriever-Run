@@ -46,7 +46,11 @@
 #title-milestone:not([hidden]) { display: inline; margin-inline-start: .4rem; }
 #game[data-mode="title"] #running-version { margin: 0; }
 
-#lodge .lodge-tabs { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+#title-rooms { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.55fr) minmax(0, .95fr); }
+#title-rooms button { min-width: 0; font-size: clamp(.69rem, 2.7vw, .82rem); }
+#lodge .lodge-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.45fr) minmax(0, .95fr); }
+#lodge .lodge-tabs button { min-width: 0; font-size: clamp(.63rem, 2.6vw, .78rem); min-height: var(--field-control); }
+.ranking-icon { display: block; color: var(--field-gold); font-size: .88rem; line-height: 1; }
 .lodge-tabs button[aria-current="page"] {
   background: #44382b;
   box-shadow: inset 0 -2px var(--field-gold);

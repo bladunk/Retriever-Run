@@ -1,4 +1,5 @@
 const config = typeof __CAMP_PUBLIC_CONFIG__ === 'undefined' ? null : __CAMP_PUBLIC_CONFIG__
+const rpcMissing = error => ['PGRST202', '42883'].includes(error.cause?.code)
 
 export function fetchForCamp(fetcher, timeoutMs = 6500) {
   return async (resource, init = {}) => {
@@ -90,15 +91,27 @@ export function createCampTransport(settings = config, {
     namespace,
     async rankedBoard(profile, owner, args) {
       let membership
+      let authStatus
       try { if (owner) membership = await asMember(profile, owner) }
-      catch { /* Public rankings may still be reachable during an Auth outage. */ }
-      if (!membership && args.p_scope !== 'worldwide') return { status: 'reconnect' }
-      return rpc(membership?.api ?? await client(), 'rr_ranked_board', args)
+      catch { authStatus = 'auth_unavailable' }
+      if (owner && !membership) authStatus ??= 'reconnect'
+      if (!membership && args.p_scope !== 'worldwide') return { status: authStatus ?? 'profile_required' }
+      try {
+        const result = await rpc(membership?.api ?? await client(), 'rr_ranked_board', args)
+        return { ...result, authStatus }
+      } catch (error) {
+        if (rpcMissing(error)) return { status: 'schema_missing' }
+        throw error
+      }
     },
     async rankedTicket(profile, owner, course) {
       const membership = await asMember(profile, owner)
       if (!membership) return { status: 'reconnect' }
-      return rpc(membership.api, 'rr_ranked_ticket', { p_course: course })
+      try { return await rpc(membership.api, 'rr_ranked_ticket', { p_course: course }) }
+      catch (error) {
+        if (rpcMissing(error)) return { status: 'schema_missing' }
+        throw error
+      }
     },
     async rankedVerify(profile, owner, body) {
       const membership = await asMember(profile, owner)
@@ -107,8 +120,10 @@ export function createCampTransport(settings = config, {
         method: 'POST', headers: { Authorization: 'Bearer ' + membership.active.access_token,
           apikey: settings.key, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
       })
-      if (!response.ok) return { status: response.status === 429 ? 'rate_limited' : 'unavailable' }
-      return response.json()
+      if (!response.ok) return { status: { 401: 'auth_required', 403: 'auth_required', 404: 'verifier_missing',
+        429: 'rate_limited' }[response.status] ?? 'unavailable' }
+      const result = await response.json()
+      return typeof result?.status === 'string' ? result : { status: 'unavailable' }
     },
     async rankedProfile(nickname) {
       return rpc(await client(), 'rr_ranked_profile', { p_nickname: nickname })

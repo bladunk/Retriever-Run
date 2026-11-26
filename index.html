@@ -82,12 +82,15 @@
           <progress id="title-xp" aria-label="Progress toward the next career level"></progress>
         </div>
         <p id="record" class="record" hidden></p>
-        <button id="primary" class="primary" type="button" disabled>Preparing trail…</button>
-        <nav id="title-rooms" class="title-rooms" aria-label="Camp sections">
+        <nav aria-label="Primary destinations">
+          <button id="primary" class="primary" type="button" disabled>Preparing trail…</button>
+          <div id="title-rooms" class="title-rooms">
           <button id="open-lodge" type="button">Lodge</button>
           <button type="button" data-entry="kennel">Kennel</button>
           <button type="button" data-entry="journal">Journal</button>
+          <button id="open-worldwide" data-entry="worldwide" type="button"><span class="ranking-icon" aria-hidden="true">🏆</span> Worldwide</button>
           <button type="button" data-entry="board">Camp</button>
+          </div>
         </nav>
         <button id="tutorial-entry" class="text-action" type="button">How to hunt</button>
         <p id="title-milestone" class="control-hint" hidden></p>
@@ -269,11 +272,12 @@
           </form>
         </div>
       </details>
-      <nav class="lodge-tabs" aria-label="Camp sections">
+      <nav class="lodge-tabs" aria-label="Primary destinations">
         <button id="camp-hunt" type="button">Hunt</button>
         <button id="tab-overview" type="button" data-room="overview">Lodge</button>
         <button id="tab-kennel" type="button" data-room="kennel">Kennel</button>
         <button id="tab-journal" type="button" data-room="journal">Journal</button>
+        <button id="tab-worldwide" type="button" data-room="worldwide">Worldwide</button>
         <button id="tab-board" type="button" data-room="board">Camp</button>
       </nav>
       <label class="room-picker" id="room-picker">Room <select id="lodge-room"></select></label>

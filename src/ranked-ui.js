@@ -1,13 +1,22 @@
-import { node, number, meters, duration, rows } from './lodge-elements.js'
+import { node, number, meters, rows } from './lodge-elements.js'
 import { nameMessages } from './camp-ui.js'
 import { rankedMetrics, verifiedHonorNames } from './ranked-camp.js'
 
 const messages = {
   offline: 'You’re offline. Local hunts and records are available.',
   reconnect: 'Reconnect your Worldwide nickname from Competitive profile.',
+  auth_required: 'Your Worldwide session has expired. Reconnect from Competitive profile.',
+  auth_unavailable: 'Worldwide sign-in is temporarily unavailable. Public rankings may still be available.',
   profile_required: 'Join Worldwide Camp from Competitive profile to use this room.',
   closed: 'The new competition is closed until the production review. Local hunts are ready.',
   unavailable: 'Camp is temporarily unavailable. Your local progress is safe.',
+  schema_missing: 'The Worldwide database API needs its migration or a schema refresh. Local hunts are available.',
+  verifier_missing: 'The online verifier is not configured. Your eligible result is queued.',
+  wrong_course: 'This course does not match the Worldwide ruleset. Check for a game update.',
+  wrong_version: 'The Worldwide ruleset does not match this build. Check for a game update.',
+  invalid_run: 'Worldwide rejected this result. Your local hunt was saved.',
+  invalid_ticket: 'This ticket cannot be verified. Your local hunt was saved.',
+  expired: 'This ranked ticket expired. Your local hunt was saved.',
   rate_limited: 'Too many requests recently. Try again later.',
   invalid_code: 'That code did not match an available invitation.',
   invalid_name: 'Use 3–20 characters, with letters or numbers at each end.',
@@ -19,8 +28,14 @@ const messages = {
 }
 const feedback = response => messages[response.status] ?? 'Camp could not complete that request.'
 const playedAt = new Intl.DateTimeFormat(undefined, { dateStyle: 'short', timeStyle: 'short' })
-const moveValue = (metric, value) => metric === 'distance' ? meters(value) :
-  metric === 'duration' ? duration(value / 1000) : number(value)
+function moveValue(metric, value) {
+  if (metric === 'duration') {
+    const minutes = Math.floor(value / 60_000)
+    const seconds = (value % 60_000 / 1000).toFixed(3)
+    return minutes ? minutes + ':' + seconds.padStart(6, '0') : seconds + ' s'
+  }
+  return metric === 'distance' ? meters(value) : number(value)
+}
 
 function action(label, click, className) {
   const button = node('button', label, className)
@@ -86,9 +101,16 @@ function recordRows(records) {
 }
 
 function ranking(camp, player, scope, campId, onReady) {
-  const { section, status } = shell(scope === 'worldwide' ? 'Worldwide rankings' : 'Verified standings')
+  const worldwide = scope === 'worldwide'
+  const { section, status } = shell(worldwide ? 'Rankings' : 'Verified standings')
   const version = node('p', '', 'room-note ranked-version')
+  const population = node('p', '', 'room-note')
   const picker = select('Ranking category')
+  if (worldwide) {
+    const future = node('option', 'Career Legends · unavailable')
+    future.disabled = true
+    picker.append(future)
+  }
   const own = node('section', null, 'own-ranking')
   const rivals = node('section', null, 'ranked-rivals')
   const list = node('ol', null, 'camp-board worldwide-roster')
@@ -97,9 +119,12 @@ function ranking(camp, player, scope, campId, onReady) {
   let request = 0
   let profileRequest = 0
   const next = action('Show 25 more', () => void load(offset))
-  const retry = action('Refresh rankings', () => void load(0, true))
+  const retry = action('Refresh', () => void load(0, true))
+  retry.setAttribute('aria-label', 'Refresh rankings')
+  const toolbar = node('div', null, 'ranked-toolbar')
+  toolbar.append(picker, retry)
   next.hidden = true
-  section.append(version, picker, own, rivals, list, next, retry, profile)
+  section.append(version, toolbar, own, rivals, population, list, next, profile)
   picker.addEventListener('change', () => void load())
 
   function showProfile(nickname, button) {
@@ -125,8 +150,10 @@ function ranking(camp, player, scope, campId, onReady) {
       ++profileRequest
       profile.replaceChildren()
       own.replaceChildren()
+      delete own.dataset.nickname
       rivals.replaceChildren()
       list.replaceChildren()
+      population.textContent = ''
     }
     next.disabled = true
     status.textContent = 'Loading verified rankings…'
@@ -134,21 +161,25 @@ function ranking(camp, player, scope, campId, onReady) {
     if (stamp !== request || !section.isConnected) return
     next.disabled = false
     next.hidden = result.status !== 'ok' || !result.has_more || Boolean(result.stale)
-    if (result.status !== 'ok') { status.textContent = feedback(result); return }
     onReady?.(result)
+    if (result.status !== 'ok') { status.textContent = feedback(result); return }
     if (!from) {
-      version.textContent = 'Great Migration 1 · ' + (result.open ? 'Open' : 'Launch review') +
-        (result.as_of && Number.isFinite(Date.parse(result.as_of)) ? ' · Checked ' + playedAt.format(new Date(result.as_of)) : '')
-      version.title = result.course
-      if (result.mine) own.append(node('strong', 'Your rank #' + result.mine.rank),
-        node('p', 'Verified best · ' + moveValue(metric, result.mine.value), 'room-note'))
-      else if (scope === 'worldwide') own.append(node('p', 'No verified best in this category yet.', 'room-note'))
+      version.textContent = 'Great Migration 1 · ' + (result.open ? 'Open' : 'Launch review')
+      if (worldwide) version.append(node('small', result.course))
+      if (result.as_of && Number.isFinite(Date.parse(result.as_of))) version.append(node('small', 'Last synced ' + playedAt.format(new Date(result.as_of))))
+      if (worldwide && Number.isSafeInteger(result.total_ranked)) population.textContent = 'Worldwide top 100 · ' + number(result.total_ranked) + ' ranked'
+      if (result.mine) {
+        own.dataset.nickname = result.mine.nickname
+        own.append(node('strong', 'Your rank #' + result.mine.rank),
+          node('p', 'Verified best · ' + moveValue(metric, result.mine.value), 'room-note'))
+      }
+      else if (worldwide && !result.authStatus) own.append(node('p', 'No verified best in this category yet.', 'room-note'))
+      if (result.mine && Number.isFinite(result.percentile)) own.append(node('p', 'Ahead of ' + result.percentile + '% of other ranked players', 'room-note'))
       if (result.rivals.length) rivals.append(node('h4', 'Nearby rivals'))
       for (const rival of result.rivals) {
         const above = rival.rank < result.mine?.rank
         const gap = above ? rival.value - result.mine.value : result.mine.value - rival.value
-        const by = metric === 'duration' ? (gap / 1000).toFixed(2) + ' s' : moveValue(metric, gap)
-        const delta = gap === 0 ? 'Tied metric · record time breaks the tie' : by + (above ? ' ahead' : ' behind')
+        const delta = above ? moveValue(metric, gap + 1) + ' more to pass' : gap ? moveValue(metric, gap) + ' behind' : 'Tied best · later record'
         rivals.append(node('p', '#' + rival.rank + ' ' + rival.nickname + ' · ' + delta))
       }
     }
@@ -158,17 +189,19 @@ function ranking(camp, player, scope, campId, onReady) {
       onPage.add(item.nickname)
       const row = node('li')
       row.dataset.nickname = item.nickname
+      if (item.nickname === own.dataset.nickname) row.classList.add('your-run')
       const details = action(item.nickname, () => showProfile(item.nickname, details), 'ranked-player')
       row.append(node('span', '#' + number(item.rank), 'board-rank'), details,
         node('strong', moveValue(metric, item.value), 'board-score'))
       list.append(row)
     }
-    status.textContent = result.stale ? 'Showing the last downloaded standings.' :
+    status.textContent = result.stale ? (result.staleReason === 'offline' ? 'Offline. Showing the last downloaded standings.'
+      : 'Refresh failed. Showing the last downloaded standings.') : result.authStatus ? feedback({ status: result.authStatus }) :
       !list.children.length ? 'There are no verified records in this category yet.' : ''
     offset = from + 25
   }
   queueMicrotask(() => void load())
-  return section
+  return { section, refresh: () => load(0, true) }
 }
 
 function worldwide(camp, player, start, navigate) {
@@ -199,16 +232,17 @@ function worldwide(camp, player, start, navigate) {
     if (!region.isConnected) return
     pending.disabled = false
     pending.hidden = !camp.pending(player.id)
+    if (response.status === 'ok' || response.status === 'duplicate') await board.refresh()
     state.textContent = response.status === 'ok' || response.status === 'duplicate'
       ? 'Verified results synchronized.' : response.status === 'pending' ? 'Verification is still pending.' : feedback(response)
   })
   pending.hidden = !camp.pending(player.id)
   const board = ranking(camp, player, 'worldwide', null, result => {
-    ranked.hidden = !result.open || !camp.member(player.id) || Boolean(result.stale)
-    state.textContent = result.stale ? '' : result.open ?
+    ranked.hidden = !result.open || !camp.member(player.id) || Boolean(result.stale || result.authStatus)
+    state.textContent = result.stale || result.status !== 'ok' || result.authStatus ? '' : result.open ?
       (camp.member(player.id) ? 'Ranked entry is optional. Ordinary hunts stay local.' : 'Join in Competitive profile to enter.') : messages.closed
   })
-  region.append(board, state, ranked, pending, action('Competitive profile', () => navigate('camp-profile')))
+  region.append(board.section, state, ranked, pending, action('Competitive profile', () => navigate('camp-profile')))
   return region
 }
 
@@ -233,7 +267,7 @@ function friends(camp, player) {
         () => void change('friend_remove', { target: friend.key })))
       list.append(entry)
     }
-    standings.replaceChildren(ranking(camp, player, 'friends'))
+    standings.replaceChildren(ranking(camp, player, 'friends').section)
   }
   async function change(command, options) {
     const result = await camp.social(player.id, command, options)
@@ -297,7 +331,7 @@ function privateCamps(camp, player) {
         () => mutate('camp_delete', { camp: campId }))))
     else detail.append(action('Leave Camp', () => ask(detail, 'Leave this Camp?',
       () => mutate('camp_leave', { camp: campId }))))
-    detail.append(ranking(camp, player, 'camp', campId))
+    detail.append(ranking(camp, player, 'camp', campId).section)
   }
 
   async function mutate(command, data) {
@@ -365,8 +399,8 @@ function competitiveProfile(camp, legacy, player, onJoin, onErase) {
 
 export function rankedRoom(room, camp, legacy, player, { start, navigate, onJoin, onErase }) {
   if (!camp.available) {
-    const { section, status } = shell('Worldwide Camp')
-    status.textContent = 'Online Camp is unavailable on this build. Local records and hunts are ready.'
+    const { section, status } = shell(room === 'worldwide' ? 'Rankings' : 'Online Camp')
+    status.textContent = 'This build has no Worldwide connection configured. Local hunts and records are ready.'
     return section
   }
   if (room === 'friends') return friends(camp, player)

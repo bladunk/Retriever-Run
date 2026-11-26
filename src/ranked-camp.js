@@ -3,7 +3,7 @@ import { honorById } from './field-honors.js'
 import { rankedCourse, rankedVersion, validRankedTrace } from './ranked-replay.js'
 
 export const rankedMetrics = Object.freeze({
-  score: 'Hunt score', duration: 'Hunt duration', distance: 'Distance', retrieves: 'Retrieves', combo: 'Treat combo',
+  score: 'Highest Score', distance: 'Longest Distance', duration: 'Longest Hunt', retrieves: 'Most Retrieves', combo: 'Longest Combo',
 })
 export const verifiedHonorIds = new Set(['camp-first-hunt', 'camp-all-boards', 'camp-private-camp',
   ...['score', 'distance', 'retrieves'].flatMap(metric => [1, 2, 3, 4].map(tier => 'camp-' + metric + '-' + tier))])
@@ -24,10 +24,13 @@ const queueLimit = 3
 const validRow = row => Number.isSafeInteger(row?.rank) && row.rank > 0 && Number.isSafeInteger(row.value) && row.value > 0 &&
   campNickname(row.nickname) === row.nickname && row.nickname && Number.isFinite(Date.parse(row.recorded_at))
 const keepHonors = ids => Array.isArray(ids) ? [...new Set(ids.filter(id => verifiedHonorIds.has(id)))] : []
-const retryable = ['pending', 'unavailable', 'rate_limited', 'closed', 'reconnect', 'auth_required']
+const retryable = ['pending', 'unavailable', 'rate_limited', 'closed', 'reconnect', 'auth_required', 'verifier_missing', 'schema_missing']
+const diagnosticStates = new Set(['ok', 'duplicate', 'closed', 'offline', 'unavailable', 'profile_required', 'queue_full',
+  'auth_unavailable', 'auth_required', 'reconnect', 'schema_missing', 'verifier_missing', 'wrong_course', 'wrong_version',
+  'pending', 'invalid_run', 'invalid_ticket', 'expired', 'rate_limited'])
 
 export function createRankedCamp(transport, legacy, { store = () => globalThis.localStorage,
-  online = () => globalThis.navigator?.onLine !== false, now = Date.now, safe = () => true } = {}) {
+  online = () => globalThis.navigator?.onLine !== false, now = Date.now, safe = () => true, onStatus } = {}) {
   const prefix = 'retriever-run.camp.v2.' + transport?.namespace + '.'
   const pending = new Map()
   const boards = new Map()
@@ -35,6 +38,17 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
   const awards = new Map()
   const member = legacy.member
   let syncing
+  let boardEpoch = 0
+
+  function invalidateBoards() {
+    boardEpoch++
+    boards.clear()
+  }
+
+  function note(operation, result) {
+    if (onStatus) onStatus(operation, diagnosticStates.has(result.status) ? result.status : 'unavailable')
+    return result
+  }
 
   function restore() {
     if (!transport) return
@@ -92,6 +106,7 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
       if (!online() || !safe() || item.retryAt > now()) return { status: 'pending' }
       try { result = await transport.rankedVerify(item.profile, item.owner, item.body) }
       catch { result = { status: 'unavailable' } }
+      note('verify', result)
       if (member(item.profile)?.identity !== item.owner) continue
       if (retryable.includes(result.status)) {
         item.retryAt = now() + cacheTime
@@ -99,7 +114,7 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
       }
       if (result.status === 'ok' || result.status === 'duplicate') {
         remember(item.profile, item.owner, result.honors)
-        boards.clear()
+        invalidateBoards()
       }
       forget(item.body.ticket)
     }
@@ -119,6 +134,41 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
     return attempt
   }
 
+  async function board(profile, metric, scope = 'worldwide', camp = null, offset = 0, refresh = false) {
+    if (!transport?.rankedBoard) return note('board', { status: 'schema_missing' })
+    const owner = member(profile)?.identity
+    const key = JSON.stringify([owner, metric, scope, camp, offset])
+    const saved = boards.get(key)
+    if (!online()) {
+      note('board', { status: 'offline' })
+      return saved ? { ...saved.data, stale: true, staleReason: 'offline' } : { status: 'offline' }
+    }
+    if (!refresh && saved && now() - saved.at < cacheTime) return saved.data
+    const epoch = boardEpoch
+    const readKey = epoch + '/' + key
+    if (reading.has(readKey)) return reading.get(readKey)
+    const promise = (async () => {
+      try {
+        const data = await transport.rankedBoard(profile, owner, { p_metric: metric, p_offset: offset, p_scope: scope, p_camp: camp })
+        if (owner !== member(profile)?.identity) return note('board', { status: 'reconnect' })
+        if (epoch !== boardEpoch) return board(profile, metric, scope, camp, offset, true)
+        if (data.status !== 'ok') return note('board', data)
+        if (data.season !== rankedVersion || data.course !== rankedCourse) return note('board', { status: 'wrong_version' })
+        const clean = { ...data, rows: data.rows.filter(validRow).slice(0, pageLimit),
+          mine: validRow(data.mine) ? data.mine : null, rivals: data.rivals.filter(validRow).slice(0, 2) }
+        if (boards.size >= 24) boards.delete(boards.keys().next().value)
+        boards.set(key, { at: now(), data: clean })
+        note('board', { status: clean.authStatus ?? (clean.open ? 'ok' : 'closed') })
+        return clean
+      } catch {
+        note('board', { status: 'unavailable' })
+        return saved ? { ...saved.data, stale: true, staleReason: 'unavailable' } : { status: 'unavailable' }
+      }
+    })().finally(() => reading.delete(readKey))
+    reading.set(readKey, promise)
+    return promise
+  }
+
   restore()
 
   return {
@@ -133,12 +183,13 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
       if (count(profile) >= queueLimit) return { status: 'queue_full' }
       try {
         const ticket = await transport.rankedTicket(profile, owner, rankedCourse)
-        if (ticket.status !== 'ok') return ticket
-        if (ticket.season !== rankedVersion || ticket.course !== rankedCourse || !runIdPattern.test(ticket.id) ||
+        if (ticket.status !== 'ok') return note('ticket', ticket)
+        if (ticket.season !== rankedVersion || ticket.course !== rankedCourse) return note('ticket', { status: 'wrong_version' })
+        if (!runIdPattern.test(ticket.id) ||
           !Number.isInteger(ticket.seed) || ticket.seed < 0 || ticket.seed > 0xffffffff ||
-          !(Date.parse(ticket.expires) > now())) return { status: 'unavailable' }
-        return { ...ticket, owner, profile }
-      } catch { return { status: 'unavailable' } }
+          !(Date.parse(ticket.expires) > now())) return note('ticket', { status: 'unavailable' })
+        return note('ticket', { ...ticket, owner, profile })
+      } catch { return note('ticket', { status: 'unavailable' }) }
     },
     finish(permit, trace) {
       if (!permit || !validRankedTrace(trace)) return { status: 'invalid_run' }
@@ -152,29 +203,7 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
       try { store().setItem(prefix + 'hunt.' + id, JSON.stringify(item)) } catch { /* Keep the in-session submission. */ }
       return { status: 'pending', done: flush(permit.profile, id) }
     },
-    async board(profile, metric, scope = 'worldwide', camp = null, offset = 0, refresh = false) {
-      if (!transport?.rankedBoard) return { status: 'unavailable' }
-      const owner = member(profile)?.identity
-      const key = JSON.stringify([owner, metric, scope, camp, offset])
-      const saved = boards.get(key)
-      if (!online()) return saved ? { ...saved.data, stale: true } : { status: 'offline' }
-      if (!refresh && saved && now() - saved.at < cacheTime) return saved.data
-      if (reading.has(key)) return reading.get(key)
-      const promise = (async () => {
-        try {
-          const data = await transport.rankedBoard(profile, owner, { p_metric: metric, p_offset: offset, p_scope: scope, p_camp: camp })
-          if (data.status !== 'ok') return data
-          if (owner !== member(profile)?.identity || data.season !== rankedVersion) return { status: 'unavailable' }
-          const clean = { ...data, rows: data.rows.filter(validRow).slice(0, pageLimit),
-            mine: validRow(data.mine) ? data.mine : null, rivals: data.rivals.filter(validRow).slice(0, 2) }
-          if (boards.size >= 24) boards.delete(boards.keys().next().value)
-          boards.set(key, { at: now(), data: clean })
-          return clean
-        } catch { return saved ? { ...saved.data, stale: true } : { status: 'unavailable' } }
-      })().finally(() => reading.delete(key))
-      reading.set(key, promise)
-      return promise
-    },
+    board,
     async publicProfile(nickname) {
       if (!transport || !online()) return { status: 'offline' }
       try { return await transport.rankedProfile(nickname) } catch { return { status: 'unavailable' } }
@@ -188,7 +217,7 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
         if (owner !== member(profile)?.identity) return { status: 'reconnect' }
         if (data.status === 'ok') {
           if (action === 'profile') remember(profile, owner, data.honors, true)
-          else if (/^(camp|friend)_/.test(action) && action !== 'camp_detail') boards.clear()
+          else if (/^(camp|friend)_/.test(action) && action !== 'camp_detail') invalidateBoards()
         }
         return data
       } catch { return { status: 'unavailable' } }
@@ -203,7 +232,7 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
           for (const item of pending.values()) if (item.owner === owner) forget(item.body.ticket)
           remember(profile, owner, [], true)
           legacy.forget(profile, owner)
-          boards.clear()
+          invalidateBoards()
         }
         return result
       } catch { return { status: 'unavailable' } }
