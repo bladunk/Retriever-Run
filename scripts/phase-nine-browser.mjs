@@ -179,7 +179,6 @@ try {
   await state('running')
   await page.locator('#field-report').waitFor({ timeout:60_000 })
   await page.locator('#report-ranked').filter({ hasText:'Worldwide verification pending' }).waitFor()
-  await shot('pending-result')
   releaseVerification()
   try { await page.getByText('New Worldwide personal best',{ exact:false }).first().waitFor() }
   catch (error) {
