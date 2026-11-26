@@ -149,8 +149,9 @@ function ranking(camp, player, scope, campId, onReady) {
   toolbar.append(retry)
   next.hidden = true
   section.append(version, own, toolbar)
+  section.append(worldwide ? viewport : list)
   if (worldwide) section.append(node('p', 'Official rank follows verified score. Each column shows a separate personal best.', 'room-note'))
-  section.append(worldwide ? viewport : list, next, rivals, profile)
+  section.append(next, rivals, profile)
 
   function showProfile(nickname, button) {
     const stamp = ++profileRequest
@@ -199,7 +200,6 @@ function ranking(camp, player, scope, campId, onReady) {
         own.append(node('strong', 'Your rank #' + result.mine.rank),
           node('p', 'Verified best · ' + moveValue(metric, result.mine.value), 'room-note'))
       }
-      else if (worldwide && !result.authStatus) own.append(node('p', 'No verified score for this hunter yet.', 'room-note'))
       if (result.mine && Number.isFinite(result.percentile)) own.append(node('p', 'Ahead of ' + result.percentile + '% of other ranked players', 'room-note'))
       if (result.rivals.length) rivals.append(node('h4', 'Nearby rivals'))
       for (const rival of result.rivals) {
@@ -282,7 +282,10 @@ function worldwide(camp, player, start, navigate) {
     state.textContent = result.stale || result.status !== 'ok' || result.authStatus ? '' : result.open ?
       (camp.member(player.id) ? 'Ranked entry is optional. Ordinary hunts stay local.' : 'Join in Competitive profile to enter.') : messages.closed
   })
-  region.append(board.section, state, ranked, pending, action('Competitive profile', () => navigate('camp-profile')))
+  const links = node('div', null, 'worldwide-toolbar')
+  links.append(action('Competitive profile', () => navigate('camp-profile')),
+    action('Archived rankings', () => navigate('camp-archives')))
+  region.append(board.section, state, ranked, pending, links)
   return region
 }
 

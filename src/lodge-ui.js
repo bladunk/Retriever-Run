@@ -414,7 +414,7 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
       if (tab.dataset.room === group) tab.setAttribute('aria-current', 'page')
       else tab.removeAttribute('aria-current')
     }
-    ui['room-picker'].hidden = roomGroups[group].length < 2
+    ui['room-picker'].hidden = room === 'worldwide' || roomGroups[group].length < 2
     picker.replaceChildren(...roomGroups[group].map(key => {
       const option = node('option', labels[key])
       option.value = key

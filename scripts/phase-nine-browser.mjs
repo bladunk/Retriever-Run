@@ -133,7 +133,7 @@ try {
   await openWorld()
   assert.equal(await page.locator('#lodge-title').textContent(),'Worldwide')
   assert.equal(await page.locator('#tab-worldwide').getAttribute('aria-current'),'page')
-  await room('camp-profile')
+  await panel.getByRole('button',{name:'Competitive profile',exact:true}).tap()
   await panel.getByLabel('Public nickname').fill('Marsh Runner')
   await panel.getByRole('button',{name:'Save or join'}).tap()
   try { await waitText('Nickname saved') }
@@ -181,7 +181,12 @@ try {
   await page.locator('#report-ranked').filter({ hasText:'Worldwide verification pending' }).waitFor()
   await shot('pending-result')
   releaseVerification()
-  await page.getByText('New Worldwide personal best',{ exact:false }).first().waitFor()
+  try { await page.getByText('New Worldwide personal best',{ exact:false }).first().waitFor() }
+  catch (error) {
+    console.error(JSON.stringify({ receipt:verifiedReceipt?.status, ticks:verifiedInput?.ticks,
+      label:await page.locator('#report-ranked').textContent() }))
+    throw error
+  }
   assert.equal(verifiedReceipt.status,'ok')
   assert.deepEqual(verifiedReceipt.honors,['camp-first-hunt'])
   const self = await env.board(one)

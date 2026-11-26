@@ -149,11 +149,21 @@ try {
       } else if (state?.mode !== 'running') stamp += 40
       else if (qa.soak && state.elapsed < qa.soak.duration) {
         const replay = qa.soak
-        while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
-          window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
+        if (replay.precise) {
+          // Deliver the scripted input on its original simulation tick.
+          // The number of ticks between frames can vary while tiles stream.
+          const nextTick = () => replay.next < replay.inputs.length ? Math.round(replay.inputs[replay.next].at * 120) : Infinity
+          while (nextTick() <= state.ticks) {
+            window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
+          }
+          stamp += Math.min(15, nextTick() - state.ticks) * (1000 / 120)
+        } else {
+          while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
+            window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
+          }
+          const toNext = (replay.inputs[replay.next]?.at - state.elapsed) * 1000
+          stamp += replay.fast && toNext > 0 ? Math.max(16, Math.min(124, toNext)) : replay.fast ? 124 : 1000 / 30
         }
-        const toNext = (replay.inputs[replay.next]?.at - state.elapsed) * 1000
-        stamp += replay.fast && toNext > 0 ? Math.max(16, Math.min(124, toNext)) : replay.fast ? 124 : 1000 / 30
       } else if (state.distance < qa.limit) stamp += qa.advanceBy ?? 25
       else if (qa.limit < 0 && quality === 'low') stamp += .10
       const start = performance.now()
@@ -635,10 +645,13 @@ try {
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
     const seed = 7
     const inputs = guidedInputs(seed, duration)
-    await runAt(0, seed)
-    await page.evaluate(({ inputs, duration, fast }) => {
-      window.phaseThreeQA.soak = { inputs, duration, fast, next: 0, nextSample: 0, samples: [] }
-    }, { inputs, duration, fast: args.includes('fast') })
+    const precise = args.includes('precise')
+    if (precise) await openAt(0, seed)
+    else await runAt(0, seed)
+    await page.evaluate(({ inputs, duration, fast, precise }) => {
+      window.phaseThreeQA.soak = { inputs, duration, fast, precise, next: 0, nextSample: 0, samples: [] }
+    }, { inputs, duration, fast: args.includes('fast'), precise })
+    if (precise) await page.locator('#primary').tap()
     for (let checkpoint = Math.min(15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
       await page.waitForFunction(value => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
         window.retrieverDebug?.elapsed >= value, checkpoint, { timeout: 240_000 })
