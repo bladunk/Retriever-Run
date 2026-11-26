@@ -10,7 +10,7 @@ import { duration, rows, cards, node, number, meters, date } from './lodge-eleme
 import { migrationMap } from './lodge-map.js'
 import { completeMigrations, displayEquipment, earnedTrophies, lodgeProgress, lodgeRequirements, lodgeTiers, lodgeUpgrades,
   migrationStop, trophyLimit } from './lodge-progress.js'
-import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
+import { courseRuleset, legacyMigrationRuleset, localCourseRuleset } from './ruleset.js'
 import { fieldSpecies } from './wildlife-catalog.js'
 import { wildlifePortrait } from './wildlife-portrait.js'
 
@@ -284,7 +284,7 @@ function migration(player, lodge, navigate) {
   const next = action('→', () => move(stops.selectedIndex + 1), { 'aria-label': 'Next territory' })
   controls.append(previous, stops, next)
   const detail = node('article', null, 'career-ledger migration-details')
-  const records = lodge.personalEntries(player.id).filter(run => run.course === courseRuleset)
+  const records = lodge.personalEntries(player.id).filter(run => run.course === localCourseRuleset)
   function move(index) {
     stops.selectedIndex = index
     const stop = migrationStop(player,index)
@@ -389,7 +389,7 @@ function recordPanels(player, lodge) {
     ['Complete migrations', number(completeMigrations(player))],
   ]))
   const all = lodge.personalEntries(player.id)
-  const grouped = [[courseRuleset, 'Current Great Migration'], [legacyMigrationRuleset, 'Earlier Great Migration'], ['legacy-10', 'Original route']]
+  const grouped = [[localCourseRuleset, 'Current Great Migration'], [courseRuleset, 'Phase 05 Great Migration'], [legacyMigrationRuleset, 'Earlier Great Migration'], ['legacy-10', 'Original route']]
   const books = node('section', null, 'lodge-record-books')
   for (const [course, title] of grouped) {
     const selected = all.filter(entry => (entry.course ?? 'legacy-10') === course).sort((a,b) => b.score-a.score || a.id-b.id)

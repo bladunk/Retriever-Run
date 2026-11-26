@@ -10,7 +10,7 @@ const engine = args.includes('webkit') ? webkit : chromium
 const source = process.env.FIELD_SOURCE ?? '.'
 const fromSource = name => import(pathToFileURL(resolve(source, 'src', name + '.js')).href)
 const { expeditionRegions } = await fromSource('expedition')
-const { distanceAtTime, speedAtTime, courseStages, stageAt } = await fromSource('difficulty')
+const { distanceAtTime, speedAtTime, courseStages, stageAt, localDirector } = await fromSource('difficulty')
 const { advance, createCourse, newRun, reactionWindow } = await fromSource('runner')
 const { firstContact } = await fromSource('collision')
 const { tickSeconds } = await fromSource('timing')
@@ -44,7 +44,7 @@ const quality = args.find(arg => ['low','high','balanced','auto'].includes(arg))
 const results = []
 
 function rowsFor(seed, stop) {
-  const next = createCourse(seed)
+  const next = createCourse(seed, args.includes('raptor') ? localDirector : undefined)
   const rows = []
   for (let row = next(); row.time < stop; row = next()) rows.push(row)
   return rows
@@ -63,7 +63,7 @@ function guidedInputs(seed, duration, start = 0) {
   }
   if (start) Object.assign(run, { distance: start, elapsed: high, speed: speedAtTime(high) })
   const controls = createRunControls()
-  const course = createCourse(seed)
+  const course = createCourse(seed, args.includes('raptor') ? localDirector : undefined)
   const inputs = []
   const rows = []
   const hazards = []
@@ -198,7 +198,7 @@ try {
 
   async function openAt(distance, seed, sceneQuality = quality) {
     const breed = args.includes('boyd') ? 'boyd' : args.includes('pointer') ? 'pointer' : 'lab'
-    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + '&breed=' + breed + (args.includes('sight') ? '&sight=1' : ''),
+    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + '&course=' + (args.includes('raptor') ? 'raptor' : 'phase05') + '&breed=' + breed + (args.includes('sight') ? '&sight=1' : '') + (args.includes('resources') ? '&resources=1' : ''),
       { waitUntil: 'domcontentloaded' })
     if (await page.locator('#content-screen').isVisible()) {
       if (args.includes('offline')) {
@@ -639,6 +639,32 @@ try {
       if (reuse) assert.ok(samples.at(-1).retired.wildlifeModels.hits > 0, 'no decoded rigs reused')
       assert.equal(samples.at(-1).retired.hunt.id, 5)
     }
+  } else if (args.includes('restart-cycle')) {
+    const cycles = Number(args.find(argument => argument.startsWith('cycles='))?.slice(7) ?? 60)
+    assert.ok(Number.isInteger(cycles) && cycles >= 1 && cycles <= 100)
+    await openAt(0, 7)
+    const before = await page.evaluate(() => localStorage.getItem('retriever-run.record'))
+    const samples = []
+    for (let cycle = 0; cycle < cycles; cycle++) {
+      await page.evaluate(() => {
+        window.phaseThreeQA.soak = { inputs: [], duration: 12, fast: true, precise: true, next: 0, nextSample: 0, samples: [] }
+      })
+      await page.locator(cycle ? '#run-again' : '#primary').click()
+      await page.locator('#field-report').waitFor({ timeout: 45_000 })
+      const result = await page.evaluate(() => {
+        const p = window.retrieverPerformance()
+        return { hunt: p.hunt, restart: p.restart, restartTrace: p.restartTrace,
+          final: { geometries:p.geometries, textures:p.textures, programs:p.programs, tiles:p.residentTiles,
+            wildlife:p.wildlifeModels.resident, pool:p.trailPool },
+          contact:window.retrieverDebug.impact ?? window.retrieverDebug.contact }
+      })
+      samples.push(result)
+      if ((cycle + 1) % 10 === 0) console.log('Completed ' + (cycle + 1) + ' restart cycles')
+    }
+    assert.equal(await page.evaluate(() => localStorage.getItem('retriever-run.record')),before)
+    assert.equal(samples.at(-1).hunt.id,cycles)
+    assert.ok(samples.every(sample => sample.final.tiles <= 7 && sample.final.wildlife <= 2))
+    await writeFile(resolve(output, 'restart-cycles.json'), JSON.stringify({ seed:7, quality, cycles, samples }, null, 2))
   } else if (args.includes('soak')) {
     const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)

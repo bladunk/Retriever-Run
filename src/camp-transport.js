@@ -96,10 +96,19 @@ export function createCampTransport(settings = config, {
       catch { authStatus = 'auth_unavailable' }
       if (owner && !membership) authStatus ??= 'reconnect'
       if (!membership && args.p_scope !== 'worldwide') return { status: authStatus ?? 'profile_required' }
+      const api = membership?.api ?? await client()
       try {
         const worldwide = args.p_scope === 'worldwide'
-        const result = await rpc(membership?.api ?? await client(), worldwide ? 'rr_worldwide_standings' : 'rr_ranked_board',
-          worldwide ? { p_offset: args.p_offset ?? 0 } : args)
+        let result
+        if (worldwide) {
+          try {
+            result = await rpc(api, 'rr_worldwide_standings', { p_offset: args.p_offset ?? 0 })
+          } catch (error) {
+            if (!rpcMissing(error)) throw error
+            result = await rpc(api, 'rr_ranked_board', { ...args, p_metric: 'score' })
+            result = { ...result, scoresOnly: true }
+          }
+        } else result = await rpc(api, 'rr_ranked_board', args)
         return { ...result, authStatus }
       } catch (error) {
         if (rpcMissing(error)) return { status: 'schema_missing' }

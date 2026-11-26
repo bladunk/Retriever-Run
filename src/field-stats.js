@@ -24,7 +24,7 @@ export function deathCause(hazard) {
 
 export const hazardName = hazard => obstacles[hazard]?.name ?? 'Trail hazard'
 
-export function createRunStatistics(runId, onSkill = () => {}) {
+export function createRunStatistics(runId, onSkill = () => {}, course = courseRuleset) {
   const stats = Object.fromEntries(counters.map(key => [key, 0]))
   const hazards = new WeakMap()
   const standingBefore = {}
@@ -145,7 +145,7 @@ export function createRunStatistics(runId, onSkill = () => {}) {
     },
     preview(run) {
       const territory = regionAt(run.elapsed)
-      return { ...stats, jumpClears, course: courseRuleset, territoryKey: territory.key, distance: run.distance, duration: run.elapsed, score: score(run),
+      return { ...stats, jumpClears, course, territoryKey: territory.key, distance: run.distance, duration: run.elapsed, score: score(run),
         retrieves: run.retrieves, territory: territory.index + 1 }
     },
     finish(run, hazard) {

@@ -26,15 +26,13 @@ body { margin: 0; overflow: hidden; overscroll-behavior: none; }
   background: linear-gradient(180deg, #14191476, transparent 28%, transparent 69%, #13171097);
 }
 header {
-  position: absolute; z-index: 4; display: flex; align-items: center; justify-content: space-between;
+  position: absolute; z-index: 4; display: flex; align-items: center; justify-content: flex-end;
   top: max(12px, env(safe-area-inset-top)); left: max(19px, env(safe-area-inset-left)); right: max(19px, env(safe-area-inset-right));
   pointer-events: none;
 }
-.brand, .eyebrow, dt, .meter label, #conditions, #combo {
+.eyebrow, dt, .meter label, #conditions, #combo {
   text-transform: uppercase; letter-spacing: .15em; font-weight: 780;
 }
-.brand { font-size: .65rem; text-shadow: 0 1px 8px #10150f; }
-.brand span { color: var(--brass); margin-right: .44em; }
 .tools { display: flex; gap: 7px; pointer-events: auto; }
 button, select {
   color: inherit; font: inherit; cursor: pointer; touch-action: manipulation;
@@ -136,8 +134,6 @@ legend { color: var(--brass); font: 700 .82rem Georgia, serif; padding: 0 4px; }
     --gutter: 17px;
   }
   header { top: var(--top); left: var(--gutter); right: var(--gutter); }
-  .brand { font-size: .66rem; }
-  [data-mode="running"] .brand { visibility: hidden; }
   [data-mode="running"] header { justify-content: flex-end; }
   [data-mode="running"] .tools { gap: 5px; }
   [data-mode="running"] .tools button { padding: 0 10px; }

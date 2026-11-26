@@ -46,10 +46,7 @@
     <div class="boyd-title-art" aria-hidden="true"></div>
     <div class="vignette" aria-hidden="true"></div>
     <header>
-      <div class="brand"><span aria-hidden="true">◆</span> RETRIEVER RUN</div>
       <div class="tools">
-        <button id="music-toggle" type="button">Play music</button>
-        <button id="settings" type="button">Settings</button>
         <button id="pause" type="button" hidden>Pause</button>
       </div>
     </header>
@@ -92,7 +89,11 @@
           <button type="button" data-entry="board">Camp</button>
           </div>
         </nav>
-        <button id="tutorial-entry" class="text-action" type="button">How to hunt</button>
+        <div class="title-tools" aria-label="Hunt options">
+          <button id="tutorial-entry" class="text-action" type="button">How to hunt</button>
+          <button id="music-toggle" class="text-action" type="button">Play music</button>
+          <button id="settings" class="text-action" type="button">Settings</button>
+        </div>
         <p id="title-milestone" class="control-hint" hidden></p>
         <div id="pause-actions" class="title-rooms" hidden>
           <button id="pause-settings" type="button">Settings</button>

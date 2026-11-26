@@ -1,0 +1,22 @@
+{
+  "source": "Owner-provided physical iPhone Safari summary. Original per-frame export was not supplied for this run.",
+  "build": { "version": "1.0.0-rc.1", "id": "1687883" },
+  "session": {
+    "hunts": 3, "frames": 58870, "sampledGameplaySecondsApprox": 982, "averageFps": 60,
+    "presentationAverageMs": 16.68, "cpuAverageMs": 2.72,
+    "presentationOver20Ms": 1123, "presentationOver33_3Ms": 28, "presentationOver50Ms": 8,
+    "presentationMaxMs": 73, "cpuMaxMs": 55, "discardedSimulationSamples": 0,
+    "startupReadyMs": 688, "latestInternalRestartMs": 7,
+    "graphics": "auto", "detail": 2, "adaptiveChanges": 1, "residentTerrainTiles": 7,
+    "residentWildlifeRigs": 2, "peakTextures": 31, "peakGeometries": 142,
+    "farthestTerritory": "Canadian Boreal Forest",
+    "wildlifeRigged": 37, "wildlifeFallback": 16, "wildlifeBoneTexturesReleased": 3,
+    "atlas": { "width": 2560, "height": 2048, "estimatedRgbaMipBytes": 27962027 },
+    "longTasksSupported": false
+  },
+  "hunts": [
+    { "frames": 19437, "averageFps": 60, "averageCpuMs": 2.73, "worstPresentationMs": 68, "peakTextures": 30, "peakGeometries": 125 },
+    { "frames": 16811, "averageFps": 60, "averageCpuMs": 2.79, "worstPresentationMs": 68, "peakTextures": 31, "peakGeometries": 133 },
+    { "frames": 22622, "averageFps": 60, "averageCpuMs": 2.67, "worstPresentationMs": 73, "peakTextures": 30, "peakGeometries": 142 }
+  ]
+}

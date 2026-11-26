@@ -1,5 +1,6 @@
 import { disposeModel as disposeWildlifeModel } from './model-disposal.js'
 import * as T from 'three'
+import { clearGeometryUploader, uploadGeometry } from './gpu-preparation.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
 
@@ -26,7 +27,6 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
   let evictions = 0
   let lastRequested = ''
   const limit = 2
-  let upload
 
   function preparation(model) {
     const textures = new Set()
@@ -70,6 +70,11 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
       if (id === 'pheasant') actions.Fly = actions['Take 001']
       const model = { root, mix, scale, actions }
       model.warmup = preparation(model)
+      if (probe) for (const mesh of model.warmup.shades) {
+        probe.geometry(mesh.geometry, 'Wildlife / ' + id + ' / ' + mesh.name)
+        for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material])
+          probe.material(material, 'Wildlife / ' + id)
+      }
       probe?.operation('wildlife-rig-setup', id, setup)
       if (wanted.includes(id)) decoded.set(id, model)
       else release(id, model)
@@ -99,33 +104,6 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
     })
   }
 
-  function uploadGeometry(renderer, geometry) {
-    // A real indexed draw uploads the geometry through Three's resource
-    // manager. Share one tiny target and omit the wildlife material and rig.
-    if (!upload) {
-      const target = new T.WebGLRenderTarget(1, 1, { depthBuffer: false })
-      const scene = new T.Scene()
-      const camera = new T.Camera()
-      const mesh = new T.Mesh(undefined, new T.MeshBasicMaterial({ colorWrite: false, depthWrite: false }))
-      mesh.frustumCulled = false
-      scene.add(mesh)
-      upload = { target, scene, camera, mesh }
-    }
-    const { mesh, scene, camera, target } = upload
-    const previousTarget = renderer.getRenderTarget()
-    const { start, count } = geometry.drawRange
-    geometry.setDrawRange(start, Math.min(3, count))
-    mesh.geometry = geometry
-    try {
-      renderer.setRenderTarget(target)
-      renderer.render(scene, camera)
-    } finally {
-      renderer.setRenderTarget(previousTarget)
-      mesh.geometry = null
-      geometry.setDrawRange(start, count)
-    }
-  }
-
   return {
     retain(ids) {
       wanted = ids
@@ -148,10 +126,8 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
       const work = model?.warmup
       if (work && !work.pending && !work.shaderFailed && work.geometry === work.geometries.length) return model
     },
-    invalidateGPU() {
-      upload?.target.dispose()
-      upload?.mesh.material.dispose()
-      upload = undefined
+    invalidateGPU(renderer) {
+      clearGeometryUploader(renderer)
       for (const model of decoded.values()) model.warmup = preparation(model)
     },
     warm(renderer, camera, scene, activeModel) {
@@ -170,6 +146,7 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
         if (work.skeleton < work.skeletons.length) {
           const skeleton = work.skeletons[work.skeleton++]
           if (!skeleton.boneTexture) skeleton.computeBoneTexture()
+          probe?.texture(skeleton.boneTexture, 'Wildlife / ' + id + ' / bones')
           renderer.initTexture(skeleton.boneTexture)
           probe?.operation('wildlife-warm-skeleton', id, started)
           return

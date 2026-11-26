@@ -6,7 +6,7 @@ import { careerStanding as oldStanding, legacyLevel, normalizeCareer as normaliz
 import { journalIssues, reviewSavedRank } from './career-integrity.js'
 import { expeditionRegions, migrationSecondsByTerritory, regionAt, territorySeconds } from './expedition.js'
 import { commitWildlife, normalizeWildlife } from './wildlife-journal.js'
-import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
+import { migrationCourse } from './ruleset.js'
 import { defaultGear, kennelCatalog, legacyGear, ownedGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 import { advanceFieldwork, awardFieldHonors, masterHunterChecks, normalizeProgression, qualifyBoyd } from './progression.js'
 import { lodgeChanges, lodgeProgress, normalizeLodgeDisplay, recordLodgeGear, trophyFor, trophyLimit } from './lodge-progress.js'
@@ -140,7 +140,7 @@ function normalizeSave(raw, practice) {
   for (const item of Array.isArray(raw?.entries) ? raw.entries : []) {
     if (!count(item?.id) || !known.has(item.player) || !validDate(item.date)) continue
     const fields = Object.fromEntries([...metrics, 'duration', ...counters].map(key => [key, measure(item[key])]))
-    const current = item.course === courseRuleset || item.course === legacyMigrationRuleset
+    const current = migrationCourse(item.course)
     const place = current ? regionAt(fields.duration).index + 1 : Math.min(10, Math.floor(fields.duration / territorySeconds) + 1)
     if (count(item.territory) === place) {
       fields.territory = place
@@ -253,8 +253,8 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       player.lodgeDisplay.pins = prior
       return false
     },
-    beginRun(onSkill) {
-      const tracker = createRunStatistics(save.nextRun++, onSkill)
+    beginRun(onSkill, course) {
+      const tracker = createRunStatistics(save.nextRun++, onSkill, course)
       liveTrackers.add(tracker)
       return tracker
     },

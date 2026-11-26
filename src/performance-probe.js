@@ -46,7 +46,13 @@ function distribution(values, count) {
     average: round(samples.reduce((sum, ms) => sum + ms, 0) / n) }
 }
 
-export function createPerformanceProbe(now = () => performance.now()) {
+export function createPerformanceProbe(now = () => performance.now(), traceResources = false) {
+  const tagged = new WeakSet()
+  const navigationMark = globalThis.performance?.getEntriesByName('retriever-module-request')[0]
+  const startup = { moduleRequestMs: navigationMark ? round(navigationMark.startTime) : null, moduleMs: round(now()) }
+  let restartTrace
+  let awaitingNext
+
   const wallTimes = new Float32Array(windowSize)
   const cpuTimes = new Float32Array(windowSize)
   const presented = new Float32Array(windowSize)
@@ -85,15 +91,72 @@ export function createPerformanceProbe(now = () => performance.now()) {
     }
   }
 
+  // These hooks identify CPU-side submission to WebGL. A callback is not
+  // a timer for GPU completion. Full resource tracing is separately opt-in.
+  function geometry(resource, label) {
+    if (!traceResources || tagged.has(resource)) return
+    tagged.add(resource)
+    const attribute = resource.getAttribute('position')
+    const buffer = attribute?.isInterleavedBufferAttribute ? attribute.data : attribute
+    if (buffer) {
+      const prior = buffer.onUploadCallback
+      buffer.onUploadCallback = function () {
+        prior?.call(this)
+        buffer.onUploadCallback = prior
+        operation('geometry-upload', label)
+      }
+    }
+    resource.addEventListener('dispose', () => operation('geometry-dispose', label))
+  }
+
+  function texture(resource, label) {
+    if (!traceResources || tagged.has(resource)) return
+    tagged.add(resource)
+    const prior = resource.onUpdate
+    resource.onUpdate = function (...args) {
+      prior?.apply(this, args)
+      operation('texture-upload', label)
+    }
+    resource.addEventListener('dispose', () => operation('texture-dispose', label))
+  }
+
+  function material(resource, owner) {
+    if (!traceResources || tagged.has(resource)) return
+    tagged.add(resource)
+    for (const [name, map] of Object.entries(resource))
+      if (map?.isTexture) texture(map, owner + ' / ' + (map.name || name))
+    const prior = resource.onBeforeCompile
+    const programKey = resource.customProgramCacheKey()
+    resource.customProgramCacheKey = () => programKey
+    resource.onBeforeCompile = function (...args) {
+      prior?.apply(this, args)
+      operation('shader-initialize', owner + ' / ' + (resource.name || resource.type))
+    }
+    resource.addEventListener('dispose', () => operation('material-dispose', owner))
+  }
+
   return {
     stamp: now,
-    operation,
+    operation, geometry, material, texture,
+    stage(name) { startup[name] ??= round(now()) },
+    animationCallback(at) {
+      if (awaitingNext && restartTrace) {
+        restartTrace.nextAnimationCallbackMs = round(at - restartTrace.inputAt)
+        awaitingNext = false
+      }
+    },
     watch(read) { details = read },
-    ready() { record.ready ??= now() },
-    restart() {
+    ready() {
+      record.ready ??= now()
+      startup.readyMs ??= round(record.ready)
+    },
+    restart(inputAt) {
       if (hunt) append(previousHunts, summary(hunt), 5)
       hunt = totals((hunt?.id ?? 0) + 1)
       start = now()
+      restartTrace = { inputAt: Number.isFinite(inputAt) && inputAt >= 0 && inputAt <= start ? inputAt : start,
+        handlerAt: start, before: { textures: record.textures, geometries: record.geometries, programs: record.programs } }
+      awaitingNext = false
       lastPresentation = undefined
     },
     pause() { lastPresentation = undefined },
@@ -103,10 +166,19 @@ export function createPerformanceProbe(now = () => performance.now()) {
       record.detail = detail
     },
     frame(wall, cpu, renderer, territory, at = now(), renderMs = 0) {
-      if (start !== undefined) { record.restart = at - start; start = undefined }
+      if (start !== undefined) {
+        record.restart = at - start
+        start = undefined
+        restartTrace.firstFrameSubmittedMs = round(at - restartTrace.inputAt)
+        restartTrace.firstFrameCpuMs = round(cpu)
+        restartTrace.firstRenderMs = round(renderMs)
+        restartTrace.after = { ...renderer.memory, programs: renderer.programs?.length ?? 0 }
+        awaitingNext = true
+      }
       const interval = at - (lastPresentation ?? at)
       lastPresentation = at
       if (interval > 0) {
+        if (restartTrace) restartTrace.firstPresentationIntervalMs ??= round(interval)
         presented[session.presentation.samples % windowSize] = interval
         tally(session.presentation, interval)
         if (hunt) tally(hunt.presentation, interval)
@@ -158,6 +230,8 @@ export function createPerformanceProbe(now = () => performance.now()) {
         averageFPS: presentationMs?.average ? +(1000 / presentationMs.average).toFixed(1) : null,
         hunt: hunt ? summary(hunt) : null, session: summary(session), previousHunts: [...previousHunts],
         slowFrames: slowFrames.map(frame => ({ ...frame, operations: [...frame.operations] })), operations: [...operations],
+        startupPhases: { ...startup }, restartTrace: restartTrace ? { ...restartTrace } : null,
+        capabilities: { longTasks: longTasksSupported, namedResourceHooks: traceResources, gpuExecutionTime: null },
         longTasksSupported, longTasks: [...longTasks] }
     },
   }

@@ -16,6 +16,7 @@ import { createBankPlant } from './marsh-plants.js'
 import { marshWater, updateMarshWater } from './marsh-water.js'
 import { planEncounter } from './wildlife-encounters.js'
 import { replaceTileGeometry } from './tile-mesh.js'
+import { createInstancedPreparation } from './gpu-preparation.js'
 import { centerAt, segmentLength } from './trail.js'
 
 const vegetation = Array.from({ length: 3 }, (_, type) => [createBankPlant(type, true), createBankPlant(type)])
@@ -201,16 +202,24 @@ export function createTerrain(scene, showSign, probe) {
   const seedAt = index => index < 3 ? 0 : terrainSeed
   let requestedEnvironment = false
   let requestedFerns = false
+  const fernGPU = createInstancedPreparation(scene, 'Habitat / Fern 02', probe)
   let lastAtlas = landscapeMap.value
   let compactAtlas
   const openingTiles = new Map()
+  let openingHits = 0
   const activeEncounters = []
 
   function requestPack(key) {
     const start = probe?.stamp()
     probe?.operation('habitat-request', key)
     const pending = environmentAssets.request(key)
-    if (probe) pending.then(pack => probe.operation(pack ? 'habitat-ready' : 'habitat-unavailable', key, start))
+    if (probe) pending.then(pack => {
+      if (pack) {
+        for (const model of pack.models) probe.geometry(model, 'Habitat / ' + key)
+        probe.material(pack.material, 'Habitat / ' + key)
+      }
+      probe.operation(pack ? 'habitat-ready' : 'habitat-unavailable', key, start)
+    })
   }
 
   function* integrate(tile, packet) {
@@ -226,10 +235,14 @@ export function createTerrain(scene, showSign, probe) {
   }
 
   function* installParts(tile, packet) {
-    if (packet.index === 0 || packet.index === -1) openingTiles.set(packet.index, packet)
+    // These four packets always use seed zero. A restart can reuse their
+    // immutable typed arrays after the tile slots have streamed elsewhere.
+    if (packet.index >= -1 && packet.index < 3) openingTiles.set(packet.index, packet)
 
-    for (const [mesh, data] of [[tile.ground, packet.ground], [tile.water, packet.water],
-      [tile.detail, packet.detail], [tile.solid, packet.solid]]) replaceTileGeometry(mesh, data)
+    for (const key of ['ground', 'water', 'detail', 'solid']) {
+      replaceTileGeometry(tile[key], packet[key])
+      if (packet[key]) probe?.geometry(tile[key].geometry, packet.territory + ' / ' + key + ' / ' + packet.index)
+    }
     tile.ground.material = packet.index * segmentLength < expeditionRegions[1].fadeTo ? gulfTerrain : terrainMaterial
     tile.solid.visible = Boolean(packet.solid)
     tile.hasWater = Boolean(packet.water)
@@ -400,6 +413,7 @@ export function createTerrain(scene, showSign, probe) {
       if (tile.wanted !== index || tile.index === index && tile.seed === seedAt(index)) continue
       const cached = openingTiles.get(index)
       if (cached) {
+        openingHits++
         queue(cached)
         break
       }
@@ -450,6 +464,7 @@ export function createTerrain(scene, showSign, probe) {
 
   return {
     packCount: environmentAssets.count,
+    openingMetrics: () => ({ packets: openingTiles.size, reused: openingHits }),
     landscapeResidency: () => ({ ...landscapeResidency(), ...regionalSurfaceResidency() }),
     sightMeshes(target) {
       target.length = 0
@@ -480,6 +495,14 @@ export function createTerrain(scene, showSign, probe) {
       solidOpaque: tile.solid.visible && !tile.solid.material.transparent && tile.solid.material.opacity === 1, habitats: tile.habitats?.length ?? 0,
     })) },
     count() { return tiles.reduce((count, tile) => count + Number(tile.index !== null), 0) },
+    prepareFerns(renderer, camera, prime, detail, distance) {
+      if (prime && detail > 0 && distance < 120 && !requestedFerns) {
+        requestedFerns = true
+        requestPack('ferns')
+      }
+      if (detail > 0 && requestedFerns) fernGPU.step(renderer, camera, environmentAssets.get('ferns'))
+    },
+    invalidateGPU: fernGPU.clear,
     readyAt(distance) {
       const index = Math.floor(distance / segmentLength)
       return slot(index).index === index && slot(index).seed === seedAt(index)
@@ -492,8 +515,8 @@ export function createTerrain(scene, showSign, probe) {
         requestPack('trees')
         requestPack('grass')
       }
-      const wantsFern = detail > 0 && (fernTerritories.has(regionAtDistance(distance).key) ||
-        fernTerritories.has(regionAtDistance(distance + 185).key))
+      const wantsFern = detail > 0 && (distance < 185 || fernTerritories.has(regionAtDistance(distance).key) ||
+        fernTerritories.has(regionAtDistance(distance + 380).key))
       if (wantsFern && !requestedFerns) {
         requestedFerns = true
         requestPack('ferns')
@@ -515,6 +538,7 @@ export function createTerrain(scene, showSign, probe) {
       prepareGulfSurfaces(distance < expeditionRegions[1].marker + 44, probe)
       if (probe && lastAtlas !== landscapeMap.value) {
         lastAtlas = landscapeMap.value
+        probe.texture(lastAtlas, 'Terrain / landscape atlas')
         probe.operation('atlas-swap', landscapeResidency().active)
       }
       for (let i = center - 1; i < center + 6; i++) slot(i).wanted = i
@@ -545,7 +569,7 @@ export function createTerrain(scene, showSign, probe) {
         tile.crops[0].visible = tile.crops[0].count > 0 && tileStart < range[1] + 2
         tile.crops[1].visible = tile.crops[1].count > 0 &&
           tileStart + segmentLength + 2 > range[0] && tileStart < range[3] + 2
-        tile.ferns.visible = detail > 0 && tile.ferns.count > 0 && tileStart < 49
+        tile.ferns.visible = detail > 0 && fernGPU.ready() && tile.ferns.count > 0 && tileStart < 49
         tile.tufts.visible = tile.tufts.count > 0 && (tile.gulf || tile.swamp ? tileStart < (detail > 0 ? 44 : 18)
           : detail > 0 && tileStart < 38)
         if (tile.gulf) tile.tufts.geometry = gulfGeometry(detail > 1 && tileStart < 15 ? 'CordgrassLOD0' : 'CordgrassLOD1')
@@ -562,8 +586,9 @@ export function createTerrain(scene, showSign, probe) {
         probe?.operation('habitat-release', 'trees and grass', started)
         requestedEnvironment = false
       }
-      if (requestedFerns && !wantsFern && tiles.every(tile => !tile.usesFernPack)) {
+      if (requestedFerns && !wantsFern && !fernGPU.busy() && tiles.every(tile => !tile.usesFernPack)) {
         const started = probe?.stamp()
+        fernGPU.clear()
         environmentAssets.release('ferns')
         probe?.operation('habitat-release', 'ferns', started)
         requestedFerns = false

@@ -1,3 +1,4 @@
+import { localDirector } from '../src/difficulty.js'
 import { primaryDuration } from '../src/difficulty.js'
 import assert from 'node:assert/strict'
 import { createCourse, newRun, advance, collect, reactionWindow, score, touchesPickup } from '../src/runner.js'
@@ -28,7 +29,7 @@ function session(seed, duration, guided, policy, weather, pauseInterval, coastAt
   const tape = Number.isFinite(coastAt) ? recordRankedActions() : null
   let steps = 0
   const rng = seededRandom(seed ^ 0xaffb320a)
-  const course = createCourse(seed)
+  const course = createCourse(seed, process.argv.includes('raptor') ? localDirector : undefined)
   const run = newRun()
   const clock = createFixedClock()
   const controls = createRunControls()

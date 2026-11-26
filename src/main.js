@@ -34,7 +34,8 @@ import {
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
 import { expeditionRegions, regionAt } from './expedition.js'
-import { courseStages, distanceAtTime, speedAtTime, stageAt } from './difficulty.js'
+import { courseStages, director, distanceAtTime, localDirector, speedAtTime, stageAt } from './difficulty.js'
+import { localCourseRuleset } from './ruleset.js'
 import { placeOnTrail, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createTrailSigns } from './sign-scenery.js'
@@ -42,7 +43,9 @@ import { setRockWeather } from './rock-art.js'
 import { createDriftingLeaves } from './drifting-leaves.js'
 import { fallenVariant } from './fallen-timber.js'
 import { createDivingFlocks } from './wildlife.js'
+import { fieldSpecies } from './wildlife-catalog.js'
 import { createLivingWilderness } from './living-wilderness.js'
+import { encounterPose } from './wildlife-motion.js'
 import { createWildlifeSightProbe } from './wildlife-sight-probe.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
@@ -93,7 +96,7 @@ let calloutAnimation
 
 const flags = new URLSearchParams(location.search)
 const localPerformance = flags.get('perf') === '1'
-const performanceProbe = localPerformance ? createPerformanceProbe() : null
+const performanceProbe = localPerformance ? createPerformanceProbe(undefined, flags.get('resources') === '1') : null
 const sound = createSound(background, performanceProbe)
 if (performanceProbe) {
   const readPerformance = () => ({ ...performanceProbe.read(), build: runningBuild })
@@ -118,15 +121,17 @@ if (performanceProbe) {
   ui.preferences.append(controls)
 }
 const wakeLock = createWakeLock(navigator.wakeLock && (() => navigator.wakeLock.request('screen')), () => !document.hidden)
-const previewRegion = import.meta.env.DEV || import.meta.env.MODE === 'migration-qa'
-  ? expeditionRegions[Number(flags.get('preview')) - 1] : undefined
+const studioRequested = flags.get('studio') === '1' && (import.meta.env.DEV || import.meta.env.MODE === 'art-studio')
+const studioSeed = Number(flags.get('seed') ?? 7) >>> 0
+const previewRegion = studioRequested ? expeditionRegions[Number(flags.get('territory')) - 1] ?? expeditionRegions[0]
+  : (import.meta.env.DEV || import.meta.env.MODE === 'migration-qa') ? expeditionRegions[Number(flags.get('preview')) - 1] : undefined
 const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
-  Math.min(previewRegion === expeditionRegions.at(-1) ? 180 : 29.95, Number(flags.get('offset')) || 0)) : 0
+  Math.min(previewRegion === expeditionRegions.at(-1) ? 180 : 29.95, Number(flags.get('offset') ?? (studioRequested ? 6 : 0)) || 0)) : 0
 const collisionRequested = flags.get('debug') === 'collision' &&
   (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
 const diagnosticsRequested = Boolean(previewRegion) || collisionRequested
 const lodge = openLodge(undefined, undefined, { practice: diagnosticsRequested })
-const breed = collisionRequested ? inspectionBreed(true, flags.get('breed')) : lodge.current().kennel.breed
+const breed = collisionRequested || studioRequested ? inspectionBreed(true, flags.get('breed')) : lodge.current().kennel.breed
 const campfire = createCampfire(diagnosticsRequested ? () => undefined : undefined)
 const campTransport = diagnosticsRequested ? null : createCampTransport()
 const camp = createWorldwideCamp(campTransport)
@@ -164,7 +169,8 @@ if (document.readyState === 'complete') queueMicrotask(syncCamp)
 else window.addEventListener('load', syncCamp, { once: true })
 let run = newRun()
 samplePose(previous, run, run, 1)
-let nextRow = createCourse(2026)
+let runCourse = localCourseRuleset
+let nextRow = createCourse(2026, localDirector)
 let row = nextRow()
 let stride = 0
 let foot = 0
@@ -202,7 +208,7 @@ function makeRenderer() {
 }
 
 const lodgeUI = createLodgeUI(ui, lodge, {
-  inspectDogs: collisionRequested,
+  inspectDogs: collisionRequested || studioRequested,
   camp,
   rankedCamp,
   onPlayer() {
@@ -249,6 +255,7 @@ const renderer = makeRenderer()
 if (renderer) initialize()
 
 function initialize() {
+  performanceProbe?.stage('rendererReadyMs')
   renderer.toneMapping = T.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.15
   const atmosphere = createAtmosphere(scene)
@@ -263,8 +270,10 @@ function initialize() {
   const wildlife = createLivingWilderness(scene, sound.bird, sound.prepareWildlife, performanceProbe, sightProbe, mayPrepareWildlife)
   performanceProbe?.watch(() => ({
     residentTiles: terrain.count(), residentPacks: terrain.packCount(), surfaces: terrain.landscapeResidency(),
+    openingTerrain: terrain.openingMetrics(),
     dogBreed: dog?.activeBreed() ?? 'loading',
     tileTimings: terrain.measurements(), wildlife: wildlife.active(), wildlifeModels: wildlife.metrics(),
+    trailPool: { keys: pool.size, idle: [...pool.values()].reduce((sum, bucket) => sum + bucket.length, 0) },
   }))
   const observeWildlife = event => runStatistics?.observe(event)
   const diving = createDivingFlocks(scene)
@@ -274,7 +283,7 @@ function initialize() {
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
       .catch(error => { if (navigator.onLine) console.error(error) })
   }
-  dog = createPlayer(scene, breed, createPickup, collisionRequested ? flags.get('kit') ?? 'master' : undefined,
+  dog = createPlayer(scene, breed, createPickup, collisionRequested || studioRequested ? flags.get('kit') ?? 'master' : undefined,
     () => mode !== 'running')
   if (collisionRequested) window.retrieverInspectDog = {
     breed,
@@ -298,6 +307,13 @@ function initialize() {
     if (kennelStage) resize()
   }) : null
   let trailPose
+  let titleWeather
+  let studio
+  let studioTime = 0
+  let studioEvent
+  const studioTarget = {}
+  const studioAnimalPose = {}
+  const studioEvents = []
   const drawingSize = new T.Vector2()
   resize = () => {
     needsRedraw = true
@@ -343,6 +359,35 @@ function initialize() {
     resize()
   }
 
+  if (studioRequested) import('./art-studio.js').then(({ openArtStudio }) => {
+    studio = openArtStudio(ui.game, flags, {
+      seed: studioSeed, region: previewRegion.index, breed,
+      quality: profile.quality === 'auto' ? autoPreset : profile.quality,
+      graphics(quality) { profile.quality = quality; resize() },
+      reset: restartStudio,
+      kennel: button => lodgeUI.open(button, 'kennel'),
+      renderer: () => renderer.info.memory,
+    })
+    restartStudio()
+  })
+
+  function restartStudio() {
+    studioTime = 0
+    resetTrail(studioSeed)
+    studioEvent = undefined
+    studioEvents.length = 0
+    if (studio.take === 'Wildlife') {
+      const animal = fieldSpecies[studio.species]
+      const flock = ['goose', 'crane'].includes(animal.family)
+      const flight = flock || animal.family === 'raptor'
+      studioEvent = { id: 'studio:' + animal.id + ':' + Number(studio.fallback), species: animal.id, seed: studioSeed,
+        distance: run.distance + (studio.wildlifeAction ? 11 : 34), lateral: -5.6,
+        height: flight ? 3.9 : 0, count: flock ? 5 : 1 }
+      studioEvents.push(studioEvent)
+    }
+    setMode('studio')
+  }
+
   const present = adaptivePresentation()
   let lastRenderMs
   let lastWildlifeWarm = -Infinity
@@ -350,17 +395,18 @@ function initialize() {
   const stepOnTerrain = dt => terrain.readyAt(run.distance) && step(dt)
 
   function render(ms) {
-    const renderStart = performanceProbe ? performance.now() : 0
+    const renderStart = performanceProbe?.stamp() ?? 0
+    performanceProbe?.animationCallback(renderStart)
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     previousTime = ms
     if (!contextReady) return
-    dog.installPrepared()
+    if (dog.installPrepared()) needsRedraw = true
     if (ui.lodge.open) {
       if (kennelStage) kennel.render(renderer, dog, ms, reduceMotion())
       return
     }
     if (!trailReady && terrain.readyAt(0) && terrain.readyAt(-1)) {
-      trailReady = true
+      trailReady = needsRedraw = true
       performanceProbe?.ready()
       ui.primary.disabled = false
       if (mode === 'title') ui.primary.textContent = 'Hunt'
@@ -369,6 +415,15 @@ function initialize() {
         ui['open-lodge'].click()
         ui['tab-kennel'].click()
       }
+    }
+    // The approved title artwork is opaque. Keep the opener's worker and
+    // resource jobs moving without continuously animating a covered scene.
+    if (mode === 'title' && !needsRedraw && titleWeather && !diagnosticsRequested) {
+      signs.begin()
+      terrain.update(run.distance, visualTime, titleWeather, preset.detail)
+      signs.finish()
+      warmSafe(ms)
+      return
     }
     if (mode === 'running' && profile.quality === 'auto') {
       const selected = adapt(wall)
@@ -383,18 +438,29 @@ function initialize() {
       alpha = clock.advance(wall, stepOnTerrain)
       updateHud()
     }
-    if (mode === 'title' || mode === 'running' || frozen) populate()
+    const inspecting = mode === 'studio'
+    if (inspecting && !document.hidden) {
+      studioTime += Math.min(.10, Math.max(0, wall)) * studio.speed
+      if (studio.moving && terrain.readyAt(run.distance)) {
+        run.elapsed = Math.min(previewElapsed + 18, run.elapsed + Math.max(0, Math.min(.20, wall)) * studio.speed)
+        run.distance = distanceAtTime(run.elapsed)
+        for (let i = entities.length - 1; i >= 0; i--) {
+          if (entities[i].distance < run.distance - 14) release(entities.splice(i, 1)[0])
+        }
+      }
+    }
+    if (mode === 'title' || mode === 'running' || inspecting || frozen) populate()
     const autoLow = mode === 'running' && profile.quality === 'auto' && autoPreset === 'low'
     const batterySaver = mode === 'running' && profile.quality === 'low'
     if (!present(ms, wall, autoLow, batterySaver) && !needsRedraw) return
     const dt = Math.min(.10, Math.max(0, (ms - (lastRenderMs ?? ms)) / 1000))
     lastRenderMs = ms
-    const animate = mode === 'title' || mode === 'running' || frozen
+    const animate = mode === 'title' || mode === 'running' || inspecting || frozen
     if (animate) {
       const idle = mode === 'title'
       if (idle) visualTime += dt
-      samplePose(display, previous, run, frozen || idle ? 1 : alpha)
-      if (!idle) visualTime = display.elapsed
+      samplePose(display, previous, run, frozen || idle || inspecting ? 1 : alpha)
+      if (!idle) visualTime = inspecting ? studioTime : display.elapsed
       const distance = display.distance
       const turn = display.lane * laneWidth - display.x
       const ground = trailHeight(distance, display.x)
@@ -413,15 +479,49 @@ function initialize() {
         camera.position.set(follow.x, follow.y, follow.z)
         camera.lookAt(follow.tx, follow.ty, follow.tz)
       }
+      if (inspecting) {
+        if (studioEvent) {
+          const animal = fieldSpecies[studioEvent.species]
+          encounterPose(studioEvent, animal, studioEvent.distance - distance, visualTime, 0, studioAnimalPose)
+          placeOnTrail(studioTarget, studioEvent.distance + studioAnimalPose.along, studioAnimalPose.lateral, distance)
+          studioTarget.y = studioAnimalPose.height + animal.size * .32
+        } else {
+          studioTarget.x = body.x
+          studioTarget.y = ground + .75
+          studioTarget.z = body.z
+        }
+        if (studio.take !== 'Trail' || studio.yaw || studio.pitch || studio.zoom !== 1) {
+          const radius = (studio.take === 'Dog' ? 3.8 : studioEvent ? 4.8 : 6.6) * studio.zoom
+          const { x, y, z } = studioTarget
+          camera.position.set(x + Math.sin(studio.yaw) * radius, y + 1.25 + studio.pitch, z + Math.cos(studio.yaw) * radius)
+          camera.lookAt(x, y, studio.take === 'Trail' ? -12 : z)
+        }
+        if (studio.take === 'Dog') {
+          const cycle = studioTime % 1.7
+          const action = studio.playback
+          display.jump = action === 'Jump' && cycle < jumpDuration ? jumpDuration - cycle : 0
+          body.depth = action === 'Slide' ? .92 : 0
+          landing = action === 'Land' ? Math.exp(-cycle * 6) : 0
+        }
+      }
       landing *= Math.exp(-12 * dt)
       const height = getHeight(display)
       const weather = atmosphere.update(display.elapsed, visualTime, reduceMotion() ? .34 : preset.weather, distance)
+      if (idle) titleWeather = weather
       setRockWeather(weather)
       trailPose = {
         x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
         time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing, wet: weather.wet,
         lateralSpeed: display.lateralSpeed, retrieve: carriedBird, sinceRetrieve: visualTime - lastRetrieve,
         airborne: display.jump > 0, jumpPhase: display.jump > 0 ? 1 - display.jump / jumpDuration : 1,
+      }
+      if (inspecting && studio.take === 'Dog') {
+        trailPose.stride = studioTime * 12
+        trailPose.idle = studio.playback === 'Idle'
+        if (studio.playback === 'Retrieve') {
+          trailPose.retrieve = 'mallard'
+          trailPose.sinceRetrieve = studioTime % 2.4
+        }
       }
       dog.pose(trailPose)
       glow.visible = display.power > 0
@@ -433,8 +533,9 @@ function initialize() {
       signs.finish()
       leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reduceMotion())
       camera.updateMatrixWorld()
-      wildlife(visualTime, distance, preset.detail, mode, terrain.encounters(), camera, observeWildlife)
-      if (!idle && !frozen) {
+      const encounters = inspecting && studioEvent ? studioEvents : terrain.encounters()
+      wildlife(visualTime, distance, inspecting && studio.fallback ? 0 : preset.detail, mode, encounters, camera, observeWildlife)
+      if (!idle && !frozen && !inspecting) {
         updateConditions(weather.name)
         sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
       }
@@ -443,22 +544,30 @@ function initialize() {
       diving(entities, distance, visualTime, preset.detail === 0)
       frozen = false
     }
-    if (mode === 'title' || mode === 'running' || needsRedraw) {
+    if (mode === 'title' || mode === 'running' || inspecting || needsRedraw) {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps, wildlife: wildlife.stamp,
       }, camera, signs)
       const drawStart = performanceProbe?.stamp()
       renderer.render(scene, camera)
-      if (mode === 'running' && performanceProbe) {
+      performanceProbe?.stage('firstSceneSubmitMs')
+      if ((mode === 'running' || inspecting) && performanceProbe) {
         const end = performanceProbe.stamp()
         performanceProbe.graphics(profile.quality, preset.detail)
         performanceProbe.frame(wall * 1000, end - renderStart, renderer.info, regionAt(display.elapsed).key, end, end - drawStart)
       }
       needsRedraw = false
     }
+    warmSafe(ms)
+    if (mode === 'running' && !document.hidden && !navigator.scheduling?.isInputPending?.())
+      terrain.prepareFerns(renderer, camera, false, preset.detail, run.distance)
+  }
+
+  function warmSafe(ms) {
     if (mayPrepareWildlife() && ms - lastWildlifeWarm >= 80 && !navigator.scheduling?.isInputPending?.()) {
       lastWildlifeWarm = ms
-      wildlife.warmBreak(renderer, camera, mode, preset.detail, run.distance, terrain.encounters())
+      terrain.prepareFerns(renderer, camera, true, preset.detail, run.distance)
+      wildlife.warmBreak(renderer, camera, mode, preset.detail, run.distance, studioEvent ? studioEvents : terrain.encounters())
     }
   }
 
@@ -473,7 +582,8 @@ function initialize() {
     ui['menu-copy'].textContent = 'Graphics were interrupted. Waiting for the renderer to recover.'
   })
   ui.trail.addEventListener('webglcontextrestored', () => {
-    wildlife.invalidateGPU()
+    wildlife.invalidateGPU(renderer)
+    terrain.invalidateGPU()
     contextReady = true
     ui.primary.disabled = !trailReady
     ui.pause.disabled = false
@@ -507,7 +617,12 @@ function release(entity) {
   const key = entity.modelKey
   if (!entity.hazard) entity.model.scale.setScalar(1)
   if (!pool.has(key)) pool.set(key, [])
-  pool.get(key).push(entity.model)
+  const available = pool.get(key)
+  const limit = entity.type === 'treat' ? 32 : entity.span ? 2 : 6
+  if (available.length < limit) available.push(entity.model)
+  // The bent ribbon belongs exclusively to this object. All standard
+  // hazards and pickups reference shared art kept by their source modules.
+  else if (entity.span) entity.model.children[0]?.geometry.dispose()
 }
 
 function populate() {
@@ -574,7 +689,7 @@ function step(dt) {
       if (entity.hazard && entity !== impacted) runStatistics.passed(previous, run, entity)
     }
     contact.seed = signSeed
-    contact.ruleset = courseRuleset
+    contact.ruleset = runCourse
     contact.territory = regionAt(contact.elapsed).key
     contact.stage = stageAt(contact.elapsed).level
     debug?.hit(contact)
@@ -860,7 +975,7 @@ function setMode(value, options = {}) {
       if (rewardCue === 'prestige') hapticFeedback(navigator, profile.haptics, 'prestige')
     }
   }
-  ui.menu.hidden = running || over
+  ui.menu.hidden = running || over || value === 'studio'
   ui['field-report'].hidden = !over
   ui.game.inert = over
   ui.hud.hidden = !running
@@ -922,7 +1037,7 @@ function resetTrail(seed) {
   signSeed = seed
   setTerrainSeed(seed)
   currentTerritory = null
-  nextRow = createCourse(seed)
+  nextRow = createCourse(seed, runCourse === courseRuleset ? director : localDirector)
   row = nextRow()
   if (previewRegion) {
     run.elapsed = previewElapsed
@@ -952,27 +1067,29 @@ function resetTrail(seed) {
   spray.reset()
 }
 
-function start(ticket) {
+function start(ticket, inputAt) {
   if (productionSession.locked() || ui['content-screen'].open || mode === 'running' || !trailReady || !contextReady ||
       ui.onboarding.open || ui.tutorial.open) return
+  performanceProbe?.restart(inputAt)
   if (!lodge.current().enrollment && !diagnosticsRequested) {
     const player = lodge.current()
     lodge.enroll(player.id, player.nickname, 'guest')
   }
-  performanceProbe?.restart()
   runPlayer = lodge.current().id
   runPermit = !diagnosticsRequested && ticket?.profile === runPlayer &&
     ticket.owner === camp.member(runPlayer)?.identity ? ticket : null
   runTrace = runPermit ? recordRankedActions() : null
+  runCourse = runPermit || collisionRequested && flags.get('course') === 'phase05' ? courseRuleset : localCourseRuleset
   resetTrail(runPermit?.seed ?? debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   coaching = lodge.current().stats.runs < 3
   const onSkill = debug ? event => debug.skill(event) : undefined
-  runStatistics = previewRegion ? createRunStatistics(undefined, onSkill) : lodge.beginRun(onSkill)
+  runStatistics = previewRegion ? createRunStatistics(undefined, onSkill, runCourse) : lodge.beginRun(onSkill, runCourse)
   setMode('running', { gesture: true, restart: true })
   populate()
 }
 
 function mainMenu() {
+  runCourse = localCourseRuleset
   resetTrail(2026)
   setMode('title', { gesture: true })
   ui.primary.focus({ preventScroll: true })
@@ -1044,12 +1161,12 @@ function openSettings() {
 function bindInput() {
   window.visualViewport?.addEventListener('resize', fitReport)
   window.visualViewport?.addEventListener('scroll', fitReport)
-  ui.primary.addEventListener('click', () => mode === 'paused' ? pause() : start())
-  ui['run-again'].addEventListener('click', start)
+  ui.primary.addEventListener('click', event => mode === 'paused' ? pause() : start(null, event.timeStamp))
+  ui['run-again'].addEventListener('click', event => start(null, event.timeStamp))
   ui['main-menu'].addEventListener('click', mainMenu)
   ui['pause-settings'].addEventListener('click', openSettings)
   ui['pause-menu'].addEventListener('click', mainMenu)
-  ui['pause-restart'].addEventListener('click', start)
+  ui['pause-restart'].addEventListener('click', event => start(null, event.timeStamp))
   let tutorialTrigger
   for (const id of ['tutorial-entry', 'settings-tutorial']) ui[id].addEventListener('click', event => {
     tutorialTrigger = event.currentTarget
@@ -1102,7 +1219,7 @@ function bindInput() {
     setTimeout(() => URL.revokeObjectURL(url), 30_000)
     status.textContent = 'Keep the exported file private. It contains local profiles, progress and records.'
   })
-  ui.preferences.addEventListener('close', () => ui.settings.focus())
+  ui.preferences.addEventListener('close', () => (mode === 'paused' ? ui['pause-settings'] : ui.settings).focus())
   for (const key of volumeKeys) {
     ui[key].addEventListener('input', () => {
       profile[key] = ui[key].valueAsNumber / 100

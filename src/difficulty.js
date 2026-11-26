@@ -89,15 +89,30 @@ export const director = {
   coordinatedGooseAfter: 120,
 }
 
+// Preserve Phase 05's exact director for signed competitive tickets and
+// archived replays. Local Raptor hunts have their own record namespace.
+export const localDirector = { ...director, hostileGooseSpacing: 1.57, hostileGooseCooldown: 8 }
+
+// The shipped stages have uniform 15-second segments. Select the same
+// left-hand segment used by the original inclusive-end loop at boundaries.
+function paceSegment(seconds) {
+  return Math.max(1, Math.ceil(seconds / stageSeconds))
+}
+
 export function difficultyAt(seconds, curve = difficultyCurve) {
-  for (let i = 1; i < curve.length; i++) {
-    const [end, high] = curve[i]
-    if (seconds <= end) {
-      const [start, low] = curve[i - 1]
-      return low + (high - low) * Math.max(0, (seconds - start) / (end - start))
-    }
+  if (curve === difficultyCurve) {
+    const index = paceSegment(seconds)
+    if (index < curve.length) return interpolatePace(seconds, curve, index)
+  } else for (let index = 1; index < curve.length; index++) {
+    if (seconds <= curve[index][0]) return interpolatePace(seconds, curve, index)
   }
   return curve.at(-1)[1]
+}
+
+function interpolatePace(seconds, curve, index) {
+  const [end, high] = curve[index]
+  const [start, low] = curve[index - 1]
+  return low + (high - low) * Math.max(0, (seconds - start) / (end - start))
 }
 
 export function speedAt(difficulty, rules = director) {
@@ -110,16 +125,29 @@ export function speedAtTime(seconds, rules = director) {
 
 // Course rows use the integral of the pace curve, so a timed event's distance
 // means the same thing to the generator and the simulation.
+function segmentDistance(seconds, rules, index) {
+  const [start, low] = rules.curve[index - 1]
+  const [end, high] = rules.curve[index]
+  const duration = Math.max(0, Math.min(seconds, end) - start)
+  const from = speedAt(low, rules)
+  const rate = (speedAt(high, rules) - from) / (end - start)
+  return duration * (from + .5 * duration * rate)
+}
+
+const segmentStarts = [0]
+for (let index = 1; index < difficultyCurve.length; index++) {
+  segmentStarts[index] = segmentStarts[index - 1] + segmentDistance(difficultyCurve[index][0], director, index)
+}
+
 export function distanceAtTime(seconds, rules = director) {
   let distance = 0
-  for (let i = 1; i < rules.curve.length; i++) {
-    const [start, low] = rules.curve[i - 1]
-    const [end, high] = rules.curve[i]
-    const duration = Math.max(0, Math.min(seconds, end) - start)
-    const from = speedAt(low, rules)
-    const rate = (speedAt(high, rules) - from) / (end - start)
-    distance += duration * (from + .5 * duration * rate)
-    if (seconds <= end) return distance
+  if (rules === director || rules === localDirector) {
+    const index = paceSegment(seconds)
+    if (index < rules.curve.length) return segmentStarts[index - 1] + segmentDistance(seconds, rules, index)
+    distance = segmentStarts.at(-1)
+  } else for (let index = 1; index < rules.curve.length; index++) {
+    distance += segmentDistance(seconds, rules, index)
+    if (seconds <= rules.curve[index][0]) return distance
   }
   const [end, value] = rules.curve.at(-1)
   return distance + (seconds - end) * speedAt(value, rules)
