@@ -1,0 +1,22 @@
+{
+  "engine": "chromium",
+  "samples": [
+    {
+      "combine": true,
+      "calls": [
+        "rr_worldwide_standings"
+      ],
+      "scores": 3,
+      "data": "isolated test database"
+    },
+    {
+      "combine": false,
+      "calls": [
+        "rr_worldwide_standings",
+        "rr_ranked_board"
+      ],
+      "scores": 3,
+      "data": "isolated test database"
+    }
+  ]
+}

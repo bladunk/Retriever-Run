@@ -52,7 +52,36 @@ async function open(page, url) {
 }
 
 try {
-  if (process.argv.includes('resources')) await inspect('after',{width:320,height:568},async (page,prefix) => {
+  if (process.argv.includes('worldwide')) for (const combine of [true, false]) {
+    await inspect('after',{width:320,height:568},async (page,prefix) => {
+      const calls = []
+      // No live calls. Read the public test stack's previously verified reviews.
+      await page.route(/\/rest\/v1\/rpc\/rr_(?:worldwide_standings|ranked_board)$/, async route => {
+        const request = route.request()
+        const name = new URL(request.url()).pathname.split('/').at(-1)
+        calls.push(name)
+        if (!combine && name === 'rr_worldwide_standings') {
+          return route.fulfill({ status:404, json:{ code:'PGRST202' } })
+        }
+        const response = await fetch('http://127.0.0.1:55672/rpc/' + name, {
+          method:'POST', headers:{ 'Content-Type':'application/json' }, body:request.postData(),
+        })
+        assert.ok(response.ok)
+        await route.fulfill({ status:200, json:await response.json() })
+      })
+      await open(page,prefix)
+      await page.locator('#open-worldwide').click()
+      await page.getByText('Worldwide top 100 · 3 ranked').waitFor({ timeout:60_000 })
+      const rows = page.locator('.worldwide-table tbody tr')
+      assert.deepEqual(await rows.locator('td:nth-child(3)').allTextContents(),['95','75','35'])
+      const message = combine ? 'Each column shows a separate personal best.' : 'The other verified bests are temporarily unavailable.'
+      await page.getByText(message, { exact:false }).waitFor()
+      assert.deepEqual(calls,combine ? ['rr_worldwide_standings'] : ['rr_worldwide_standings','rr_ranked_board'])
+      await page.screenshot({path:resolve(output,combine ? 'combined.png' : 'score-compatibility.png')})
+      samples.push({ combine, calls, scores:3, data:'isolated test database' })
+    })
+  }
+  else if (process.argv.includes('resources')) await inspect('after',{width:320,height:568},async (page,prefix) => {
     await open(page,prefix+'?perf=1&resources=1')
     await page.waitForFunction(() => !document.querySelector('#primary').disabled, null, { timeout:60_000 })
     await page.locator('#settings').click()
@@ -94,7 +123,7 @@ try {
       })
     }
   }
-  if (!process.argv.some(arg => arg === 'titles' || arg === 'resources')) {
+  if (!process.argv.some(arg => ['titles','resources','worldwide'].includes(arg))) {
     await inspect('studio',{width:390,height:844},async (page,prefix) => {
       await open(page,prefix+'?studio=1&perf=1&territory=13&seed=7&breed=boyd')
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio')

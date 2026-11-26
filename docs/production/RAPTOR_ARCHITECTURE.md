@@ -29,6 +29,22 @@ The audit retains save migrations, the old ranking API, offline and low-detail f
 5. Run one matched regular-moving capture, one viewport below 390 px, a cross-territory test, a cold-to-offline test, and a repeated restart or profile/model switch relevant to the change. Verify disposals and record any warmup work that spills into gameplay.
 6. Keep each art PR reversible and include its provenance and before/after evidence. Never alter archived rankings to make a new visual test work.
 
+## Repeat the benchmark
+
+Use one machine and browser at a time. Build both revisions with the same public configuration and keep separate artifact directories. Record the `content-manifest.json` identity before measuring.
+
+```sh
+FIELD_BUILD=/path/to/artifact FIELD_QA_OUTPUT=/path/to/results \
+  node scripts/phase-three-browser.mjs chromium small low soak seconds=62 offline fast precise territory-evidence
+FIELD_BUILD=/path/to/artifact FIELD_QA_OUTPUT=/path/to/restarts \
+  node scripts/phase-three-browser.mjs chromium small low restart-cycle cycles=60 offline fast
+FIELD_BUILD=/path/to/raptor FIELD_QA_OUTPUT=/path/to/resources \
+  node scripts/raptor-review.mjs chromium resources
+node scripts/raptor-course-survey.mjs
+```
+
+The first two commands use seed 7 and the original course for equivalent inputs. Add `raptor` to exercise the tuned local course. Playwright needs a browser install. The optional `FIELD_CHROMIUM` selects a specific executable. Accelerated time is useful for geometry, steps and collisions. Use normal-speed, physical `?perf=1` captures for device frame pacing and a second `?perf=1&resources=1` run for resource attribution.
+
 ## Art Studio on an iPhone
 
 On a computer in the same local network run `npm ci` and `npm run dev -- --host 0.0.0.0` from this branch. Open `http://COMPUTER-LAN-IP:5173/?studio=1&perf=1&territory=13&seed=7&breed=boyd` in Safari. Play online if the local HTTP origin cannot use installation. For a subpath rehearsal build with `npm run build -- --mode art-studio` and serve the output from the same machine. Keep the internal build off production Pages. The ordinary release ignores the Studio URL flag.
