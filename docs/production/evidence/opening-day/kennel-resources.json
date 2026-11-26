@@ -1,0 +1,29 @@
+{
+  "build": {
+    "version": "1.0.0-rc.1",
+    "id": "12103b9"
+  },
+  "offline": true,
+  "counts": [
+    {
+      "geometries": 23,
+      "textures": 12
+    },
+    {
+      "geometries": 20,
+      "textures": 12
+    },
+    {
+      "geometries": 20,
+      "textures": 12
+    },
+    {
+      "geometries": 24,
+      "textures": 12
+    },
+    {
+      "geometries": 21,
+      "textures": 12
+    }
+  ]
+}

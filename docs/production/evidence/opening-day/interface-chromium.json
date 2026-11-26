@@ -1,0 +1,28 @@
+{
+  "app": {
+    "version": "1.0.0-rc.1",
+    "id": "2b2fd1c"
+  },
+  "engine": "chromium",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "cold": {
+    "wall": 7443,
+    "ready": 7395,
+    "collectionRequests": 0
+  },
+  "warm": {
+    "wall": 5145,
+    "ready": 5006,
+    "collectionRequests": 0
+  },
+  "replayMs": 192,
+  "offline": true,
+  "trophyCollection": "Trophy room531 earned displaysBeyond the MapPlatinumFlyway RegularPlatinumGreat MigrationPlatinum",
+  "initialHuntOneTap": true,
+  "preservedSearch": true,
+  "qualifiedThroughHunt": true,
+  "errors": []
+}

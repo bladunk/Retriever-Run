@@ -152,9 +152,14 @@ try {
     body:JSON.stringify({p_player:owner(two),p_ticket:second.id,p_lease:second.id,p_metrics:{score:999999}})})
   assert.ok(!refused.ok)
   assert.equal(sql("select count(*) from retriever_camp.ranked_bests where metric='score'"),'3')
+  for (const row of latest.rows) {
+    assert.equal(row.bests.score,row.value)
+    assert.ok(row.bests.distance > 0 && row.bests.duration > 0)
+    assert.ok(!Object.hasOwn(row,'player_id'))
+  }
 
   const proof = {stack:'GoTrue v2.185.0, PostgREST v13.0.7 and PostgreSQL 17 in local containers',
-    seed:0,canonical:traces.map(trace=>verifyRankedReplay(0,trace)),initial:ranking(first),refreshed:ranking(latest),
+    combined:latest.rows,seed:0,canonical:traces.map(trace=>verifyRankedReplay(0,trace)),initial:ranking(first),refreshed:ranking(latest),
     mine:{rank:latest.mine.rank,value:latest.mine.value,percentile:latest.percentile,total:latest.total_ranked},
     staleOffline:true,syncedAfterReopen:true,sameIdentity:true,worseKeptBest:true,duplicateStatus:duplicate.status,
     wrongCourse:invalid.status,wrongVersion:invalidVersion.status,crossIdentity:stolen.status,directWriteHttp:refused.status}

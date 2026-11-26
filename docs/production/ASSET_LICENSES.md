@@ -116,3 +116,8 @@ The `species-photos` content group contains three locally distributed WebP deriv
 | `public/species/alligator.webp` · 24,540 bytes | Judy Gallagher, [American Alligator](https://commons.wikimedia.org/wiki/File:American_Alligator_-_Alligator_mississippiensis,_Everglades_National_Park,_Homestead,_Florida,_January_31,_2022_(51858108563).jpg) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) |
 
 Phase 08’s wind, foliage, water and insect mix and its shorter reward cues are original runtime synthesis and composition. They use the existing cleared audio bank and creek recording. The identified recordings and their terms stay attached to the original files. [Recording credits](../../AUDIO.md#recording-credits)
+
+### Opening Day Field Journal and field edges
+
+- The 29 verified wildlife photographs have a per-file author, source, terms and transformation record. The catalog includes Creative Commons Attribution, Attribution-ShareAlike, CC0 and credited public-domain photographs. Derivatives retain the cited license, including ShareAlike on those photographs. The in-game Journal links to the author/source record and license. [Photo provenance registry](../../src/assets/journal-photos.json)
+- The field-edge saltmeadow grass, prairie bunchgrass, buttonbush, willow scrub, exposed river rock and snowy talus are original project assets authored in Blender. Source geometry and vertex pigment are reproducible, and the packed project derivatives share an existing material. [Blender source](../../art/blender/opening-day.py)

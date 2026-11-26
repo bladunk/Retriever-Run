@@ -92,13 +92,13 @@ export const marshWater = new T.ShaderMaterial({
       mud *= 1. + sediment * .15 * (1. - smoothstep(.18,.55,length(fwidth(p))));
       vec3 lake = mix(mud, waterTint, deep);
       lake = mix(lake, mix(vec3(.055,.042,.023), vec3(.012,.025,.018),deep), swamp * .63);
-      lake = mix(lake, mix(vec3(.105,.093,.052),vec3(.034,.102,.099),deep),coast * .58);
+      lake = mix(lake, mix(vec3(.105,.093,.052),vec3(.026,.119,.108),deep),coast * .74);
       // Trail crossings use the same water as the banks. Reach a deeper
       // channel color in the middle, and leave the wet gravel edges visible.
       vec3 channel = mix(waterTint * .82, vec3(.048,.074,.061), coast);
       lake = mix(lake, mix(mud * .82, channel, .28 + deep * .63), crossing);
       lake *= 1. - .26 * (1. - smoothstep(.012, .095, depth));
-      float rim = smoothstep(.015,.04,depth) * (1. - smoothstep(.073,.115,depth));
+      float rim = smoothstep(.013,.049,depth) * (1. - smoothstep(.074,.139,depth));
       rim *= .77 + .23 * sin(dot(p, vec2(1.77,.97)) + broad * .41);
       lake += rim * (.5 + crossWave * .5) * vec3(.017,.018,.010);
       float skyGradient = smoothstep(-.02, .62, reflected.y);
@@ -127,6 +127,11 @@ export const marshWater = new T.ShaderMaterial({
         vec3(.85,.91,.78) * (1. - crossing * .45);
       color *= 1. - min(.69,bankCanopy*.54) * mix(.71,.32,deep);
       color += (broad + crossWave * .6) * (.002 + chop*.003) * vec3(.74,.96,1.);
+      // Open-water sky color can read at grazing angles while the steep
+      // off-trail banks retain their sediment edge.
+      float creek = smoothstep(.18, .65, depth) * (1. - crossing);
+      color += creek * graze * waterProfile.z * (.018 + .025*wave*fade) * mix(waterSky, waterHorizon, .32)
+        * (1. - .72 * foliage) * (1. - .58 * swamp);
       color += crossing * rim * vec3(.021,.019,.012);
       if (waterDetail > .5 && crossing < .5) {
         float moving = smoothstep(.55,.90,crossWave + broad*.29);

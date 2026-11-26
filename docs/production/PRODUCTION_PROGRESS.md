@@ -2,13 +2,10 @@
 
 ## Resume here
 
-- The Worldwide owner directive is ready for review in [draft PR #38](https://github.com/bladunk/Retriever-Run/pull/38). Main has the original Phase 09 merge `7137b60`. Worldwide is now a direct primary destination, with Camp's social functions separate.
-- The Pages public ranking endpoint returned PGRST202. Applying the owner-reviewed consolidated SQL and configuring the hosted verifier remain owner operations. The real local Supabase run verified three identities, rank replacement, restart persistence and reconnect. [Follow-up report](PHASE_09_REPORT.md#dedicated-worldwide-follow-up) · [Copy-ready migration](../../supabase/ops/phase-nine-install.sql) · [Mobile review](evidence/phase-09/worldwide/README.md)
-
-
-- The original Phase 09 was merged from `codex/retriever-run-phase-09`, based on the approved Phase 08 merge `3d4ce2f`. The baseline Pages build was `1.0.0-phase.8 · 93cecaa`. Phase 08’s native iPhone acceptance remains open. [Phase 08 report](PHASE_08_REPORT.md)
-- The new Great Migration 1 competition has replay-verified results, five boards, consensual friends, private Camps and server-issued awards. Review build `1.0.0-phase.9 · 63116ab` uses closed-by-default migrations. Release operations and existing saves are independent. [Draft PR #37](https://github.com/bladunk/Retriever-Run/pull/37) · [Phase 09 report](PHASE_09_REPORT.md) · [Owner operations](PHASE_09_DEPLOYMENT.md)
-- The next review work is isolated hosted Supabase, native iPhone acceptance and owner approval. Phase 08B is the next major production phase. The production launch and any approved reset remain assigned to Phase 10. [Final visual backlog](FINAL_VISUAL_BACKLOG.md)
+- Operation Opening Day is on `codex/retriever-run-opening-day`, based on `a77cb4131e7c1f81f484c687b70f4aaa4bd95d56` (merged PR #38). The observed Pages build was `1.0.0-phase.9 · 7787d85`, with 14,779,689 required bytes. The owner confirmed the installed Phase 09 SQL, working closed Worldwide read and zero ranked players.
+- Review [draft PR #39](https://github.com/bladunk/Retriever-Run/pull/39), the [Opening Day report](OPENING_DAY_REPORT.md), and the [owner operations](OPENING_DAY_OPERATIONS.md). The additive standings API and compact score-ranked table are implemented. Competitive claim and commit remain behind the Phase 09 verifier. The live Phase 09 endpoint was read-only verified closed with zero ranked players.
+- Opening Day adds complete Journal photography, original Blender field-edge models, water and bank treatment, species shapes, cosmetic canine and sound refinements, and local-save export. The 10,000-seed course sweep and 100,020 obstacle windows passed. Isolated GoTrue, PostgREST and PostgreSQL verified three identities, replay metrics, best replacement, offline reconnect and cross-account denial.
+- The documented candidate is 1.0.0-rc.1 · 1687883. The paired offline portrait circuit captured all 15 territories and reached Endless. Resume from the matched tests and evidence in the current report. Review the remaining art scope, run hosted verifier acceptance and gather a native iPhone trace before public release. Keep the closed competition gate and existing records and saves. [Final visual backlog](FINAL_VISUAL_BACKLOG.md)
 
 ## Implemented in Phase 01
 

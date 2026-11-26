@@ -1,0 +1,26 @@
+{
+  "build": {
+    "version": "1.0.0-rc.1",
+    "id": "39ff084"
+  },
+  "manifest": "0539f0abfebc2167bf4f",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "engine": "chromium",
+  "isolated": true,
+  "verified": {
+    "score": 95,
+    "rank": 2,
+    "ticks": 380,
+    "honors": [
+      "camp-first-hunt"
+    ]
+  },
+  "replayMs": 280,
+  "offline": true,
+  "verifiedAfterReconnect": true,
+  "localCareerIsolation": true,
+  "errors": []
+}

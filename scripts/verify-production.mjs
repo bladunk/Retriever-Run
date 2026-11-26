@@ -14,6 +14,19 @@ for (const asset of manifest.assets) {
   const data = await read(asset.path)
   assert.equal(data.length, asset.bytes, asset.path)
   assert.equal(createHash('sha256').update(data).digest('hex'), asset.sha256, asset.path)
+  if (asset.path.endsWith('.webp')) {
+    assert.equal(data.toString('ascii', 0, 4), 'RIFF', asset.path)
+    assert.equal(data.toString('ascii', 8, 12), 'WEBP', asset.path)
+    assert.equal(data.readUInt32LE(4) + 8, data.length, asset.path)
+    for (let offset = 12; offset < data.length;) {
+      assert.ok(offset + 8 <= data.length, 'Incomplete WebP chunk')
+      const type = data.toString('ascii', offset, offset + 4)
+      assert.ok(type !== 'EXIF' && type !== 'XMP ', 'Strip image metadata before publishing')
+      const length = data.readUInt32LE(offset + 4)
+      offset += 8 + length + (length % 2)
+      assert.ok(offset <= data.length, 'Invalid WebP chunk length')
+    }
+  }
 }
 const installed = installation(manifest)
 const bytes = assets => assets.reduce((sum, asset) => sum + asset.bytes, 0)

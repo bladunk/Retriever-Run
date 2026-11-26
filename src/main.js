@@ -749,7 +749,7 @@ function updateHud() {
     hudCache.stage = stage.level
   }
   if (hudCache.points !== points) ui.score.textContent = format.format(points)
-  if (hudCache.distance !== distance) ui.distance.textContent = format.format(distance) + ' m'
+  if (hudCache.distance !== distance) ui.distance.textContent = distance < 1000 ? format.format(distance) + ' m' : (distance / 1000).toFixed(2) + ' km'
   if (hudCache.retrieves !== run.retrieves) ui['hud-retrieves'].textContent = format.format(run.retrieves)
   if (hudCache.charge !== charge) ui.charge.value = charge
   if (hudCache.streak !== run.streak) {
@@ -992,9 +992,13 @@ function reportRankedResult() {
   const detail = ui['report-worldwide']
   summary.hidden = detail.hidden = !runPermit
   if (!runPermit) return
-  const posting = rankedCamp.finish(runPermit, runTrace?.finish(ticks))
-  summary.textContent = detail.textContent = posting.status === 'pending' ? 'Worldwide verification pending' :
-    'Local result saved · This hunt is outside the ranked limits.'
+  const trace = runTrace?.finish(ticks)
+  const posting = rankedCamp.finish(runPermit, trace)
+  const local = !trace ? 'Local result saved · Ranked verification covers up to 15 minutes and 2,048 accepted moves.' :
+    posting.status === 'expired' ? 'Local result saved · Ranked entry expired.' :
+    posting.status === 'queue_full' ? 'Local result saved · The ranked submission queue is full.' :
+    'Local result saved · This hunt did not meet ranked verification requirements.'
+  summary.textContent = detail.textContent = posting.status === 'pending' ? 'Worldwide verification pending' : local
   const current = runStatistics
   runPermit = runTrace = null
   posting.done?.then(receipt => {
@@ -1081,6 +1085,23 @@ function bindInput() {
   ui.pause.addEventListener('click', pause)
   ui.settings.addEventListener('click', openSettings)
   ui['close-settings'].addEventListener('click', () => ui.preferences.close())
+  ui['export-save'].hidden = diagnosticsRequested
+  ui['export-save'].addEventListener('click', () => {
+    const json = lodge.exportSave()
+    const status = ui['export-save-status']
+    status.hidden = false
+    if (!json) {
+      status.textContent = 'Open the latest version to export this save.'
+      return
+    }
+    const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'retriever-run-save.json'
+    link.click()
+    setTimeout(() => URL.revokeObjectURL(url), 30_000)
+    status.textContent = 'Keep the exported file private. It contains local profiles, progress and records.'
+  })
   ui.preferences.addEventListener('close', () => ui.settings.focus())
   for (const key of volumeKeys) {
     ui[key].addEventListener('input', () => {

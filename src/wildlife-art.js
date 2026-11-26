@@ -30,12 +30,15 @@ function birdBody(animal) {
   const wader = family === 'wader' || family === 'crane'
   const diver = family.includes('diver') || family === 'merganser'
   const pheasant = family === 'pheasant'
+  const goose = family === 'goose'
+  const eagle = family === 'raptor'
   const parts = []
   const put = (shape, tint, ...pose) => append(parts, shape, tint, ...pose)
-  put(round, body, 0,0,.055, diver ? .223 : .188,.151, pheasant ? .233 : .291)
+  put(round, body, 0,0,.055, goose ? .217 : diver ? .213 : .183, goose ? .167 : .146,
+    pheasant ? .235 : wader ? .258 : .291)
   const breast = id === 'mallard' ? 0x874937 : id === 'shoveler' ? 0xf1ede0 : body
   put(small, breast, 0,-.034,-.125,.157,.118,.17)
-  put(small, wing, 0,.019,pheasant ? .37 : .30,pheasant ? .075 : .116,.037,
+  put(small, eagle ? 0xf0e8d6 : wing, 0,.019,pheasant ? .37 : .30,pheasant ? .075 : .116,.037,
     pheasant ? .325 : family === 'pintail' ? .215 : .137,pheasant ? .15 : -.12)
   if (pheasant || family === 'pintail') put(small, wing, 0,-.015,.47,.036,.016,.205,.19)
   if (pheasant) {
@@ -44,10 +47,17 @@ function birdBody(animal) {
       put(small, 0xc08946, side * .137, .037, .112, .036, .058, .188, .14)
     }
   }
-  const headZ = long ? -.365 : -.275
+  const headZ = goose ? -.26 : wader ? -.42 : -.275
   const headY = long ? .185 * neck : .143 + (neck - 1) * .12
-  const neckColor = wader ? body : head
-  put(round, neckColor, 0,headY * .56,headZ * .68,long ? .068 : .087,headY * .71 + .056,.075,long ? -.41 : -.6)
+  const neckColor = wader || eagle ? body : head
+  if (goose) {
+    put(round, neckColor, 0,headY*.58,-.203,.058,headY*.74,.061,-.15)
+  } else if (wader && family !== 'crane') {
+    put(round, neckColor, 0,headY*.34,-.205,.057,headY*.49,.057,-.44)
+    put(round, neckColor, 0,headY*.68,-.326,.041,headY*.39,.046,-.42)
+  } else {
+    put(round, neckColor, 0,headY * .56,headZ * .68,long ? .059 : .081,headY * .71 + .054,.068,long ? -.41 : -.6)
+  }
   put(small, head, 0,headY,headZ,long ? .064 : .081,
     id === 'canvasback' ? .089 : .076,.102)
   const billColor = ['pintail','canvasback','gadwall','bufflehead','canada-goose','cackling-goose','wood-duck'].includes(id) ? 0x4a4850 :
@@ -64,10 +74,27 @@ function birdBody(animal) {
   if (wader) for (const side of [-1, 1]) {
     put(shaft, 0x525044, side*.065,-.18,.24,.017,.33,.019,1.22)
   }
+  if (id === 'wood-duck') {
+    put(small, 0x775040, 0,-.022,-.140,.163,.104,.139)
+    put(small, 0xbe4f3b, 0,headY-.010,headZ-.109,.039,.021,.043)
+    put(small, 0x233c45, 0,headY+.052,headZ+.053,.058,.045,.137,.26)
+  }
+  if (eagle) {
+    put(small, 0xc99c42, 0,headY-.029,headZ-.168,.036,.042,.029,.26)
+  }
   for (const side of [-1,1]) {
+    if (id === 'wood-duck') {
+      put(small, 0xeae8d9, side*.055,headY+.056,headZ+.056,.017,.009,.106,.24)
+      put(small, 0xeae8d9, side*.075,headY-.034,headZ+.029,.013,.011,.066,-.10)
+      put(small, 0xa92d26, side*.081,headY+.009,headZ-.030,.013,.014,.015)
+      put(small, 0x191616, side*.090,headY+.011,headZ-.033,.005,.007,.008)
+      put(small, 0xb9a180, side*.143,-.003,.068,.048,.077,.156)
+      continue
+    }
+    const whiteChin = id === 'canada-goose' || id === 'cackling-goose'
     const mark = ['canada-goose','cackling-goose','goldeneye','bufflehead','blue-teal','wood-duck','white-fronted-goose'].includes(id) ? 0xe5dfce :
       id === 'green-teal' ? 0x346d5c : pheasant ? 0xa74635 : head
-    put(small, mark, side * (long ? .051 : .068),headY-.009,
+    put(small, mark, side * (long ? .051 : .068),headY - (whiteChin ? .043 : .009),
       headZ+(id === 'white-fronted-goose' || id === 'blue-teal' ? -.046 : .015),.023,.032,.061)
     put(small, id === 'goldeneye' ? 0xddb544 : 0x211d18, side*(long ? .063 : .080),headY+.018,headZ-.025,.013,.012,.015)
     if (!long && !pheasant) put(small, wing, side*.144,.042,.068,.062,.07,.185)
@@ -78,7 +105,9 @@ function birdBody(animal) {
 function pinions(animal) {
   const { family, wing, id } = animal
   const wader = family === 'crane' || family === 'wader'
-  const span = wader || family === 'raptor' ? .82 : family === 'goose' ? .72 : .56
+  const raptor = family === 'raptor'
+  const span = wader || raptor ? .82 : family === 'goose' ? .72 : .56
+  const blackWing = ['snow-goose','ross-goose','crane'].includes(id)
   const positions = [], colors = []
   const base = new T.Color(wing)
   function fan(a, b, c, gain, tint = base) {
@@ -86,15 +115,18 @@ function pinions(animal) {
     for (const value of [gain,gain*.91,gain*.76]) shade.copy(tint).multiplyScalar(value).toArray(colors,colors.length)
   }
   const patch = new T.Color(id === 'gadwall' ? 0xebe1c8 : id === 'mallard' ? 0x41569c : id === 'blue-teal' ? 0x728c9c : wing)
+  const primary = new T.Color(0x2c2e2a)
   for (let k = 0; k < 12; k++) {
     const t = k / 12, u = (k + 1) / 12
     const a = [t*span,.034*Math.sin(t*2.7),-.14-.10*Math.sin(t*2.5)]
     const b = [u*span,.034*Math.sin(u*2.7),-.14-.10*Math.sin(u*2.5)]
     const mid = [(t+.035)*span,.059-.057*t,.026]
-    const tip = [(t+.04)*span+.19*t,-.023,.187-.15*t*t]
-    fan(a,b,mid,1.16,k>2 && k<7 ? patch : base)
-    fan(a,mid,tip,.91,k<6 ? patch : base)
-    fan(mid,b,tip,1.10)
+    const finger = raptor && k >= 7 ? Math.sin((k - 6) * Math.PI / 6) * .085 : 0
+    const tip = [(t+.04)*span+.19*t+finger,-.023,.187-.15*t*t+finger*.64]
+    const feathers = blackWing && k >= (id === 'crane' ? 6 : 8) ? primary : base
+    fan(a,b,mid,1.16,k>2 && k<7 ? patch : feathers)
+    fan(a,mid,tip,.91,k<6 ? patch : feathers)
+    fan(mid,b,tip,1.10,feathers)
   }
   const geometry = new T.BufferGeometry()
   geometry.setAttribute('position', new T.Float32BufferAttribute(positions,3))

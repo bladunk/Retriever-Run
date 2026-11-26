@@ -1,6 +1,7 @@
 import { rewardGroups } from './hunt-presentation.js'
 import { collectionSearch, collectionSelect, matchesCollection, primaryRoom, roomGroups } from './collection-browser.js'
 import { encounterTiers, fieldSpecies, habitatEncounters } from './wildlife-catalog.js'
+import { journalFieldMarks } from './journal-field-marks.js'
 import { speciesArtwork, wildlifePortrait } from './wildlife-portrait.js'
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, honorProgress, medals, patches } from './honors.js'
@@ -148,7 +149,8 @@ function journal(player) {
     row.dataset.species = animal.id
     row.dataset.category = speciesArtwork[animal.id].group
     const image = node('img')
-    image.src = wildlifePortrait(animal, seen)
+    image.src = wildlifePortrait(animal, true)
+    image.decoding = 'async'
     image.alt = ''
     image.width = 100
     image.height = 70
@@ -163,7 +165,17 @@ function journal(player) {
       [observation.rare ? number(observation.rare) + ' rare sightings' : '',
         observation.retrieves ? number(observation.retrieves) + ' retrieves' : ''].filter(Boolean).join(' · ')))
     const notes = node('details')
-    notes.append(node('summary', 'Range and honors'))
+    notes.append(node('summary', 'Field marks, range and honors'))
+    const photo = speciesArtwork[animal.id].photo
+    const full = node('img', null, 'journal-photo-detail')
+    full.alt = animal.name
+    full.width = 840
+    full.height = 588
+    full.decoding = 'async'
+    notes.append(full, node('p', journalFieldMarks[animal.id]))
+    notes.addEventListener('toggle', () => {
+      if (notes.open && !full.hasAttribute('src')) full.src = './' + photo.detail
+    })
     const recorded = []
     for (const region of expeditionRegions) {
       const tier = habitatEncounters[region.key].findIndex(species => species.includes(animal.id))
@@ -185,20 +197,16 @@ function journal(player) {
       const kinds = new Set(rewards.map(item => item.bandana ? 'bandanas' : item.id.endsWith('-vest') ? 'vests' : 'collars'))
       notes.append(node('p', 'Equipment rewards · ' + [...kinds].join(', ')))
     }
-    details.append(notes)
-    const sourceArt = speciesArtwork[animal.id].photo
-    if (seen && sourceArt) {
-      const credit = node('a', 'Photo by ' + sourceArt.author, 'photo-credit')
-      credit.href = sourceArt.source
-      credit.target = '_blank'
-      credit.rel = 'noopener'
-      const terms = node('a', sourceArt.license, 'photo-credit')
-      terms.href = sourceArt.terms
-      terms.target = '_blank'
-      terms.rel = 'noopener'
-      notes.append(credit, terms)
-    } else if (seen) details.append(node('small', 'Field silhouette', 'room-note'))
-    row.append(image, details)
+    const credit = node('a', 'Photo by ' + photo.author, 'photo-credit')
+    credit.href = photo.source
+    credit.target = '_blank'
+    credit.rel = 'noopener'
+    const terms = node('a', photo.license, 'photo-credit')
+    terms.href = photo.terms
+    terms.target = '_blank'
+    terms.rel = 'noopener'
+    notes.append(credit, terms, node('small', 'Framed and resized for the Journal', 'photo-credit'))
+    row.append(image, details, notes)
     guide.append(row)
   }
   const filter = () => {
@@ -406,7 +414,7 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
       if (tab.dataset.room === group) tab.setAttribute('aria-current', 'page')
       else tab.removeAttribute('aria-current')
     }
-    ui['room-picker'].hidden = roomGroups[group].length < 2
+    ui['room-picker'].hidden = room === 'worldwide' || roomGroups[group].length < 2
     picker.replaceChildren(...roomGroups[group].map(key => {
       const option = node('option', labels[key])
       option.value = key
