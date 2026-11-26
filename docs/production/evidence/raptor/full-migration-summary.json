@@ -1,0 +1,175 @@
+{
+  "build": {
+    "version": "1.0.0-rc.2",
+    "id": "1f327a9"
+  },
+  "seed": 7,
+  "course": "migration-30-raptor",
+  "quality": "low",
+  "offline": true,
+  "elapsed": 451.1249999999999,
+  "presentations": 1979,
+  "orderedInputs": 394,
+  "sampledResourceSnapshots": 903,
+  "discarded": 0,
+  "peaks": {
+    "draws": 71,
+    "triangles": 176926,
+    "geometries": 121,
+    "textures": 13,
+    "tiles": 7,
+    "packs": 2
+  },
+  "steadyTileRange": [
+    5,
+    7
+  ],
+  "last": {
+    "elapsed": 451.1249999999999,
+    "distance": 11621.553075001097,
+    "draws": 49,
+    "triangles": 94800,
+    "geometries": 116,
+    "textures": 13,
+    "tiles": 6,
+    "packs": 0,
+    "tileSliceMs": 0.20000004768371582
+  },
+  "route": [
+    {
+      "territory": "gulf",
+      "draws": 61,
+      "triangles": 128318,
+      "geometries": 70,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "territory": "cypress",
+      "draws": 62,
+      "triangles": 144560,
+      "geometries": 82,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "flyway",
+      "draws": 63,
+      "triangles": 112296,
+      "geometries": 92,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "timber",
+      "draws": 64,
+      "triangles": 128668,
+      "geometries": 90,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "ozark",
+      "draws": 64,
+      "triangles": 149153,
+      "geometries": 96,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "farm",
+      "draws": 70,
+      "triangles": 176926,
+      "geometries": 99,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "platte",
+      "draws": 69,
+      "triangles": 116065,
+      "geometries": 105,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "sandhills",
+      "draws": 63,
+      "triangles": 99361,
+      "geometries": 105,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "prairie",
+      "draws": 60,
+      "triangles": 105515,
+      "geometries": 105,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "dakota",
+      "draws": 61,
+      "triangles": 97156,
+      "geometries": 103,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "manitoba",
+      "draws": 58,
+      "triangles": 100472,
+      "geometries": 105,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "parklands",
+      "draws": 67,
+      "triangles": 118815,
+      "geometries": 112,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 2
+    },
+    {
+      "territory": "boreal",
+      "draws": 65,
+      "triangles": 114107,
+      "geometries": 112,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "territory": "foothills",
+      "draws": 71,
+      "triangles": 134711,
+      "geometries": 118,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 0
+    },
+    {
+      "territory": "mountain",
+      "draws": 69,
+      "triangles": 107512,
+      "geometries": 121,
+      "textures": 13,
+      "tiles": 7,
+      "packs": 0
+    }
+  ]
+}

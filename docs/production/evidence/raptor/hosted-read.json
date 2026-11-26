@@ -1,0 +1,20 @@
+{
+  "build": {
+    "version": "1.0.0-rc.1",
+    "id": "1687883"
+  },
+  "reads": {
+    "rr_ranked_board": {
+      "http": 200,
+      "status": "ok",
+      "open": false,
+      "ranked": 0,
+      "season": "great-migration-1",
+      "course": "migration-30-phase-05"
+    },
+    "rr_worldwide_standings": {
+      "http": 404,
+      "code": "PGRST202"
+    }
+  }
+}

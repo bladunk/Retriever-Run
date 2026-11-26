@@ -62,6 +62,7 @@ export function createPlayer(scene, breed = 'lab', createPickup, kit, maySwap = 
       rig.root.visible = false
       root.add(rig.root)
       appearance()
+      return true
     },
     reset() { fallback.reset(); rig?.reset() },
     moveTo(target) { target.add(root, shadow, fallback.root) },

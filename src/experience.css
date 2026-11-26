@@ -22,8 +22,10 @@
 #game[data-mode="title"] #current-runner:empty { display: none; }
 #game[data-mode="title"] #local-status { margin: .35rem 0; font-size: .68rem; }
 #game[data-mode="paused"] #local-status { display: none; }
-#game[data-mode="running"] #music-toggle,
-#game[data-mode="running"] #settings { display: none; }
+#game:not([data-mode="title"]) .title-tools { display: none; }
+.title-tools { display: flex; flex-wrap: wrap; gap: .16rem .5rem; align-items: center; }
+.title-tools button { color: var(--field-cream); min-width: 44px; padding-inline: .36rem; }
+.title-tools #tutorial-entry { padding-inline: .36rem; }
 #game[data-mode="running"] #hud { border-radius: 8px; }
 #game[data-mode="running"] #conditions { letter-spacing: .09em; }
 
@@ -154,21 +156,53 @@
 
 @media (orientation: portrait) {
   #game[data-mode="title"] .menu {
-    padding: 62px max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+    padding: max(12px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
     background: transparent;
   }
   #game[data-mode="title"] .boyd-title-art {
-    background-image: linear-gradient(0deg, #1b241d 1%, transparent 60%), url('/branding/boyd-portrait.webp');
+    background-image: linear-gradient(0deg, #1b241d 14%, #1b241d 26%, transparent 59%), url('/branding/boyd-portrait.webp');
     background-position: center, center top;
     background-size: auto, 100% auto;
   }
-  #game[data-mode="title"] .menu-content { width: min(100%, 495px); padding: 13px; }
-  #game[data-mode="title"] h1 { font-size: clamp(2.5rem, 11.3vw, 4.2rem); }
+  #game[data-mode="title"] .menu-content {
+    width: min(100%, 495px);
+    padding: 13px;
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(0deg, #1c2920 37%, #1c2920df 76%, #1c292000 100%);
+  }
+  #game[data-mode="title"] h1 { font-size: clamp(2.45rem, 9.6vw, 4.2rem); }
 }
 @media (max-height: 640px) and (orientation: portrait) {
   #game[data-mode="title"] .menu-content { padding: 10px 12px; }
-  #game[data-mode="title"] #menu-copy { font-size: .79rem; }
+  #game[data-mode="title"] #menu-copy { display: none; }
+  #game[data-mode="title"] .eyebrow { margin-bottom: .45rem; }
   #game[data-mode="title"] #primary { min-height: 46px; }
   #field-report .report-actions div button { font-size: .73rem; }
   #game[data-mode="title"] #current-runner { font-size: .72rem; }
 }
+
+#art-studio {
+  position: absolute;
+  z-index: 8;
+  top: max(8px, env(safe-area-inset-top));
+  right: max(8px, env(safe-area-inset-right));
+  width: min(345px, calc(100% - 16px));
+  background: var(--field-ground);
+  color: var(--field-cream);
+  border: 1px solid var(--field-stroke);
+  border-radius: 8px;
+  touch-action: pan-y;
+}
+#art-studio summary { min-height: 44px; cursor: pointer; padding: .7rem .85rem; }
+#art-studio form {
+  display: grid;
+  gap: .3rem;
+  max-height: min(430px, 74dvh);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: .3rem .75rem .75rem;
+}
+#art-studio label { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.35fr); align-items: center; gap: .5rem; }
+#art-studio :is(button, input, select) { min-width: 0; min-height: 42px; font-size: 1rem; }
+#art-studio output { padding: .35rem; }

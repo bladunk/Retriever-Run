@@ -69,6 +69,8 @@ export function prepareGulfSurfaces(wanted, probe) {
     pending = false
     if (!maps) return
     const [color, properties] = maps
+    probe?.texture(color, 'Gulf atlas / color')
+    probe?.texture(properties, 'Gulf atlas / properties')
     gulfMap.value = color
     gulfProperties.value = properties
     gulfReady.value = 1

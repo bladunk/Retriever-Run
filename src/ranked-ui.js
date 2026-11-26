@@ -135,6 +135,7 @@ function ranking(camp, player, scope, campId, onReady) {
     viewport.hidden = true
   }
   const profile = node('section', null, 'ranked-public-profile')
+  const compatibility = node('p', null, 'room-note')
   let offset = 0
   let request = 0
   let profileRequest = 0
@@ -150,7 +151,7 @@ function ranking(camp, player, scope, campId, onReady) {
   next.hidden = true
   section.append(version, own, toolbar)
   section.append(worldwide ? viewport : list)
-  if (worldwide) section.append(node('p', 'Official rank follows verified score. Each column shows a separate personal best.', 'room-note'))
+  if (worldwide) section.append(compatibility)
   section.append(next, rivals, profile)
 
   function showProfile(nickname, button) {
@@ -180,6 +181,7 @@ function ranking(camp, player, scope, campId, onReady) {
       rivals.replaceChildren()
       list.replaceChildren()
       population.textContent = ''
+      compatibility.textContent = ''
       if (worldwide) viewport.hidden = true
     }
     next.disabled = true
@@ -191,6 +193,9 @@ function ranking(camp, player, scope, campId, onReady) {
     onReady?.(result)
     if (result.status !== 'ok') { status.textContent = feedback(result); return }
     if (!from) {
+      if (worldwide) compatibility.textContent = result.scoresOnly
+        ? 'Official score rankings are available. The other verified bests are temporarily unavailable.'
+        : 'Official rank follows verified score. Each column shows a separate personal best.'
       version.textContent = 'Great Migration 1 · ' + (result.open ? 'Open' : 'Launch review')
       if (worldwide) version.append(node('small', result.course))
       if (result.as_of && Number.isFinite(Date.parse(result.as_of))) version.append(node('small', 'Last synced ' + playedAt.format(new Date(result.as_of))))
@@ -280,7 +285,7 @@ function worldwide(camp, player, start, navigate) {
   const board = ranking(camp, player, 'worldwide', null, result => {
     ranked.hidden = !result.open || !camp.member(player.id) || Boolean(result.stale || result.authStatus)
     state.textContent = result.stale || result.status !== 'ok' || result.authStatus ? '' : result.open ?
-      (camp.member(player.id) ? 'Ranked entry is optional. Ordinary hunts stay local.' : 'Join in Competitive profile to enter.') : messages.closed
+      (camp.member(player.id) ? 'Ranked hunts use the original Great Migration course. Ordinary hunts use the Raptor course.' : 'Join in Competitive profile to enter.') : messages.closed
   })
   const links = node('div', null, 'worldwide-toolbar')
   links.append(action('Competitive profile', () => navigate('camp-profile')),

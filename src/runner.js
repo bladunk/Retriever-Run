@@ -381,7 +381,10 @@ export function createCourse(seed = 1, rules = director) {
       row.exits = [row.lane]
     } else if (goose) {
       const preferred = rules.gooseInterval === director.gooseInterval ? stage.flock - 24 : 0
-      nextGoose = time + between(rules.gooseInterval) + preferred
+      const spacing = between(rules.gooseInterval)
+      nextGoose = rules.hostileGooseSpacing
+        ? time + Math.max(rules.hostileGooseCooldown, (spacing + preferred) * rules.hostileGooseSpacing)
+        : time + spacing + preferred
       gap = Math.max(gap, 1.22)
     } else if (signature) {
       lastTree = time

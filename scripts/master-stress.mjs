@@ -1,3 +1,4 @@
+import { localDirector } from '../src/difficulty.js'
 import assert from 'node:assert/strict'
 import { firstContact, laneWidth, obstacleVolumes } from '../src/collision.js'
 import { courseStages, distanceAtTime, primaryDuration, speedAtTime, stageAt, stageSeconds } from '../src/difficulty.js'
@@ -78,7 +79,7 @@ function replay(rows, pivot, seed, stage) {
 
 for (let trial = 0; trial < seeds; trial++) {
   const seed = Math.imul(trial + 1, 0x53d72d91) >>> 0
-  const generate = createCourse(seed)
+  const generate = createCourse(seed, process.argv.includes('raptor') ? localDirector : undefined)
   const rows = []
   for (let row = generate(); row.time < primaryDuration + 30; row = generate()) {
     assert.ok(row.at > (rows.at(-1)?.at ?? 0) && row.lane >= -1 && row.lane <= 1)

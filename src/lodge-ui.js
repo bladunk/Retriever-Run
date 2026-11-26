@@ -14,7 +14,7 @@ import { rankedRoom } from './ranked-ui.js'
 import { node, number, meters, date, duration, rows, cards } from './lodge-elements.js'
 import { careerLine, careerRoom, nearbyHonor } from './career-ui.js'
 import { kennelRoom } from './kennel-ui.js'
-import { courseRuleset, legacyMigrationRuleset } from './ruleset.js'
+import { courseRuleset, legacyMigrationRuleset, localCourseRuleset } from './ruleset.js'
 import { fieldHonorsRoom } from './honor-ui.js'
 import { checkLabel, localHonors, waterfowlSpecies } from './field-honors.js'
 import { kennelItems } from './kennel-catalog.js'
@@ -266,9 +266,9 @@ function leaderboard(lodge, metric, selectMetric) {
     })
     return list
   }
-  const entries = lodge.board(metric, courseRuleset)
+  const entries = lodge.board(metric, localCourseRuleset)
   const empty = node('p', 'Finish a run to post the first score.', 'empty-board')
-  const archived = [[legacyMigrationRuleset, 'Previous Great Migration'], ['legacy-10', 'Earlier ten-territory course']]
+  const archived = [[courseRuleset, 'Phase 05 Great Migration'], [legacyMigrationRuleset, 'Previous Great Migration'], ['legacy-10', 'Earlier ten-territory course']]
     .flatMap(([course, label]) => {
       const past = lodge.board(metric, course)
       return past.length ? [node('h3', label, 'section-title section-break'), board(past)] : []

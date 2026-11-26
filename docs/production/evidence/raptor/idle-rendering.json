@@ -1,0 +1,23 @@
+{
+  "engine": "chromium",
+  "samples": [
+    {
+      "version": "before",
+      "build": {
+        "version": "1.0.0-rc.1",
+        "id": "1687883"
+      },
+      "calls": 72,
+      "observedMs": 2000.300000011921
+    },
+    {
+      "version": "after",
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "calls": 0,
+      "observedMs": 2000.300000011921
+    }
+  ]
+}

@@ -77,6 +77,7 @@ function closeScreen() {
 async function startGame() {
   closeScreen()
   game.hidden = false
+  if (!launch && new URLSearchParams(location.search).get('perf') === '1') performance.mark('retriever-module-request')
   launch ??= import('./main.js')
   try { await launch } catch (error) {
     if (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) console.error(error)

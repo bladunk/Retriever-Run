@@ -1,0 +1,106 @@
+{
+  "environment": "Existing disposable local GoTrue/PostgREST/PostgreSQL stack with three canonical replay fixtures",
+  "outcomes": [
+    {
+      "name": "rr_worldwide_standings",
+      "status": 200,
+      "open": true,
+      "course": "migration-30-phase-05",
+      "total": 3,
+      "rows": [
+        {
+          "rank": 1,
+          "value": 95,
+          "independentBestFields": [
+            "combo",
+            "distance",
+            "duration",
+            "score"
+          ],
+          "publicKeys": [
+            "bests",
+            "nickname",
+            "rank",
+            "recorded_at",
+            "value"
+          ]
+        },
+        {
+          "rank": 2,
+          "value": 75,
+          "independentBestFields": [
+            "combo",
+            "distance",
+            "duration",
+            "score"
+          ],
+          "publicKeys": [
+            "bests",
+            "nickname",
+            "rank",
+            "recorded_at",
+            "value"
+          ]
+        },
+        {
+          "rank": 3,
+          "value": 35,
+          "independentBestFields": [
+            "distance",
+            "duration",
+            "score"
+          ],
+          "publicKeys": [
+            "bests",
+            "nickname",
+            "rank",
+            "recorded_at",
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rr_ranked_board",
+      "status": 200,
+      "open": true,
+      "course": "migration-30-phase-05",
+      "total": 3,
+      "rows": [
+        {
+          "rank": 1,
+          "value": 95,
+          "independentBestFields": [],
+          "publicKeys": [
+            "nickname",
+            "rank",
+            "recorded_at",
+            "value"
+          ]
+        },
+        {
+          "rank": 2,
+          "value": 75,
+          "independentBestFields": [],
+          "publicKeys": [
+            "nickname",
+            "rank",
+            "recorded_at",
+            "value"
+          ]
+        },
+        {
+          "rank": 3,
+          "value": 35,
+          "independentBestFields": [],
+          "publicKeys": [
+            "nickname",
+            "rank",
+            "recorded_at",
+            "value"
+          ]
+        }
+      ]
+    }
+  ]
+}

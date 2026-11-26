@@ -1,0 +1,163 @@
+{
+  "method": "Chromium SwiftShader with fixed practice seed and low preset. Artificial simulation cadence. Baseline installed assets with external network blocked. Candidate emulated browser offline after installation.",
+  "baseline": {
+    "quality": "low",
+    "seed": 7,
+    "cycles": 60,
+    "firstContacts": [
+      [
+        "stream",
+        3.1606069009927467,
+        35.866847311142806,
+        0
+      ]
+    ],
+    "first": {
+      "geometries": 44,
+      "textures": 12,
+      "programs": 17,
+      "tiles": 7,
+      "wildlife": 0
+    },
+    "last": {
+      "geometries": 44,
+      "textures": 12,
+      "programs": 17,
+      "tiles": 7,
+      "wildlife": 0
+    },
+    "steadyGeometries": {
+      "min": 44,
+      "median": 44,
+      "p95": 44,
+      "max": 44
+    },
+    "steadyTextures": {
+      "min": 12,
+      "median": 12,
+      "p95": 12,
+      "max": 12
+    },
+    "steadyPacks": {
+      "min": 0,
+      "median": 0,
+      "p95": 0,
+      "max": 0
+    },
+    "steadyTiles": {
+      "min": 6,
+      "median": 7,
+      "p95": 7,
+      "max": 7
+    },
+    "steadyHuntPeakGeometries": {
+      "min": 47,
+      "median": 47,
+      "p95": 47,
+      "max": 47
+    },
+    "steadyHuntPeakTextures": {
+      "min": 12,
+      "median": 12,
+      "p95": 12,
+      "max": 12
+    },
+    "restartHandlerMs": {
+      "min": 3.199999988079071,
+      "median": 46.10000002384186,
+      "p95": 575.2999999523163,
+      "max": 790.0999999642372
+    },
+    "pressToSubmitMs": null,
+    "firstPresentationIntervalMs": null
+  },
+  "candidate": {
+    "quality": "low",
+    "seed": 7,
+    "cycles": 60,
+    "firstContacts": [
+      [
+        "stream",
+        3.1606069009927467,
+        35.866847311142806,
+        0
+      ]
+    ],
+    "first": {
+      "geometries": 44,
+      "textures": 12,
+      "programs": 17,
+      "tiles": 7,
+      "wildlife": 0,
+      "pool": {
+        "keys": 6,
+        "idle": 5
+      }
+    },
+    "last": {
+      "geometries": 44,
+      "textures": 12,
+      "programs": 17,
+      "tiles": 7,
+      "wildlife": 0,
+      "pool": {
+        "keys": 9,
+        "idle": 5
+      }
+    },
+    "steadyGeometries": {
+      "min": 44,
+      "median": 44,
+      "p95": 44,
+      "max": 44
+    },
+    "steadyTextures": {
+      "min": 12,
+      "median": 12,
+      "p95": 12,
+      "max": 12
+    },
+    "steadyPacks": {
+      "min": 0,
+      "median": 0,
+      "p95": 0,
+      "max": 0
+    },
+    "steadyTiles": {
+      "min": 6,
+      "median": 7,
+      "p95": 7,
+      "max": 7
+    },
+    "steadyHuntPeakGeometries": {
+      "min": 47,
+      "median": 47,
+      "p95": 47,
+      "max": 47
+    },
+    "steadyHuntPeakTextures": {
+      "min": 12,
+      "median": 12,
+      "p95": 12,
+      "max": 12
+    },
+    "restartHandlerMs": {
+      "min": 4.900000035762787,
+      "median": 60.60000002384186,
+      "p95": 805.3000000119209,
+      "max": 1033.699999988079
+    },
+    "pressToSubmitMs": {
+      "min": 6,
+      "median": 68.9,
+      "p95": 806.8,
+      "max": 1035.2
+    },
+    "firstPresentationIntervalMs": {
+      "min": 2.2,
+      "median": 14,
+      "p95": 508.5,
+      "max": 614.2
+    }
+  }
+}

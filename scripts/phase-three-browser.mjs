@@ -6,11 +6,39 @@ import { pathToFileURL } from 'node:url'
 import { chromium, devices, webkit } from 'playwright'
 
 const args = process.argv.slice(2)
+
+function checkTextureReplays(samples, reuse) {
+  const first = samples[0].retired
+  const last = samples.at(-1).retired
+  const boneTextures = snapshot => snapshot.wildlifeModels.models.reduce((sum, model) => sum + model.boneTextures, 0)
+  for (const { retired } of samples) {
+    assert.ok(retired.wildlifeModels.resident <= (reuse ? 2 : 0), 'wildlife residency exceeded its limit')
+    if (reuse) {
+      assert.ok(retired.wildlifeModels.models.every(model => model.boneTextures <= 1), 'duplicate skeleton texture')
+      assert.equal(retired.wildlifeModels.misses, first.wildlifeModels.misses, 'resident rig loaded again')
+      assert.equal(retired.wildlifeModels.evictions, first.wildlifeModels.evictions, 'resident rig was evicted')
+    }
+    // The second resident rig may finish warming between the first two hunts.
+    const warmed = reuse ? boneTextures(retired) - boneTextures(first) : 0
+    assert.ok(retired.textures <= first.textures + warmed, 'replay retained unexplained textures')
+  }
+  if (reuse) assert.equal(last.wildlifeModels.rigEncounters - first.wildlifeModels.rigEncounters, samples.length - 1)
+  assert.equal(last.hunt.id, 5)
+}
+
+const recordedTextures = args.find(argument => argument.startsWith('recheck-textures='))
+if (recordedTextures) {
+  const samples = JSON.parse(await readFile(recordedTextures.slice('recheck-textures='.length), 'utf8'))
+  checkTextureReplays(samples, args.includes('reuse'))
+  console.log(`Verified ${samples.length} recorded texture replays`)
+  process.exit(0)
+}
+
 const engine = args.includes('webkit') ? webkit : chromium
 const source = process.env.FIELD_SOURCE ?? '.'
 const fromSource = name => import(pathToFileURL(resolve(source, 'src', name + '.js')).href)
 const { expeditionRegions } = await fromSource('expedition')
-const { distanceAtTime, speedAtTime, courseStages, stageAt } = await fromSource('difficulty')
+const { distanceAtTime, speedAtTime, courseStages, stageAt, localDirector } = await fromSource('difficulty')
 const { advance, createCourse, newRun, reactionWindow } = await fromSource('runner')
 const { firstContact } = await fromSource('collision')
 const { tickSeconds } = await fromSource('timing')
@@ -44,7 +72,7 @@ const quality = args.find(arg => ['low','high','balanced','auto'].includes(arg))
 const results = []
 
 function rowsFor(seed, stop) {
-  const next = createCourse(seed)
+  const next = createCourse(seed, args.includes('raptor') ? localDirector : undefined)
   const rows = []
   for (let row = next(); row.time < stop; row = next()) rows.push(row)
   return rows
@@ -63,7 +91,7 @@ function guidedInputs(seed, duration, start = 0) {
   }
   if (start) Object.assign(run, { distance: start, elapsed: high, speed: speedAtTime(high) })
   const controls = createRunControls()
-  const course = createCourse(seed)
+  const course = createCourse(seed, args.includes('raptor') ? localDirector : undefined)
   const inputs = []
   const rows = []
   const hazards = []
@@ -198,7 +226,7 @@ try {
 
   async function openAt(distance, seed, sceneQuality = quality) {
     const breed = args.includes('boyd') ? 'boyd' : args.includes('pointer') ? 'pointer' : 'lab'
-    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + '&breed=' + breed + (args.includes('sight') ? '&sight=1' : ''),
+    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + '&course=' + (args.includes('raptor') ? 'raptor' : 'phase05') + '&breed=' + breed + (args.includes('sight') ? '&sight=1' : '') + (args.includes('resources') ? '&resources=1' : ''),
       { waitUntil: 'domcontentloaded' })
     if (await page.locator('#content-screen').isVisible()) {
       if (args.includes('offline')) {
@@ -633,12 +661,38 @@ try {
       }
     }
     await writeFile(resolve(output, 'texture-replays.json'), JSON.stringify(samples, null, 2) + '\n')
-    if (args.includes('expect-bounded')) {
-      assert.ok(samples.every(({ retired }) => retired.textures <= samples[0].retired.textures), 'replay retained extra textures')
-      assert.ok(samples.every(({ retired }) => retired.wildlifeModels.resident <= (reuse ? 2 : 0)), 'wildlife residency exceeded its limit')
-      if (reuse) assert.ok(samples.at(-1).retired.wildlifeModels.hits > 0, 'no decoded rigs reused')
-      assert.equal(samples.at(-1).retired.hunt.id, 5)
+    if (args.includes('expect-bounded')) checkTextureReplays(samples, reuse)
+  } else if (args.includes('restart-cycle')) {
+    const cycles = Number(args.find(argument => argument.startsWith('cycles='))?.slice(7) ?? 60)
+    assert.ok(Number.isInteger(cycles) && cycles >= 1 && cycles <= 100)
+    await openAt(0, 7)
+    if (args.includes('offline')) await context.setOffline(true)
+    const before = await page.evaluate(() => localStorage.getItem('retriever-run.record'))
+    const samples = []
+    for (let cycle = 0; cycle < cycles; cycle++) {
+      await page.evaluate(() => {
+        window.phaseThreeQA.soak = { inputs: [], duration: 12, fast: true, precise: true, next: 0, nextSample: 0, samples: [] }
+      })
+      await page.locator(cycle ? '#run-again' : '#primary').click()
+      await page.locator('#field-report').waitFor({ timeout: 120_000 }).catch(async error => {
+        console.error(await page.evaluate(() => ({ mode:window.retrieverDebug?.mode, elapsed:window.retrieverDebug?.elapsed,
+          hunt:window.retrieverPerformance()?.hunt, errors:document.querySelector('#content-screen')?.open })))
+        throw error
+      })
+      const result = await page.evaluate(() => {
+        const p = window.retrieverPerformance()
+        return { hunt: p.hunt, restart: p.restart, restartTrace: p.restartTrace,
+          final: { geometries:p.geometries, textures:p.textures, programs:p.programs, tiles:p.residentTiles,
+            wildlife:p.wildlifeModels.resident, pool:p.trailPool },
+          contact:window.retrieverDebug.impact ?? window.retrieverDebug.contact }
+      })
+      samples.push(result)
+      if ((cycle + 1) % 10 === 0) console.log('Completed ' + (cycle + 1) + ' restart cycles')
     }
+    assert.equal(await page.evaluate(() => localStorage.getItem('retriever-run.record')),before)
+    assert.equal(samples.at(-1).hunt.id,cycles)
+    assert.ok(samples.every(sample => sample.final.tiles <= 7 && sample.final.wildlife <= 2))
+    await writeFile(resolve(output, 'restart-cycles.json'), JSON.stringify({ seed:7, quality, cycles, samples }, null, 2))
   } else if (args.includes('soak')) {
     const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
@@ -650,7 +704,10 @@ try {
     await page.evaluate(({ inputs, duration, fast, precise }) => {
       window.phaseThreeQA.soak = { inputs, duration, fast, precise, next: 0, nextSample: 0, samples: [] }
     }, { inputs, duration, fast: args.includes('fast'), precise })
-    if (precise) await page.locator('#primary').tap()
+    if (precise) {
+      if (args.includes('offline')) await context.setOffline(true)
+      await page.locator('#primary').tap()
+    }
     for (let checkpoint = Math.min(15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
       await page.waitForFunction(value => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
         window.retrieverDebug?.elapsed >= value, checkpoint, { timeout: 240_000 })
