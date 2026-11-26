@@ -6,6 +6,34 @@ import { pathToFileURL } from 'node:url'
 import { chromium, devices, webkit } from 'playwright'
 
 const args = process.argv.slice(2)
+
+function checkTextureReplays(samples, reuse) {
+  const first = samples[0].retired
+  const last = samples.at(-1).retired
+  const boneTextures = snapshot => snapshot.wildlifeModels.models.reduce((sum, model) => sum + model.boneTextures, 0)
+  for (const { retired } of samples) {
+    assert.ok(retired.wildlifeModels.resident <= (reuse ? 2 : 0), 'wildlife residency exceeded its limit')
+    if (reuse) {
+      assert.ok(retired.wildlifeModels.models.every(model => model.boneTextures <= 1), 'duplicate skeleton texture')
+      assert.equal(retired.wildlifeModels.misses, first.wildlifeModels.misses, 'resident rig loaded again')
+      assert.equal(retired.wildlifeModels.evictions, first.wildlifeModels.evictions, 'resident rig was evicted')
+    }
+    // The second resident rig may finish warming between the first two hunts.
+    const warmed = reuse ? boneTextures(retired) - boneTextures(first) : 0
+    assert.ok(retired.textures <= first.textures + warmed, 'replay retained unexplained textures')
+  }
+  if (reuse) assert.equal(last.wildlifeModels.rigEncounters - first.wildlifeModels.rigEncounters, samples.length - 1)
+  assert.equal(last.hunt.id, 5)
+}
+
+const recordedTextures = args.find(argument => argument.startsWith('recheck-textures='))
+if (recordedTextures) {
+  const samples = JSON.parse(await readFile(recordedTextures.slice('recheck-textures='.length), 'utf8'))
+  checkTextureReplays(samples, args.includes('reuse'))
+  console.log(`Verified ${samples.length} recorded texture replays`)
+  process.exit(0)
+}
+
 const engine = args.includes('webkit') ? webkit : chromium
 const source = process.env.FIELD_SOURCE ?? '.'
 const fromSource = name => import(pathToFileURL(resolve(source, 'src', name + '.js')).href)
@@ -633,12 +661,7 @@ try {
       }
     }
     await writeFile(resolve(output, 'texture-replays.json'), JSON.stringify(samples, null, 2) + '\n')
-    if (args.includes('expect-bounded')) {
-      assert.ok(samples.every(({ retired }) => retired.textures <= samples[0].retired.textures), 'replay retained extra textures')
-      assert.ok(samples.every(({ retired }) => retired.wildlifeModels.resident <= (reuse ? 2 : 0)), 'wildlife residency exceeded its limit')
-      if (reuse) assert.ok(samples.at(-1).retired.wildlifeModels.hits > 0, 'no decoded rigs reused')
-      assert.equal(samples.at(-1).retired.hunt.id, 5)
-    }
+    if (args.includes('expect-bounded')) checkTextureReplays(samples, reuse)
   } else if (args.includes('restart-cycle')) {
     const cycles = Number(args.find(argument => argument.startsWith('cycles='))?.slice(7) ?? 60)
     assert.ok(Number.isInteger(cycles) && cycles >= 1 && cycles <= 100)
