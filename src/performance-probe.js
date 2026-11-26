@@ -150,12 +150,15 @@ export function createPerformanceProbe(now = () => performance.now(), traceResou
       record.ready ??= now()
       startup.readyMs ??= round(record.ready)
     },
-    restart(inputAt) {
+    restart(inputAt, renderer) {
       if (hunt) append(previousHunts, summary(hunt), 5)
       hunt = totals((hunt?.id ?? 0) + 1)
       start = now()
+      const before = renderer
+        ? { ...renderer.memory, programs: renderer.programs?.length ?? 0 }
+        : { textures: record.textures, geometries: record.geometries, programs: record.programs }
       restartTrace = { inputAt: Number.isFinite(inputAt) && inputAt >= 0 && inputAt <= start ? inputAt : start,
-        handlerAt: start, before: { textures: record.textures, geometries: record.geometries, programs: record.programs } }
+        handlerAt: start, before }
       awaitingNext = false
       lastPresentation = undefined
     },

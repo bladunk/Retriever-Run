@@ -2,7 +2,7 @@
 
 ## Resume here
 
-- Operation Raptor is on `codex/retriever-run-raptor`, based on `62b0470cd32bbd3cacbdaac94a45a10e4905c890` after Opening Day PR #39. The live comparison remains `1.0.0-rc.1 · 1687883`. The configured Raptor review is `1.0.0-rc.2 · 1f327a9`. [Draft PR #40](https://github.com/bladunk/Retriever-Run/pull/40) · [Raptor report](RAPTOR_REPORT.md)
+- Operation Raptor is on `codex/retriever-run-raptor`, based on `62b0470cd32bbd3cacbdaac94a45a10e4905c890` after Opening Day PR #39. The live comparison remains `1.0.0-rc.1 · 1687883`. The configured Raptor review is `1.0.0-rc.2 · 7db32d3`. [Draft PR #40](https://github.com/bladunk/Retriever-Run/pull/40) · [Raptor report](RAPTOR_REPORT.md)
 - Raptor stages Fern 02 preparation, reuses the shared uploader and opener packets, bounds idle hazard wrappers and adds named resource and restart traces. Deer and flight headings use the real world-path tangent. The tuned local goose schedule uses `migration-30-raptor`. The original signed ranked course stays replay compatible.
 - Worldwide score reads work on the older hosted RPC. Its combined request returned `PGRST202`. Check the exact combined PostgreSQL signature and grants in Supabase SQL Editor before applying the isolated additive repair. Leave hosted records and the ranked control intact. [Owner SQL procedure](RAPTOR_WORLDWIDE.md)
 - Use the isolated Art Studio to move directly to a territory, preview wildlife or a dog, and capture repeatable renders. Keep its build internal. Begin Living Wilderness only after review. Native frame pacing, long-session residency and hosted verification remain acceptance gates. Do not deploy or activate competition during this review. [Studio and daily art workflow](RAPTOR_ARCHITECTURE.md)

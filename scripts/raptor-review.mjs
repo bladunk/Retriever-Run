@@ -81,6 +81,36 @@ try {
       samples.push({ combine, calls, scores:3, data:'isolated test database' })
     })
   }
+  else if (process.argv.includes('idle')) for (const version of ['before','after']) {
+    await inspect(version,{width:320,height:568},async (page,prefix) => {
+      await page.addInitScript(() => {
+        window.rrTitleDraws = 0
+        for (const name of ['drawArrays','drawElements','drawArraysInstanced','drawElementsInstanced']) {
+          const original = WebGL2RenderingContext.prototype[name]
+          WebGL2RenderingContext.prototype[name] = function (...args) {
+            window.rrTitleDraws++
+            return original.apply(this,args)
+          }
+        }
+      })
+      await open(page,prefix+'?perf=1')
+      await page.locator('#settings').click()
+      await page.locator('#quality').selectOption('low')
+      await page.locator('#close-settings').click()
+      await page.waitForFunction(() => !document.querySelector('#primary').disabled)
+      // Let the title's single redraw after changing preset settle.
+      const draws = await page.evaluate(async () => {
+        const after = delay => new Promise(done => setTimeout(done,delay))
+        await after(1000)
+        const before = window.rrTitleDraws
+        const start = performance.now()
+        await after(2000)
+        return { calls:window.rrTitleDraws-before, observedMs:performance.now()-start }
+      })
+      assert.ok(version === 'before' ? draws.calls > 0 : draws.calls === 0)
+      samples.push({ version, build:await page.evaluate(() => window.retrieverPerformance().build), ...draws })
+    })
+  }
   else if (process.argv.includes('resources')) await inspect('after',{width:320,height:568},async (page,prefix) => {
     await open(page,prefix+'?perf=1&resources=1')
     await page.waitForFunction(() => !document.querySelector('#primary').disabled, null, { timeout:60_000 })
@@ -123,7 +153,7 @@ try {
       })
     }
   }
-  if (!process.argv.some(arg => ['titles','resources','worldwide'].includes(arg))) {
+  if (!process.argv.some(arg => ['titles','resources','worldwide','idle'].includes(arg))) {
     await inspect('studio',{width:390,height:844},async (page,prefix) => {
       await open(page,prefix+'?studio=1&perf=1&territory=13&seed=7&breed=boyd')
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio')

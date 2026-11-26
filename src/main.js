@@ -1070,7 +1070,7 @@ function resetTrail(seed) {
 function start(ticket, inputAt) {
   if (productionSession.locked() || ui['content-screen'].open || mode === 'running' || !trailReady || !contextReady ||
       ui.onboarding.open || ui.tutorial.open) return
-  performanceProbe?.restart(inputAt)
+  performanceProbe?.restart(inputAt, renderer.info)
   if (!lodge.current().enrollment && !diagnosticsRequested) {
     const player = lodge.current()
     lodge.enroll(player.id, player.nickname, 'guest')

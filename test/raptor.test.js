@@ -105,7 +105,8 @@ test('startup, restart and named submissions retain the previous diagnostic fiel
   geometry.dispose()
   now = 20
   probe.ready()
-  probe.restart(18)
+  const before = { memory: { geometries:1,textures:3 }, programs:[{}] }
+  probe.restart(18,before)
   now = 59
   const renderer = { render:{calls:3,triangles:5}, memory:{geometries:2,textures:4}, programs:[] }
   probe.frame(16.7,19,renderer,'gulf',now,17)
@@ -117,6 +118,7 @@ test('startup, restart and named submissions retain the previous diagnostic fiel
   assert.equal(report.restartTrace.firstFrameSubmittedMs,41)
   assert.equal(report.restartTrace.nextAnimationCallbackMs,59)
   assert.equal(report.restartTrace.firstPresentationIntervalMs,18)
+  assert.deepEqual(report.restartTrace.before,{ geometries:1,textures:3,programs:1 })
   assert.equal(report.startupPhases.readyMs,20)
   assert.equal(report.capabilities.gpuExecutionTime,null)
   assert.deepEqual(report.operations.slice(0,4).map(event => event.name),
