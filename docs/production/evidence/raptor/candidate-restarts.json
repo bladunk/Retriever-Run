@@ -1,0 +1,4927 @@
+{
+  "seed": 7,
+  "quality": "low",
+  "cycles": 60,
+  "samples": [
+    {
+      "hunt": {
+        "id": 1,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 48,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 8816.799999952316,
+          "over20": 22,
+          "over33_3": 21,
+          "over50": 21,
+          "averageMs": 1615.28
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5715,
+          "over20": 7,
+          "over33_3": 7,
+          "over50": 5,
+          "averageMs": 281.73
+        },
+        "averageFPS": 0.6
+      },
+      "restart": 2986.899999976158,
+      "restartTrace": {
+        "inputAt": 9001.300000011921,
+        "handlerAt": 9012.900000035763,
+        "before": {
+          "textures": 0,
+          "geometries": 0,
+          "programs": 0
+        },
+        "firstFrameSubmittedMs": 2998.5,
+        "firstFrameCpuMs": 1110.7,
+        "firstRenderMs": 1100.8,
+        "after": {
+          "geometries": 35,
+          "textures": 12,
+          "programs": 16
+        },
+        "nextAnimationCallbackMs": 3012.6,
+        "firstPresentationIntervalMs": 57.1
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 6,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 2,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 2220.5,
+          "over20": 23,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 1171.4
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 96.09999996423721,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 1,
+          "averageMs": 9.55
+        },
+        "averageFPS": 0.9
+      },
+      "restart": 675.7999999523163,
+      "restartTrace": {
+        "inputAt": 57584.60000002384,
+        "handlerAt": 57599.40000003576,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 690.6,
+        "firstFrameCpuMs": 96.1,
+        "firstRenderMs": 2.3,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 699.1,
+        "firstPresentationIntervalMs": 17.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 3,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1195.5,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 21,
+          "averageMs": 497.48
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 41.40000003576279,
+          "over20": 3,
+          "over33_3": 3,
+          "over50": 0,
+          "averageMs": 8.13
+        },
+        "averageFPS": 2
+      },
+      "restart": 805.3000000119209,
+      "restartTrace": {
+        "inputAt": 89006.60000002384,
+        "handlerAt": 89008.10000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 806.8,
+        "firstFrameCpuMs": 10.4,
+        "firstRenderMs": 5.6,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 844.5,
+        "firstPresentationIntervalMs": 41.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 4,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1011,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 22,
+          "averageMs": 462.55
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 116.59999996423721,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 1,
+          "averageMs": 10.13
+        },
+        "averageFPS": 2.2
+      },
+      "restart": 51.80000001192093,
+      "restartTrace": {
+        "inputAt": 104894.19999998808,
+        "handlerAt": 104897.60000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 55.2,
+        "firstFrameCpuMs": 46.2,
+        "firstRenderMs": 45.2,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 188.9,
+        "firstPresentationIntervalMs": 250.3
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 5,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1467.800000011921,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 581.92
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 10.199999988079071,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 3.17
+        },
+        "averageFPS": 1.7
+      },
+      "restart": 101.19999998807907,
+      "restartTrace": {
+        "inputAt": 117965.30000001192,
+        "handlerAt": 117966.60000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 102.5,
+        "firstFrameCpuMs": 3.3,
+        "firstRenderMs": 0.8,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 104.9,
+        "firstPresentationIntervalMs": 3.3
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 6,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1409,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 22,
+          "averageMs": 491.36
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 10,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 3.68
+        },
+        "averageFPS": 2
+      },
+      "restart": 853.5,
+      "restartTrace": {
+        "inputAt": 134551.80000001192,
+        "handlerAt": 134561.10000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 862.8,
+        "firstFrameCpuMs": 6.9,
+        "firstRenderMs": 1.1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 905.3,
+        "firstPresentationIntervalMs": 46.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 7,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 736.9000000357628,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 21,
+          "averageMs": 236.48
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 7,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.8
+        },
+        "averageFPS": 4.2
+      },
+      "restart": 14.800000011920929,
+      "restartTrace": {
+        "inputAt": 149226.60000002384,
+        "handlerAt": 149229.10000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 17.3,
+        "firstFrameCpuMs": 3.4,
+        "firstRenderMs": 1.1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 24,
+        "firstPresentationIntervalMs": 8.1
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 8,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 477.4000000357628,
+          "over20": 23,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 229.9
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 17.399999976158142,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 3.7
+        },
+        "averageFPS": 4.3
+      },
+      "restart": 259.19999998807907,
+      "restartTrace": {
+        "inputAt": 155765.30000001192,
+        "handlerAt": 155767.10000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 261,
+        "firstFrameCpuMs": 4.2,
+        "firstRenderMs": 1.3,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 266.6,
+        "firstPresentationIntervalMs": 23
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 9,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 583.4000000357628,
+          "over20": 21,
+          "over33_3": 21,
+          "over50": 20,
+          "averageMs": 223.83
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 9.600000023841858,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.48
+        },
+        "averageFPS": 4.5
+      },
+      "restart": 228.69999998807907,
+      "restartTrace": {
+        "inputAt": 162456.69999998808,
+        "handlerAt": 162458.90000003576,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 230.9,
+        "firstFrameCpuMs": 2.3,
+        "firstRenderMs": 0.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 239.7,
+        "firstPresentationIntervalMs": 13.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 10,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 496.9000000357628,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 204.81
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 16.19999998807907,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 3.16
+        },
+        "averageFPS": 4.9
+      },
+      "restart": 224.10000002384186,
+      "restartTrace": {
+        "inputAt": 168968.40000003576,
+        "handlerAt": 168970.19999998808,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 225.9,
+        "firstFrameCpuMs": 3.5,
+        "firstRenderMs": 1.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 229.4,
+        "firstPresentationIntervalMs": 8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 11,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 419,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 205.38
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.800000011920929,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.26
+        },
+        "averageFPS": 4.9
+      },
+      "restart": 218.5,
+      "restartTrace": {
+        "inputAt": 174960.40000003576,
+        "handlerAt": 174961,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 219.1,
+        "firstFrameCpuMs": 3.4,
+        "firstRenderMs": 1.4,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 220.1,
+        "firstPresentationIntervalMs": 3.9
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 12,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 423,
+          "over20": 21,
+          "over33_3": 21,
+          "over50": 20,
+          "averageMs": 195.36
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 6.099999964237213,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.64
+        },
+        "averageFPS": 5.1
+      },
+      "restart": 11.5,
+      "restartTrace": {
+        "inputAt": 181201.19999998808,
+        "handlerAt": 181202.19999998808,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 12.5,
+        "firstFrameCpuMs": 1.7,
+        "firstRenderMs": 0.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 48.8,
+        "firstPresentationIntervalMs": 39.6
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 13,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 447.80000001192093,
+          "over20": 24,
+          "over33_3": 24,
+          "over50": 22,
+          "averageMs": 213.4
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 3.400000035762787,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 1.91
+        },
+        "averageFPS": 4.7
+      },
+      "restart": 246.5,
+      "restartTrace": {
+        "inputAt": 186867,
+        "handlerAt": 186869.80000001192,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 249.3,
+        "firstFrameCpuMs": 3.2,
+        "firstRenderMs": 1.4,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 284.4,
+        "firstPresentationIntervalMs": 37.5
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 14,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 440.10000002384186,
+          "over20": 19,
+          "over33_3": 19,
+          "over50": 19,
+          "averageMs": 188.72
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 6,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.48
+        },
+        "averageFPS": 5.3
+      },
+      "restart": 14.300000011920929,
+      "restartTrace": {
+        "inputAt": 193081.30000001192,
+        "handlerAt": 193082.30000001192,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 15.3,
+        "firstFrameCpuMs": 1.9,
+        "firstRenderMs": 1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 29.9,
+        "firstPresentationIntervalMs": 16.6
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 15,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 868.1000000238419,
+          "over20": 21,
+          "over33_3": 21,
+          "over50": 20,
+          "averageMs": 272.74
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 38,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 4.07
+        },
+        "averageFPS": 3.7
+      },
+      "restart": 14.900000035762787,
+      "restartTrace": {
+        "inputAt": 198682,
+        "handlerAt": 198682.69999998808,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 15.6,
+        "firstFrameCpuMs": 3.1,
+        "firstRenderMs": 1.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 29,
+        "firstPresentationIntervalMs": 14.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 16,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1146,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 21,
+          "averageMs": 406.98
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.800000011920929,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.35
+        },
+        "averageFPS": 2.5
+      },
+      "restart": 416.10000002384186,
+      "restartTrace": {
+        "inputAt": 206766.90000003576,
+        "handlerAt": 206772,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 421.2,
+        "firstFrameCpuMs": 3.6,
+        "firstRenderMs": 1.2,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 427.3,
+        "firstPresentationIntervalMs": 7.5
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 17,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 809.9000000357628,
+          "over20": 20,
+          "over33_3": 20,
+          "over50": 20,
+          "averageMs": 368.87
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 6,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.79
+        },
+        "averageFPS": 2.7
+      },
+      "restart": 405.39999997615814,
+      "restartTrace": {
+        "inputAt": 218149.5,
+        "handlerAt": 218151.30000001192,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 407.2,
+        "firstFrameCpuMs": 6,
+        "firstRenderMs": 0.8,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 408.5,
+        "firstPresentationIntervalMs": 2.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 18,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 698.4000000357628,
+          "over20": 24,
+          "over33_3": 24,
+          "over50": 22,
+          "averageMs": 381.85
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 6.200000047683716,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.4
+        },
+        "averageFPS": 2.6
+      },
+      "restart": 25.5,
+      "restartTrace": {
+        "inputAt": 229381,
+        "handlerAt": 229383,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 27.5,
+        "firstFrameCpuMs": 1.5,
+        "firstRenderMs": 0.7,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 31.4,
+        "firstPresentationIntervalMs": 6.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 19,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 880.1000000238419,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 416.27
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 38.299999952316284,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 3.8
+        },
+        "averageFPS": 2.4
+      },
+      "restart": 431.39999997615814,
+      "restartTrace": {
+        "inputAt": 240666.10000002384,
+        "handlerAt": 240667.60000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 432.9,
+        "firstFrameCpuMs": 3.1,
+        "firstRenderMs": 1.7,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 443.3,
+        "firstPresentationIntervalMs": 11.9
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 20,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1032.5,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 455.47
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.600000023841858,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.51
+        },
+        "averageFPS": 2.2
+      },
+      "restart": 435.5,
+      "restartTrace": {
+        "inputAt": 252755.19999998808,
+        "handlerAt": 252760.40000003576,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 440.7,
+        "firstFrameCpuMs": 2.8,
+        "firstRenderMs": 0.8,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 443.8,
+        "firstPresentationIntervalMs": 8.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 21,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1023.1999999880791,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 22,
+          "averageMs": 494.71
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 37.5,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 4.09
+        },
+        "averageFPS": 2
+      },
+      "restart": 12.199999988079071,
+      "restartTrace": {
+        "inputAt": 266372.10000002384,
+        "handlerAt": 266375.90000003576,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 16,
+        "firstFrameCpuMs": 4.6,
+        "firstRenderMs": 3.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 581.6,
+        "firstPresentationIntervalMs": 567.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 22,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 999.3999999761581,
+          "over20": 21,
+          "over33_3": 21,
+          "over50": 20,
+          "averageMs": 361.27
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 7.699999988079071,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.1
+        },
+        "averageFPS": 2.8
+      },
+      "restart": 483.4000000357628,
+      "restartTrace": {
+        "inputAt": 279887.3000000119,
+        "handlerAt": 279888.6999999881,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 484.8,
+        "firstFrameCpuMs": 2.5,
+        "firstRenderMs": 0.6,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 488.1,
+        "firstPresentationIntervalMs": 4.4
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 23,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 963.5999999642372,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 432.06
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 9.899999976158142,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.79
+        },
+        "averageFPS": 2.3
+      },
+      "restart": 13.300000011920929,
+      "restartTrace": {
+        "inputAt": 290479.5,
+        "handlerAt": 290483,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 16.8,
+        "firstFrameCpuMs": 1.5,
+        "firstRenderMs": 0.7,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 504.2,
+        "firstPresentationIntervalMs": 488.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 24,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 942.6999999880791,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 409.92
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 41.40000003576279,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 4.08
+        },
+        "averageFPS": 2.4
+      },
+      "restart": 47.10000002384186,
+      "restartTrace": {
+        "inputAt": 302604.5,
+        "handlerAt": 302606.5,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 49.1,
+        "firstFrameCpuMs": 41.4,
+        "firstRenderMs": 39.4,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 459.4,
+        "firstPresentationIntervalMs": 414.5
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 25,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1017.1999999880791,
+          "over20": 19,
+          "over33_3": 19,
+          "over50": 18,
+          "averageMs": 425.27
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.600000023841858,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.39
+        },
+        "averageFPS": 2.4
+      },
+      "restart": 67.59999996423721,
+      "restartTrace": {
+        "inputAt": 314109.8000000119,
+        "handlerAt": 314111.10000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 68.9,
+        "firstFrameCpuMs": 2,
+        "firstRenderMs": 0.8,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 79.9,
+        "firstPresentationIntervalMs": 12.9
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 26,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 864.8000000119209,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 411.46
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 9.599999964237213,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.7
+        },
+        "averageFPS": 2.4
+      },
+      "restart": 11.399999976158142,
+      "restartTrace": {
+        "inputAt": 325870.6999999881,
+        "handlerAt": 325872.90000003576,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 13.6,
+        "firstFrameCpuMs": 3.2,
+        "firstRenderMs": 1.3,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 480.2,
+        "firstPresentationIntervalMs": 471.4
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 27,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 590.5,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 355.97
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.5,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.08
+        },
+        "averageFPS": 2.8
+      },
+      "restart": 397.80000001192093,
+      "restartTrace": {
+        "inputAt": 337383.5,
+        "handlerAt": 337385.3000000119,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 399.6,
+        "firstFrameCpuMs": 3.1,
+        "firstRenderMs": 1.2,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 405.2,
+        "firstPresentationIntervalMs": 6.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 28,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 807.1999999880791,
+          "over20": 21,
+          "over33_3": 21,
+          "over50": 21,
+          "averageMs": 381.19
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 11.599999964237213,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.79
+        },
+        "averageFPS": 2.6
+      },
+      "restart": 398.0999999642372,
+      "restartTrace": {
+        "inputAt": 347983.90000003576,
+        "handlerAt": 347985.10000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 399.3,
+        "firstFrameCpuMs": 5.1,
+        "firstRenderMs": 1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 404.9,
+        "firstPresentationIntervalMs": 7.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 29,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 818.2999999523163,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 21,
+          "averageMs": 406.54
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 55.5,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 1,
+          "averageMs": 5.64
+        },
+        "averageFPS": 2.5
+      },
+      "restart": 24.19999998807907,
+      "restartTrace": {
+        "inputAt": 359090.10000002384,
+        "handlerAt": 359091,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 25.1,
+        "firstFrameCpuMs": 1.5,
+        "firstRenderMs": 0.7,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 60.2,
+        "firstPresentationIntervalMs": 36.3
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 30,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 800.6999999880791,
+          "over20": 22,
+          "over33_3": 21,
+          "over50": 19,
+          "averageMs": 388.73
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 7.800000011920929,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.38
+        },
+        "averageFPS": 2.6
+      },
+      "restart": 15.800000011920929,
+      "restartTrace": {
+        "inputAt": 370577.90000003576,
+        "handlerAt": 370579.1999999881,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 17.1,
+        "firstFrameCpuMs": 4.5,
+        "firstRenderMs": 3.6,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 26.3,
+        "firstPresentationIntervalMs": 13.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 31,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 727.6000000238419,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 381.68
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 38.19999998807907,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 0,
+          "averageMs": 4.76
+        },
+        "averageFPS": 2.6
+      },
+      "restart": 49,
+      "restartTrace": {
+        "inputAt": 380999.60000002384,
+        "handlerAt": 381004.10000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 53.5,
+        "firstFrameCpuMs": 38.2,
+        "firstRenderMs": 37.1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 450.5,
+        "firstPresentationIntervalMs": 398.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 32,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 965.2999999523163,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 400.37
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.900000035762787,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.57
+        },
+        "averageFPS": 2.5
+      },
+      "restart": 11.199999988079071,
+      "restartTrace": {
+        "inputAt": 391380.8000000119,
+        "handlerAt": 391381.8000000119,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 12.2,
+        "firstFrameCpuMs": 3.4,
+        "firstRenderMs": 2.4,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 424.5,
+        "firstPresentationIntervalMs": 415.1
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 33,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1673.4000000357628,
+          "over20": 23,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 740.17
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 43.39999997615814,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 0,
+          "averageMs": 6.47
+        },
+        "averageFPS": 1.4
+      },
+      "restart": 10.800000011920929,
+      "restartTrace": {
+        "inputAt": 403764.3000000119,
+        "handlerAt": 403765.60000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 12.1,
+        "firstFrameCpuMs": 2.3,
+        "firstRenderMs": 0.8,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 527.6,
+        "firstPresentationIntervalMs": 517.1
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 34,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 884.1999999880791,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 348.42
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 37.69999998807907,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 3.55
+        },
+        "averageFPS": 2.9
+      },
+      "restart": 364,
+      "restartTrace": {
+        "inputAt": 423514.1999999881,
+        "handlerAt": 423515.6999999881,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 365.5,
+        "firstFrameCpuMs": 2.9,
+        "firstRenderMs": 1.3,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 371.1,
+        "firstPresentationIntervalMs": 6.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 35,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 783.8999999761581,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 22,
+          "averageMs": 383.94
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 6,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.09
+        },
+        "averageFPS": 2.6
+      },
+      "restart": 553,
+      "restartTrace": {
+        "inputAt": 434012.90000003576,
+        "handlerAt": 434014.8000000119,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 554.9,
+        "firstFrameCpuMs": 2.2,
+        "firstRenderMs": 1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 558.9,
+        "firstPresentationIntervalMs": 8.7
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 36,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 911,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 395.01
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.799999952316284,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.58
+        },
+        "averageFPS": 2.5
+      },
+      "restart": 688.3000000119209,
+      "restartTrace": {
+        "inputAt": 445496.5,
+        "handlerAt": 445498.1999999881,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 690,
+        "firstFrameCpuMs": 5.6,
+        "firstRenderMs": 3.5,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 697.6,
+        "firstPresentationIntervalMs": 10.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 37,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 730.6000000238419,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 353.32
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 3.899999976158142,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.01
+        },
+        "averageFPS": 2.8
+      },
+      "restart": 387.2999999523163,
+      "restartTrace": {
+        "inputAt": 456692.3000000119,
+        "handlerAt": 456694.40000003576,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 389.4,
+        "firstFrameCpuMs": 3.9,
+        "firstRenderMs": 1.8,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 394.8,
+        "firstPresentationIntervalMs": 6.5
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 38,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1314.0999999642372,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 21,
+          "averageMs": 427.46
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 4,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 1.82
+        },
+        "averageFPS": 2.3
+      },
+      "restart": 331.7999999523163,
+      "restartTrace": {
+        "inputAt": 466954.60000002384,
+        "handlerAt": 466955.40000003576,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 332.6,
+        "firstFrameCpuMs": 4,
+        "firstRenderMs": 2.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 334.7,
+        "firstPresentationIntervalMs": 4.6
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 39,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1597.3999999761581,
+          "over20": 23,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 539.32
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 45.69999998807907,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 0,
+          "averageMs": 5.12
+        },
+        "averageFPS": 1.9
+      },
+      "restart": 23.899999976158142,
+      "restartTrace": {
+        "inputAt": 478971,
+        "handlerAt": 478972.40000003576,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 25.3,
+        "firstFrameCpuMs": 2.1,
+        "firstRenderMs": 1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 30.1,
+        "firstPresentationIntervalMs": 6.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 40,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 735.5,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 21,
+          "averageMs": 356.14
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 4,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 1.73
+        },
+        "averageFPS": 2.8
+      },
+      "restart": 10.699999988079071,
+      "restartTrace": {
+        "inputAt": 493691.1999999881,
+        "handlerAt": 493692,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 11.5,
+        "firstFrameCpuMs": 2.2,
+        "firstRenderMs": 0.7,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 390.9,
+        "firstPresentationIntervalMs": 380.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 41,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 979,
+          "over20": 21,
+          "over33_3": 20,
+          "over50": 20,
+          "averageMs": 376.83
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.300000011920929,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 1.87
+        },
+        "averageFPS": 2.7
+      },
+      "restart": 39.5,
+      "restartTrace": {
+        "inputAt": 504112.1999999881,
+        "handlerAt": 504114.6999999881,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 42,
+        "firstFrameCpuMs": 2.2,
+        "firstRenderMs": 1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 70.6,
+        "firstPresentationIntervalMs": 30.3
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 42,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 807.3999999761581,
+          "over20": 21,
+          "over33_3": 20,
+          "over50": 19,
+          "averageMs": 350.12
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 38.59999996423721,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 0,
+          "averageMs": 4.69
+        },
+        "averageFPS": 2.9
+      },
+      "restart": 41.69999998807907,
+      "restartTrace": {
+        "inputAt": 514606.40000003576,
+        "handlerAt": 514607.60000002384,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 42.9,
+        "firstFrameCpuMs": 34.1,
+        "firstRenderMs": 33.3,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 48.4,
+        "firstPresentationIntervalMs": 7.6
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 43,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 681.8999999761581,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 376.79
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 34.60000002384186,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 3.87
+        },
+        "averageFPS": 2.7
+      },
+      "restart": 315,
+      "restartTrace": {
+        "inputAt": 524370.9000000358,
+        "handlerAt": 524374.5,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 318.6,
+        "firstFrameCpuMs": 4,
+        "firstRenderMs": 1.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 327.3,
+        "firstPresentationIntervalMs": 9.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 44,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 714.5999999642372,
+          "over20": 24,
+          "over33_3": 23,
+          "over50": 22,
+          "averageMs": 360.34
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 8.5,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.55
+        },
+        "averageFPS": 2.8
+      },
+      "restart": 10.899999976158142,
+      "restartTrace": {
+        "inputAt": 536061.8000000119,
+        "handlerAt": 536062.9000000358,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 12,
+        "firstFrameCpuMs": 2.2,
+        "firstRenderMs": 1.1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 32.5,
+        "firstPresentationIntervalMs": 22.5
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 45,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 790.8000000119209,
+          "over20": 21,
+          "over33_3": 21,
+          "over50": 21,
+          "averageMs": 360.08
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 12,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.59
+        },
+        "averageFPS": 2.8
+      },
+      "restart": 403,
+      "restartTrace": {
+        "inputAt": 545956.1999999881,
+        "handlerAt": 545959.4000000358,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 406.2,
+        "firstFrameCpuMs": 3.1,
+        "firstRenderMs": 1.1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 407.8,
+        "firstPresentationIntervalMs": 2.9
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 46,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1631.6000000238419,
+          "over20": 24,
+          "over33_3": 24,
+          "over50": 24,
+          "averageMs": 513.48
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 9.100000023841858,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.39
+        },
+        "averageFPS": 1.9
+      },
+      "restart": 4.900000035762787,
+      "restartTrace": {
+        "inputAt": 556511.9000000358,
+        "handlerAt": 556513,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 6,
+        "firstFrameCpuMs": 1.5,
+        "firstRenderMs": 0.7,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 445.3,
+        "firstPresentationIntervalMs": 440.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 47,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1986.800000011921,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 21,
+          "averageMs": 704.61
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 7.699999988079071,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.68
+        },
+        "averageFPS": 1.4
+      },
+      "restart": 50.39999997615814,
+      "restartTrace": {
+        "inputAt": 570563.8000000119,
+        "handlerAt": 570614.4000000358,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 101,
+        "firstFrameCpuMs": 7.7,
+        "firstRenderMs": 3.7,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 713.3,
+        "firstPresentationIntervalMs": 614.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 48,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1590.7000000476837,
+          "over20": 23,
+          "over33_3": 22,
+          "over50": 21,
+          "averageMs": 579.87
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 43.69999998807907,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 0,
+          "averageMs": 5.65
+        },
+        "averageFPS": 1.7
+      },
+      "restart": 51.19999998807907,
+      "restartTrace": {
+        "inputAt": 590205.3000000119,
+        "handlerAt": 590206.5,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 52.4,
+        "firstFrameCpuMs": 43.7,
+        "firstRenderMs": 3.1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 64.6,
+        "firstPresentationIntervalMs": 14
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 49,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1131,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 22,
+          "averageMs": 531.94
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 15.899999976158142,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.75
+        },
+        "averageFPS": 1.9
+      },
+      "restart": 60.60000002384186,
+      "restartTrace": {
+        "inputAt": 606305.1999999881,
+        "handlerAt": 606306.6999999881,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 62.1,
+        "firstFrameCpuMs": 15.9,
+        "firstRenderMs": 3,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 508.2,
+        "firstPresentationIntervalMs": 447.4
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 50,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 912.5,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 441.82
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 34.799999952316284,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 3.55
+        },
+        "averageFPS": 2.3
+      },
+      "restart": 504.39999997615814,
+      "restartTrace": {
+        "inputAt": 621661.8000000119,
+        "handlerAt": 621663.8000000119,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 506.4,
+        "firstFrameCpuMs": 6,
+        "firstRenderMs": 1.6,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 516.4,
+        "firstPresentationIntervalMs": 11.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 51,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1010,
+          "over20": 22,
+          "over33_3": 21,
+          "over50": 20,
+          "averageMs": 372.15
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 5.800000011920929,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.27
+        },
+        "averageFPS": 2.7
+      },
+      "restart": 8.399999976158142,
+      "restartTrace": {
+        "inputAt": 634167.5,
+        "handlerAt": 634170.1000000238,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 11,
+        "firstFrameCpuMs": 1.5,
+        "firstRenderMs": 0.7,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 382.5,
+        "firstPresentationIntervalMs": 373.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 52,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1011.9000000357628,
+          "over20": 25,
+          "over33_3": 25,
+          "over50": 23,
+          "averageMs": 383.65
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 38.89999997615814,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 3.88
+        },
+        "averageFPS": 2.6
+      },
+      "restart": 17,
+      "restartTrace": {
+        "inputAt": 644986.4000000358,
+        "handlerAt": 644989.6000000238,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 20.2,
+        "firstFrameCpuMs": 11.3,
+        "firstRenderMs": 10.4,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 527.3,
+        "firstPresentationIntervalMs": 508.5
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 53,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1672.5,
+          "over20": 19,
+          "over33_3": 19,
+          "over50": 19,
+          "averageMs": 631.95
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 9.599999964237213,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.32
+        },
+        "averageFPS": 1.6
+      },
+      "restart": 432.5999999642372,
+      "restartTrace": {
+        "inputAt": 655755.3000000119,
+        "handlerAt": 655759.9000000358,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 437.2,
+        "firstFrameCpuMs": 4.9,
+        "firstRenderMs": 2.3,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 443,
+        "firstPresentationIntervalMs": 7.6
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 54,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 960,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 22,
+          "averageMs": 411.05
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 10.400000035762787,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.3
+        },
+        "averageFPS": 2.4
+      },
+      "restart": 342.39999997615814,
+      "restartTrace": {
+        "inputAt": 673357.8000000119,
+        "handlerAt": 673359.3000000119,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 343.9,
+        "firstFrameCpuMs": 2.3,
+        "firstRenderMs": 1.1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 351.1,
+        "firstPresentationIntervalMs": 8.9
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 55,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 902,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 380.53
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 4,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 1.96
+        },
+        "averageFPS": 2.6
+      },
+      "restart": 20.899999976158142,
+      "restartTrace": {
+        "inputAt": 685572.4000000358,
+        "handlerAt": 685572.9000000358,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 21.4,
+        "firstFrameCpuMs": 2.1,
+        "firstRenderMs": 1.1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 23.2,
+        "firstPresentationIntervalMs": 2.9
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 56,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 2041.7000000476837,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 20,
+          "averageMs": 787.06
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 44.30000001192093,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 4.42
+        },
+        "averageFPS": 1.3
+      },
+      "restart": 1033.699999988079,
+      "restartTrace": {
+        "inputAt": 696263.6000000238,
+        "handlerAt": 696265.1000000238,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 1035.2,
+        "firstFrameCpuMs": 5.1,
+        "firstRenderMs": 1.5,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 1049,
+        "firstPresentationIntervalMs": 15.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 57,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1583.300000011921,
+          "over20": 24,
+          "over33_3": 24,
+          "over50": 24,
+          "averageMs": 764.07
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 34.90000003576279,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 3.65
+        },
+        "averageFPS": 1.3
+      },
+      "restart": 7.199999988079071,
+      "restartTrace": {
+        "inputAt": 719568.9000000358,
+        "handlerAt": 719570.1000000238,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 8.4,
+        "firstFrameCpuMs": 1.8,
+        "firstRenderMs": 1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 509.6,
+        "firstPresentationIntervalMs": 502.5
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 58,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 2520.600000023842,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 1081.43
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 74.60000002384186,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 1,
+          "averageMs": 6.56
+        },
+        "averageFPS": 0.9
+      },
+      "restart": 982,
+      "restartTrace": {
+        "inputAt": 743589.9000000358,
+        "handlerAt": 743592.6999999881,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 984.8,
+        "firstFrameCpuMs": 8.8,
+        "firstRenderMs": 5.8,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 986.3,
+        "firstPresentationIntervalMs": 9.1
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 59,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1397.199999988079,
+          "over20": 22,
+          "over33_3": 22,
+          "over50": 21,
+          "averageMs": 645.8
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 41.59999996423721,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 0,
+          "averageMs": 5.45
+        },
+        "averageFPS": 1.5
+      },
+      "restart": 48.40000003576279,
+      "restartTrace": {
+        "inputAt": 775361.4000000358,
+        "handlerAt": 775364,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 51,
+        "firstFrameCpuMs": 2.3,
+        "firstRenderMs": 1.2,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 89,
+        "firstPresentationIntervalMs": 39.5
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 60,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 2005.1000000238419,
+          "over20": 24,
+          "over33_3": 24,
+          "over50": 24,
+          "averageMs": 755.47
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 8.399999976158142,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 2.79
+        },
+        "averageFPS": 1.3
+      },
+      "restart": 8,
+      "restartTrace": {
+        "inputAt": 793486.6999999881,
+        "handlerAt": 793487.9000000358,
+        "before": {
+          "textures": 12,
+          "geometries": 44,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 9.2,
+        "firstFrameCpuMs": 3.3,
+        "firstRenderMs": 0.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 17
+        },
+        "nextAnimationCallbackMs": 489.5,
+        "firstPresentationIntervalMs": 483.8
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 17,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-phase-05",
+        "territory": "gulf",
+        "stage": 1
+      }
+    }
+  ]
+}
