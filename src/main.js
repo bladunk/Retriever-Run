@@ -544,6 +544,8 @@ function initialize() {
       diving(entities, distance, visualTime, preset.detail === 0)
       frozen = false
     }
+    if (mode === 'running' && !document.hidden && !navigator.scheduling?.isInputPending?.())
+      terrain.prepareFerns(renderer, camera, false, preset.detail, run.distance)
     if (mode === 'title' || mode === 'running' || inspecting || needsRedraw) {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps, wildlife: wildlife.stamp,
@@ -559,15 +561,13 @@ function initialize() {
       needsRedraw = false
     }
     warmSafe(ms)
-    if (mode === 'running' && !document.hidden && !navigator.scheduling?.isInputPending?.())
-      terrain.prepareFerns(renderer, camera, false, preset.detail, run.distance)
   }
 
   function warmSafe(ms) {
     if (mayPrepareWildlife() && ms - lastWildlifeWarm >= 80 && !navigator.scheduling?.isInputPending?.()) {
       lastWildlifeWarm = ms
-      terrain.prepareFerns(renderer, camera, true, preset.detail, run.distance)
-      wildlife.warmBreak(renderer, camera, mode, preset.detail, run.distance, studioEvent ? studioEvents : terrain.encounters())
+      if (!trailReady || !terrain.prepareFerns(renderer, camera, true, preset.detail, run.distance))
+        wildlife.warmBreak(renderer, camera, mode, preset.detail, run.distance, studioEvent ? studioEvents : terrain.encounters())
     }
   }
 

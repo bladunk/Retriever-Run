@@ -52,7 +52,34 @@ async function open(page, url) {
 }
 
 try {
-  for (const viewport of [{width:320,height:568},{width:430,height:932}]) {
+  if (process.argv.includes('resources')) await inspect('after',{width:320,height:568},async (page,prefix) => {
+    await open(page,prefix+'?perf=1&resources=1')
+    await page.waitForFunction(() => !document.querySelector('#primary').disabled, null, { timeout:60_000 })
+    await page.locator('#settings').click()
+    await page.locator('#quality').selectOption('high')
+    await page.locator('#close-settings').click()
+    const trace = async () => page.evaluate(() => window.retrieverPerformance())
+    await page.waitForFunction(() => window.retrieverPerformance().operations.some(event =>
+      event.name === 'shader-preparation-ready' && event.detail === 'Habitat / Fern 02'),null,{timeout:60_000})
+    const warm = await trace()
+    assert.equal(warm.operations.filter(event => event.name === 'texture-preparation' &&
+      event.detail.startsWith('Habitat / Fern 02')).length,3)
+    assert.equal(warm.operations.filter(event => event.name === 'geometry-preparation' &&
+      event.detail === 'Habitat / Fern 02').length,1)
+    await page.locator('#primary').click()
+    await page.waitForFunction(() => window.retrieverPerformance().restartTrace?.firstPresentationIntervalMs > 0)
+    const run = await trace()
+    samples.push({ build:run.build, startup:run.startupPhases, restart:run.restartTrace,
+      capabilities:run.capabilities, fernEvents:warm.operations.filter(event => /fern/i.test(String(event.detail))),
+      firstFrames:run.hunt })
+    const formats = await page.evaluate(() => {
+      const gl = document.createElement('canvas').getContext('webgl2')
+      return ['WEBGL_compressed_texture_astc','WEBGL_compressed_texture_etc','WEBGL_compressed_texture_s3tc']
+        .filter(name => gl?.getExtension(name))
+    })
+    samples.push({ compressedFormats:formats })
+  })
+  else for (const viewport of [{width:320,height:568},{width:430,height:932}]) {
     for (const version of ['before','after']) {
       await inspect(version, viewport, async (page, prefix) => {
         await open(page,prefix+'?perf=1&studio=1&territory=13')
@@ -67,7 +94,7 @@ try {
       })
     }
   }
-  if (!process.argv.includes('titles')) {
+  if (!process.argv.some(arg => arg === 'titles' || arg === 'resources')) {
     await inspect('studio',{width:390,height:844},async (page,prefix) => {
       await open(page,prefix+'?studio=1&perf=1&territory=13&seed=7&breed=boyd')
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio')
@@ -87,7 +114,7 @@ try {
       await page.locator('#art-studio summary').click()
       await page.getByLabel('View',{exact:true}).selectOption('Dog')
       await page.getByLabel('Dog animation').selectOption('Run')
-      await page.getByLabel('Yaw').fill('2')
+      await page.getByLabel('Yaw').press('ArrowRight')
       await page.locator('#art-studio summary').click()
       await page.screenshot({path:resolve(output,'boyd-studio.png')})
       assert.equal(await page.evaluate(() => localStorage.getItem('retriever-run.record')),initial)

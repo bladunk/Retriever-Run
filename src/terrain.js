@@ -202,6 +202,7 @@ export function createTerrain(scene, showSign, probe) {
   const seedAt = index => index < 3 ? 0 : terrainSeed
   let requestedEnvironment = false
   let requestedFerns = false
+  let keepOpeningFerns = false
   const fernGPU = createInstancedPreparation(scene, 'Habitat / Fern 02', probe)
   let lastAtlas = landscapeMap.value
   let compactAtlas
@@ -497,10 +498,12 @@ export function createTerrain(scene, showSign, probe) {
     count() { return tiles.reduce((count, tile) => count + Number(tile.index !== null), 0) },
     prepareFerns(renderer, camera, prime, detail, distance) {
       if (prime && detail > 0 && distance < 120 && !requestedFerns) {
+        keepOpeningFerns = true
         requestedFerns = true
         requestPack('ferns')
+        return true
       }
-      if (detail > 0 && requestedFerns) fernGPU.step(renderer, camera, environmentAssets.get('ferns'))
+      if (detail > 0 && requestedFerns) return fernGPU.step(renderer, camera, environmentAssets.get('ferns'))
     },
     invalidateGPU: fernGPU.clear,
     readyAt(distance) {
@@ -515,7 +518,8 @@ export function createTerrain(scene, showSign, probe) {
         requestPack('trees')
         requestPack('grass')
       }
-      const wantsFern = detail > 0 && (distance < 185 || fernTerritories.has(regionAtDistance(distance).key) ||
+      const wantsFern = detail > 0 && ((keepOpeningFerns && distance < expeditionRegions[1].marker) ||
+        fernTerritories.has(regionAtDistance(distance).key) ||
         fernTerritories.has(regionAtDistance(distance + 380).key))
       if (wantsFern && !requestedFerns) {
         requestedFerns = true
@@ -592,6 +596,7 @@ export function createTerrain(scene, showSign, probe) {
         environmentAssets.release('ferns')
         probe?.operation('habitat-release', 'ferns', started)
         requestedFerns = false
+        keepOpeningFerns = false
       }
       pump()
     },

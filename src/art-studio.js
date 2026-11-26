@@ -15,6 +15,7 @@ export function openArtStudio(game, flags, api) {
 
   function label(text, control) {
     const row = document.createElement('label')
+    control.setAttribute('aria-label', text)
     row.append(text, control)
     form.append(row)
     return control

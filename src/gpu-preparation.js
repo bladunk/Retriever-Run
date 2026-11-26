@@ -77,6 +77,7 @@ export function createInstancedPreparation(scene, owner, probe) {
           task.ready = true
         })
       }
+      return true
     },
   }
 }
