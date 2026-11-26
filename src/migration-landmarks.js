@@ -32,8 +32,9 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
   const role = region.landmark
   const [x0, period, lead] = siting[role]
   const ordinal = index - Math.ceil(region.marker / segmentLength)
-  if (ordinal < 0 || ordinal % period !== lead) return null
-  const x = x0 + (random() - .5) * 1.65
+  const openingCamp = role === 'fish-shack' && ordinal === 3
+  if (ordinal < 0 || ordinal % period !== lead && !openingCamp) return null
+  const x = (openingCamp ? 6.78 : x0) + (random() - .5) * 1.65
   const z = -16.0 + (random() - .5) * 5.2
   const ground = earth(-z, x)
   const put = (color, px, y, pz, w, h, d, roll = 0, layer = 2) =>
@@ -160,10 +161,14 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
   }
 
   if (role === 'fish-shack') {
-    const deck = Math.max(waterline + .24, ground + .06)
+    const deck = Math.max(waterline + .31, ground + .08)
     for (const name of ['CampWood', 'CampRoof', 'CampRecess']) {
       const geometry = gulfGeometry(name)
       add(geometry, null, x, deck, z, 1, 1, 1, 0, -.29, 0, false, geometry.userData.surface)
+    }
+    if (openingCamp) {
+      const jetty = z + 3.35
+      pier(x + .46, jetty, 1.46, 2.94, Math.max(waterline+.36,earth(-jetty,x+.46)+.13))
     }
   } else if (role === 'windmill') {
     const y = ground

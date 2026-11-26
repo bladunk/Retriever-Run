@@ -80,7 +80,7 @@ def tree(name, seed, compact=False):
         angle = rng.uniform(0, math.tau)
         side = Vector((math.cos(angle), math.sin(angle), 0))
         sweep = Vector((-.022 + rng.random()*.046, rng.uniform(-.023, .023), 0))
-        width = rng.uniform(.0055, .0105)
+        width = rng.uniform(.005, .014)
         strand = []
         for row in range(4):
             t = row / 3
@@ -113,7 +113,7 @@ def tree(name, seed, compact=False):
         if n < count - 2 and (not compact or n % 2 == 0):
             for strand in range(3 if compact else 6):
                 p = elbow.lerp(tip, rng.uniform(.18, .97)) + cross * rng.uniform(-.013, .013)
-                festoon(p, rng.uniform(.066, .184) * (1 - t*.36))
+                festoon(p, rng.uniform(.080, .271) * (1 - t*.36))
 
     finish_mesh(name, positions, faces, pigment, uv)
 

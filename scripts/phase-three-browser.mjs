@@ -693,6 +693,17 @@ try {
     assert.equal(samples.at(-1).hunt.id,cycles)
     assert.ok(samples.every(sample => sample.final.tiles <= 7 && sample.final.wildlife <= 2))
     await writeFile(resolve(output, 'restart-cycles.json'), JSON.stringify({ seed:7, quality, cycles, samples }, null, 2))
+  } else if (args.includes('southern-views')) {
+    const seed = 7
+    const offsets = args.includes('center-only') ? [15] : [5, 15, 27]
+    const only = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
+    for (const region of expeditionRegions.slice(0, 5).filter(region => !only.length || only.includes(region.key))) {
+      for (const second of offsets) {
+        const distance = distanceAtTime(region.seconds + second)
+        await runAt(distance, seed)
+        await capture(`${region.key}-${second}`, { seed, sceneSeconds:region.seconds + second })
+      }
+    }
   } else if (args.includes('soak')) {
     const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)

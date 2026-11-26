@@ -12,6 +12,7 @@ import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from '.
 import { signAnchor } from './sign-placement.js'
 import { dressFieldEdge } from './field-edge-art.js'
 import { dressWildBanks } from './wilderness-banks.js'
+import { dressSouthernBank } from './southern-banks.js'
 
 const box = new T.BoxGeometry()
 const stone = new T.IcosahedronGeometry(1, 0)
@@ -26,7 +27,7 @@ const branchRotation = new T.Quaternion()
 
 export const reedCount = 70
 export const treeCount = 26
-export const gulfGrassCount = 28
+export const gulfGrassCount = 40
 
 function weatheredBank() {
   const geom = new T.IcosahedronGeometry(1, 1)
@@ -44,7 +45,7 @@ function weatheredBank() {
 const snowTint = new T.Color(0xe7e5d7)
 const otherTint = new T.Color()
 const waterline = -.55
-const bedStyles = { braids: 1, dunes: 1, limestone: 2, foothills: 2, alpine: 2, hardwood: 3, boreal: 3, parkland: 3 }
+const bedStyles = { braids: 1, dunes: 1, limestone: 2, foothills: 2, alpine: 2, hardwood: 3, swamp: 3, boreal: 3, parkland: 3 }
 
 export function buildTile(index, seed = 0) {
   const start = index * segmentLength
@@ -133,8 +134,12 @@ export function buildTile(index, seed = 0) {
       thickness, length, thickness * .94, 0, 0, 0, false, 2, branchRotation)
   }
 
-  function trailEdge(distance, x) {
-    return 3.23 + .23 * Math.sin(distance * .12 + (x < 0 ? .4 : 2.9)) + .09 * Math.sin(distance * .36 + x * .81)
+  function trailEdge(distance, x, zone) {
+    const ordinary = 3.23 + .23 * Math.sin(distance * .12 + (x < 0 ? .4 : 2.9)) + .09 * Math.sin(distance * .36 + x * .81)
+    const amount = T.MathUtils.lerp(Number(zone.from.index < 5), Number(zone.to.index < 5), zone.blend)
+    if (!amount) return ordinary
+    const ragged = 2.97 + .28*Math.sin(distance*.091 + (x < 0 ? 1.3 : 4.7)) + .14*Math.sin(distance*.51 + x*.83)
+    return T.MathUtils.lerp(ordinary, ragged, amount)
   }
   function earth(distance, x, zone = expeditionBlend(distance)) {
     const edge = Math.abs(x)
@@ -172,7 +177,7 @@ export function buildTile(index, seed = 0) {
       const x = offsets[col]
       const edge = Math.abs(x)
       const y = earth(distance, x, zone)
-      const edgeFade = Math.min(1, Math.max(0, (edge - trailEdge(distance, x) + .44) / .88))
+      const edgeFade = Math.min(1, Math.max(0, (edge - trailEdge(distance, x, zone) + .44) / .88))
       uvs.push(x / 2.5, -distance / 2.5)
       terrainStyle.push(T.MathUtils.lerp(bedStyles[zone.from.kind] ?? 0, bedStyles[zone.to.kind] ?? 0, zone.blend))
       const surface = T.MathUtils.lerp(surfaceOrder[zone.from.key], surfaceOrder[zone.to.key], zone.blend)
@@ -267,7 +272,7 @@ export function buildTile(index, seed = 0) {
     for (let i = 0; i < colors.treesPerSide; i++) {
       const z = between(-29.12, -.86)
       const nearBank = i < Math.ceil(colors.treesPerSide * .58)
-      const x = side * (nearBank ? between(5.7, 14.0) : between(16, 51))
+      const x = side * (key === 'flyway' ? between(15.7, 41) : nearBank ? between(5.7, 14.0) : between(16, 51))
       const at = start - z
       const ground = earth(at, x)
       const wetRoots = ['swamp', 'hardwood'].includes(colors.kind)
@@ -279,7 +284,7 @@ export function buildTile(index, seed = 0) {
       const kind = (i + index + Number(side === 1)) % 3 === 0 ? 1 : 0
       trees.push(centerAt(at) - base + Math.cos(heading) * x, ground, z - Math.sin(heading) * x, height,
         between(0, Math.PI * 2), i % 3, kind)
-      if (wetRoots && i % 2 === 0 && Math.abs(x) < 12) {
+      if (colors.kind === 'swamp' && i % 2 === 0 && Math.abs(x) < 12) {
         for (let knee = 0; knee < 3; knee++) {
           const foot = x + side * between(.28, 1.45)
           const depth = z + between(-1.2, .9)
@@ -422,6 +427,7 @@ export function buildTile(index, seed = 0) {
 
   const landPoints = land.attributes.position
   const landColors = land.attributes.color
+  const floodplain = key === 'cypress' || key === 'timber'
   for (let i = 0; i < landPoints.count; i++) {
     const x = landPoints.getX(i), z = landPoints.getZ(i)
     let shade = 0
@@ -430,10 +436,10 @@ export function buildTile(index, seed = 0) {
       const length = scenicTrees[at + 3] * 1.22
       const along = dx * .58 + dz * .82
       const across = dx * .82 - dz * .58
-      const root = Math.max(0, 1 - Math.hypot(dx, dz) / (key === 'cypress' ? 2.6 : 1.45))
+      const root = Math.max(0, 1 - Math.hypot(dx, dz) / (floodplain ? 2.6 : 1.45))
       const canopyShadow = Math.max(0, 1 - Math.abs(along - length * .43) / length) *
-        Math.max(0, 1 - Math.abs(across) / (key === 'cypress' ? 1.86 : 1.08))
-      shade = Math.max(shade, root * .24 + canopyShadow * (key === 'cypress' ? .41 : .15))
+        Math.max(0, 1 - Math.abs(across) / (floodplain ? 1.86 : 1.08))
+      shade = Math.max(shade, root * .24 + canopyShadow * (floodplain ? .41 : .15))
     }
     if (landmark && Math.abs(z - landmarkZ) < 5.4) {
       const contact = Math.max(0, 1 - Math.hypot((x - landmarkX) / 4.5, (z - landmarkZ) / 4.1))
@@ -451,6 +457,7 @@ export function buildTile(index, seed = 0) {
   }
   batch = details
   dressFieldEdge({ key, index, seed, earth, waterline, landmark, sign, add })
+  dressSouthernBank({ key, index, seed, earth, landmark, sign, add })
   const detail = mergedPacket(details)
   const solid = mergedPacket(solids)
   const reeds = []
@@ -508,7 +515,7 @@ export function buildTile(index, seed = 0) {
       let planted = 0
       for (let patch = 0; patch < 5 && planted < gulfGrassCount / 2; patch++) {
         const run = start + 2.5 + patch * 5.4 + shoreline() * 2
-        const width = 3.9 + shoreline() * 3.1
+        const width = 4.1 + shoreline() * 3.8
         for (let stem = 0; stem < 5 && planted < gulfGrassCount / 2; stem++) {
           const at = run + (shoreline() - .5) * 3.2
           const x = side * (width + (shoreline() - .5) * 1.5)

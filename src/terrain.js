@@ -18,6 +18,7 @@ import { planEncounter } from './wildlife-encounters.js'
 import { replaceTileGeometry } from './tile-mesh.js'
 import { createInstancedPreparation } from './gpu-preparation.js'
 import { centerAt, segmentLength } from './trail.js'
+import { southernModel } from './southern-banks.js'
 
 const vegetation = Array.from({ length: 3 }, (_, type) => [createBankPlant(type, true), createBankPlant(type)])
 const distantTrees = Array.from({ length: 5 }, (_, style) => createDistantTree(style))
@@ -261,10 +262,14 @@ export function createTerrain(scene, showSign, probe) {
     tile.trees.material = cards?.material ?? treeMaterial
     tile.trees.count = 0
     const swamp = packet.territory === 'cypress'
+    const floodedTimber = packet.territory === 'timber'
     tile.swamp = swamp
     for (const [index, mesh] of tile.forest.entries()) {
-      assignForestGeometry(mesh, swamp ? cypressModel(index > 0 ? 2 : variant)
-        : forestModel(variants[index], field.fieldDetail.value < 2, Math.abs(packet.index + index) % 2))
+      const compact = field.fieldDetail.value < 2
+      const trees = swamp ? cypressModel(index > 0 ? 2 : variant)
+        : floodedTimber ? southernModel((index ? 'WillowOak' : 'BottomlandOak') + (compact ? 'LOD' : ''))
+        : forestModel(variants[index], compact, Math.abs(packet.index + index) % 2)
+      assignForestGeometry(mesh, trees)
       mesh.count = 0
     }
     for (let n = 0; n < packet.trees.length / 7; n++) {
@@ -308,7 +313,7 @@ export function createTerrain(scene, showSign, probe) {
     tile.tufts.material = reedMaterial
     const gulf = packet.territory === 'gulf'
     if (gulf || swamp) {
-      tile.tufts.geometry = gulf ? gulfGeometry('CordgrassLOD1') : cypressModel(3)
+      tile.tufts.geometry = gulf ? southernModel('SaltFlatGrass') : cypressModel(3)
       tile.tufts.count = packet.shoreGrass.length / 4
       for (let n = 0; n < tile.tufts.count; n++) {
         const offset = n * 4
@@ -576,7 +581,7 @@ export function createTerrain(scene, showSign, probe) {
         tile.ferns.visible = detail > 0 && fernGPU.ready() && tile.ferns.count > 0 && tileStart < 49
         tile.tufts.visible = tile.tufts.count > 0 && (tile.gulf || tile.swamp ? tileStart < (detail > 0 ? 44 : 18)
           : detail > 0 && tileStart < 38)
-        if (tile.gulf) tile.tufts.geometry = gulfGeometry(detail > 1 && tileStart < 15 ? 'CordgrassLOD0' : 'CordgrassLOD1')
+        if (tile.gulf) tile.tufts.geometry = southernModel(detail > 1 && tileStart < 16 ? 'TidalCordgrass' : 'SaltFlatGrass')
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0
         tile.reeds.geometry = tile.gulf
           ? gulfGeometry(richPlants && detail > 0 ? 'CattailLOD0' : 'CattailLOD1')
