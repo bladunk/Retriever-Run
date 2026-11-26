@@ -1,0 +1,80 @@
+{
+  "stack": "GoTrue v2.185.0, PostgREST v13.0.7 and PostgreSQL 17 in local containers",
+  "seed": 0,
+  "canonical": [
+    {
+      "score": 55,
+      "distance": 35,
+      "duration": 3161,
+      "retrieves": 0,
+      "combo": 2
+    },
+    {
+      "score": 35,
+      "distance": 35,
+      "duration": 3158,
+      "retrieves": 0,
+      "combo": 0
+    },
+    {
+      "score": 75,
+      "distance": 35,
+      "duration": 3161,
+      "retrieves": 0,
+      "combo": 4
+    }
+  ],
+  "initial": [
+    [
+      "QA Delta Dog",
+      75
+    ],
+    [
+      "QA Marsh Dog",
+      55
+    ],
+    [
+      "QA Cedar Dog",
+      35
+    ]
+  ],
+  "refreshed": [
+    [
+      "QA Marsh Dog",
+      95
+    ],
+    [
+      "QA Delta Dog",
+      75
+    ],
+    [
+      "QA Cedar Dog",
+      35
+    ]
+  ],
+  "mine": {
+    "rank": 1,
+    "value": 95,
+    "percentile": 100,
+    "total": 3
+  },
+  "staleOffline": true,
+  "syncedAfterReopen": true,
+  "sameIdentity": true,
+  "worseKeptBest": true,
+  "duplicateStatus": "duplicate",
+  "wrongCourse": "invalid_run",
+  "wrongVersion": "invalid_run",
+  "crossIdentity": "invalid_ticket",
+  "directWriteHttp": 403,
+  "browser": {
+    "build": {
+      "version": "1.0.0-phase.9",
+      "id": "b83b0db"
+    },
+    "viewport": "320 × 568",
+    "directWorldwide": true,
+    "afterClosingAndReopening": true,
+    "browserHuntReceipt": "Worldwide hunt verified"
+  }
+}

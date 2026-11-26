@@ -211,7 +211,14 @@ async function reviewBrowser(actor) {
     await review(reopened)
     await reopened.locator('#open-worldwide').tap()
     await reopened.getByText('Your rank #1',{exact:true}).waitFor()
+    await reopened.getByRole('button',{name:'Prepare a ranked hunt'}).tap()
+    await reopened.getByRole('button',{name:'Start ranked hunt'}).tap()
+    await reopened.locator('#report-ranked').filter({ hasText:/New Worldwide personal best|Worldwide hunt verified/ })
+      .waitFor({timeout:60_000})
+    assert.ok(await reopened.locator('#run-again').isEnabled())
+    await reopened.screenshot({path:resolve(output,'actual-hunt-receipt.png')})
     const build = JSON.parse(await readFile(resolve(root,'content-manifest.json'),'utf8')).app
-    return { build,viewport:'320 × 568', directWorldwide:true,afterClosingAndReopening:true }
+    return { build,viewport:'320 × 568',directWorldwide:true,afterClosingAndReopening:true,
+      browserHuntReceipt:await reopened.locator('#report-ranked').textContent() }
   } finally { await browser.close() }
 }

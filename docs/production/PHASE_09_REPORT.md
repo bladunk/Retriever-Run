@@ -15,6 +15,43 @@ Phase 09 adds a distinct competition for the existing Great Migration. A ranked 
 
 Phase 08 was accepted for merge. Its physical iPhone acceptance is still open. Phase 09 changes online entry points and presentation. It reuses the deterministic course, score, obstacle, collision and fixed-step modules, the 15 territories and 30 stages, and the Phase 08 interface and audio. The original career levels, 621 local Honors, 151 earnable cosmetics, 29 Journal species, Lodge, Boyd and offline Master Hunter path use the same save and progression contracts.
 
+
+## Dedicated Worldwide follow-up
+
+PR #37 was already merged when this directive arrived. The follow-up starts from its merge commit `7137b60a01e94e8337c927909ff3c5cda12ec333`. Pages served `1.0.0-phase.9 · f1a7d29`, content manifest `32ed589111635a5d9ae6`, during the live investigation. Review branch is `codex/retriever-run-phase-09-worldwide`. The runtime source is `8d9ae2d`. The review builds are `1.0.0-phase.9 · 2da3910` without network configuration and `1.0.0-phase.9 · b83b0db` with the isolated review connection. [Draft PR #38](https://github.com/bladunk/Retriever-Run/pull/38) · [CI checks](https://github.com/bladunk/Retriever-Run/pull/38/checks)
+
+The title now offers six primary destinations. Hunt keeps its full-width button, and Lodge, Kennel, Journal, Worldwide and Camp share one row. Worldwide opens directly into its own titled view. The dialog keeps the same six destinations and marks the active one. Worldwide groups current rankings, the competitive profile and archived standings. Camp groups local records, Friends and Private Camps. The final 320 × 568 portrait test checked the six title buttons for clipping and 44 px minimum height.
+
+The Worldwide selector offers Highest Score, Longest Distance, Longest Hunt, Most Retrieves and Longest Combo. Career Legends is visible as unavailable until a trustworthy long-term measure exists. The database returns the size of the eligible category and the current player's ordinal rank from one snapshot on the first page. The displayed percentile is the share of **other** ranked players below the current player after deterministic tie-breaking. A single entrant has no percentile. The view highlights the current player, shows both available adjacent rivals and gives the exact additional amount needed to beat the next rival, including the extra point, meter, retrieve, treat or millisecond required to break an earlier record. Worldwide has a manual Refresh action, visible course/version and last successful synchronization time. Opening the room after verification fetches the current best. Hunt Over shows the verifier's personal-best receipt with immediate replay. Named overtakes and rank movement notices remain pending.
+
+### Live diagnosis and owner remediation
+
+The live Pages bundle contains a Supabase project URL and publishable key. Its exact read-only Worldwide request returned HTTP 404 and PostgREST `PGRST202` for `rr_ranked_board`. The separately tested legacy `rr_camp_season` also returned `PGRST202`. The public API therefore cannot currently serve the ranked board. A public response alone cannot distinguish an unapplied migration, wrong project configuration or stale API schema cache. The app now reports the missing schema explicitly and distinguishes it from empty standings, lost Auth, offline cache, course/version mismatch, and a missing verifier. Opt-in diagnostics record only allowlisted operation and status names. No hosted database writes, sign-ups, test entries or configuration changes were made. [Copy-ready consolidated SQL](../../supabase/ops/phase-nine-install.sql) · [Precise SQL Editor and verification steps](PHASE_09_DEPLOYMENT.md#resolve-the-live-pgrst202)
+
+### Actual local Supabase verification
+
+This run used real GoTrue v2.185.0 anonymous authentication, PostgREST v13.0.7, PostgreSQL 17 in disposable containers, and the repository verifier behind a loopback HTTP relay. Three anonymous identities registered public nicknames through the actual app transport. The only seeded database input was the issued test ticket's seed. Every ranked score came from an accepted replay, and no seeding script wrote a best. The compiled Chromium app read those same database records. After closing and reopening its page, it read the same rank under the same anonymous identity. It then prepared a fresh ticket and completed a real browser hunt using its server-generated seed. Hunt Over displayed the actual verification receipt with Play Again enabled. The five public category reads returned HTTP 200. Retrieves correctly had no ranked players in these short test runs.
+
+| Isolated player | Initial verified score | Score after refresh |
+| --- | ---: | ---: |
+| QA Marsh Dog | 55 · rank #2 | 95 · rank #1 |
+| QA Delta Dog | 75 · rank #1 | 75 · rank #2 |
+| QA Cedar Dog | 35 · rank #3 | 35 · rank #3 |
+
+QA Marsh Dog completed the improvement with its transport offline, reopened the saved outbox and synchronized. A following 45-point replay kept the 95-point best. The score category still held exactly three rows. Reusing the same receipt returned `duplicate`. A second identity could not submit the first identity's ticket. PostgREST denied a direct privileged write with HTTP 403. The local verifier rejected a practice course, archived version and false terminal tick. A separate embedded PostgreSQL fixture exercised public pagination through rank #100 and an authenticated rank outside that list. The earlier Phase 09 long-replay and social-policy tests retain their existing coverage. [Raw local verification summary](evidence/phase-09/worldwide/local-supabase.json) · [Mobile screenshots](evidence/phase-09/worldwide/README.md)
+
+The consolidated script was applied after only the original Camp base SQL in a new isolated PostgreSQL engine. It exposed the public board, denied browser verification writes, preserved private-schema isolation and returned zero ranked entries with the new competition closed. Both review artifacts passed manifest and byte verification. The configuration-free artifact is 14,834,034 bytes, with 14,779,557 required offline. The presentation and diagnostics increase the prior offline set by 4,601 bytes. The final WebKit fixture covered private Camps, friends, submission reconnection and the verified Honor. The final offline Chromium regression covered a guest hunt, replay, the Kennel and existing Lodge progression. The follow-up suite has 196 automated cases and adds checks for missing database APIs and pagination beyond rank #100. The previous hosted build continues to require owner migration and Edge verification. Physical iPhone acceptance is pending.
+
+### Physical iPhone checklist for the owner
+
+1. Open Worldwide directly from the main menu of the reviewed build. Check all six destinations, the selector, ruleset and server status.
+2. In an approved isolated or explicitly authorized ranked test window, create an anonymous test profile. Prepare a ranked hunt, finish a legitimate run and look for the server receipt on Hunt Over.
+3. Open Worldwide, refresh and find your nickname and verified score. On a second eligible hunt, improve the score. Refresh and verify the same row now shows the higher best.
+4. Close the browser tab or Home Screen app, reopen it and confirm the same nickname and best return.
+5. Prepare a second ranked entry online, start it, then disconnect during play. Finish it, verify local rewards and the pending state, reconnect and confirm exactly one verification. A hunt **started** fully offline stays local.
+6. Check that Play Again stays available while verification is pending. Before any public ranked activation, confirm a successfully installed verifier, a closed production control and the Phase 10 owner approval.
+
+
 ## Existing Camp audit
 
 | Area | Prior behavior | Phase 09 |
