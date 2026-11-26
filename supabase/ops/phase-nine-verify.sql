@@ -18,3 +18,7 @@ where n.nspname = 'retriever_camp' and c.relkind = 'r' order by relname;
 select (select count(*) from retriever_camp.ranked_bests) as ranked_rows,
        (select count(*) from retriever_camp.ranked_tickets) as ranked_tickets;
 -- Expect 0, 0 on the new production namespace. Legacy rows are untouched.
+
+select payload->>'total_ranked' as score_board_total, payload->>'course' as verified_course
+from (select public.rr_ranked_board('score') as payload) board;
+-- Expect 0 on a new board and migration-30-phase-05 for the verified course.

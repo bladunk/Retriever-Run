@@ -33,7 +33,8 @@ export const roomGroups = {
   overview: ['overview', 'collection', 'trophies', 'career', 'records', 'migration', 'shame'],
   kennel: ['kennel', 'equipment'],
   journal: ['journal'],
-  board: ['board', 'worldwide', 'friends', 'private-camps', 'camp-profile', 'camp-archives'],
+  worldwide: ['worldwide', 'camp-profile', 'camp-archives'],
+  board: ['board', 'friends', 'private-camps'],
 }
 
 export function primaryRoom(room) {

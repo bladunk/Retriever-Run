@@ -178,7 +178,7 @@ try {
     await page.locator('#open-lodge').tap()
     await choosePlayer(8)
     await panel.locator('.lodge-interior').waitFor()
-    assert.equal(await page.locator('.lodge-tabs button').count(),5)
+    assert.equal(await page.locator('.lodge-tabs button').count(),6)
     await shot('lodge-navigation')
     await room('collection')
     const retained = await panel.locator('.gallery-heading').textContent()

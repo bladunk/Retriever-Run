@@ -31,3 +31,6 @@
 .ranked-camp :is(h4, p) { margin-block: .25rem; }
 .ranked-confirmation button { margin-inline-end: .3rem; }
 .ranked-camp .own-ranking:empty { display: none; }
+.ranked-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .35rem; }
+.ranked-toolbar select, .ranked-toolbar button { min-width: 0; padding-inline: .4rem; }
+.ranked-version small { display: block; margin-top: .15rem; }
