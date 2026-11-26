@@ -1,0 +1,2088 @@
+{
+  "engine": "chromium",
+  "seed": 7,
+  "duration": 15,
+  "offline": true,
+  "quality": "high",
+  "executed": 6,
+  "samples": [
+    {
+      "elapsed": 0,
+      "distance": 0,
+      "draws": 45,
+      "triangles": 154369,
+      "geometries": 35,
+      "textures": 20,
+      "tiles": 3,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 0.7116666666666667,
+      "distance": 7.884114337037037,
+      "draws": 50,
+      "triangles": 163582,
+      "geometries": 42,
+      "textures": 22,
+      "tiles": 4,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 1.1916666666666662,
+      "distance": 13.264730314814814,
+      "draws": 54,
+      "triangles": 167814,
+      "geometries": 46,
+      "textures": 22,
+      "tiles": 5,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 1.6716666666666646,
+      "distance": 18.696099403703705,
+      "draws": 55,
+      "triangles": 178344,
+      "geometries": 46,
+      "textures": 22,
+      "tiles": 5,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 2.1516666666666664,
+      "distance": 24.178215485185188,
+      "draws": 56,
+      "triangles": 177089,
+      "geometries": 50,
+      "textures": 22,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 2.631666666666665,
+      "distance": 29.711081618518527,
+      "draws": 57,
+      "triangles": 185115,
+      "geometries": 51,
+      "textures": 22,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 3.111666666666667,
+      "distance": 35.29469780370372,
+      "draws": 56,
+      "triangles": 189369,
+      "geometries": 54,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 3.591666666666665,
+      "distance": 40.92906098148149,
+      "draws": 56,
+      "triangles": 176093,
+      "geometries": 50,
+      "textures": 22,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 4.071666666666671,
+      "distance": 46.614177270370384,
+      "draws": 59,
+      "triangles": 194618,
+      "geometries": 53,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 4.551666666666695,
+      "distance": 52.35004055185186,
+      "draws": 60,
+      "triangles": 197748,
+      "geometries": 54,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 5.031666666666669,
+      "distance": 58.1366538851852,
+      "draws": 59,
+      "triangles": 195123,
+      "geometries": 55,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 43
+    },
+    {
+      "elapsed": 5.511666666666693,
+      "distance": 63.97401727037039,
+      "draws": 58,
+      "triangles": 193371,
+      "geometries": 53,
+      "textures": 22,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 6.231666666666679,
+      "distance": 72.82521601851853,
+      "draws": 60,
+      "triangles": 198234,
+      "geometries": 54,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 6.711666666666703,
+      "distance": 78.7894530037037,
+      "draws": 61,
+      "triangles": 183420,
+      "geometries": 56,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 7.191666666666677,
+      "distance": 84.8044369814815,
+      "draws": 62,
+      "triangles": 183721,
+      "geometries": 56,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 7.6716666666667015,
+      "distance": 90.87017407037038,
+      "draws": 61,
+      "triangles": 190843,
+      "geometries": 59,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 8.15166666666666,
+      "distance": 96.98665815185188,
+      "draws": 60,
+      "triangles": 177903,
+      "geometries": 55,
+      "textures": 22,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 8.631666666666632,
+      "distance": 103.1538922851852,
+      "draws": 63,
+      "triangles": 189218,
+      "geometries": 58,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 9.111666666666663,
+      "distance": 109.3718764703704,
+      "draws": 68,
+      "triangles": 188063,
+      "geometries": 62,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 9.591666666666635,
+      "distance": 115.64060764814816,
+      "draws": 72,
+      "triangles": 190899,
+      "geometries": 62,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 10.071666666666664,
+      "distance": 121.96009193703706,
+      "draws": 66,
+      "triangles": 191041,
+      "geometries": 63,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 10.551666666666637,
+      "distance": 128.33032321851857,
+      "draws": 63,
+      "triangles": 181301,
+      "geometries": 59,
+      "textures": 22,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 11.031666666666666,
+      "distance": 134.7513045518519,
+      "draws": 71,
+      "triangles": 184917,
+      "geometries": 64,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 11.51166666666664,
+      "distance": 141.22303593703708,
+      "draws": 70,
+      "triangles": 186449,
+      "geometries": 64,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 12.231666666666655,
+      "distance": 151.02578668518524,
+      "draws": 61,
+      "triangles": 183906,
+      "geometries": 63,
+      "textures": 22,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 12.711666666666629,
+      "distance": 157.62439167037041,
+      "draws": 63,
+      "triangles": 185750,
+      "geometries": 59,
+      "textures": 22,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 13.191666666666658,
+      "distance": 164.2737436481482,
+      "draws": 70,
+      "triangles": 186933,
+      "geometries": 65,
+      "textures": 23,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 13.671666666666631,
+      "distance": 170.9738487370371,
+      "draws": 66,
+      "triangles": 186750,
+      "geometries": 65,
+      "textures": 23,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 14.011666666666667,
+      "distance": 175.75046038148153,
+      "draws": 66,
+      "triangles": 187462,
+      "geometries": 65,
+      "textures": 23,
+      "tiles": 7,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 14.731666666666626,
+      "distance": 185.94969112962966,
+      "draws": 65,
+      "triangles": 194608,
+      "geometries": 62,
+      "textures": 23,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    },
+    {
+      "elapsed": 15.211666666666655,
+      "distance": 192.81367385370368,
+      "draws": 58,
+      "triangles": 167437,
+      "geometries": 62,
+      "textures": 23,
+      "tiles": 6,
+      "packs": 1,
+      "tileSliceMs": 6.199999988079071
+    }
+  ],
+  "elapsed": 15.211666666666655,
+  "videoStart": 12.574254103,
+  "videoEnd": 111.37343118499999,
+  "renderedEnd": {
+    "ready": 11896.899999976158,
+    "restart": 2814.399999976158,
+    "frames": 64,
+    "discarded": 0,
+    "draws": 61,
+    "triangles": 175492,
+    "textures": 23,
+    "geometries": 64,
+    "programs": 25,
+    "territory": "gulf",
+    "transitions": [
+      {
+        "territory": "gulf",
+        "wall": 0,
+        "at": 19107.399999976158
+      }
+    ],
+    "adaptiveChanges": 0,
+    "preset": "high",
+    "detail": 2,
+    "residentTiles": 7,
+    "residentPacks": 1,
+    "surfaces": {
+      "active": "full",
+      "pending": false,
+      "lastLoadMs": 1741.800000011921,
+      "width": 2560,
+      "height": 2048,
+      "estimatedRgbaMipBytes": 27962027,
+      "gulfAtlas": true,
+      "gulfAtlasPending": false
+    },
+    "openingTerrain": {
+      "packets": 4,
+      "reused": 0
+    },
+    "dogBreed": "lab",
+    "tileTimings": [
+      {
+        "index": 7,
+        "buildMs": 119.09999996423721,
+        "unpackMs": 3.300000011920929,
+        "integrationPeakMs": 2.300000011920929
+      },
+      {
+        "index": 8,
+        "buildMs": 95.69999998807907,
+        "unpackMs": 0.40000003576278687,
+        "integrationPeakMs": 0.30000001192092896
+      },
+      {
+        "index": 9,
+        "buildMs": 35.299999952316284,
+        "unpackMs": 0.6000000238418579,
+        "integrationPeakMs": 0.30000001192092896
+      },
+      {
+        "index": 10,
+        "buildMs": 85.10000002384186,
+        "unpackMs": 0.3999999165534973,
+        "integrationPeakMs": 0.19999998807907104
+      },
+      {
+        "index": 11,
+        "buildMs": 33.19999998807907,
+        "unpackMs": 0.30000007152557373,
+        "integrationPeakMs": 0.10000002384185791
+      },
+      {
+        "index": 5,
+        "buildMs": 179.19999998807907,
+        "unpackMs": 1.7000000476837158,
+        "integrationPeakMs": 1.600000023841858
+      },
+      {
+        "index": 6,
+        "buildMs": 75.70000004768372,
+        "unpackMs": 6.900000035762787,
+        "integrationPeakMs": 6.199999988079071
+      }
+    ],
+    "wildlife": 0,
+    "wildlifeModels": {
+      "resident": 2,
+      "preparing": null,
+      "loadMs": 116,
+      "releasedBoneTextures": 0,
+      "hits": 0,
+      "misses": 2,
+      "evictions": 0,
+      "limit": 2,
+      "models": [
+        {
+          "id": "mallard",
+          "materialTextures": 7,
+          "boneTextures": 0,
+          "prepared": {
+            "textures": 6,
+            "skeletons": 0,
+            "shaders": 0,
+            "geometries": 0,
+            "geometryTotal": 8
+          }
+        },
+        {
+          "id": "deer",
+          "materialTextures": 2,
+          "boneTextures": 0,
+          "prepared": {
+            "textures": 0,
+            "skeletons": 0,
+            "shaders": 0,
+            "geometries": 0,
+            "geometryTotal": 3
+          }
+        }
+      ],
+      "rigEncounters": 0,
+      "fallbackEncounters": 1
+    },
+    "trailPool": {
+      "keys": 10,
+      "idle": 16
+    },
+    "framesMs": {
+      "samples": 64,
+      "median": 250,
+      "p95": 250,
+      "p99": 250,
+      "max": 250,
+      "over16_7": 64,
+      "over20": 64,
+      "over33_3": 64,
+      "over50": 64,
+      "slow": 64,
+      "average": 247.66
+    },
+    "cpuMs": {
+      "samples": 66,
+      "median": 6.8,
+      "p95": 3069.8,
+      "p99": 5106.9,
+      "max": 5106.9,
+      "over16_7": 18,
+      "over20": 18,
+      "over33_3": 18,
+      "over50": 14,
+      "slow": 18,
+      "average": 356.97
+    },
+    "presentationMs": {
+      "samples": 65,
+      "median": 1300.1,
+      "p95": 4744.5,
+      "p99": 6506,
+      "max": 6506,
+      "over16_7": 59,
+      "over20": 57,
+      "over33_3": 53,
+      "over50": 51,
+      "slow": 53,
+      "average": 1407.95
+    },
+    "averageFPS": 0.7,
+    "hunt": {
+      "id": 1,
+      "discarded": 0,
+      "peakTextures": 23,
+      "peakGeometries": 66,
+      "presentation": {
+        "samples": 65,
+        "maxMs": 6506,
+        "over20": 57,
+        "over33_3": 53,
+        "over50": 51,
+        "averageMs": 1407.95
+      },
+      "cpu": {
+        "samples": 66,
+        "maxMs": 5106.900000035763,
+        "over20": 18,
+        "over33_3": 18,
+        "over50": 14,
+        "averageMs": 356.97
+      },
+      "averageFPS": 0.7
+    },
+    "session": {
+      "id": null,
+      "discarded": 0,
+      "peakTextures": 23,
+      "peakGeometries": 66,
+      "presentation": {
+        "samples": 65,
+        "maxMs": 6506,
+        "over20": 57,
+        "over33_3": 53,
+        "over50": 51,
+        "averageMs": 1407.95
+      },
+      "cpu": {
+        "samples": 66,
+        "maxMs": 5106.900000035763,
+        "over20": 18,
+        "over33_3": 18,
+        "over50": 14,
+        "averageMs": 356.97
+      },
+      "averageFPS": 0.7
+    },
+    "previousHunts": [],
+    "slowFrames": [
+      {
+        "at": 26880.69999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1499.3,
+        "cpuMs": 4.2,
+        "renderMs": 1.6,
+        "draws": 54,
+        "triangles": 174744,
+        "textures": 22,
+        "geometries": 46,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 28781.69999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1901,
+        "cpuMs": 57,
+        "renderMs": 1,
+        "draws": 55,
+        "triangles": 178344,
+        "textures": 22,
+        "geometries": 46,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 30399.899999976158,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1600.9,
+        "cpuMs": 5.5,
+        "renderMs": 1.6,
+        "draws": 56,
+        "triangles": 177089,
+        "textures": 22,
+        "geometries": 50,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 2,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 30397.099999964237,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 4,
+            "durationMs": 1.8
+          }
+        ]
+      },
+      {
+        "at": 32510.599999964237,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 2110.7,
+        "cpuMs": 5.4,
+        "renderMs": 3.9,
+        "draws": 57,
+        "triangles": 185115,
+        "textures": 22,
+        "geometries": 51,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 1,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 34568.299999952316,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 2057.7,
+        "cpuMs": 4.5,
+        "renderMs": 3.2,
+        "draws": 57,
+        "triangles": 185115,
+        "textures": 22,
+        "geometries": 51,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 37018.299999952316,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 2450,
+        "cpuMs": 5.9,
+        "renderMs": 3.4,
+        "draws": 53,
+        "triangles": 181310,
+        "textures": 22,
+        "geometries": 51,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 38704.799999952316,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1686.5,
+        "cpuMs": 6.8,
+        "renderMs": 2.1,
+        "draws": 56,
+        "triangles": 189369,
+        "textures": 22,
+        "geometries": 54,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 3,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 38702,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 5,
+            "durationMs": 1.6
+          }
+        ]
+      },
+      {
+        "at": 39878,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1173.2,
+        "cpuMs": 13.6,
+        "renderMs": 5.6,
+        "draws": 56,
+        "triangles": 189369,
+        "textures": 22,
+        "geometries": 50,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": -4,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 39872.09999996424,
+            "hunt": 1,
+            "name": "terrain-slice",
+            "detail": 6,
+            "durationMs": 6.2
+          }
+        ]
+      },
+      {
+        "at": 41311.19999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1433.2,
+        "cpuMs": 6.4,
+        "renderMs": 5,
+        "draws": 56,
+        "triangles": 176093,
+        "textures": 22,
+        "geometries": 50,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 42611.299999952316,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1300.1,
+        "cpuMs": 8.4,
+        "renderMs": 1.6,
+        "draws": 57,
+        "triangles": 176023,
+        "textures": 22,
+        "geometries": 50,
+        "programs": 20,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 47378,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 4766.7,
+        "cpuMs": 3456,
+        "renderMs": 3454.8,
+        "draws": 59,
+        "triangles": 194618,
+        "textures": 22,
+        "geometries": 53,
+        "programs": 21,
+        "textureDelta": 0,
+        "geometryDelta": 3,
+        "programDelta": 1,
+        "operations": [
+          {
+            "at": 43923,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 6,
+            "durationMs": 0.2
+          }
+        ]
+      },
+      {
+        "at": 48293,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 870.9,
+        "cpuMs": 6.1,
+        "renderMs": 4.6,
+        "draws": 59,
+        "triangles": 187348,
+        "textures": 22,
+        "geometries": 54,
+        "programs": 21,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 50516.09999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 2223.1,
+        "cpuMs": 11.9,
+        "renderMs": 1,
+        "draws": 59,
+        "triangles": 195123,
+        "textures": 22,
+        "geometries": 55,
+        "programs": 21,
+        "textureDelta": 0,
+        "geometryDelta": 1,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 51866.59999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1350.5,
+        "cpuMs": 2.9,
+        "renderMs": 1.3,
+        "draws": 56,
+        "triangles": 192524,
+        "textures": 22,
+        "geometries": 55,
+        "programs": 21,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 54161.59999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 2295,
+        "cpuMs": 84.6,
+        "renderMs": 39.5,
+        "draws": 58,
+        "triangles": 193371,
+        "textures": 22,
+        "geometries": 53,
+        "programs": 21,
+        "textureDelta": 0,
+        "geometryDelta": -2,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 57775.39999997616,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 3613.8,
+        "cpuMs": 53.8,
+        "renderMs": 3,
+        "draws": 56,
+        "triangles": 189975,
+        "textures": 22,
+        "geometries": 51,
+        "programs": 21,
+        "textureDelta": 0,
+        "geometryDelta": -2,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 57769.39999997616,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "heron",
+            "durationMs": 44.6
+          }
+        ]
+      },
+      {
+        "at": 59412.5,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1637.1,
+        "cpuMs": 6.7,
+        "renderMs": 5.7,
+        "draws": 56,
+        "triangles": 190075,
+        "textures": 22,
+        "geometries": 51,
+        "programs": 21,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 59503.799999952316,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 7,
+            "durationMs": 0.8
+          }
+        ]
+      },
+      {
+        "at": 59607.39999997616,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 194.9,
+        "cpuMs": 117.8,
+        "renderMs": 6.6,
+        "draws": 60,
+        "triangles": 198234,
+        "textures": 22,
+        "geometries": 54,
+        "programs": 21,
+        "textureDelta": 0,
+        "geometryDelta": 3,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 59503.799999952316,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 7,
+            "durationMs": 0.8
+          }
+        ]
+      },
+      {
+        "at": 65203.89999997616,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 5596.5,
+        "cpuMs": 3989.5,
+        "renderMs": 3988.1,
+        "draws": 60,
+        "triangles": 181400,
+        "textures": 22,
+        "geometries": 55,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 1,
+        "programDelta": 2,
+        "operations": []
+      },
+      {
+        "at": 65275.5,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 52.9,
+        "cpuMs": 3.6,
+        "renderMs": 2.5,
+        "draws": 60,
+        "triangles": 182736,
+        "textures": 22,
+        "geometries": 56,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 65508.69999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 233.2,
+        "cpuMs": 8.7,
+        "renderMs": 7.1,
+        "draws": 62,
+        "triangles": 183721,
+        "textures": 22,
+        "geometries": 56,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 67066.59999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1557.9,
+        "cpuMs": 56.8,
+        "renderMs": 43.8,
+        "draws": 64,
+        "triangles": 193677,
+        "textures": 22,
+        "geometries": 59,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 3,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 67022.39999997616,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "heron"
+          }
+        ]
+      },
+      {
+        "at": 67984.09999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 917.5,
+        "cpuMs": 10.2,
+        "renderMs": 7,
+        "draws": 61,
+        "triangles": 190843,
+        "textures": 22,
+        "geometries": 59,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 71560.69999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 3576.6,
+        "cpuMs": 39,
+        "renderMs": 37,
+        "draws": 61,
+        "triangles": 190743,
+        "textures": 22,
+        "geometries": 55,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": -4,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 73584.09999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1994,
+        "cpuMs": 3.3,
+        "renderMs": 1.2,
+        "draws": 59,
+        "triangles": 177219,
+        "textures": 22,
+        "geometries": 55,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 74707.69999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1123.6,
+        "cpuMs": 3,
+        "renderMs": 1.8,
+        "draws": 63,
+        "triangles": 189218,
+        "textures": 22,
+        "geometries": 58,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 3,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 74705.69999998808,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 8,
+            "durationMs": 0.1
+          }
+        ]
+      },
+      {
+        "at": 76166.19999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1438.3,
+        "cpuMs": 47.3,
+        "renderMs": 6.3,
+        "draws": 68,
+        "triangles": 188063,
+        "textures": 22,
+        "geometries": 62,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 2,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 77160.39999997616,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 994.2,
+        "cpuMs": 39.4,
+        "renderMs": 38.2,
+        "draws": 72,
+        "triangles": 190799,
+        "textures": 22,
+        "geometries": 62,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 79620.19999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 2459.8,
+        "cpuMs": 5,
+        "renderMs": 2.3,
+        "draws": 72,
+        "triangles": 190899,
+        "textures": 22,
+        "geometries": 62,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 81070.79999995232,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1450.6,
+        "cpuMs": 7.7,
+        "renderMs": 5.7,
+        "draws": 71,
+        "triangles": 197962,
+        "textures": 22,
+        "geometries": 63,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 1,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 82285.29999995232,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1214.5,
+        "cpuMs": 614.6,
+        "renderMs": 1.2,
+        "draws": 66,
+        "triangles": 191041,
+        "textures": 22,
+        "geometries": 63,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 82283.69999998808,
+            "hunt": 1,
+            "name": "sign-paint",
+            "detail": 0,
+            "durationMs": 611.7
+          }
+        ]
+      },
+      {
+        "at": 83407.39999997616,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1122.1,
+        "cpuMs": 6.6,
+        "renderMs": 2.2,
+        "draws": 64,
+        "triangles": 190289,
+        "textures": 22,
+        "geometries": 59,
+        "programs": 23,
+        "textureDelta": 0,
+        "geometryDelta": -4,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 88165.5,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 4744.5,
+        "cpuMs": 3069.8,
+        "renderMs": 3068.8,
+        "draws": 67,
+        "triangles": 182713,
+        "textures": 22,
+        "geometries": 61,
+        "programs": 24,
+        "textureDelta": 0,
+        "geometryDelta": 2,
+        "programDelta": 1,
+        "operations": [
+          {
+            "at": 88169.19999998808,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 9,
+            "durationMs": 0.1
+          }
+        ]
+      },
+      {
+        "at": 89077.69999998808,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 900.7,
+        "cpuMs": 4.4,
+        "renderMs": 1.5,
+        "draws": 70,
+        "triangles": 186449,
+        "textures": 22,
+        "geometries": 64,
+        "programs": 24,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 90562.29999995232,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1484.6,
+        "cpuMs": 43.5,
+        "renderMs": 42.1,
+        "draws": 69,
+        "triangles": 185765,
+        "textures": 22,
+        "geometries": 64,
+        "programs": 24,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 91925.09999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1362.8,
+        "cpuMs": 12.9,
+        "renderMs": 3,
+        "draws": 65,
+        "triangles": 192366,
+        "textures": 22,
+        "geometries": 63,
+        "programs": 24,
+        "textureDelta": 0,
+        "geometryDelta": -1,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 91921.79999995232,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "heron",
+            "durationMs": 6.8
+          }
+        ]
+      },
+      {
+        "at": 93211.29999995232,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1286.2,
+        "cpuMs": 9,
+        "renderMs": 6.6,
+        "draws": 61,
+        "triangles": 183906,
+        "textures": 22,
+        "geometries": 63,
+        "programs": 24,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 94408.29999995232,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1197,
+        "cpuMs": 6.4,
+        "renderMs": 1.9,
+        "draws": 61,
+        "triangles": 184482,
+        "textures": 22,
+        "geometries": 59,
+        "programs": 24,
+        "textureDelta": 0,
+        "geometryDelta": -4,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 95799.29999995232,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1391,
+        "cpuMs": 6.9,
+        "renderMs": 5.6,
+        "draws": 63,
+        "triangles": 185750,
+        "textures": 22,
+        "geometries": 59,
+        "programs": 24,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 97313,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1513.7,
+        "cpuMs": 9.3,
+        "renderMs": 4.6,
+        "draws": 62,
+        "triangles": 171950,
+        "textures": 22,
+        "geometries": 59,
+        "programs": 24,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 103819,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 6506,
+        "cpuMs": 5106.9,
+        "renderMs": 5105.2,
+        "draws": 70,
+        "triangles": 186933,
+        "textures": 23,
+        "geometries": 65,
+        "programs": 25,
+        "textureDelta": 1,
+        "geometryDelta": 6,
+        "programDelta": 1,
+        "operations": [
+          {
+            "at": 98713.29999995232,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 10,
+            "durationMs": 0.1
+          }
+        ]
+      },
+      {
+        "at": 104219.79999995232,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 349.8,
+        "cpuMs": 2,
+        "renderMs": 1,
+        "draws": 66,
+        "triangles": 186850,
+        "textures": 23,
+        "geometries": 65,
+        "programs": 25,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 105815.09999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1595.3,
+        "cpuMs": 2.1,
+        "renderMs": 1.1,
+        "draws": 66,
+        "triangles": 187462,
+        "textures": 23,
+        "geometries": 65,
+        "programs": 25,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 106971.5,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1156.4,
+        "cpuMs": 68.4,
+        "renderMs": 1.3,
+        "draws": 70,
+        "triangles": 198357,
+        "textures": 23,
+        "geometries": 66,
+        "programs": 25,
+        "textureDelta": 0,
+        "geometryDelta": 1,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 108575,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 1603.5,
+        "cpuMs": 6.7,
+        "renderMs": 5.8,
+        "draws": 67,
+        "triangles": 195976,
+        "textures": 23,
+        "geometries": 66,
+        "programs": 25,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 109191,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 616,
+        "cpuMs": 2.4,
+        "renderMs": 0.9,
+        "draws": 65,
+        "triangles": 194608,
+        "textures": 23,
+        "geometries": 62,
+        "programs": 25,
+        "textureDelta": 0,
+        "geometryDelta": -4,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 109770.29999995232,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 579.3,
+        "cpuMs": 2.8,
+        "renderMs": 1.1,
+        "draws": 64,
+        "triangles": 184657,
+        "textures": 23,
+        "geometries": 62,
+        "programs": 25,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": []
+      },
+      {
+        "at": 110603.09999996424,
+        "hunt": 1,
+        "territory": "gulf",
+        "preset": "high",
+        "detail": 2,
+        "presentationMs": 832.8,
+        "cpuMs": 2.3,
+        "renderMs": 0.9,
+        "draws": 58,
+        "triangles": 167437,
+        "textures": 23,
+        "geometries": 62,
+        "programs": 25,
+        "textureDelta": 0,
+        "geometryDelta": 0,
+        "programDelta": 0,
+        "operations": [
+          {
+            "at": 110618.09999996424,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 11,
+            "durationMs": 0
+          }
+        ]
+      }
+    ],
+    "operations": [
+      {
+        "at": 2786.199999988079,
+        "hunt": null,
+        "name": "wildlife-load-start",
+        "detail": "mallard"
+      },
+      {
+        "at": 4174.799999952316,
+        "hunt": null,
+        "name": "gulf-atlas-ready",
+        "detail": "Gulf Coast Marsh",
+        "durationMs": 1713.4
+      },
+      {
+        "at": 4289.099999964237,
+        "hunt": null,
+        "name": "atlas-swap",
+        "detail": "full"
+      },
+      {
+        "at": 4406.199999988079,
+        "hunt": null,
+        "name": "wildlife-load-ready",
+        "detail": "mallard",
+        "durationMs": 1620
+      },
+      {
+        "at": 5489.899999976158,
+        "hunt": null,
+        "name": "terrain-slice",
+        "detail": 0,
+        "durationMs": 5.5
+      },
+      {
+        "at": 5502.699999988079,
+        "hunt": null,
+        "name": "wildlife-rig-setup",
+        "detail": "mallard",
+        "durationMs": 10.8
+      },
+      {
+        "at": 6464.5,
+        "hunt": null,
+        "name": "terrain-slice",
+        "detail": 0,
+        "durationMs": 43
+      },
+      {
+        "at": 6469.299999952316,
+        "hunt": null,
+        "name": "wildlife-load-start",
+        "detail": "deer"
+      },
+      {
+        "at": 6474.899999976158,
+        "hunt": null,
+        "name": "wildlife-warm-texture",
+        "detail": "mallard",
+        "durationMs": 4.8
+      },
+      {
+        "at": 6585.299999952316,
+        "hunt": null,
+        "name": "wildlife-load-ready",
+        "detail": "deer",
+        "durationMs": 116
+      },
+      {
+        "at": 6605.699999988079,
+        "hunt": null,
+        "name": "terrain-ready",
+        "detail": 0,
+        "durationMs": 0.8
+      },
+      {
+        "at": 6620.699999988079,
+        "hunt": null,
+        "name": "wildlife-art",
+        "detail": "mallard",
+        "durationMs": 10
+      },
+      {
+        "at": 8897.899999976158,
+        "hunt": null,
+        "name": "wildlife-rig-setup",
+        "detail": "deer",
+        "durationMs": 8
+      },
+      {
+        "at": 8925.199999988079,
+        "hunt": null,
+        "name": "wildlife-warm-texture",
+        "detail": "mallard",
+        "durationMs": 12.3
+      },
+      {
+        "at": 10981.399999976158,
+        "hunt": null,
+        "name": "wildlife-warm-texture",
+        "detail": "mallard",
+        "durationMs": 0.3
+      },
+      {
+        "at": 10993.599999964237,
+        "hunt": null,
+        "name": "wildlife-warm-texture",
+        "detail": "mallard",
+        "durationMs": 0.2
+      },
+      {
+        "at": 11308.099999964237,
+        "hunt": null,
+        "name": "terrain-ready",
+        "detail": -1,
+        "durationMs": 1.2
+      },
+      {
+        "at": 11314.599999964237,
+        "hunt": null,
+        "name": "wildlife-warm-texture",
+        "detail": "mallard",
+        "durationMs": 5.1
+      },
+      {
+        "at": 11898.799999952316,
+        "hunt": null,
+        "name": "habitat-request",
+        "detail": "ferns"
+      },
+      {
+        "at": 11922.199999988079,
+        "hunt": null,
+        "name": "wildlife-warm-texture",
+        "detail": "mallard",
+        "durationMs": 0.2
+      },
+      {
+        "at": 12176.899999976158,
+        "hunt": null,
+        "name": "habitat-ready",
+        "detail": "ferns",
+        "durationMs": 278.1
+      },
+      {
+        "at": 14696.799999952316,
+        "hunt": null,
+        "name": "terrain-ready",
+        "detail": 1,
+        "durationMs": 0.1
+      },
+      {
+        "at": 14778.099999964237,
+        "hunt": null,
+        "name": "texture-preparation",
+        "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+        "durationMs": 72.6
+      },
+      {
+        "at": 16275.199999988079,
+        "hunt": null,
+        "name": "texture-preparation",
+        "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+        "durationMs": 2.1
+      },
+      {
+        "at": 16518.599999964237,
+        "hunt": 1,
+        "name": "audio-initialize",
+        "detail": "Web Audio",
+        "durationMs": 224.7
+      },
+      {
+        "at": 16525.599999964237,
+        "hunt": 1,
+        "name": "audio-decode-start",
+        "detail": "instruments"
+      },
+      {
+        "at": 16774.5,
+        "hunt": 1,
+        "name": "audio-decode-ready",
+        "detail": "instruments",
+        "durationMs": 248.9
+      },
+      {
+        "at": 17081.299999952316,
+        "hunt": 1,
+        "name": "wildlife-art",
+        "detail": "mallard",
+        "durationMs": 0.5
+      },
+      {
+        "at": 17081.399999976158,
+        "hunt": 1,
+        "name": "wildlife-visible",
+        "detail": "mallard"
+      },
+      {
+        "at": 17125.899999976158,
+        "hunt": 1,
+        "name": "texture-preparation",
+        "detail": "Habitat / Fern 02 / fern_02_rough",
+        "durationMs": 40.4
+      },
+      {
+        "at": 19107.799999952316,
+        "hunt": 1,
+        "name": "territory",
+        "detail": "gulf"
+      },
+      {
+        "at": 19162.799999952316,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 2,
+        "durationMs": 0.1
+      },
+      {
+        "at": 21197,
+        "hunt": 1,
+        "name": "geometry-preparation",
+        "detail": "Habitat / Fern 02",
+        "durationMs": 2025.7
+      },
+      {
+        "at": 23526.399999976158,
+        "hunt": 1,
+        "name": "shader-preparation-ready",
+        "detail": "Habitat / Fern 02",
+        "durationMs": 2228.3
+      },
+      {
+        "at": 25368.899999976158,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 3,
+        "durationMs": 0.2
+      },
+      {
+        "at": 30397.099999964237,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 4,
+        "durationMs": 1.8
+      },
+      {
+        "at": 38702,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 5,
+        "durationMs": 1.6
+      },
+      {
+        "at": 39872.09999996424,
+        "hunt": 1,
+        "name": "terrain-slice",
+        "detail": 6,
+        "durationMs": 6.2
+      },
+      {
+        "at": 43923,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 6,
+        "durationMs": 0.2
+      },
+      {
+        "at": 57769.39999997616,
+        "hunt": 1,
+        "name": "wildlife-art",
+        "detail": "heron",
+        "durationMs": 44.6
+      },
+      {
+        "at": 59503.799999952316,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 7,
+        "durationMs": 0.8
+      },
+      {
+        "at": 67022.39999997616,
+        "hunt": 1,
+        "name": "wildlife-visible",
+        "detail": "heron"
+      },
+      {
+        "at": 74705.69999998808,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 8,
+        "durationMs": 0.1
+      },
+      {
+        "at": 82283.69999998808,
+        "hunt": 1,
+        "name": "sign-paint",
+        "detail": 0,
+        "durationMs": 611.7
+      },
+      {
+        "at": 88169.19999998808,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 9,
+        "durationMs": 0.1
+      },
+      {
+        "at": 91921.79999995232,
+        "hunt": 1,
+        "name": "wildlife-art",
+        "detail": "heron",
+        "durationMs": 6.8
+      },
+      {
+        "at": 98713.29999995232,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 10,
+        "durationMs": 0.1
+      },
+      {
+        "at": 110618.09999996424,
+        "hunt": 1,
+        "name": "terrain-ready",
+        "detail": 11,
+        "durationMs": 0
+      }
+    ],
+    "startupPhases": {
+      "moduleRequestMs": 288.9,
+      "moduleMs": 1072.4,
+      "rendererReadyMs": 2168.8,
+      "firstSceneSubmitMs": 2785.8,
+      "readyMs": 11896.9
+    },
+    "restartTrace": {
+      "inputAt": 14816.199999988079,
+      "handlerAt": 16293,
+      "before": {
+        "geometries": 23,
+        "textures": 19,
+        "programs": 12
+      },
+      "firstFrameSubmittedMs": 4291.2,
+      "firstFrameCpuMs": 2032.9,
+      "firstRenderMs": 1943.5,
+      "after": {
+        "geometries": 35,
+        "textures": 20,
+        "programs": 16
+      },
+      "nextAnimationCallbackMs": 4309,
+      "firstPresentationIntervalMs": 2176.5
+    },
+    "capabilities": {
+      "longTasks": true,
+      "namedResourceHooks": false,
+      "gpuExecutionTime": null
+    },
+    "longTasksSupported": true,
+    "longTasks": [
+      {
+        "at": 12101.899999976158,
+        "duration": 75
+      },
+      {
+        "at": 14696.099999964237,
+        "duration": 83
+      },
+      {
+        "at": 16291.599999964237,
+        "duration": 308
+      },
+      {
+        "at": 17074.399999976158,
+        "duration": 2050
+      },
+      {
+        "at": 19125.099999964237,
+        "duration": 2160
+      },
+      {
+        "at": 21296,
+        "duration": 2230
+      },
+      {
+        "at": 28724.5,
+        "duration": 71
+      },
+      {
+        "at": 37012.19999998808,
+        "duration": 52
+      },
+      {
+        "at": 43921.799999952316,
+        "duration": 3467
+      },
+      {
+        "at": 54076.89999997616,
+        "duration": 95
+      },
+      {
+        "at": 57721.5,
+        "duration": 57
+      },
+      {
+        "at": 59488.89999997616,
+        "duration": 120
+      },
+      {
+        "at": 61214.19999998808,
+        "duration": 3999
+      },
+      {
+        "at": 65213.69999998808,
+        "duration": 50
+      },
+      {
+        "at": 66267.69999998808,
+        "duration": 108
+      },
+      {
+        "at": 67009.19999998808,
+        "duration": 61
+      },
+      {
+        "at": 68480.09999996424,
+        "duration": 246
+      },
+      {
+        "at": 68726.5,
+        "duration": 66
+      },
+      {
+        "at": 68912.69999998808,
+        "duration": 50
+      },
+      {
+        "at": 70925,
+        "duration": 57
+      },
+      {
+        "at": 73096.69999998808,
+        "duration": 112
+      },
+      {
+        "at": 75372.69999998808,
+        "duration": 55
+      },
+      {
+        "at": 76118.69999998808,
+        "duration": 60
+      },
+      {
+        "at": 79614.89999997616,
+        "duration": 93
+      },
+      {
+        "at": 79721.39999997616,
+        "duration": 76
+      },
+      {
+        "at": 81670.59999996424,
+        "duration": 642
+      },
+      {
+        "at": 85095.39999997616,
+        "duration": 3072
+      },
+      {
+        "at": 90518.59999996424,
+        "duration": 50
+      },
+      {
+        "at": 92869.19999998808,
+        "duration": 102
+      },
+      {
+        "at": 98711.89999997616,
+        "duration": 5114
+      },
+      {
+        "at": 104217.5,
+        "duration": 50
+      },
+      {
+        "at": 106902.89999997616,
+        "duration": 71
+      }
+    ],
+    "build": {
+      "version": "1.0.0-rc.3",
+      "id": "6a23cd8"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "build":{"version":"1.0.0-rc.2","id":"7db32d3"},
+  "checked":"2026-11-26",
+  "responses":[
+    {"rpc":"rr_worldwide_standings","http":200,"status":"ok","open":false,"total_ranked":0},
+    {"rpc":"rr_ranked_board","http":200,"status":"ok","open":false,"total_ranked":0}
+  ]
+}

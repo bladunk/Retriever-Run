@@ -36,3 +36,16 @@ Record these alongside the upcoming art, encounters and course work. Phase 05 re
 | Deer and pheasants appear only for a split second | Give approaches, deer movement and pheasant flushes longer natural visibility. Check the full sequence in the portrait camera |
 | The latter half of the 30-stage migration needs more difficulty | Calibrate the second half with playtesting and prove the harder routes remain readable and achievable |
 | Better models, animation and environments warrant a larger download | Use the 25–75 MB allowance for licensed or original content that noticeably improves the game. Keep active decoded and GPU residency bounded and verify mobile performance and offline play |
+
+## Wilderness and artistic release milestones
+
+| Candidate | Scope |
+| --- | --- |
+| RC.3 · Southern Flyway | Gulf Coast, Cypress, Mississippi Delta, Arkansas Flooded Timber and Ozark River Country. [Southern Flyway report](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md) |
+| RC.4 · Heartland | Midwest Farm Country, Platte River Valley, Nebraska Sandhills, Dakota Prairie Potholes and Northern Dakota Wetlands |
+| RC.5 · Northern Frontier | Manitoba Marshlands, Saskatchewan Parklands, Canadian Boreal Forest, Rocky Mountain Foothills and Canadian Mountain Wilderness |
+| RC.6 · Living World | Wildlife realism, gait and flight, flock spacing and wingbeats, banking, takeoff and landing, plus canine movement |
+| RC.7 · Gun Dog | Desirable neoprene and waxed canvas vests, proper triangular bandanas, better collars/coats, anatomy and a visual Kennel |
+| RC.8 · Legacy | Believable evolving cabins, readable career progression, carved decoys, sculptures, photographs, engravings and maps |
+| RC.9 · Masterpiece | Cohesive typography, interface, sound, transitions and Journal presentation |
+| RC.10 · Gold Master | Independent and physical-device testing, hosted Worldwide verification, and separately approved production operations |

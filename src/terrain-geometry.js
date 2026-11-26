@@ -145,10 +145,12 @@ export function buildTile(index, seed = 0) {
     const edge = Math.abs(x)
     const floor = trailHeight(distance, x) - .008
     if (edge <= 3.08) return floor
-    const [from, fromWidth] = shoreHeight(zone.from, distance, x)
-    const [to, toWidth] = shoreHeight(zone.to, distance, x)
-    const basin = T.MathUtils.lerp(from, to, zone.blend)
-    const width = T.MathUtils.lerp(fromWidth, toWidth, zone.blend)
+    let [basin, width] = shoreHeight(zone.from, distance, x)
+    if (zone.from !== zone.to) {
+      const [to, toWidth] = shoreHeight(zone.to, distance, x)
+      basin = T.MathUtils.lerp(basin, to, zone.blend)
+      width = T.MathUtils.lerp(width, toWidth, zone.blend)
+    }
     const amount = T.MathUtils.smoothstep(edge, 3.08, 3.08 + width)
     return floor + (basin - floor) * amount
   }
@@ -220,14 +222,22 @@ export function buildTile(index, seed = 0) {
     const points = plane.attributes.position
     const depth = new Float32Array(points.count)
     const canopy = new Float32Array(points.count)
-    for (let i = 0; i < depth.length; i++) {
-      const x = offsets[i % offsets.length]
-      points.setX(i, x)
-      const at = start - points.getZ(i)
-      depth[i] = Math.min(.98, -.55 - earth(at, x))
+    for (let row = 0; row <= segmentLength; row++) {
+      // Water samples every second row of the ground lattice at the same
+      // longitudinal coordinate. PlaneGeometry orders its Z rows back to front.
+      const first = row * offsets.length
+      const z = points.getZ(first)
+      const groundRow = Math.round(-z * 2) * offsets.length
+      const at = start - z
       const zone = expeditionBlend(at)
       const density = T.MathUtils.lerp(zone.from.treesPerSide, zone.to.treesPerSide, zone.blend) / 12
-      canopy[i] = density * (.5 + vegetationPocket(colors.kind, at, x) * .43)
+      for (let col = 0; col < offsets.length; col++) {
+        const i = first + col
+        const x = offsets[col]
+        points.setX(i, x)
+        depth[i] = Math.min(.98, waterline - positions[(groundRow + col) * 3 + 1])
+        canopy[i] = density * (.5 + vegetationPocket(colors.kind, at, x) * .43)
+      }
     }
     warp(points.array)
     plane.setAttribute('marshDepth', new T.BufferAttribute(depth, 1))

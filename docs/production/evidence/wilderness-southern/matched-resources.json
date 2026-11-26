@@ -1,0 +1,1868 @@
+{
+  "baseline": {
+    "gulf-5": {
+      "distance": 57.75333333333333,
+      "drawCalls": 51,
+      "geometries": 47,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 5,
+      "tiles": 7,
+      "textures": 24,
+      "triangles": 169247,
+      "programs": 18,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 0,
+          "buildMs": 264.69999998807907,
+          "unpackMs": 17.299999952316284,
+          "integrationPeakMs": 14.599999964237213
+        },
+        {
+          "index": 1,
+          "buildMs": 172,
+          "unpackMs": 0.5999999046325684,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 2,
+          "buildMs": 98.39999997615814,
+          "unpackMs": 0.7000000476837158,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 3,
+          "buildMs": 91.89999997615814,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 4,
+          "buildMs": 69.89999997615814,
+          "unpackMs": 2.700000047683716,
+          "integrationPeakMs": 2.600000023841858
+        },
+        {
+          "index": 5,
+          "buildMs": 70.69999998807907,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.10000002384185791
+        }
+      ]
+    },
+    "gulf-15": {
+      "distance": 189.78000000000003,
+      "drawCalls": 52,
+      "geometries": 46,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 15,
+      "tiles": 6,
+      "textures": 25,
+      "triangles": 174383,
+      "programs": 19,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 7,
+          "buildMs": 72.09999996423721,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 8,
+          "buildMs": 53,
+          "unpackMs": 0.3999999761581421,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 9,
+          "buildMs": 103.40000003576279,
+          "unpackMs": 2.099999964237213,
+          "integrationPeakMs": 1.800000011920929
+        },
+        {
+          "index": 10,
+          "buildMs": 135.10000002384186,
+          "unpackMs": 4,
+          "integrationPeakMs": 3.699999988079071
+        },
+        {
+          "index": 5,
+          "buildMs": 35.799999952316284,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 6,
+          "buildMs": 25.5,
+          "unpackMs": 0.7000000476837158,
+          "integrationPeakMs": 0.40000003576278687
+        }
+      ]
+    },
+    "gulf-27": {
+      "distance": 380.6856,
+      "drawCalls": 55,
+      "geometries": 48,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 27,
+      "tiles": 6,
+      "textures": 24,
+      "triangles": 178696,
+      "programs": 19,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 14,
+          "buildMs": 105.69999998807907,
+          "unpackMs": 38.09999996423721,
+          "integrationPeakMs": 37.09999996423721
+        },
+        {
+          "index": 15,
+          "buildMs": 32.30000001192093,
+          "unpackMs": 3,
+          "integrationPeakMs": 2.600000023841858
+        },
+        {
+          "index": 16,
+          "buildMs": 85.90000003576279,
+          "unpackMs": 0.3999999165534973,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 11,
+          "buildMs": 63.80000001192093,
+          "unpackMs": 1.1999999284744263,
+          "integrationPeakMs": 0.7999999523162842
+        },
+        {
+          "index": 12,
+          "buildMs": 178,
+          "unpackMs": 0.39999985694885254,
+          "integrationPeakMs": 0.09999996423721313
+        },
+        {
+          "index": 13,
+          "buildMs": 83.69999998807907,
+          "unpackMs": 0.4999999403953552,
+          "integrationPeakMs": 0.2999999523162842
+        }
+      ]
+    },
+    "cypress-5": {
+      "distance": 527.072,
+      "drawCalls": 54,
+      "geometries": 48,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 35,
+      "tiles": 7,
+      "textures": 23,
+      "triangles": 176327,
+      "programs": 18,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 21,
+          "buildMs": 40.59999996423721,
+          "unpackMs": 0.19999992847442627,
+          "integrationPeakMs": 0.09999996423721313
+        },
+        {
+          "index": 16,
+          "buildMs": 42.89999997615814,
+          "unpackMs": 2.1999999284744263,
+          "integrationPeakMs": 2.099999964237213
+        },
+        {
+          "index": 17,
+          "buildMs": 48.200000047683716,
+          "unpackMs": 7.5,
+          "integrationPeakMs": 5.599999964237213
+        },
+        {
+          "index": 18,
+          "buildMs": 44.39999997615814,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 19,
+          "buildMs": 105.19999998807907,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 20,
+          "buildMs": 85.39999997615814,
+          "unpackMs": 0.6000000238418579,
+          "integrationPeakMs": 0.20000004768371582
+        }
+      ]
+    },
+    "cypress-15": {
+      "distance": 718.7280000000001,
+      "drawCalls": 61,
+      "geometries": 52,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 45,
+      "tiles": 7,
+      "textures": 23,
+      "triangles": 189467,
+      "programs": 20,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 22,
+          "buildMs": 33.89999997615814,
+          "unpackMs": 2.9000000953674316,
+          "integrationPeakMs": 2.5
+        },
+        {
+          "index": 23,
+          "buildMs": 34.5,
+          "unpackMs": 10.800000071525574,
+          "integrationPeakMs": 9.600000023841858
+        },
+        {
+          "index": 24,
+          "buildMs": 33.60000002384186,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 25,
+          "buildMs": 76.09999996423721,
+          "unpackMs": 0.4999999403953552,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 26,
+          "buildMs": 40.5,
+          "unpackMs": 0.4999999403953552,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 27,
+          "buildMs": 37.19999998807907,
+          "unpackMs": 0.6999999284744263,
+          "integrationPeakMs": 0.2999999523162842
+        }
+      ]
+    },
+    "cypress-27": {
+      "distance": 959.7033600000001,
+      "drawCalls": 63,
+      "geometries": 55,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 57,
+      "tiles": 6,
+      "textures": 24,
+      "triangles": 163781,
+      "programs": 20,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 35,
+          "buildMs": 27.30000001192093,
+          "unpackMs": 1.1999999284744263,
+          "integrationPeakMs": 1.0999999642372131
+        },
+        {
+          "index": 30,
+          "buildMs": 76.30000001192093,
+          "unpackMs": 6.100000023841858,
+          "integrationPeakMs": 5.900000035762787
+        },
+        {
+          "index": 31,
+          "buildMs": 70.29999995231628,
+          "unpackMs": 4.399999976158142,
+          "integrationPeakMs": 3.899999976158142
+        },
+        {
+          "index": 32,
+          "buildMs": 19.099999964237213,
+          "unpackMs": 0.10000002384185791,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 33,
+          "buildMs": 55.19999998807907,
+          "unpackMs": 0.5999999642372131,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 34,
+          "buildMs": 32,
+          "unpackMs": 4.799999952316284,
+          "integrationPeakMs": 2.300000011920929
+        }
+      ]
+    },
+    "flyway-5": {
+      "distance": 1126.643,
+      "drawCalls": 65,
+      "geometries": 55,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 65,
+      "tiles": 6,
+      "textures": 19,
+      "triangles": 135083,
+      "programs": 20,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 36,
+          "buildMs": 50.39999997615814,
+          "unpackMs": 3.5,
+          "integrationPeakMs": 1.699999988079071
+        },
+        {
+          "index": 37,
+          "buildMs": 93.69999998807907,
+          "unpackMs": 4.899999976158142,
+          "integrationPeakMs": 4.5
+        },
+        {
+          "index": 38,
+          "buildMs": 65.30000001192093,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 39,
+          "buildMs": 41.10000002384186,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 40,
+          "buildMs": 17.899999976158142,
+          "unpackMs": 0.3999999165534973,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 41,
+          "buildMs": 67.60000002384186,
+          "unpackMs": 0.6000000238418579,
+          "integrationPeakMs": 0.30000001192092896
+        }
+      ]
+    },
+    "flyway-15": {
+      "distance": 1340.955,
+      "drawCalls": 53,
+      "geometries": 54,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 75,
+      "tiles": 7,
+      "textures": 24,
+      "triangles": 125649,
+      "programs": 23,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 43,
+          "buildMs": 30.30000001192093,
+          "unpackMs": 1.600000023841858,
+          "integrationPeakMs": 1.100000023841858
+        },
+        {
+          "index": 44,
+          "buildMs": 76.5,
+          "unpackMs": 3.099999964237213,
+          "integrationPeakMs": 2.899999976158142
+        },
+        {
+          "index": 45,
+          "buildMs": 76.90000003576279,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 46,
+          "buildMs": 34.5,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 47,
+          "buildMs": 37.200000047683716,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 48,
+          "buildMs": 35.09999996423721,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.19999998807907104
+        }
+      ]
+    },
+    "flyway-27": {
+      "distance": 1605.88908,
+      "drawCalls": 56,
+      "geometries": 54,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 87,
+      "tiles": 6,
+      "textures": 24,
+      "triangles": 149569,
+      "programs": 21,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 56,
+          "buildMs": 64.60000002384186,
+          "unpackMs": 2.2999998927116394,
+          "integrationPeakMs": 1.5999999642372131
+        },
+        {
+          "index": 57,
+          "buildMs": 37.30000001192093,
+          "unpackMs": 1.699999988079071,
+          "integrationPeakMs": 1.300000011920929
+        },
+        {
+          "index": 52,
+          "buildMs": 59.30000001192093,
+          "unpackMs": 2.3000000715255737,
+          "integrationPeakMs": 1.9000000357627869
+        },
+        {
+          "index": 53,
+          "buildMs": 186.39999997615814,
+          "unpackMs": 1.7000000476837158,
+          "integrationPeakMs": 1.600000023841858
+        },
+        {
+          "index": 54,
+          "buildMs": 79.30000001192093,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 55,
+          "buildMs": 75.90000003576279,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.19999998807907104
+        }
+      ]
+    },
+    "timber-5": {
+      "distance": 1787.0036666666665,
+      "drawCalls": 66,
+      "geometries": 56,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 95,
+      "tiles": 6,
+      "textures": 25,
+      "triangles": 206583,
+      "programs": 23,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 63,
+          "buildMs": 84.30000001192093,
+          "unpackMs": 0.19999998807907104,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 58,
+          "buildMs": 37.19999998807907,
+          "unpackMs": 5.899999916553497,
+          "integrationPeakMs": 5.399999976158142
+        },
+        {
+          "index": 59,
+          "buildMs": 59.89999997615814,
+          "unpackMs": 1.699999988079071,
+          "integrationPeakMs": 1.4000000357627869
+        },
+        {
+          "index": 60,
+          "buildMs": 62.60000002384186,
+          "unpackMs": 0.19999992847442627,
+          "integrationPeakMs": 0.09999996423721313
+        },
+        {
+          "index": 61,
+          "buildMs": 58.200000047683716,
+          "unpackMs": 0.4999999403953552,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 62,
+          "buildMs": 40.80000001192093,
+          "unpackMs": 0.5999999642372131,
+          "integrationPeakMs": 0.2999999523162842
+        }
+      ]
+    },
+    "timber-15": {
+      "distance": 2018.2289999999998,
+      "drawCalls": 64,
+      "geometries": 53,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 105,
+      "tiles": 6,
+      "textures": 25,
+      "triangles": 222400,
+      "programs": 24,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 70,
+          "buildMs": 43.89999997615814,
+          "unpackMs": 0.19999998807907104,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 71,
+          "buildMs": 73.39999997615814,
+          "unpackMs": 0.699999988079071,
+          "integrationPeakMs": 0.20000004768371582
+        },
+        {
+          "index": 66,
+          "buildMs": 23,
+          "unpackMs": 3.600000023841858,
+          "integrationPeakMs": 3.199999988079071
+        },
+        {
+          "index": 67,
+          "buildMs": 36.69999998807907,
+          "unpackMs": 5.200000047683716,
+          "integrationPeakMs": 4.899999976158142
+        },
+        {
+          "index": 68,
+          "buildMs": 104.89999997615814,
+          "unpackMs": 0.4999999403953552,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 69,
+          "buildMs": 26.80000001192093,
+          "unpackMs": 0.5000000596046448,
+          "integrationPeakMs": 0.20000004768371582
+        }
+      ]
+    },
+    "timber-27": {
+      "distance": 2302.5339599999998,
+      "drawCalls": 64,
+      "geometries": 54,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 117,
+      "tiles": 6,
+      "textures": 25,
+      "triangles": 169501,
+      "programs": 25,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 77,
+          "buildMs": 45.39999997615814,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 78,
+          "buildMs": 71.39999997615814,
+          "unpackMs": 0.5999999642372131,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 79,
+          "buildMs": 46.60000002384186,
+          "unpackMs": 0.7000000476837158,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 80,
+          "buildMs": 45.19999998807907,
+          "unpackMs": 4.199999988079071,
+          "integrationPeakMs": 4
+        },
+        {
+          "index": 75,
+          "buildMs": 36.89999997615814,
+          "unpackMs": 4.600000023841858,
+          "integrationPeakMs": 2.900000035762787
+        },
+        {
+          "index": 76,
+          "buildMs": 43.09999996423721,
+          "unpackMs": 3.399999976158142,
+          "integrationPeakMs": 2.899999976158142
+        }
+      ]
+    },
+    "ozark-5": {
+      "distance": 2496.0196666666666,
+      "drawCalls": 58,
+      "geometries": 47,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 125,
+      "tiles": 6,
+      "textures": 23,
+      "triangles": 149528,
+      "programs": 23,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 84,
+          "buildMs": 41.5,
+          "unpackMs": 0.5999999642372131,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 85,
+          "buildMs": 67.5,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 86,
+          "buildMs": 29.900000035762787,
+          "unpackMs": 0.30000007152557373,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 87,
+          "buildMs": 30.5,
+          "unpackMs": 0.4999999403953552,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 82,
+          "buildMs": 27.899999976158142,
+          "unpackMs": 1.3000000715255737,
+          "integrationPeakMs": 1.100000023841858
+        },
+        {
+          "index": 83,
+          "buildMs": 75.20000004768372,
+          "unpackMs": 1.5999999642372131,
+          "integrationPeakMs": 1.199999988079071
+        }
+      ]
+    },
+    "ozark-15": {
+      "distance": 2741.877,
+      "drawCalls": 57,
+      "geometries": 48,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 135,
+      "tiles": 6,
+      "textures": 21,
+      "triangles": 142898,
+      "programs": 20,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 91,
+          "buildMs": 55.69999998807907,
+          "unpackMs": 1.9000000357627869,
+          "integrationPeakMs": 1.300000011920929
+        },
+        {
+          "index": 92,
+          "buildMs": 22,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 93,
+          "buildMs": 26,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.20000004768371582
+        },
+        {
+          "index": 94,
+          "buildMs": 56,
+          "unpackMs": 0.19999998807907104,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 95,
+          "buildMs": 30.19999998807907,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 90,
+          "buildMs": 33.60000002384186,
+          "unpackMs": 2.2999998927116394,
+          "integrationPeakMs": 2.099999964237213
+        }
+      ]
+    },
+    "ozark-27": {
+      "distance": 3042.381,
+      "drawCalls": 65,
+      "geometries": 55,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 147,
+      "tiles": 6,
+      "textures": 23,
+      "triangles": 175472,
+      "programs": 26,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "7db32d3"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 105,
+          "buildMs": 36.30000001192093,
+          "unpackMs": 1.100000023841858,
+          "integrationPeakMs": 0.699999988079071
+        },
+        {
+          "index": 100,
+          "buildMs": 60.80000001192093,
+          "unpackMs": 2.800000011920929,
+          "integrationPeakMs": 2.300000011920929
+        },
+        {
+          "index": 101,
+          "buildMs": 121,
+          "unpackMs": 1.699999988079071,
+          "integrationPeakMs": 1.399999976158142
+        },
+        {
+          "index": 102,
+          "buildMs": 50.799999952316284,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.20000004768371582
+        },
+        {
+          "index": 103,
+          "buildMs": 111.5,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.20000004768371582
+        },
+        {
+          "index": 104,
+          "buildMs": 67.90000003576279,
+          "unpackMs": 7.800000011920929,
+          "integrationPeakMs": 4.199999988079071
+        }
+      ]
+    }
+  },
+  "final": {
+    "gulf-5": {
+      "distance": 57.75333333333333,
+      "drawCalls": 55,
+      "geometries": 47,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 5,
+      "tiles": 6,
+      "textures": 21,
+      "triangles": 182102,
+      "programs": 19,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 0,
+          "buildMs": 139.30000001192093,
+          "unpackMs": 7.699999988079071,
+          "integrationPeakMs": 4.699999988079071
+        },
+        {
+          "index": 1,
+          "buildMs": 137.80000001192093,
+          "unpackMs": 0.3999999165534973,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 2,
+          "buildMs": 114.10000002384186,
+          "unpackMs": 1.199999988079071,
+          "integrationPeakMs": 0.8999999761581421
+        },
+        {
+          "index": 3,
+          "buildMs": 27.19999998807907,
+          "unpackMs": 0.19999998807907104,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 4,
+          "buildMs": 41.40000003576279,
+          "unpackMs": 0.8999999165534973,
+          "integrationPeakMs": 0.3999999761581421
+        },
+        {
+          "index": 5,
+          "buildMs": 42.90000003576279,
+          "unpackMs": 0.19999998807907104,
+          "integrationPeakMs": 0.10000002384185791
+        }
+      ]
+    },
+    "gulf-15": {
+      "distance": 189.78000000000003,
+      "drawCalls": 52,
+      "geometries": 47,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 15,
+      "tiles": 6,
+      "textures": 22,
+      "triangles": 179374,
+      "programs": 20,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 7,
+          "buildMs": 86.09999996423721,
+          "unpackMs": 3.4999998807907104,
+          "integrationPeakMs": 3.099999964237213
+        },
+        {
+          "index": 8,
+          "buildMs": 194.80000001192093,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 9,
+          "buildMs": 140.89999997615814,
+          "unpackMs": 0.3999999761581421,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 10,
+          "buildMs": 86.79999995231628,
+          "unpackMs": 1.300000011920929,
+          "integrationPeakMs": 0.699999988079071
+        },
+        {
+          "index": 5,
+          "buildMs": 86.19999998807907,
+          "unpackMs": 1,
+          "integrationPeakMs": 0.9000000357627869
+        },
+        {
+          "index": 6,
+          "buildMs": 112.69999998807907,
+          "unpackMs": 1.8000000715255737,
+          "integrationPeakMs": 1.399999976158142
+        }
+      ]
+    },
+    "gulf-27": {
+      "distance": 380.6856,
+      "drawCalls": 56,
+      "geometries": 48,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 27,
+      "tiles": 6,
+      "textures": 24,
+      "triangles": 185819,
+      "programs": 20,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 14,
+          "buildMs": 235.80000001192093,
+          "unpackMs": 14.900000035762787,
+          "integrationPeakMs": 13.100000023841858
+        },
+        {
+          "index": 15,
+          "buildMs": 399.80000001192093,
+          "unpackMs": 11.699999988079071,
+          "integrationPeakMs": 11.300000011920929
+        },
+        {
+          "index": 16,
+          "buildMs": 100.5,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 11,
+          "buildMs": 99.60000002384186,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 12,
+          "buildMs": 137.60000002384186,
+          "unpackMs": 0.10000002384185791,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 13,
+          "buildMs": 212.19999998807907,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.30000001192092896
+        }
+      ]
+    },
+    "cypress-5": {
+      "distance": 527.072,
+      "drawCalls": 55,
+      "geometries": 50,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 35,
+      "tiles": 7,
+      "textures": 21,
+      "triangles": 170959,
+      "programs": 19,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 21,
+          "buildMs": 153.69999998807907,
+          "unpackMs": 0.4999999403953552,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 16,
+          "buildMs": 203.5,
+          "unpackMs": 2.600000023841858,
+          "integrationPeakMs": 2.199999988079071
+        },
+        {
+          "index": 17,
+          "buildMs": 202.0999999642372,
+          "unpackMs": 6.399999976158142,
+          "integrationPeakMs": 5.5
+        },
+        {
+          "index": 18,
+          "buildMs": 95.39999997615814,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 19,
+          "buildMs": 83.40000003576279,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 20,
+          "buildMs": 128.5,
+          "unpackMs": 0.8999999761581421,
+          "integrationPeakMs": 0.3999999761581421
+        }
+      ]
+    },
+    "cypress-15": {
+      "distance": 718.7280000000001,
+      "drawCalls": 63,
+      "geometries": 51,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 45,
+      "tiles": 6,
+      "textures": 21,
+      "triangles": 190995,
+      "programs": 21,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 22,
+          "buildMs": 179,
+          "unpackMs": 10.199999988079071,
+          "integrationPeakMs": 9.699999988079071
+        },
+        {
+          "index": 23,
+          "buildMs": 314.2999999523163,
+          "unpackMs": 142.19999992847443,
+          "integrationPeakMs": 140.69999998807907
+        },
+        {
+          "index": 24,
+          "buildMs": 203.89999997615814,
+          "unpackMs": 3.3000000715255737,
+          "integrationPeakMs": 3.100000023841858
+        },
+        {
+          "index": 25,
+          "buildMs": 147.69999998807907,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 26,
+          "buildMs": 99.60000002384186,
+          "unpackMs": 0.7000000476837158,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 27,
+          "buildMs": 171.80000001192093,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.19999998807907104
+        }
+      ]
+    },
+    "cypress-27": {
+      "distance": 959.7033600000001,
+      "drawCalls": 66,
+      "geometries": 57,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 57,
+      "tiles": 6,
+      "textures": 24,
+      "triangles": 187682,
+      "programs": 21,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 35,
+          "buildMs": 94.19999998807907,
+          "unpackMs": 1.600000023841858,
+          "integrationPeakMs": 1.100000023841858
+        },
+        {
+          "index": 30,
+          "buildMs": 46.10000002384186,
+          "unpackMs": 12.399999976158142,
+          "integrationPeakMs": 12.199999988079071
+        },
+        {
+          "index": 31,
+          "buildMs": 299.4000000357628,
+          "unpackMs": 3.8999999165534973,
+          "integrationPeakMs": 3.099999964237213
+        },
+        {
+          "index": 32,
+          "buildMs": 98.39999997615814,
+          "unpackMs": 0.6000000834465027,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 33,
+          "buildMs": 81.39999997615814,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 34,
+          "buildMs": 113.59999996423721,
+          "unpackMs": 1.7000000476837158,
+          "integrationPeakMs": 1.300000011920929
+        }
+      ]
+    },
+    "flyway-5": {
+      "distance": 1126.643,
+      "drawCalls": 60,
+      "geometries": 58,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 65,
+      "tiles": 7,
+      "textures": 20,
+      "triangles": 148670,
+      "programs": 21,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 36,
+          "buildMs": 84.5,
+          "unpackMs": 1.6999998688697815,
+          "integrationPeakMs": 1.2999999523162842
+        },
+        {
+          "index": 37,
+          "buildMs": 44.89999997615814,
+          "unpackMs": 26.399999976158142,
+          "integrationPeakMs": 25.80000001192093
+        },
+        {
+          "index": 38,
+          "buildMs": 56.799999952316284,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 39,
+          "buildMs": 105,
+          "unpackMs": 0.3999999761581421,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 40,
+          "buildMs": 151.39999997615814,
+          "unpackMs": 0.5999999642372131,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 41,
+          "buildMs": 104.5,
+          "unpackMs": 0.3999999761581421,
+          "integrationPeakMs": 0.19999998807907104
+        }
+      ]
+    },
+    "flyway-15": {
+      "distance": 1340.955,
+      "drawCalls": 53,
+      "geometries": 53,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 75,
+      "tiles": 7,
+      "textures": 24,
+      "triangles": 139180,
+      "programs": 23,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 43,
+          "buildMs": 34.89999997615814,
+          "unpackMs": 1.699999988079071,
+          "integrationPeakMs": 1.300000011920929
+        },
+        {
+          "index": 44,
+          "buildMs": 139,
+          "unpackMs": 2.099999964237213,
+          "integrationPeakMs": 1.899999976158142
+        },
+        {
+          "index": 45,
+          "buildMs": 86.10000002384186,
+          "unpackMs": 0.699999988079071,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 46,
+          "buildMs": 62.10000002384186,
+          "unpackMs": 0.6999999284744263,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 47,
+          "buildMs": 80.09999996423721,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.20000004768371582
+        },
+        {
+          "index": 48,
+          "buildMs": 101.80000001192093,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.10000002384185791
+        }
+      ]
+    },
+    "flyway-27": {
+      "distance": 1605.88908,
+      "drawCalls": 56,
+      "geometries": 55,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 87,
+      "tiles": 6,
+      "textures": 24,
+      "triangles": 175211,
+      "programs": 22,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 56,
+          "buildMs": 104.30000001192093,
+          "unpackMs": 10.800000011920929,
+          "integrationPeakMs": 10.199999988079071
+        },
+        {
+          "index": 57,
+          "buildMs": 90.30000001192093,
+          "unpackMs": 0.3999999761581421,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 52,
+          "buildMs": 101.80000001192093,
+          "unpackMs": 2.1999999284744263,
+          "integrationPeakMs": 1.0999999642372131
+        },
+        {
+          "index": 53,
+          "buildMs": 213.60000002384186,
+          "unpackMs": 4.600000023841858,
+          "integrationPeakMs": 2.199999988079071
+        },
+        {
+          "index": 54,
+          "buildMs": 86.30000001192093,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.20000004768371582
+        },
+        {
+          "index": 55,
+          "buildMs": 142.19999998807907,
+          "unpackMs": 0.5999999642372131,
+          "integrationPeakMs": 0.2999999523162842
+        }
+      ]
+    },
+    "timber-5": {
+      "distance": 1787.0036666666665,
+      "drawCalls": 66,
+      "geometries": 54,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 95,
+      "tiles": 7,
+      "textures": 23,
+      "triangles": 242056,
+      "programs": 22,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 63,
+          "buildMs": 75.19999998807907,
+          "unpackMs": 0.6000000834465027,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 58,
+          "buildMs": 226,
+          "unpackMs": 0.5000000596046448,
+          "integrationPeakMs": 0.20000004768371582
+        },
+        {
+          "index": 59,
+          "buildMs": 116.60000002384186,
+          "unpackMs": 63.39999997615814,
+          "integrationPeakMs": 63.09999996423721
+        },
+        {
+          "index": 60,
+          "buildMs": 119.19999998807907,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 61,
+          "buildMs": 84,
+          "unpackMs": 0.3999999165534973,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 62,
+          "buildMs": 79,
+          "unpackMs": 0.699999988079071,
+          "integrationPeakMs": 0.30000001192092896
+        }
+      ]
+    },
+    "timber-15": {
+      "distance": 2018.2289999999998,
+      "drawCalls": 64,
+      "geometries": 51,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 105,
+      "tiles": 6,
+      "textures": 23,
+      "triangles": 235922,
+      "programs": 25,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 70,
+          "buildMs": 153.9000000357628,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 71,
+          "buildMs": 106.60000002384186,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 66,
+          "buildMs": 112.89999997615814,
+          "unpackMs": 0.5999999642372131,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 67,
+          "buildMs": 316.89999997615814,
+          "unpackMs": 10.699999988079071,
+          "integrationPeakMs": 10.399999976158142
+        },
+        {
+          "index": 68,
+          "buildMs": 303.89999997615814,
+          "unpackMs": 0.7999999523162842,
+          "integrationPeakMs": 0.5
+        },
+        {
+          "index": 69,
+          "buildMs": 191,
+          "unpackMs": 0.5,
+          "integrationPeakMs": 0.19999998807907104
+        }
+      ]
+    },
+    "timber-27": {
+      "distance": 2302.5339599999998,
+      "drawCalls": 65,
+      "geometries": 53,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 117,
+      "tiles": 6,
+      "textures": 23,
+      "triangles": 220790,
+      "programs": 24,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 77,
+          "buildMs": 358.69999998807907,
+          "unpackMs": 0.699999988079071,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 78,
+          "buildMs": 86,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 79,
+          "buildMs": 194.80000001192093,
+          "unpackMs": 7.400000035762787,
+          "integrationPeakMs": 7.300000011920929
+        },
+        {
+          "index": 80,
+          "buildMs": 98.69999998807907,
+          "unpackMs": 12.100000023841858,
+          "integrationPeakMs": 11.800000011920929
+        },
+        {
+          "index": 75,
+          "buildMs": 200.19999998807907,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 76,
+          "buildMs": 190.5999999642372,
+          "unpackMs": 7.699999988079071,
+          "integrationPeakMs": 7.300000011920929
+        }
+      ]
+    }
+  },
+  "ozark-final": {
+    "ozark-5": {
+      "distance": 2496.0196666666666,
+      "drawCalls": 64,
+      "geometries": 52,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 125,
+      "tiles": 6,
+      "textures": 21,
+      "triangles": 154434,
+      "programs": 23,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "6a23cd8"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 84,
+          "buildMs": 108,
+          "unpackMs": 0.9000000357627869,
+          "integrationPeakMs": 0.40000003576278687
+        },
+        {
+          "index": 85,
+          "buildMs": 82.89999997615814,
+          "unpackMs": 0.30000001192092896,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 86,
+          "buildMs": 89.89999997615814,
+          "unpackMs": 0.6000000834465027,
+          "integrationPeakMs": 0.20000004768371582
+        },
+        {
+          "index": 87,
+          "buildMs": 76.5,
+          "unpackMs": 0.40000003576278687,
+          "integrationPeakMs": 0.30000001192092896
+        },
+        {
+          "index": 82,
+          "buildMs": 90.09999996423721,
+          "unpackMs": 4.699999988079071,
+          "integrationPeakMs": 4.399999976158142
+        },
+        {
+          "index": 83,
+          "buildMs": 120.30000001192093,
+          "unpackMs": 5.199999928474426,
+          "integrationPeakMs": 4.5
+        }
+      ]
+    },
+    "ozark-15": {
+      "distance": 2741.877,
+      "drawCalls": 63,
+      "geometries": 53,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 135,
+      "tiles": 6,
+      "textures": 22,
+      "triangles": 151204,
+      "programs": 22,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "6a23cd8"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 91,
+          "buildMs": 86.89999997615814,
+          "unpackMs": 9.5,
+          "integrationPeakMs": 9.100000023841858
+        },
+        {
+          "index": 92,
+          "buildMs": 234.79999995231628,
+          "unpackMs": 0.3999999761581421,
+          "integrationPeakMs": 0.19999998807907104
+        },
+        {
+          "index": 93,
+          "buildMs": 76.5,
+          "unpackMs": 0.09999996423721313,
+          "integrationPeakMs": 0.09999996423721313
+        },
+        {
+          "index": 94,
+          "buildMs": 93.30000001192093,
+          "unpackMs": 0.2999999523162842,
+          "integrationPeakMs": 0.10000002384185791
+        },
+        {
+          "index": 95,
+          "buildMs": 64.30000001192093,
+          "unpackMs": 1.4999999403953552,
+          "integrationPeakMs": 1.300000011920929
+        },
+        {
+          "index": 90,
+          "buildMs": 89.09999996423721,
+          "unpackMs": 1.5999999046325684,
+          "integrationPeakMs": 1.0999999642372131
+        }
+      ]
+    },
+    "ozark-27": {
+      "distance": 3042.381,
+      "drawCalls": 67,
+      "geometries": 58,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 147,
+      "tiles": 6,
+      "textures": 23,
+      "triangles": 189836,
+      "programs": 27,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "6a23cd8"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 105,
+          "buildMs": 88,
+          "unpackMs": 11.200000047683716,
+          "integrationPeakMs": 7.100000023841858
+        },
+        {
+          "index": 100,
+          "buildMs": 121.69999998807907,
+          "unpackMs": 3.299999952316284,
+          "integrationPeakMs": 3
+        },
+        {
+          "index": 101,
+          "buildMs": 132.80000001192093,
+          "unpackMs": 15.399999916553497,
+          "integrationPeakMs": 15.099999964237213
+        },
+        {
+          "index": 102,
+          "buildMs": 204.79999995231628,
+          "unpackMs": 2,
+          "integrationPeakMs": 1.699999988079071
+        },
+        {
+          "index": 103,
+          "buildMs": 80,
+          "unpackMs": 0.9000000357627869,
+          "integrationPeakMs": 0.5
+        },
+        {
+          "index": 104,
+          "buildMs": 80.5,
+          "unpackMs": 3.4999999403953552,
+          "integrationPeakMs": 2.699999988079071
+        }
+      ]
+    }
+  },
+  "webkit": {
+    "gulf-15": {
+      "distance": 189.78000000000003,
+      "drawCalls": 56,
+      "geometries": 46,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 15,
+      "tiles": 6,
+      "textures": 24,
+      "triangles": 179374,
+      "programs": 21,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "6a23cd8"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 7,
+          "buildMs": 217,
+          "unpackMs": 4,
+          "integrationPeakMs": 4
+        },
+        {
+          "index": 8,
+          "buildMs": 468,
+          "unpackMs": 6,
+          "integrationPeakMs": 5
+        },
+        {
+          "index": 9,
+          "buildMs": 179,
+          "unpackMs": 1,
+          "integrationPeakMs": 1
+        },
+        {
+          "index": 10,
+          "buildMs": 136,
+          "unpackMs": 0,
+          "integrationPeakMs": 0
+        },
+        {
+          "index": 5,
+          "buildMs": 213,
+          "unpackMs": 8,
+          "integrationPeakMs": 5
+        },
+        {
+          "index": 6,
+          "buildMs": 286,
+          "unpackMs": 8,
+          "integrationPeakMs": 5
+        }
+      ]
+    },
+    "timber-15": {
+      "distance": 2018.2289999999998,
+      "drawCalls": 70,
+      "geometries": 53,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 105,
+      "tiles": 6,
+      "textures": 25,
+      "triangles": 237040,
+      "programs": 30,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "6a23cd8"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 70,
+          "buildMs": 56,
+          "unpackMs": 3,
+          "integrationPeakMs": 2
+        },
+        {
+          "index": 71,
+          "buildMs": 53,
+          "unpackMs": 5,
+          "integrationPeakMs": 5
+        },
+        {
+          "index": 66,
+          "buildMs": 92,
+          "unpackMs": 2,
+          "integrationPeakMs": 1
+        },
+        {
+          "index": 67,
+          "buildMs": 150,
+          "unpackMs": 8,
+          "integrationPeakMs": 6
+        },
+        {
+          "index": 68,
+          "buildMs": 62,
+          "unpackMs": 1,
+          "integrationPeakMs": 1
+        },
+        {
+          "index": 69,
+          "buildMs": 116,
+          "unpackMs": 1,
+          "integrationPeakMs": 1
+        }
+      ]
+    },
+    "ozark-15": {
+      "distance": 2741.877,
+      "drawCalls": 59,
+      "geometries": 51,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 135,
+      "tiles": 5,
+      "textures": 23,
+      "triangles": 144268,
+      "programs": 28,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "6a23cd8"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 91,
+          "buildMs": 525,
+          "unpackMs": 110,
+          "integrationPeakMs": 105
+        },
+        {
+          "index": 92,
+          "buildMs": 193,
+          "unpackMs": 1,
+          "integrationPeakMs": 1
+        },
+        {
+          "index": 93,
+          "buildMs": 149,
+          "unpackMs": 0,
+          "integrationPeakMs": 0
+        },
+        {
+          "index": 94,
+          "buildMs": 82,
+          "unpackMs": 0,
+          "integrationPeakMs": 0
+        },
+        {
+          "index": 90,
+          "buildMs": 265,
+          "unpackMs": 11,
+          "integrationPeakMs": 4
+        }
+      ]
+    },
+    "boreal-15": {
+      "distance": 9415.1229,
+      "drawCalls": 49,
+      "geometries": 48,
+      "ticks": 0,
+      "seed": 7,
+      "sceneSeconds": 375,
+      "tiles": 5,
+      "textures": 23,
+      "triangles": 149366,
+      "programs": 27,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "6a23cd8"
+      },
+      "preset": "high",
+      "tileTimings": [
+        {
+          "index": 315,
+          "buildMs": 105,
+          "unpackMs": 8,
+          "integrationPeakMs": 6
+        },
+        {
+          "index": 316,
+          "buildMs": 117,
+          "unpackMs": 6,
+          "integrationPeakMs": 6
+        },
+        {
+          "index": 312,
+          "buildMs": 20,
+          "unpackMs": 3,
+          "integrationPeakMs": 2
+        },
+        {
+          "index": 313,
+          "buildMs": 308,
+          "unpackMs": 7,
+          "integrationPeakMs": 6
+        },
+        {
+          "index": 314,
+          "buildMs": 245,
+          "unpackMs": 5,
+          "integrationPeakMs": 3
+        }
+      ]
+    }
+  }
+}

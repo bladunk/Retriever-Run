@@ -9,7 +9,8 @@ import { shoreHeight } from '../src/landforms.js'
 test('all fifteen terrain profiles preserve lane elevations and share tile boundaries', () => {
   for (const region of expeditionRegions) {
     const index = Math.round(region.marker / segmentLength)
-    const first = buildTile(index, 7).ground.buffers.position.values
+    const tile = buildTile(index, 7)
+    const first = tile.ground.buffers.position.values
     const second = buildTile(index + 1, 7).ground.buffers.position.values
     const columns = first.length / ((segmentLength * 2 + 1) * 3)
     const start = index * segmentLength
@@ -25,6 +26,15 @@ test('all fifteen terrain profiles preserve lane elevations and share tile bound
       assert.ok(Math.abs(first[end] + centerAt(start) - second[begin] - centerAt(start + segmentLength)) < .00002)
       assert.equal(first[end + 1], second[begin + 1], region.key)
       assert.ok(Math.abs(first[end + 2] + segmentLength - second[begin + 2]) < .00001)
+    }
+    if (tile.water) {
+      const depths = tile.water.buffers.marshDepth.values
+      for (const row of [0, 9, 23, segmentLength]) {
+        for (const col of [4, 13, 16, 25, columns-1]) {
+          const floor = first[((segmentLength-row)*2*columns + col)*3+1]
+          assert.ok(Math.abs(depths[row*columns+col]-Math.min(.98,-.55-floor)) < .00001, region.key)
+        }
+      }
     }
   }
 })

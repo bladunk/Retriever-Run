@@ -1,0 +1,115 @@
+{
+  "engine": "chromium",
+  "samples": [
+    {
+      "version": "studio-before",
+      "region": "gulf",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    },
+    {
+      "version": "studio-before",
+      "region": "cypress",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    },
+    {
+      "version": "studio-before",
+      "region": "flyway",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    },
+    {
+      "version": "studio-before",
+      "region": "timber",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    },
+    {
+      "version": "studio-before",
+      "region": "ozark",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.2",
+        "id": "f4160da"
+      }
+    },
+    {
+      "version": "studio",
+      "region": "gulf",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      }
+    },
+    {
+      "version": "studio",
+      "region": "cypress",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      }
+    },
+    {
+      "version": "studio",
+      "region": "flyway",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      }
+    },
+    {
+      "version": "studio",
+      "region": "timber",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      }
+    },
+    {
+      "version": "studio",
+      "region": "ozark",
+      "seed": 7,
+      "offset": 15,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "028ba33"
+      }
+    }
+  ]
+}

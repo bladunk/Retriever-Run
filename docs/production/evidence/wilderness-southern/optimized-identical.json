@@ -1,0 +1,362 @@
+[
+  {
+    "region": "gulf",
+    "offset": 0,
+    "index": 0,
+    "identical": true
+  },
+  {
+    "region": "gulf",
+    "offset": 5,
+    "index": 1,
+    "identical": true
+  },
+  {
+    "region": "gulf",
+    "offset": 15,
+    "index": 6,
+    "identical": true
+  },
+  {
+    "region": "gulf",
+    "offset": 27,
+    "index": 12,
+    "identical": true
+  },
+  {
+    "region": "cypress",
+    "offset": 0,
+    "index": 14,
+    "identical": true
+  },
+  {
+    "region": "cypress",
+    "offset": 5,
+    "index": 17,
+    "identical": true
+  },
+  {
+    "region": "cypress",
+    "offset": 15,
+    "index": 23,
+    "identical": true
+  },
+  {
+    "region": "cypress",
+    "offset": 27,
+    "index": 31,
+    "identical": true
+  },
+  {
+    "region": "flyway",
+    "offset": 0,
+    "index": 34,
+    "identical": true
+  },
+  {
+    "region": "flyway",
+    "offset": 5,
+    "index": 37,
+    "identical": true
+  },
+  {
+    "region": "flyway",
+    "offset": 15,
+    "index": 44,
+    "identical": true
+  },
+  {
+    "region": "flyway",
+    "offset": 27,
+    "index": 53,
+    "identical": true
+  },
+  {
+    "region": "timber",
+    "offset": 0,
+    "index": 55,
+    "identical": true
+  },
+  {
+    "region": "timber",
+    "offset": 5,
+    "index": 59,
+    "identical": true
+  },
+  {
+    "region": "timber",
+    "offset": 15,
+    "index": 67,
+    "identical": true
+  },
+  {
+    "region": "timber",
+    "offset": 27,
+    "index": 76,
+    "identical": true
+  },
+  {
+    "region": "ozark",
+    "offset": 0,
+    "index": 79,
+    "identical": true
+  },
+  {
+    "region": "ozark",
+    "offset": 5,
+    "index": 83,
+    "identical": true
+  },
+  {
+    "region": "ozark",
+    "offset": 15,
+    "index": 91,
+    "identical": true
+  },
+  {
+    "region": "ozark",
+    "offset": 27,
+    "index": 101,
+    "identical": true
+  },
+  {
+    "region": "farm",
+    "offset": 0,
+    "index": 103,
+    "identical": true
+  },
+  {
+    "region": "farm",
+    "offset": 5,
+    "index": 108,
+    "identical": true
+  },
+  {
+    "region": "farm",
+    "offset": 15,
+    "index": 116,
+    "identical": true
+  },
+  {
+    "region": "farm",
+    "offset": 27,
+    "index": 127,
+    "identical": true
+  },
+  {
+    "region": "platte",
+    "offset": 0,
+    "index": 129,
+    "identical": true
+  },
+  {
+    "region": "platte",
+    "offset": 5,
+    "index": 134,
+    "identical": true
+  },
+  {
+    "region": "platte",
+    "offset": 15,
+    "index": 143,
+    "identical": true
+  },
+  {
+    "region": "platte",
+    "offset": 27,
+    "index": 154,
+    "identical": true
+  },
+  {
+    "region": "sandhills",
+    "offset": 0,
+    "index": 156,
+    "identical": true
+  },
+  {
+    "region": "sandhills",
+    "offset": 5,
+    "index": 161,
+    "identical": true
+  },
+  {
+    "region": "sandhills",
+    "offset": 15,
+    "index": 170,
+    "identical": true
+  },
+  {
+    "region": "sandhills",
+    "offset": 27,
+    "index": 181,
+    "identical": true
+  },
+  {
+    "region": "prairie",
+    "offset": 0,
+    "index": 184,
+    "identical": true
+  },
+  {
+    "region": "prairie",
+    "offset": 5,
+    "index": 189,
+    "identical": true
+  },
+  {
+    "region": "prairie",
+    "offset": 15,
+    "index": 198,
+    "identical": true
+  },
+  {
+    "region": "prairie",
+    "offset": 27,
+    "index": 209,
+    "identical": true
+  },
+  {
+    "region": "dakota",
+    "offset": 0,
+    "index": 212,
+    "identical": true
+  },
+  {
+    "region": "dakota",
+    "offset": 5,
+    "index": 217,
+    "identical": true
+  },
+  {
+    "region": "dakota",
+    "offset": 15,
+    "index": 227,
+    "identical": true
+  },
+  {
+    "region": "dakota",
+    "offset": 27,
+    "index": 238,
+    "identical": true
+  },
+  {
+    "region": "manitoba",
+    "offset": 0,
+    "index": 241,
+    "identical": true
+  },
+  {
+    "region": "manitoba",
+    "offset": 5,
+    "index": 246,
+    "identical": true
+  },
+  {
+    "region": "manitoba",
+    "offset": 15,
+    "index": 255,
+    "identical": true
+  },
+  {
+    "region": "manitoba",
+    "offset": 27,
+    "index": 267,
+    "identical": true
+  },
+  {
+    "region": "parklands",
+    "offset": 0,
+    "index": 270,
+    "identical": true
+  },
+  {
+    "region": "parklands",
+    "offset": 5,
+    "index": 275,
+    "identical": true
+  },
+  {
+    "region": "parklands",
+    "offset": 15,
+    "index": 284,
+    "identical": true
+  },
+  {
+    "region": "parklands",
+    "offset": 27,
+    "index": 296,
+    "identical": true
+  },
+  {
+    "region": "boreal",
+    "offset": 0,
+    "index": 299,
+    "identical": true
+  },
+  {
+    "region": "boreal",
+    "offset": 5,
+    "index": 304,
+    "identical": true
+  },
+  {
+    "region": "boreal",
+    "offset": 15,
+    "index": 313,
+    "identical": true
+  },
+  {
+    "region": "boreal",
+    "offset": 27,
+    "index": 325,
+    "identical": true
+  },
+  {
+    "region": "foothills",
+    "offset": 0,
+    "index": 328,
+    "identical": true
+  },
+  {
+    "region": "foothills",
+    "offset": 5,
+    "index": 333,
+    "identical": true
+  },
+  {
+    "region": "foothills",
+    "offset": 15,
+    "index": 342,
+    "identical": true
+  },
+  {
+    "region": "foothills",
+    "offset": 27,
+    "index": 354,
+    "identical": true
+  },
+  {
+    "region": "mountain",
+    "offset": 0,
+    "index": 357,
+    "identical": true
+  },
+  {
+    "region": "mountain",
+    "offset": 5,
+    "index": 362,
+    "identical": true
+  },
+  {
+    "region": "mountain",
+    "offset": 15,
+    "index": 371,
+    "identical": true
+  },
+  {
+    "region": "mountain",
+    "offset": 27,
+    "index": 383,
+    "identical": true
+  }
+]
