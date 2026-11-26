@@ -34,6 +34,8 @@ function flockLateral(side, lateral, offset, crossing, goose) {
 }
 
 const bankLimit = (side, lateral) => side * Math.max(4.82, side * lateral)
+const pheasantOffset = flush => -.67 * Math.sin(flush * .038) + Math.max(0, flush - 88) * .36
+const mallardOffset = takeoff => .39 * Math.sin(takeoff * .070) + Math.max(0, takeoff - 65) * .25
 
 export function encounterPose(event, animal, ahead, elapsed, unit, out) {
   const side = Math.sign(event.lateral)
@@ -56,8 +58,10 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     out.draw = flush > 0
     out.along += flush * .84
     out.height += Math.min(3.4, flush ** 1.30 * .032)
-    out.lateral += side * (-.67 * Math.sin(flush * .038) + Math.max(0, flush - 88) * .36)
-    out.yaw = -side * (1.37 - Math.min(.42, flush * .013))
+    const anchor = out.lateral
+    out.lateral += side * pheasantOffset(flush)
+    if (flush > 0) out.yaw = motionYaw(event.distance + out.along, bankLimit(side, out.lateral), .168,
+      bankLimit(side, anchor + side * pheasantOffset(flush + .20)))
     out.pitch = Math.max(0,.44-flush*.015)
     out.wing = .63 + .35*Math.sin(phase*6.4)
     out.rig = 'Fly'
@@ -98,8 +102,11 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     if (animal.id === 'mallard' && ahead < 27 - group) {
       const takeoff = 27 - group - ahead
       out.height += Math.min(2.8, .064 * takeoff ** 1.26)
-      out.lateral += side * (.39 * Math.sin(takeoff * .070) + Math.max(0, takeoff - 65) * .25)
+      const anchor = out.lateral
+      out.lateral += side * mallardOffset(takeoff)
       out.along += takeoff * .82
+      out.yaw = motionYaw(event.distance + out.along, bankLimit(side, out.lateral), .164,
+        bankLimit(side, anchor + side * mallardOffset(takeoff + .20)))
       out.pitch = .22 - Math.min(.20, takeoff * .013)
       out.wing = .48 + .42 * Math.sin(phase * 6.4)
       out.rig = 'Fly'
