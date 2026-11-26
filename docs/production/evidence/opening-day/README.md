@@ -20,7 +20,7 @@ The gallery uses actual game frames at the GitHub Pages subpath in portrait soft
 - [Rocky Mountain Foothills](journey-foothills.webp)
 - [Canadian Mountain Wilderness](journey-mountain.webp)
 
-[Offline migration and resource measurements](migration-performance.json).
+[Offline migration and resource measurements](migration-performance.json) · [Sequential Gulf and Cypress integration](coast-tile-slices.json)
 
 The Gulf motion clip shows baseline on the left and Opening Day on the right. The breed clip places Pointer on the left and Boyd on the right. The clip trims loading and condenses slow software playback. The controls, scene, physics and camera are from the game. [Original Blender model study](blender-field-edges.webp)
 

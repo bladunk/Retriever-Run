@@ -1,0 +1,32 @@
+{
+  "baseline": {
+    "build": {
+      "version": "1.0.0-phase.9",
+      "id": "2da3910"
+    },
+    "offline": true,
+    "seed": 7,
+    "elapsed": 62.23666666666668,
+    "samples": 125,
+    "tileIntegrationMaxMs": 5,
+    "tileIntegrationP95Ms": 5,
+    "triangles": 145803,
+    "textures": 14,
+    "geometries": 84
+  },
+  "review": {
+    "build": {
+      "version": "1.0.0-rc.1",
+      "id": "12103b9"
+    },
+    "offline": true,
+    "seed": 7,
+    "elapsed": 62.235,
+    "samples": 125,
+    "tileIntegrationMaxMs": 8.6,
+    "tileIntegrationP95Ms": 8.6,
+    "triangles": 146879,
+    "textures": 14,
+    "geometries": 84
+  }
+}

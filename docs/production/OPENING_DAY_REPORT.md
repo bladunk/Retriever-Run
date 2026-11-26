@@ -9,9 +9,10 @@ The Opening Day draft combines score-ranked Worldwide standings, complete Field 
 | Integrated baseline | `a77cb4131e7c1f81f484c687b70f4aaa4bd95d56`, merge of PR #38 |
 | Observed live app | `1.0.0-phase.9 · 7787d85`, 14,779,689 required bytes |
 | Release branch | `codex/retriever-run-opening-day` |
-| Review identity | `1.0.0-rc.1 · 12103b9`, content manifest `94fb7310daf33f068221` |
+| Production-configured candidate | `1.0.0-rc.1 · 1687883`, content manifest `9672ebf8a856b0a077d2` |
+| Software review build | `1.0.0-rc.1 · 12103b9`, content manifest `94fb7310daf33f068221` |
 | Runtime revision | `41dfac8e306716c9c1aea44d098c1d20a9ca58be` plus documentation and test-only commits |
-| Draft review | [PR #39](https://github.com/bladunk/Retriever-Run/pull/39) |
+| Draft review | [PR #39](https://github.com/bladunk/Retriever-Run/pull/39) · [CI checks](https://github.com/bladunk/Retriever-Run/pull/39/checks) |
 
 ## Competition and privacy
 
@@ -57,7 +58,7 @@ The 30 stages, fixed 120 Hz movement, collision solver, difficulty, scoring, sav
 
 ## Build, runtime and evidence
 
-The verified local candidate totals **17,534,549 bytes**, with **17,447,734 required offline bytes** across 122 entries. The matched unconfigured Phase 09 build requires 14,779,557 bytes. At the manifest level, **3,991,721 bytes** changed across 63 files, including release shell assets. Content hashes allow reuse of the rest. Journal derivatives total 2,626,322 bytes. A single inspected detail image is about 1.9 MiB as decoded RGBA, with no gameplay texture upload. Scrollable galleries and preexisting low-cost shelf art do not require loading all detail images at startup.
+The verified candidate with public production configuration totals **17,534,675 bytes**, with **17,447,860 required offline bytes** across 122 entries. The Phase 09 Pages baseline requires 14,779,689 bytes. At the manifest level, **3,991,847 bytes** changed across 63 files, including release shell assets. The unconfigured review build used for local rendering requires 17,447,734 bytes. Content hashes allow reuse of the rest. Journal derivatives total 2,626,322 bytes. A single inspected detail image is about 1.9 MiB as decoded RGBA, with no gameplay texture upload. Scrollable galleries and preexisting low-cost shelf art do not require loading all detail images at startup.
 
 | Software observation | Phase 09 baseline | Opening Day |
 | --- | ---: | ---: |
@@ -69,7 +70,7 @@ The verified local candidate totals **17,534,549 bytes**, with **17,447,734 requ
 
 The short motion captures had 33 samples per revision and irregular software presentation intervals under load. The installed Chromium startup sample reported 19.33 s versus 11.37 s including preparation, and warm offline median game readiness of 8.19 s versus 7.21 s across three opens each. Results reflect the shared software host. The earlier 607 ms versus 3,813 ms native report still needs matched cold and warm device traces. The 320 × 568 Chromium interface rehearsal measured 192 ms replay, and the 430 × 932 WebKit rehearsal measured 1,089 ms, including automation overhead. The isolated competition browser measured 280 ms from Play Again to running with no Camp call. Both interface runs requested zero rendered collection images before gameplay readiness. [Startup sample](evidence/opening-day/startup.json) · [Software samples and actual captures](evidence/opening-day/README.md)
 
-The paired accelerated browser hunts captured all 15 territories offline and reached Endless Wilderness at 451 seconds. The baseline and Opening Day peaks were 7 terrain tiles, 2 regional packs and 74 draws each. Peak geometries were 122 versus 121. Textures were 13 versus 14 and peak triangles were about 170,000 versus 175,000. The Opening Day trace had a 47 ms peak tile integration sample during the shared-host run. Review that behavior on a physical iPhone before accepting the art/residency tradeoff. Early lookahead filled from 3 to 5 tiles within two seconds. The verification bounds distinguish the opening lookahead from settled terrain residency. The rendered circuit uses runtime build `2b2fd1c`. The later standings layout did not change its simulation, graphics or tile code. [Offline migration measurements](evidence/opening-day/migration-performance.json)
+The paired accelerated browser hunts captured all 15 territories offline and reached Endless Wilderness at 451 seconds. The baseline and Opening Day peaks were 7 terrain tiles, 2 regional packs and 74 draws each. Peak geometries were 122 versus 121. Textures were 13 versus 14 and peak triangles were about 170,000 versus 175,000. The Opening Day trace had a 47.2 ms peak tile integration sample during the busy shared-host run. A sequential 62-second Gulf and Cypress rerun measured 5.0 ms versus 8.6 ms peak integration, with 84 geometries and 14 textures in each build. Review native performance before accepting the art and residency tradeoff. [Sequential coast measurement](evidence/opening-day/coast-tile-slices.json) Early lookahead filled from 3 to 5 tiles within two seconds. The verification bounds distinguish the opening lookahead from settled terrain residency. The rendered circuit uses runtime build `2b2fd1c`. The later standings layout did not change its simulation, graphics or tile code. [Offline migration measurements](evidence/opening-day/migration-performance.json)
 
 The final 320 × 568 build switched Labrador, Pointer and Boyd plus two prestige items offline. It retained 12 textures across five checks, with geometry counts between 20 and 24. Production guest startup did not request the Boyd rig. The locked presentation, configured outfit inspection and rear gameplay sequences remain separate from legitimate career ownership. [Kennel captures](evidence/opening-day/README.md#field-journal-and-lodge)
 
