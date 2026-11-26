@@ -148,9 +148,9 @@ function ranking(camp, player, scope, campId, onReady) {
   } else toolbar.append(population)
   toolbar.append(retry)
   next.hidden = true
-  section.append(version, own, rivals, toolbar)
+  section.append(version, own, toolbar)
   if (worldwide) section.append(node('p', 'Official rank follows verified score. Each column shows a separate personal best.', 'room-note'))
-  section.append(worldwide ? viewport : list, next, profile)
+  section.append(worldwide ? viewport : list, next, rivals, profile)
 
   function showProfile(nickname, button) {
     const stamp = ++profileRequest

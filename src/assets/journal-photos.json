@@ -1,0 +1,234 @@
+{
+  "pintail": {
+    "author": "J.M.Garg",
+    "license": "CC BY-SA 3.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Northern_Pintails_(Male_%26_Female)_I_IMG_0911.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Northern_Pintails_%28Male_%26_Female%29_I_IMG_0911.jpg",
+    "crop": "center"
+  },
+  "wigeon": {
+    "author": "Polinova",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:American_Wigeon_Male.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/76/American_Wigeon_Male.jpg",
+    "crop": "center"
+  },
+  "gadwall": {
+    "author": "Andreas Trepte",
+    "license": "CC BY-SA 2.5",
+    "terms": "https://creativecommons.org/licenses/by-sa/2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Gadwall-Anas-strepera.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gadwall-Anas-strepera.jpg",
+    "crop": "center"
+  },
+  "green-teal": {
+    "author": "Alan D. Wilson",
+    "license": "CC BY-SA 2.5",
+    "terms": "https://creativecommons.org/licenses/by-sa/2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Green-winged_Teal,_Port_Aransas,_Texas.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/0/07/Green-winged_Teal%2C_Port_Aransas%2C_Texas.jpg",
+    "crop": "center"
+  },
+  "blue-teal": {
+    "author": "Alan D. Wilson, www.naturespicsonline.com",
+    "license": "CC BY-SA 2.5",
+    "terms": "https://creativecommons.org/licenses/by-sa/2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Blue-Winged_Teal.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/65/Blue-Winged_Teal.jpg",
+    "crop": "center"
+  },
+  "shoveler": {
+    "author": "Charles J. Sharp",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Northern_shoveler_(Spatula_clypeata)_male_Marken.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Northern_shoveler_%28Spatula_clypeata%29_male_Marken.jpg",
+    "crop": "center"
+  },
+  "canvasback": {
+    "author": "Frank Schulenburg",
+    "license": "CC BY-SA 3.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Aythya_valisineria_at_Las_Gallinas_Wildlife_Ponds.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Aythya_valisineria_at_Las_Gallinas_Wildlife_Ponds.jpg",
+    "crop": "center"
+  },
+  "redhead": {
+    "author": "Judy Gallagher",
+    "license": "CC BY 2.0",
+    "terms": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Redhead_-_Aythya_americana,_Oakley_Street,_Cambridge,_Maryland.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/52/Redhead_-_Aythya_americana%2C_Oakley_Street%2C_Cambridge%2C_Maryland.jpg",
+    "crop": "center"
+  },
+  "ringneck": {
+    "author": "Polinova",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ring-Necked_Duck.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Ring-Necked_Duck.jpg",
+    "crop": "center"
+  },
+  "scaup": {
+    "author": "Chuck Homler d/b/a Focus On Wildlife",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Drake_Lesser_Scaup_(Aythya_affinis)_Barengat_Inlet,_New_Jersey,_USA.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Drake_Lesser_Scaup_%28Aythya_affinis%29_Barengat_Inlet%2C_New_Jersey%2C_USA.jpg",
+    "crop": "center"
+  },
+  "goldeneye": {
+    "author": "sbern (Flickr)",
+    "license": "CC BY 2.0",
+    "terms": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Common_Goldeneye_(Bucephala_clangula).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/34/Common_Goldeneye_%28Bucephala_clangula%29.jpg",
+    "crop": "center"
+  },
+  "bufflehead": {
+    "author": "Chuck Homler, Focus On Wildlife",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Drake_Bufflehead_LBI_(cropped).png",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/11/Drake_Bufflehead_LBI_%28cropped%29.png",
+    "crop": "center"
+  },
+  "hooded-merganser": {
+    "author": "Rhododendrites",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hooded_merganser_male_in_Central_Park_(95790).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/70/Hooded_merganser_male_in_Central_Park_%2895790%29.jpg",
+    "crop": "center"
+  },
+  "common-merganser": {
+    "author": "Bengt Nyman",
+    "license": "CC BY 2.0",
+    "terms": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mergus_merganser_merganser_2078_(5561922560).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Mergus_merganser_merganser_2078_%285561922560%29.jpg",
+    "crop": "center"
+  },
+  "canada-goose": {
+    "author": "USFWS Mountain-Prairie",
+    "license": "Public domain",
+    "terms": "https://commons.wikimedia.org/wiki/File:Canada_goose_on_Seedskadee_NWR_(27826185489).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Canada_goose_on_Seedskadee_NWR_(27826185489).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/40/Canada_goose_on_Seedskadee_NWR_%2827826185489%29.jpg",
+    "crop": "center"
+  },
+  "snow-goose": {
+    "author": "Rhododendrites",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Snow_goose_in_Central_Park_(33138).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Snow_goose_in_Central_Park_%2833138%29.jpg",
+    "crop": "center"
+  },
+  "ross-goose": {
+    "author": "Andrew C",
+    "license": "CC BY 2.0",
+    "terms": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ross%27s_Goose_(Chen_rossii)_(23321411711).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Ross%27s_Goose_%28Chen_rossii%29_%2823321411711%29.jpg",
+    "crop": "center"
+  },
+  "white-fronted-goose": {
+    "author": "© Frank Schulenburg",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Greater_white-fronted_goose_in_flight-1045.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Greater_white-fronted_goose_in_flight-1045.jpg",
+    "crop": "center"
+  },
+  "cackling-goose": {
+    "author": "Paul Danese",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:20260426_cackling_goose_ford_lake_PD07933.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/48/20260426_cackling_goose_ford_lake_PD07933.jpg",
+    "crop": "center"
+  },
+  "pheasant": {
+    "author": "Estormiz",
+    "license": "CC0",
+    "terms": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Phasianus_colchicus_Oulu_20200524_02.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Phasianus_colchicus_Oulu_20200524_02.jpg",
+    "crop": "center"
+  },
+  "crane": {
+    "author": "JeffreyGammon",
+    "license": "CC BY 4.0",
+    "terms": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sandhill_Crane_JG.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/55/Sandhill_Crane_JG.jpg",
+    "crop": "contain"
+  },
+  "heron": {
+    "author": "DallasPenner",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:GreatBlueHeronInARiver.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f1/GreatBlueHeronInARiver.jpg",
+    "crop": "center"
+  },
+  "egret": {
+    "author": "Chuck Homler (FocusOnWildlife.Me)",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Great_Egret_(Ardea_alba)_in_Breeding_Plumage,_Cape_May_County,_New_Jersey,_USA_(cropped).png",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Great_Egret_%28Ardea_alba%29_in_Breeding_Plumage%2C_Cape_May_County%2C_New_Jersey%2C_USA_%28cropped%29.png",
+    "crop": "contain"
+  },
+  "eagle": {
+    "author": "Andy Morffew",
+    "license": "CC BY 2.0",
+    "terms": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bald_eagle_about_to_fly_in_Alaska_(2016).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/db/Bald_eagle_about_to_fly_in_Alaska_%282016%29.jpg",
+    "crop": "center"
+  },
+  "deer": {
+    "author": "USDA photo by Scott Bauer",
+    "license": "Public domain",
+    "terms": "https://commons.wikimedia.org/wiki/File:White-tailed_deer.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:White-tailed_deer.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/b7/White-tailed_deer.jpg",
+    "crop": "center"
+  },
+  "moose": {
+    "author": "Paxson Woelber",
+    "license": "CC BY-SA 4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Alaska_moose.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Alaska_moose.jpg",
+    "crop": "center"
+  },
+  "wood-duck": {
+    "author": "Arjan Haverkamp",
+    "license": "CC BY 2.0",
+    "terms": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Aix_sponsa_-Ouwehands_Dierenpark-8a.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Aix_sponsa_-Ouwehands_Dierenpark-8a.jpg",
+    "crop": "center"
+  },
+  "mallard": {
+    "author": "Charles J. Sharp",
+    "license": "CC BY-SA 3.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mallard_drake_(anas_platyrhynchos).JPG",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/59/Mallard_drake_%28anas_platyrhynchos%29.JPG",
+    "crop": "center"
+  },
+  "alligator": {
+    "author": "Judy Gallagher",
+    "license": "CC BY 2.0",
+    "terms": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:American_Alligator_-_Alligator_mississippiensis,_Everglades_National_Park,_Homestead,_Florida,_January_31,_2022_(51858108563).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/64/American_Alligator_-_Alligator_mississippiensis%2C_Everglades_National_Park%2C_Homestead%2C_Florida%2C_January_31%2C_2022_%2851858108563%29.jpg",
+    "crop": "center"
+  }
+}

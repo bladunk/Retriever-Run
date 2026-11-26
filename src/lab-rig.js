@@ -185,13 +185,15 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
       // The outer player group stays at terrain plus jump height. Only skeletal
       // joints lower into the crouch, and the rig child may receive upward support.
       body.position.y -= low * .88 + compression * .065
-      const jumpPitch = -.105 * air * Math.sin(2 * Math.PI * jumpPhase)
+      const takeoff = Math.sin(2 * Math.PI * jumpPhase)
+      const jumpPitch = -.127 * air * takeoff
+      const gaitNod = Math.sin(stride * 2 - .96) * grounded * (1 - low) * .022
       body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105 + jumpPitch))
       body.quaternion.premultiply(lean.setFromAxisAngle(bankAxis, banking))
       head.quaternion.multiply(lean.setFromAxisAngle(up, -turn * .08 + (resting ? .07 * Math.sin(time * .8) : 0)))
       if (breed === 'boyd' && resting)
         head.quaternion.multiply(lean.setFromAxisAngle(bankAxis, .043 * Math.sin(time * .54) * idle))
-      head.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, compression * .040 - .026 * air * Math.sin(jumpPhase * Math.PI)))
+      head.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, compression * .049 - .047 * air * takeoff + gaitNod))
       const reaching = !resting && sinceRetrieve < .31 ? Math.sin(Math.PI * Math.max(0, sinceRetrieve) / .31) : 0
       head.quaternion.multiply(lean.setFromAxisAngle(headPitch, reaching * .28 * (1 - .82 * Math.max(low, air))))
       for (const [species, bird] of carry) {
@@ -204,8 +206,11 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
       const activeEars = (1 - idle) * (1 - .82 * low)
       const earRoll = activeEars * (.096 * Math.sin(stride * 2 - .79) + .041 * air + compression * .047)
       earFollow += (earRoll - earFollow) * -Math.expm1(-23 * dt)
-      secondaryMotion[0].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earFollow + idle * .021 * Math.sin(time * 2.1)))
-      secondaryMotion[1].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, earFollow - idle * .022 * Math.sin(time * 1.6)))
+      const turnFold = banking * .22 + activeEars * .018 * Math.sin(stride * 2 - 1.18)
+      secondaryMotion[0].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis,
+        earFollow + turnFold + idle * .021 * Math.sin(time * 2.1)))
+      secondaryMotion[1].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis,
+        earFollow - turnFold - idle * .022 * Math.sin(time * 1.6)))
       const tailSway = idle * .045 * Math.sin(time * 2.6) + grounded * (1 - low) * (.051 * Math.sin(stride - .7) - .42 * banking)
       secondaryMotion[2].bone.quaternion.multiply(lean.setFromAxisAngle(up, tailSway))
       root.position.y = restingFloor

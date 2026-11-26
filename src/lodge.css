@@ -433,3 +433,14 @@
   .lodge-tabs { grid-template-columns: repeat(4,minmax(0,1fr)); }
   .lodge-tabs button { padding-inline: 2px; }
 }
+
+.wildlife-card > details { grid-column: 1 / -1; }
+.wildlife-card .journal-photo-detail {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 420px;
+  aspect-ratio: 10 / 7;
+  object-fit: contain;
+  margin-block: .45rem;
+}
+.wildlife-card .photo-credit { display: block; overflow-wrap: anywhere; font-size: .75rem; }

@@ -4,6 +4,7 @@
 
 - Operation Opening Day is on `codex/retriever-run-opening-day`, based on `a77cb4131e7c1f81f484c687b70f4aaa4bd95d56` (merged PR #38). The observed Pages build was `1.0.0-phase.9 · 7787d85`, with 14,779,689 required bytes. The owner confirmed the installed Phase 09 SQL, working closed Worldwide read and zero ranked players.
 - The score-ranked combined standings API and portrait table are implemented. The focused database and verifier tests passed. The additive migration and owner-controlled deployment workflow still require review. Resume with real isolated Supabase verification and browser review, then complete the art, gameplay and release checkpoints. [Owner operations](OPENING_DAY_OPERATIONS.md)
+- Opening Day also adds complete Journal photography, original Blender field-edge models, finer water/bank treatment, some species-specific shapes, and cosmetic canine and sound refinements. The 10,000-seed course sweep and 100,020 obstacle windows completed. An isolated GoTrue/PostgREST/PostgreSQL test verified three distinct replay results, best replacement, offline reconnection and a denied cross-account write. No live write was needed.
 - Preserve the closed competition gate, production data and local saves. Hosted verifier and native-device acceptance are pending. [Phase 09 report](PHASE_09_REPORT.md) · [Visual backlog](FINAL_VISUAL_BACKLOG.md)
 
 ## Implemented in Phase 01

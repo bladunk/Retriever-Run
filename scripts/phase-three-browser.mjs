@@ -660,9 +660,11 @@ try {
     assert.equal(soak.state.mode, 'running', JSON.stringify(soak.state))
     assert.ok(soak.samples.length >= duration, 'insufficient rendered samples')
     const living = 'wildlife' in soak.state
+    // The supported Phase 09 scene itself peaks above the Phase 04 limit
+    // (122 in the matched software replay, 126 in the owner's native trace).
     assert.ok(soak.samples.every(({ tiles, packs, textures, geometries }) =>
       tiles <= 7 && tiles >= (living ? 5 : 7) && packs <= (living ? 3 : 2) &&
-      textures <= (living ? 34 : 18) && geometries <= (living ? 120 : 90)), 'unexpected scene resource growth')
+      textures <= (living ? 34 : 18) && geometries <= (living ? 130 : 90)), 'unexpected scene resource growth')
     await capture('soak-finish', { seed, duration, executed: soak.next })
   } else if (args.includes('landmark-pass')) {
     const keys = args.filter(a => a.startsWith('only=')).map(a => a.slice(5))

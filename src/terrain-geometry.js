@@ -10,6 +10,7 @@ import { cypressStand } from './cypress-stands.js'
 import { dressNorthernBank } from './expedition-props.js'
 import { centerAt, headingAt, seededRandom, segmentLength, trailHeight } from './trail.js'
 import { signAnchor } from './sign-placement.js'
+import { dressFieldEdge } from './field-edge-art.js'
 import { dressWildBanks } from './wilderness-banks.js'
 
 const box = new T.BoxGeometry()
@@ -180,6 +181,9 @@ export function buildTile(index, seed = 0) {
       const rut = Math.sin(x * 5.5 + Math.sin(distance * .42) * .9) * .032
       const drift = Math.cos(distance * .18 + x * .63) * .044 + Math.sin(distance * .41 - x * 1.7) * .024
       tint.copy(soil).lerp(olive, edgeFade)
+      const bankBand = edgeFade * Math.max(0, 1 - Math.abs(y - waterline - .11) / .38)
+      const shadowBand = bankBand * (.12 + .09 * Math.cos(distance * .24 - x * 1.9))
+      tint.multiplyScalar(1 - shadowBand)
       const drifts = .5 + .24 * Math.sin(distance * .34 + x * 1.9) + .24 * Math.cos(distance * .087 - x * .58)
       tint.lerp(snowTint, snow * (.10 + .65 * edgeFade + (.18 + edgeFade * .10) * drifts))
       const farmland = T.MathUtils.lerp(Number(zone.from.kind === 'field'), Number(zone.to.kind === 'field'), zone.blend)
@@ -445,6 +449,8 @@ export function buildTile(index, seed = 0) {
     for (const piece of pieces) piece.dispose()
     return pack(geometry)
   }
+  batch = details
+  dressFieldEdge({ key, index, seed, earth, waterline, landmark, sign, add })
   const detail = mergedPacket(details)
   const solid = mergedPacket(solids)
   const reeds = []

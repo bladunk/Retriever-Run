@@ -18,15 +18,16 @@ test('all twenty-nine species have durable unique artwork keys and correct group
   for (const [species, artwork] of Object.entries(speciesArtwork)) {
     assert.equal(artwork.width / artwork.height, 10 / 7)
     assert.match(wildlifePortrait(fieldSpecies[species], false), /^data:image\/svg\+xml/)
-    if (!artwork.photo) continue
-    const { path, author, license, terms, source } = artwork.photo
-    assert.ok(author && license.startsWith('CC BY') && terms.startsWith('https://creativecommons.org/licenses/'))
+    const { path, detail, author, license, terms, source } = artwork.photo
+    assert.ok(author && /^(CC BY(-SA)? [\d.]+|CC0|Public domain)$/.test(license) && terms.startsWith('https://'))
     assert.ok(source.startsWith('https://commons.wikimedia.org/wiki/File:'))
     assert.equal(wildlifePortrait(fieldSpecies[species], true), './' + path)
-    const bytes = await readFile(new URL('../public/' + path, import.meta.url))
-    assert.equal(bytes.toString('ascii', 8, 12), 'WEBP')
+    for (const file of [path, detail]) {
+      const bytes = await readFile(new URL('../public/' + file, import.meta.url))
+      assert.equal(bytes.toString('ascii', 8, 12), 'WEBP')
+    }
   }
-  assert.equal(speciesPhotoFiles.length, 3)
+  assert.equal(new Set(speciesPhotoFiles).size, 58)
   assert.equal(speciesArtwork.alligator.group, 'reptiles')
   assert.equal(speciesArtwork.deer.group, 'mammals')
   assert.equal(speciesArtwork.pheasant.group, 'upland')
@@ -151,4 +152,22 @@ test('audio waits for a gesture, decodes one recording at a time and suspends wh
   assert.equal(contexts[0].state, 'suspended')
   sound.selectScene('running', { gesture: true })
   assert.equal(contexts[0].state, 'running')
+})
+
+test('Opening Day exports the complete local save without touching online credentials or practice data', async () => {
+  const { openLodge, saveKey, saveVersion } = await import('../src/lodge-save.js')
+  const online = 'sb-isolated-auth-token'
+  const data = new Map([[online,'never exported'],[saveKey,JSON.stringify({
+    version: saveVersion, active: 2, players: [{ id: 1, nickname:'North Camp' },{ id: 2, nickname:'South Camp' }],
+  })]])
+  const store = () => ({ getItem: key => data.get(key) ?? null, setItem: (key,value) => data.set(key,value) })
+  const lodge = openLodge(store)
+  const exported = JSON.parse(lodge.exportSave())
+  assert.deepEqual(exported.players.map(player => player.nickname),['North Camp','South Camp'])
+  assert.equal(exported.active,2)
+  assert.equal(exported.version,saveVersion)
+  assert.ok(!lodge.exportSave().includes(data.get(online)))
+  assert.equal(openLodge(store, undefined, { practice:true }).exportSave(),null)
+  data.set(saveKey,JSON.stringify({ version:saveVersion+1 }))
+  assert.equal(openLodge(store).exportSave(),null)
 })

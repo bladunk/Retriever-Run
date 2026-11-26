@@ -7,8 +7,8 @@ import { audioDefaults } from './profile.js'
 const clamp = (value, low, high) => Math.min(high, Math.max(low, value))
 const vary = (low, high) => low + Math.random() * (high - low)
 const footsteps = {
-  mud: [370, .037, .124, 'lowpass'],
-  grass: [610, .027, .083, 'lowpass'],
+  mud: [315, .043, .107, 'lowpass'],
+  grass: [690, .025, .091, 'lowpass'],
   dirt: [310, .032, .077, 'lowpass'],
   wood: [590, .035, .073, 'lowpass'],
   splash: [1090, .048, .169, 'bandpass'],
@@ -403,13 +403,15 @@ export function createSound(onInterruption, probe) {
       rustle(bus, kind, frequency * vary(.83, 1.15), level * vary(.77, 1.19) * (landing ? 1.50 : 1),
         length * vary(.82, 1.2), 0, vary(-.10, .10), 0, .008)
       if (surface === 'wood') instrument('wood', 0, context.currentTime + .004, .10, level * .56, 0, bus)
-      if (surface === 'splash') rustle(bus, 'bandpass', 1690, .024, .14, .035, .09)
+      if (surface === 'splash') rustle(bus, 'bandpass', vary(1360, 1670), .023, landing ? .19 : .14, .028, .09)
+      if (landing && surface === 'mud') rustle(bus, 'bandpass', vary(645, 790), .019, .11, .016)
       if (surface === 'snow') rustle(bus, 'highpass', 1460, .009, .055, .024)
     },
     play(effect, surface = 'dirt') {
       if (!canPlay('effectsVolume')) return
       const bus = buses.effectsVolume
-      if (effect === 'jump') rustle(bus, 'lowpass', 450, .027, .081)
+      if (effect === 'jump') rustle(bus, 'lowpass', surface === 'snow' ? 940 : 440, .024, .092)
+      if (effect === 'retrieve') rustle(bus, 'bandpass', 860, .022, .11, 0, -.04, 0, .024)
       if (effect === 'slide') {
         rustle(bus, 'bandpass', surface === 'mud' ? 485 : 720, .049, .36, 0, -.08, .07, .044)
         rustle(bus, 'lowpass', 360, .024, .39, .08, -.04, .12, .036)

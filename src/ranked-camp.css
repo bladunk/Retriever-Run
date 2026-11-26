@@ -1,5 +1,6 @@
 .ranked-camp, .ranked-overview, .ranked-form, .ranked-code, .ranked-entry {
   display: grid;
+  min-inline-size: 0;
   gap: .55rem;
 }
 .ranked-camp button, .ranked-overview button, .ranked-camp select,
@@ -36,7 +37,7 @@
 .ranked-version small { display: block; margin-top: .15rem; }
 
 .worldwide-toolbar { display: flex; justify-content: space-between; align-items: center; gap: .4rem; }
-.worldwide-table-scroll { overflow-x: auto; max-inline-size: 100%; border-block: 1px solid #756348; }
+.worldwide-table-scroll { overflow-x: auto; min-inline-size: 0; max-inline-size: 100%; border-block: 1px solid #756348; }
 .worldwide-table { border-spacing: 0; width: 100%; color: #f6eedc; font-size: .75rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .worldwide-table :is(th, td) { text-align: right; padding: .38rem .5rem; background: #172820; border-bottom: 1px solid #364537; }
 .worldwide-table thead th { color: #dfbc87; font-weight: 600; background: #23372a; }

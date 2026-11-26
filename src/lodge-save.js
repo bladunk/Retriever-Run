@@ -232,6 +232,11 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
     localRecovery: recovered ? 'backup' : futureSave ? 'newer-version' : 'normal',
     commit,
     players: () => save.players,
+    exportSave() {
+      if (practice || futureSave) return null
+      refresh()
+      return JSON.stringify(save, null, 2) + '\n'
+    },
     nameFor: id => save.players.find(player => player.id === id)?.nickname ?? 'Marsh Runner',
     board: (metric, course) => rankRuns(course ? save.entries.filter(run => (run.course ?? 'legacy-10') === course) : save.entries, metric),
     personalEntries: id => save.entries.filter(run => run.player === id),
