@@ -43,7 +43,7 @@ FIELD_BUILD=/path/to/build FIELD_QA_OUTPUT=/path/to/results \
   node scripts/phase-three-browser.mjs chromium small high southern-views
 ```
 
-[Moving Gulf Coast gameplay](evidence/wilderness-southern/gulf-gameplay.mp4) shows the opening running camera, pickups, banks and camp on a seeded browser replay. The clip was retimed for review. [Motion trace](evidence/wilderness-southern/gulf-motion-trace.json) · [Art Studio route and shoreline views](evidence/wilderness-southern/studio-views.webp)
+The moving comparison shows the opening running camera, pickups, banks and camp. Both captures run the same six timed inputs over 15.2 simulation seconds. Each clip was retimed for review. [RC.2 gameplay clip](evidence/wilderness-southern/gulf-baseline.mp4) · [RC.3 gameplay clip](evidence/wilderness-southern/gulf-gameplay.mp4) · [RC.2 motion trace](evidence/wilderness-southern/gulf-baseline-trace.json) · [RC.3 motion trace](evidence/wilderness-southern/gulf-motion-trace.json) · [Art Studio route and shoreline views](evidence/wilderness-southern/studio-views.webp)
 
 ## What changed in the renderer
 
@@ -88,7 +88,11 @@ Each cell reports the highest number in three matched High-detail screenshots. T
 
 The median process CPU cost per terrain packet on a shared host was 66.3 → 50.8 ms in Gulf, 44.7 → 46.0 in Cypress, 19.1 → 25.7 in the Delta, 32.5 → 35.3 in Flooded Timber and 19.8 → 24.8 in Ozark. The benchmark alternates 15 paired calls per region using three seed-7 tiles. It measures the worker calculation in Node. The art adds geometric work, especially the Delta stubble and timber oaks. Water now reads heights already computed on the ground grid, and non-transition tiles evaluate their shore function once per coordinate. The isolated comparison of that reuse was mixed on the shared host. [Matched scene counters](evidence/wilderness-southern/matched-resources.json) · [Worker CPU samples](evidence/wilderness-southern/worker-cpu.json) · [Worker reuse comparison](evidence/wilderness-southern/worker-optimization.json)
 
+The matched moving Gulf segment peaked at 70 → 72 draws, 188,998 → 198,234 triangles, 63 → 65 geometries and 23 textures in both builds. The run held seven terrain tiles and one environment pack in both cases.
+
 The Chromium Battery Saver run crossed all four southern transitions and entered Midwest Farm Country after 151.23 simulation seconds. Across 303 samples it reached 67 draws, 163,971 triangles, 98 geometries, 13 textures, seven terrain tiles and two environment packs. It executed 93 scripted inputs and recorded zero discarded samples. The browser was offline after installation. This accelerated test proves streaming and resource behavior under a repeatable route. The actual-clock software recording did not finish within its test time budget, so no frame-rate improvement is claimed. Raptor's RC.1 native baseline remains the physical reference. [Offline route trace](evidence/wilderness-southern/offline-flyway.json)
+
+Twelve additional offline opener cycles held at 44 settled geometries and 12 textures, with six or seven tiles resident and no ordinary-save writes. Each hit the same obstacle at 35.867 m. The candidate held one additional shader program in this fixture. These cycles exercise replay and resource retirement using the original course for the Raptor baseline comparison. [Restart trace](evidence/wilderness-southern/restart-cycles.json)
 
 On the final build, Chromium High recorded all three Fern 02 texture operations, geometry submission and shader preparation before the hunt. New artwork adds no texture upload to that staged pack. Native startup, replay and driver stalls still need verification. [Named preparation trace](evidence/wilderness-southern/fern-preparation.json)
 
