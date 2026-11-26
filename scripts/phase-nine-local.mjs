@@ -25,6 +25,9 @@ const handler = huntHandler({ origin, publishable:anon, service })
 const server = createServer(async (request,response) => {
   try {
     const url = new URL(request.url,origin)
+    if (root && url.pathname === '/local-review-session') {
+      return response.writeHead(200,{'Content-Type':'text/html'}).end('<!doctype html><title>Isolated review session</title>')
+    }
     if (root && url.pathname.startsWith(prefix)) {
       const file = resolve(root,url.pathname.slice(prefix.length) || 'index.html')
       if (!file.startsWith(root+sep)) return response.writeHead(404).end()
@@ -170,19 +173,24 @@ async function reviewBrowser(actor) {
     const context = await browser.newContext({ ...devices['iPhone 13'],viewport:{width:320,height:568},deviceScaleFactor:1 })
     const fakeHost = 'phase09-fixture.supabase.co'
     const snapshot = [...actor.map.entries()].map(([key,value])=>[key.replace('127.0.0.1:55673',fakeHost),value])
-    await context.addInitScript(({ fakeHost,snapshot }) => {
-      for (const [key,value] of snapshot) if (!localStorage.getItem(key)) localStorage.setItem(key,value)
+    await context.addInitScript(fakeHost => {
       const real = globalThis.fetch.bind(globalThis)
       globalThis.fetch = (input,options) => {
         const url = new URL(input instanceof Request ? input.url : input,location.href)
         return url.hostname === fakeHost ? real(location.origin+url.pathname+url.search,options) : real(input,options)
       }
-    },{fakeHost,snapshot})
+    },fakeHost)
     const review = async page => {
       await page.goto(origin+prefix+'?perf=1')
       await page.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled)
     }
     const page = await context.newPage()
+    // Seed the already authenticated test identity once. Subsequent pages must
+    // reopen with the actual saved session, without any fixture restoring it.
+    await page.goto(origin+'/local-review-session')
+    await page.evaluate(entries => {
+      for (const [key,value] of entries) localStorage.setItem(key,value)
+    },snapshot)
     await page.goto(origin+prefix+'?perf=1')
     await page.locator('#content-download').tap()
     await page.waitForFunction(() => !document.querySelector('#primary').disabled)
