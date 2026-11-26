@@ -12,6 +12,7 @@ from field_geometry import Surface, rng, tone
 
 cli = argparse.ArgumentParser()
 cli.add_argument("output", type=Path)
+cli.add_argument("--render", action="store_true", help="Save a source-model review sheet")
 args = cli.parse_args(sys.argv[sys.argv.index("--") + 1:])
 args.output.mkdir(parents=True, exist_ok=True)
 bpy.ops.object.select_all(action="SELECT")
@@ -101,3 +102,21 @@ boulders('SnowTalus', True)
 bpy.ops.export_scene.gltf(filepath=str(args.output/'opening-day-author.glb'), export_format='GLB',
                           export_texcoords=True, export_normals=True, export_attributes=True, export_extras=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(args.output/'opening-day-source.blend'))
+
+if args.render:
+    for index, name in enumerate(("Saltmeadow", "PrairieBunch", "Buttonbush", "WillowScrub", "RiverShelf", "SnowTalus")):
+        bpy.data.objects[name].location = ((index % 3 - 1) * 2.75, (index // 3 - .5) * 2.8, 0)
+    bpy.ops.object.camera_add(location=(0, -8.3, 7.7))
+    camera = bpy.context.object
+    camera.rotation_euler = (Vector((0, 0, .3)) - camera.location).to_track_quat("-Z", "Y").to_euler()
+    camera.data.type = "ORTHO"
+    camera.data.ortho_scale = 9.3
+    scene = bpy.context.scene
+    scene.camera = camera
+    scene.render.engine = "BLENDER_WORKBENCH"
+    scene.render.resolution_x, scene.render.resolution_y = 900, 600
+    scene.display.shading.color_type = "VERTEX"
+    scene.display.shading.show_shadows = True
+    scene.display.shading.show_cavity = True
+    scene.render.filepath = str(args.output/'field-edge-review.png')
+    bpy.ops.render.render(write_still=True)

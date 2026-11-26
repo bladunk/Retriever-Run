@@ -1,0 +1,60 @@
+{
+  "baseline": {
+    "app": {
+      "version": "1.0.0-phase.9",
+      "id": "2da3910"
+    },
+    "engine": "chromium",
+    "elapsed": 451.0436666666644,
+    "offline": true,
+    "seed": 7,
+    "quality": "low",
+    "samples": 903,
+    "inputCount": 406,
+    "peaks": {
+      "tiles": 7,
+      "packs": 2,
+      "textures": 13,
+      "geometries": 122,
+      "draws": 74,
+      "triangles": 169550
+    },
+    "final": {
+      "tiles": 6,
+      "packs": 0
+    },
+    "tileIntegration": {
+      "p95Ms": 3.299999952316284,
+      "maxMs": 5.399999976158142
+    }
+  },
+  "final": {
+    "app": {
+      "version": "1.0.0-rc.1",
+      "id": "2b2fd1c"
+    },
+    "engine": "chromium",
+    "elapsed": 451.1916666666665,
+    "offline": true,
+    "seed": 7,
+    "quality": "low",
+    "samples": 903,
+    "inputCount": 406,
+    "peaks": {
+      "tiles": 7,
+      "packs": 2,
+      "textures": 14,
+      "geometries": 121,
+      "draws": 74,
+      "triangles": 174959
+    },
+    "final": {
+      "tiles": 6,
+      "packs": 0
+    },
+    "tileIntegration": {
+      "p95Ms": 38.40000003576279,
+      "maxMs": 47.19999998807907
+    }
+  }
+}

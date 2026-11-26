@@ -9,12 +9,13 @@ The Opening Day draft combines score-ranked Worldwide standings, complete Field 
 | Integrated baseline | `a77cb4131e7c1f81f484c687b70f4aaa4bd95d56`, merge of PR #38 |
 | Observed live app | `1.0.0-phase.9 · 7787d85`, 14,779,689 required bytes |
 | Release branch | `codex/retriever-run-opening-day` |
-| Review version | `1.0.0-rc.1` |
+| Review identity | `1.0.0-rc.1 · 12103b9`, content manifest `94fb7310daf33f068221` |
+| Runtime revision | `41dfac8e306716c9c1aea44d098c1d20a9ca58be` plus documentation and test-only commits |
 | Draft review | [PR #39](https://github.com/bladunk/Retriever-Run/pull/39) |
 
 ## Competition and privacy
 
-Worldwide preserves official rank by verified score. Ties follow earliest server-recorded best and then the private stable ordering key. The standings return up to 25 rows per request across the official top 100. Personal rank, percentile, nearby competitors and population still cover the whole score board. The table uses sticky rank and hunter columns in its horizontal scroll region. Score, distance, time, retrieves and combo are independent verified records. A mark for an unavailable metric is left blank. Career Legends was deferred because lifetime career is local. Friends and private Camp rankings retain their existing consensual and member-only scope.
+Worldwide preserves official rank by verified score. Ties follow earliest server-recorded best and then the private stable ordering key. The standings return up to 25 rows per request across the official top 100. Personal rank, percentile, nearby competitors and population still cover the whole score board. The table uses sticky rank and hunter columns in its horizontal scroll region. Score, distance, time, retrieves and combo are independent verified records. A dash identifies an unavailable metric. Career Legends was deferred because lifetime career is local. Friends and private Camp rankings retain their existing consensual and member-only scope.
 
 The additive endpoint uses the existing indexed score order and only aggregates metric bests for the current page. It emits nicknames and verified values. The preexisting gate, service-only claim and commit RPCs, version isolation, bounded queues, eligibility checks and 15 server-issued Honors remain in use. Ten of the 25 reserved Honors remain pending. The local career path to Boyd is independent of Worldwide.
 
@@ -22,7 +23,7 @@ The Phase 09 production endpoint was checked read-only and returned `ok`, closed
 
 The isolated test used GoTrue v2.185.0, PostgREST v13.0.7 and PostgreSQL 17. Three distinct anonymous identities submitted canonical replay-derived scores. Initial order was 75, 55 and 35. A queued run survived local reopen and reconnect and lifted the same 55-point identity to 95 and first place. A worse run left its bests intact. A duplicate was acknowledged once. Wrong course and season, and use of another identity's ticket, were refused. Attempted direct cross-account commit returned HTTP 403. Synthetic people and runs were confined to isolated resources. [Local verification receipt](evidence/opening-day/local-database.json)
 
-Leaderboard rank and neighbor scans use the existing indexes. Capacity estimates in Phase 09 are projections. At 10,000 registered hunters with 20% daily activity, the assumed submission pattern projects 312,000 monthly Edge calls including retries. One fresh 17.45 MB content download per user would use roughly 174 GB of Pages transfer before updates or caching. Monitor the hosting soft limit and Supabase quota before public promotion. The 15-minute and 2,048-input replay limits are disclosed before entry. Hunts exceeding either continue to earn local records and progression. The staged Edge bundle is 310,983 bytes. Hosted near-cap timing, anonymous Auth abuse and legitimate long-hunt review remain launch gates. [Free-tier model](PHASE_09_REPORT.md#free-tier-estimate)
+Leaderboard rank and neighbor scans use the existing indexes. Capacity estimates in Phase 09 are projections. At 10,000 registered hunters with 20% daily activity, the assumed submission pattern projects 312,000 monthly Edge calls including retries. One fresh 17.45 MB content download per user would use roughly 174 GB of Pages transfer before updates or caching. Monitor the hosting soft limit and Supabase quota before public promotion. The 15-minute and 2,048-input replay limits are disclosed before entry. Hunts exceeding either continue to earn local records and progression. The staged Edge bundle is 310,983 bytes. Replay of valid hunts lasting 451.687, 601.631 and 862.124 seconds took 365, 305 and 632 ms in Node on this host. Hosted near-cap timing, anonymous Auth abuse and legitimate long-hunt review remain launch gates. [Free-tier model](PHASE_09_REPORT.md#free-tier-estimate)
 
 The build must pass path allowlisting, SHA-256 and image metadata checks. No private Boyd source or administrative credential is emitted. Historical Boyd metadata exposure remains a separate issue requiring owner authorization for remediation. A browser game can validate replay consistency, while automation and human input remain difficult to distinguish. Public nickname moderation beyond existing name constraints and reporting still needs owner policy. [Privacy and rollback](OPENING_DAY_OPERATIONS.md)
 
@@ -53,6 +54,26 @@ Blender 4.3.2 authored six field-edge silhouettes. The glTF Transform export wel
 The dog models keep the approved geometry and existing clips. The cosmetic pass adds a stronger takeoff and landing pitch transition, small stride-linked head motion and asymmetric ear follow-through. It does not author a new gallop or solve all foot sliding. Wildlife changes are mainly to optimized silhouettes and plumage cues for wood ducks, geese, waders, cranes and eagles. The existing rigged mallard, pheasant, deer and eagle remain available. Footstep, landing, splash and retrieve effects received a mix and variation pass using existing generated sounds. Regional recordings and controls remain in place.
 
 The 30 stages, fixed 120 Hz movement, collision solver, difficulty, scoring, saves and eligibility modules remain intact. The Field settings export writes a local save snapshot without accessing online session storage. Export was tested against existing multiple-profile storage, practice isolation and future-format handling. Restore and the separate clean-start proposal remain owner review items.
+
+## Build, runtime and evidence
+
+The verified local candidate totals **17,534,549 bytes**, with **17,447,734 required offline bytes** across 122 entries. The matched unconfigured Phase 09 build requires 14,779,557 bytes. At the manifest level, **3,991,721 bytes** changed across 63 files, including release shell assets. Content hashes allow reuse of the rest. Journal derivatives total 2,626,322 bytes. A single inspected detail image is about 1.9 MiB as decoded RGBA, with no gameplay texture upload. Scrollable galleries and preexisting low-cost shelf art do not require loading all detail images at startup.
+
+| Software observation | Phase 09 baseline | Opening Day |
+| --- | ---: | ---: |
+| Gulf Coast near 85 m, draw calls | 52 | 52 |
+| Gulf Coast near 85 m, triangles | 92,750 | 102,009 |
+| Gulf Coast near 85 m, texture count | 12 | 12 |
+| Gulf Coast near 85 m, geometry count | 49 | 48 |
+| Shared-host 7-second moving sample, median measured callback cost | 7.2 ms | 8.3 ms |
+
+The short motion captures had 33 samples per revision and irregular software presentation intervals under load. The installed Chromium startup sample reported 19.33 s versus 11.37 s including preparation, and warm offline median game readiness of 8.19 s versus 7.21 s across three opens each. Results reflect the shared software host. The earlier 607 ms versus 3,813 ms native report still needs matched cold and warm device traces. The 320 × 568 Chromium interface rehearsal measured 192 ms replay, and the 430 × 932 WebKit rehearsal measured 1,089 ms, including automation overhead. The isolated competition browser measured 280 ms from Play Again to running with no Camp call. Both interface runs requested zero rendered collection images before gameplay readiness. [Startup sample](evidence/opening-day/startup.json) · [Software samples and actual captures](evidence/opening-day/README.md)
+
+The paired accelerated browser hunts captured all 15 territories offline and reached Endless Wilderness at 451 seconds. The baseline and Opening Day peaks were 7 terrain tiles, 2 regional packs and 74 draws each. Peak geometries were 122 versus 121. Textures were 13 versus 14 and peak triangles were about 170,000 versus 175,000. The Opening Day trace had a 47 ms peak tile integration sample during the shared-host run. Review that behavior on a physical iPhone before accepting the art/residency tradeoff. Early lookahead filled from 3 to 5 tiles within two seconds. The verification bounds distinguish the opening lookahead from settled terrain residency. The rendered circuit uses runtime build `2b2fd1c`. The later standings layout did not change its simulation, graphics or tile code. [Offline migration measurements](evidence/opening-day/migration-performance.json)
+
+The final 320 × 568 build switched Labrador, Pointer and Boyd plus two prestige items offline. It retained 12 textures across five checks, with geometry counts between 20 and 24. Production guest startup did not request the Boyd rig. The locked presentation, configured outfit inspection and rear gameplay sequences remain separate from legitimate career ownership. [Kennel captures](evidence/opening-day/README.md#field-journal-and-lodge)
+
+The portrait install rehearsal recovered an interrupted Labrador download, repaired corrupt content, reused unchanged audio, vetoed activation during an active hunt and an open Lodge, and preserved two hunts. The rehearsal used the earlier Opening Day interface build `2b2fd1c` with the same service-worker and save paths. Final artifact hashes were checked independently. [Update rehearsal](evidence/opening-day/update.json)
 
 ## Tests and remaining acceptance
 

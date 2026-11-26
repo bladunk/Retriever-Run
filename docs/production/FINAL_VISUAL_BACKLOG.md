@@ -4,7 +4,7 @@ Start with the recognizable figures players see most often. Keep Boyd’s approv
 
 | Priority | Area and current limit | Production target and method | Runtime and rights |
 | --- | --- | --- | --- |
-| 1 | Field Journal uses three photographs and 26 family silhouettes | Supply a faithful portrait for every species in the queue below. The main field mark should survive the 420 × 294 crop. Use verified photographs, commissioned natural-history originals or a Blender orthographic render of a reference-checked rig | Reuse the existing responsive lazy-loaded registry. Set a byte budget per derivative. Document crop and edits. Prefer CC0 and CC BY and preserve standalone share-alike terms where applicable |
+| 2 | Opening Day includes a verified photograph for every Journal species | Refine crops where useful. Add optional alternative sex, seasonal plumage and field-angle photos as space and licensing permit | The existing derivatives are 420 × 294 and 840 × 588. Record edits and apply the original license to redistributable derivatives |
 | 1 | Labrador and Boyd moves share limited retargeted motion and procedural blends | Improve the physical gallop, lumbar movement, takeoff, landing, crouch, carrying and Kennel idles in Blender. Compare both dogs from the rear running camera and check gear contact | One live skeletal instance per dog in each active view, bounded motion clips and reuse of coat textures. Preserve the mesh credit and record new clip rights. Keep Boyd sources private |
 | 1 | Wildlife ranges from authored skinned assets to simplified silhouettes | Begin with duck, goose, pheasant, crane, deer and raptor proportions, flight/flushing mechanics and profile recognition. Preserve the current exact encounter schedule | Keep existing safe-period shader/rig preparation and two-rig cap. License each model, photograph or clip separately. Bake sharing-friendly LODs |
 | 1 | Water, banks and vegetation vary by territory and have visible seams at some crossings | Finish continuous banks, wet/dry materials, depth, directional ripples and believable reeds. Match patches to real habitat; limit tall specimens near travel lanes. Preserve readable jumpable spans | Share regional atlas variants and water material paths in the existing tile lifecycle. Use original models or proven CC0 scans |
@@ -47,36 +47,36 @@ This pass starts at the normal running camera and adjusts environment art withou
 
 ## Journal portrait queue
 
-Each entry below has a stable `species-<catalog-id>` key and an educational source in the wildlife catalog. Treat the current silhouettes as navigation aids. Verify sex, age, seasonal plumage and visual field marks in the licensed candidate before integrating it.
+Opening Day completes the twenty-nine primary 420 × 294 and 840 × 588 photo pairs. Remaining review targets help choose alternate images or improve future in-game model references. [Complete source register](../../src/assets/journal-photos.json)
 
 | Species | Current art | Review target |
 | --- | --- | --- |
 | Mallard | Licensed photo | Keep drake’s green head and blue speculum references. Add a hen when the layout can accommodate it |
 | Wood Duck | Licensed photo | Keep recognizable crest and white facial lines. Review a tight field crop and consider a second female plumage |
-| Northern Pintail | Profile silhouette | Long raised tail, slender neck and appropriate drake chest stripe |
-| American Wigeon | Duck silhouette | Pale crown, eye patch and short blue-gray bill |
-| Gadwall | Duck silhouette | Fine markings, contrasting rump and white speculum |
-| Green-winged Teal | Teal silhouette | Distinctive eye patch and correct small proportions |
-| Blue-winged Teal | Teal silhouette | White face crescent and blue shoulder patch |
-| Northern Shoveler | Broad-bill silhouette | Broad spatulate bill and contrasting male flanks |
-| Canvasback | Diving duck silhouette | Forward-sloping forehead, long bill and pale back |
-| Redhead | Diving duck silhouette | Rounded head, steeper forehead and blue-gray bill |
-| Ring-necked Duck | Crested diver silhouette | Angular head, bill bands and flank wedge |
-| Lesser Scaup | Diving duck silhouette | Rear crown peak, dark chest and narrow pale sides |
-| Common Goldeneye | Diving duck silhouette | Golden eye and round facial patch at bill base |
-| Bufflehead | Diving duck silhouette | Compact shape with broad white head patch |
-| Hooded Merganser | Merganser silhouette | Hooded crest and narrow bill |
-| Common Merganser | Merganser silhouette | Long straight red bill, long posture and suitable plumage |
-| Canada Goose | Goose silhouette | Correct large form, black neck and cheek strap |
-| Snow Goose | Goose silhouette | White morph with black primaries and bill line |
-| Ross’s Goose | Goose silhouette | Smaller round head with shorter, straighter bill |
-| Greater White-fronted Goose | Goose silhouette | White bill base, dark barring and orange legs |
-| Cackling Goose | Goose silhouette | Short neck, small bill and stockier head than Canada Goose |
-| Ring-necked Pheasant | Long-tailed bird silhouette | Long tapered tail, face and collar marks |
-| Sandhill Crane | Long-necked silhouette | Readable scarlet crown and extended flight posture |
-| Great Blue Heron | Wader silhouette | Blue-gray plumage, dark crown stripe and tucked flight neck |
-| Great Egret | Wader silhouette | White plumage, dark legs and light bill |
-| Bald Eagle | Raptor silhouette | Adult dark wings, white head and yellow bill |
-| White-tailed Deer | Mammal silhouette | Appropriate proportions and unmistakable tail underside |
-| Moose | Mammal silhouette | Shoulder hump, long muzzle and seasonally appropriate antlers |
-| American Alligator | Licensed photo and reptile silhouette | Preserve broad snout, low body and tapering tail |
+| Northern Pintail | Licensed photo | Long raised tail, slender neck and appropriate drake chest stripe |
+| American Wigeon | Licensed photo | Pale crown, eye patch and short blue-gray bill |
+| Gadwall | Licensed photo | Fine markings, contrasting rump and white speculum |
+| Green-winged Teal | Licensed photo | Distinctive eye patch and correct small proportions |
+| Blue-winged Teal | Licensed photo | White face crescent and blue shoulder patch |
+| Northern Shoveler | Licensed photo | Broad spatulate bill and contrasting male flanks |
+| Canvasback | Licensed photo | Forward-sloping forehead, long bill and pale back |
+| Redhead | Licensed photo | Rounded head, steeper forehead and blue-gray bill |
+| Ring-necked Duck | Licensed photo | Angular head, bill bands and flank wedge |
+| Lesser Scaup | Licensed photo | Rear crown peak, dark chest and narrow pale sides |
+| Common Goldeneye | Licensed photo | Golden eye and round facial patch at bill base |
+| Bufflehead | Licensed photo | Compact shape with broad white head patch |
+| Hooded Merganser | Licensed photo | Hooded crest and narrow bill |
+| Common Merganser | Licensed photo | Long straight red bill, long posture and suitable plumage |
+| Canada Goose | Licensed photo | Correct large form, black neck and cheek strap |
+| Snow Goose | Licensed photo | White morph with black primaries and bill line |
+| Ross’s Goose | Licensed photo | Smaller round head with shorter, straighter bill |
+| Greater White-fronted Goose | Licensed photo | White bill base, dark barring and orange legs |
+| Cackling Goose | Licensed photo | Short neck, small bill and stockier head than Canada Goose |
+| Ring-necked Pheasant | Licensed photo | Long tapered tail, face and collar marks |
+| Sandhill Crane | Licensed photo | Readable scarlet crown and extended flight posture |
+| Great Blue Heron | Licensed photo | Blue-gray plumage, dark crown stripe and tucked flight neck |
+| Great Egret | Licensed photo | White plumage, dark legs and light bill |
+| Bald Eagle | Licensed photo | Adult dark wings, white head and yellow bill |
+| White-tailed Deer | Licensed photo | Appropriate proportions and unmistakable tail underside |
+| Moose | Licensed photo | Shoulder hump, long muzzle and seasonally appropriate antlers |
+| American Alligator | Licensed photo | Preserve broad snout, low body and tapering tail |
