@@ -1,0 +1,39 @@
+name: Deploy ranked verifier by request
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type "deploy verify-hunt" to deploy the selected revision
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  edge:
+    if: github.ref == 'refs/heads/main' && inputs.confirmation == 'deploy verify-hunt'
+    environment: ranked-verifier
+    concurrency: ranked-verifier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/prepare-camp-deployment.mjs "$RUNNER_TEMP/rr-verified-edge"
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.58.5
+      - name: Deploy only the verify-hunt function
+        env:
+          SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          test -n "$SUPABASE_PROJECT_REF"
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          cd "$RUNNER_TEMP/rr-verified-edge"
+          supabase functions deploy verify-hunt --project-ref "$SUPABASE_PROJECT_REF" --use-api

@@ -992,9 +992,13 @@ function reportRankedResult() {
   const detail = ui['report-worldwide']
   summary.hidden = detail.hidden = !runPermit
   if (!runPermit) return
-  const posting = rankedCamp.finish(runPermit, runTrace?.finish(ticks))
-  summary.textContent = detail.textContent = posting.status === 'pending' ? 'Worldwide verification pending' :
-    'Local result saved · This hunt is outside the ranked limits.'
+  const trace = runTrace?.finish(ticks)
+  const posting = rankedCamp.finish(runPermit, trace)
+  const local = !trace ? 'Local result saved · Ranked verification covers up to 15 minutes and 2,048 accepted moves.' :
+    posting.status === 'expired' ? 'Local result saved · Ranked entry expired.' :
+    posting.status === 'queue_full' ? 'Local result saved · The ranked submission queue is full.' :
+    'Local result saved · This hunt did not meet ranked verification requirements.'
+  summary.textContent = detail.textContent = posting.status === 'pending' ? 'Worldwide verification pending' : local
   const current = runStatistics
   runPermit = runTrace = null
   posting.done?.then(receipt => {

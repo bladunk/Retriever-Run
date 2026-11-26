@@ -34,3 +34,15 @@
 .ranked-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .35rem; }
 .ranked-toolbar select, .ranked-toolbar button { min-width: 0; padding-inline: .4rem; }
 .ranked-version small { display: block; margin-top: .15rem; }
+
+.worldwide-toolbar { display: flex; justify-content: space-between; align-items: center; gap: .4rem; }
+.worldwide-table-scroll { overflow-x: auto; max-inline-size: 100%; border-block: 1px solid #756348; }
+.worldwide-table { border-spacing: 0; width: 100%; color: #f6eedc; font-size: .75rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.worldwide-table :is(th, td) { text-align: right; padding: .38rem .5rem; background: #172820; border-bottom: 1px solid #364537; }
+.worldwide-table thead th { color: #dfbc87; font-weight: 600; background: #23372a; }
+.worldwide-table tbody tr:nth-child(even) > * { background: #1c2f25; }
+.worldwide-table tbody .your-run > * { background: #394333; color: #ffdc9d; }
+.worldwide-table tr > :first-child { position: sticky; left: 0; z-index: 1; width: 2.25rem; min-width: 2.25rem; box-sizing: border-box; }
+.worldwide-table tr > :nth-child(2) { position: sticky; left: 2.25rem; z-index: 1; text-align: left; box-shadow: 1px 0 #59634c; }
+.worldwide-table .ranked-player { max-inline-size: 8rem; min-height: 44px; overflow: hidden; text-overflow: ellipsis; }
+.worldwide-table th small { display: block; color: #e8c88d; }

@@ -11,6 +11,8 @@ const season = 'great-migration-1'
 test('Phase 09 migrations impose PostgreSQL role, ownership and namespace restrictions', async t => {
   const env = await isolatedCamp()
   const { as, result, name, social, board, permit, claim, commit } = env
+  const worldwide = (id, offset = 0) => result(id ? 'authenticated' : 'anon', id,
+    'select public.rr_worldwide_standings($1) as result', [offset])
   t.after(() => env.db.close())
 
   for (const [id, nickname] of [[one, 'Marsh Runner'], [two, 'Cedar Scout'], [three, 'Delta Guide']]) {
@@ -20,6 +22,8 @@ test('Phase 09 migrations impose PostgreSQL role, ownership and namespace restri
   await t.test('starts closed, hides direct writes, and preserves the legacy API', async () => {
     assert.equal((await permit(one)).status, 'closed')
     assert.deepEqual((await board(null)).rows, [])
+    assert.deepEqual((await worldwide(null)).rows, [])
+    assert.equal((await worldwide(null)).open, false)
     assert.equal((await result('anon',null,'select public.rr_camp_board($1,0,25) as result',['score'])).status,'ok')
     await assert.rejects(as('anon',null,"select public.rr_camp_social('profile')"), /permission denied/)
     await assert.rejects(as('authenticated',one,'select * from retriever_camp.friend_codes'), /permission denied/)
@@ -96,6 +100,12 @@ test('Phase 09 migrations impose PostgreSQL role, ownership and namespace restri
     assert.deepEqual(second.honors,['camp-score-1'])
     assert.deepEqual((await board(null)).rows.map(row => row.nickname),['Cedar Scout','Marsh Runner'])
     assert.equal((await board(null,'distance')).rows[1].value,35)
+    const view = await worldwide(two)
+    assert.equal(view.mine.rank,1)
+    assert.equal(view.total_ranked,2)
+    assert.deepEqual(view.rows.map(row => row.nickname),['Cedar Scout','Marsh Runner'])
+    assert.deepEqual(view.rows[0].bests,{score:2500,duration:3161,distance:35,retrieves:1,combo:5})
+    assert.deepEqual(Object.keys(view.rows[0]).sort(),['bests','nickname','rank','recorded_at','value'])
     assert.equal((await board(null,'unknown')).status,'invalid_metric')
     assert.equal((await board(null,'score',999)).rows.length,0)
     const profile = await result('anon',null,'select public.rr_ranked_profile($1) as result',['Cedar Scout'])
@@ -168,7 +178,7 @@ test('Phase 09 migrations impose PostgreSQL role, ownership and namespace restri
       insert into retriever_camp.ranked_bests (season,metric,player_id,value,recorded_at)
       select 'great-migration-1','score',g.id,3000+g.n,statement_timestamp()
       from generated g join new_players p on p.player_id=g.id`)
-    const pages = await Promise.all([0,25,50,75].map(offset => board(one,'score',offset)))
+    const pages = await Promise.all([0,25,50,75].map(offset => worldwide(one,offset)))
     assert.equal(pages[0].total_ranked,106)
     assert.equal(pages[0].mine.rank,106)
     assert.equal(pages[0].percentile,0)

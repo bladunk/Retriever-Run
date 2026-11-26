@@ -37,6 +37,12 @@ function moveValue(metric, value) {
   return metric === 'distance' ? meters(value) : number(value)
 }
 
+function standingsValue(metric, value) {
+  if (metric !== 'duration') return moveValue(metric, value)
+  const minutes = Math.floor(value / 60_000)
+  return minutes + ':' + (value % 60_000 / 1000).toFixed(3).padStart(6, '0')
+}
+
 function action(label, click, className) {
   const button = node('button', label, className)
   button.type = 'button'
@@ -102,18 +108,32 @@ function recordRows(records) {
 
 function ranking(camp, player, scope, campId, onReady) {
   const worldwide = scope === 'worldwide'
-  const { section, status } = shell(worldwide ? 'Rankings' : 'Verified standings')
+  const { section, status } = shell(worldwide ? 'Worldwide standings' : 'Verified standings')
   const version = node('p', '', 'room-note ranked-version')
   const population = node('p', '', 'room-note')
-  const picker = select('Ranking category')
-  if (worldwide) {
-    const future = node('option', 'Career Legends · unavailable')
-    future.disabled = true
-    picker.append(future)
-  }
+  const picker = worldwide ? null : select('Ranking category')
   const own = node('section', null, 'own-ranking')
   const rivals = node('section', null, 'ranked-rivals')
-  const list = node('ol', null, 'camp-board worldwide-roster')
+  const list = node(worldwide ? 'tbody' : 'ol', null, worldwide ? undefined : 'camp-board')
+  const table = node('table', null, 'worldwide-table')
+  const viewport = node('div', null, 'worldwide-table-scroll')
+  viewport.tabIndex = 0
+  viewport.setAttribute('aria-label', 'Worldwide top 100 standings')
+  if (worldwide) {
+    const header = node('tr')
+    for (const [short, full] of [['#', 'Official rank'], ['Hunter', 'Hunter'], ['Score', 'Highest score'],
+      ['Dist.', 'Longest distance'], ['Time', 'Longest hunt'], ['Ret.', 'Most retrieves'], ['Combo', 'Longest combo']]) {
+      const cell = node('th', short)
+      cell.scope = 'col'
+      cell.setAttribute('aria-label', full)
+      header.append(cell)
+    }
+    const head = node('thead')
+    head.append(header)
+    table.append(head, list)
+    viewport.append(table)
+    viewport.hidden = true
+  }
   const profile = node('section', null, 'ranked-public-profile')
   let offset = 0
   let request = 0
@@ -121,11 +141,16 @@ function ranking(camp, player, scope, campId, onReady) {
   const next = action('Show 25 more', () => void load(offset))
   const retry = action('Refresh', () => void load(0, true))
   retry.setAttribute('aria-label', 'Refresh rankings')
-  const toolbar = node('div', null, 'ranked-toolbar')
-  toolbar.append(picker, retry)
+  const toolbar = node('div', null, worldwide ? 'worldwide-toolbar' : 'ranked-toolbar')
+  if (picker) {
+    toolbar.append(picker)
+    picker.addEventListener('change', () => void load())
+  } else toolbar.append(population)
+  toolbar.append(retry)
   next.hidden = true
-  section.append(version, toolbar, own, rivals, population, list, next, profile)
-  picker.addEventListener('change', () => void load())
+  section.append(version, own, rivals, toolbar)
+  if (worldwide) section.append(node('p', 'Official rank follows verified score. Each column shows a separate personal best.', 'room-note'))
+  section.append(worldwide ? viewport : list, next, profile)
 
   function showProfile(nickname, button) {
     const stamp = ++profileRequest
@@ -145,7 +170,7 @@ function ranking(camp, player, scope, campId, onReady) {
 
   async function load(from = 0, refresh = false) {
     const stamp = ++request
-    const metric = picker.value
+    const metric = picker?.value ?? 'score'
     if (!from) {
       ++profileRequest
       profile.replaceChildren()
@@ -154,6 +179,7 @@ function ranking(camp, player, scope, campId, onReady) {
       rivals.replaceChildren()
       list.replaceChildren()
       population.textContent = ''
+      if (worldwide) viewport.hidden = true
     }
     next.disabled = true
     status.textContent = 'Loading verified rankings…'
@@ -173,7 +199,7 @@ function ranking(camp, player, scope, campId, onReady) {
         own.append(node('strong', 'Your rank #' + result.mine.rank),
           node('p', 'Verified best · ' + moveValue(metric, result.mine.value), 'room-note'))
       }
-      else if (worldwide && !result.authStatus) own.append(node('p', 'No verified best in this category yet.', 'room-note'))
+      else if (worldwide && !result.authStatus) own.append(node('p', 'No verified score for this hunter yet.', 'room-note'))
       if (result.mine && Number.isFinite(result.percentile)) own.append(node('p', 'Ahead of ' + result.percentile + '% of other ranked players', 'room-note'))
       if (result.rivals.length) rivals.append(node('h4', 'Nearby rivals'))
       for (const rival of result.rivals) {
@@ -187,17 +213,31 @@ function ranking(camp, player, scope, campId, onReady) {
     for (const item of result.rows) {
       if (onPage.has(item.nickname)) continue
       onPage.add(item.nickname)
-      const row = node('li')
+      const row = node(worldwide ? 'tr' : 'li')
       row.dataset.nickname = item.nickname
       if (item.nickname === own.dataset.nickname) row.classList.add('your-run')
       const details = action(item.nickname, () => showProfile(item.nickname, details), 'ranked-player')
-      row.append(node('span', '#' + number(item.rank), 'board-rank'), details,
+      if (worldwide) {
+        const hunter = node('th')
+        hunter.scope = 'row'
+        hunter.append(details)
+        if (item.nickname === own.dataset.nickname) hunter.append(node('small', 'You'))
+        row.append(node('td', number(item.rank)), hunter)
+        for (const key of Object.keys(rankedMetrics)) {
+          const best = key === 'score' ? item.value : item.bests?.[key]
+          const known = Number.isSafeInteger(best) && best > 0
+          const cell = node('td', known ? standingsValue(key, best) : '—')
+          if (!known) cell.setAttribute('aria-label', 'No verified best')
+          row.append(cell)
+        }
+      } else row.append(node('span', '#' + number(item.rank), 'board-rank'), details,
         node('strong', moveValue(metric, item.value), 'board-score'))
       list.append(row)
     }
+    if (worldwide) viewport.hidden = !list.children.length
     status.textContent = result.stale ? (result.staleReason === 'offline' ? 'Offline. Showing the last downloaded standings.'
       : 'Refresh failed. Showing the last downloaded standings.') : result.authStatus ? feedback({ status: result.authStatus }) :
-      !list.children.length ? 'There are no verified records in this category yet.' : ''
+      !list.children.length ? (worldwide ? 'No verified worldwide scores yet.' : 'No verified records in this category yet.') : ''
     offset = from + 25
   }
   queueMicrotask(() => void load())
@@ -221,7 +261,7 @@ function worldwide(camp, player, start, navigate) {
     ranked.disabled = false
     if (response.status === 'ok') {
       ticket = response
-      state.textContent = 'Entry ready. Your ranked hunt begins when you tap Start.'
+      state.textContent = 'Entry ready. Ranked verification covers up to 15 minutes or 2,048 accepted moves. Longer hunts continue with local records and rewards.'
       ranked.textContent = 'Start ranked hunt'
     } else state.textContent = feedback(response)
   }, 'primary')

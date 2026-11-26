@@ -68,6 +68,8 @@ async function handleFixtureApi(request,response,path) {
   const parts = []
   for await (const piece of request) parts.push(piece)
   const body = parts.length ? JSON.parse(Buffer.concat(parts).toString()) : {}
+  if (path === '/rest/v1/rpc/rr_worldwide_standings') return reply(await env.result(actor ? 'authenticated' : 'anon',actor,
+    'select public.rr_worldwide_standings($1) as result',[body.p_offset]))
   if (path === '/rest/v1/rpc/rr_ranked_board') return reply(await env.board(actor,body.p_metric,body.p_offset,body.p_scope,body.p_camp))
   if (path === '/rest/v1/rpc/rr_ranked_profile') return reply(await env.result('anon',null,
     'select public.rr_ranked_profile($1) as result',[body.p_nickname]))
@@ -139,9 +141,7 @@ try {
   await room('worldwide')
   await waitText('Cedar Scout')
   await shot('worldwide')
-  await panel.getByLabel('Ranking category').selectOption('distance')
-  await waitText('350 m')
-  await shot('distance')
+  await panel.locator('.worldwide-table').getByText('350 m', { exact:true }).waitFor()
   await panel.getByRole('button',{name:'Cedar Scout'}).tap()
   await waitText('Replay-verified personal bests')
   await shot('public-profile')

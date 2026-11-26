@@ -97,7 +97,9 @@ export function createCampTransport(settings = config, {
       if (owner && !membership) authStatus ??= 'reconnect'
       if (!membership && args.p_scope !== 'worldwide') return { status: authStatus ?? 'profile_required' }
       try {
-        const result = await rpc(membership?.api ?? await client(), 'rr_ranked_board', args)
+        const worldwide = args.p_scope === 'worldwide'
+        const result = await rpc(membership?.api ?? await client(), worldwide ? 'rr_worldwide_standings' : 'rr_ranked_board',
+          worldwide ? { p_offset: args.p_offset ?? 0 } : args)
         return { ...result, authStatus }
       } catch (error) {
         if (rpcMissing(error)) return { status: 'schema_missing' }
