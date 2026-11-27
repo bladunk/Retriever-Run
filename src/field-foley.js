@@ -11,14 +11,14 @@ export const pawSounds = Object.freeze({
   wood:   [.034, 590, .091, 'lowpass', 920, .005],
 })
 
-const surfaces = Object.freeze({ coast:'mud', swamp:'mud', delta:'mud', timber:'mud',
-    limestone:'gravel', field:'grass', braids:'gravel', dunes:'sand', pothole:'grass',
-    'northern-wetland':'grass', marsh:'mud', parkland:'grass', boreal:'dirt',
+const surfaces = Object.freeze({ tidal:'mud', swamp:'mud', levee:'dirt', hardwood:'mud',
+    limestone:'gravel', field:'gravel', braids:'gravel', dunes:'sand', pothole:'grass',
+    slough:'grass', lacustrine:'mud', parkland:'grass', boreal:'dirt',
     foothills:'gravel', alpine:'gravel' })
 
 export function pawSurface(region, wet = 0, frost = 0, splash = false) {
   if (splash) return 'splash'
-  if (region.snow > .32) return 'snow'
+  if (Math.max(region.snow, frost) > .66) return 'snow'
   if (frost > .18) return 'frost'
   if (wet > .64) return 'mud'
 

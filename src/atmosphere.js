@@ -164,6 +164,7 @@ function precipitation(scene, snow) {
     const count = Math.floor(max * amount * budget)
     model.visible = count > 0
     if (!count) return
+    material.opacity = snow ? .50 + amount * .08 : .16 + amount * .072
     const modulo = (value) => ((value % 1) + 1) % 1
     for (let i = 0; i < count; i++) {
       const n = i * 3
@@ -177,7 +178,7 @@ function precipitation(scene, snow) {
       positions[k + 2] = z
       if (!snow) {
         positions[k + 3] = x + wind * .14
-        positions[k + 4] = y + .37
+        positions[k + 4] = y + .27 + seeds[n + 1] * .16
         positions[k + 5] = z - .072
       }
     }
@@ -265,9 +266,9 @@ export function createAtmosphere(scene) {
       sun.position.copy(dawnDirection).multiplyScalar(28)
       const shade = (region.from.treesPerSide + (region.to.treesPerSide - region.from.treesPerSide) * region.blend) / 12
       const swamp = T.MathUtils.lerp(Number(region.from.key === 'cypress'), Number(region.to.key === 'cypress'), region.blend)
-      fill.intensity = (1.67 - lerp('cloud') * .19 - shade * .26 - swamp * .11) *
+      fill.intensity = (1.67 - lerp('cloud') * .14 - shade * .24 - swamp * .11) *
         T.MathUtils.lerp(lightFrom[2], lightTo[2], region.blend)
-      fill.groundColor.setHex(region.from.bank).lerp(tone.setHex(region.to.bank), region.blend).multiplyScalar(.71)
+      fill.groundColor.setHex(region.from.bank).lerp(tone.setHex(region.to.bank), region.blend).multiplyScalar(.72)
       sun.intensity *= 1.08 - shade * .10 + swamp * .33 + T.MathUtils.lerp(lightFrom[3], lightTo[3], region.blend)
       // Twilight affects distant visibility and sky color. Neutral fill and
       // a mild moon contribution preserve the trail and hazard silhouettes.

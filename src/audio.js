@@ -255,7 +255,7 @@ export function createSound(onInterruption, probe) {
     }
   }
 
-  function selectScene(value, { gesture = false, restart = false, record = false, reward, immediate = false } = {}) {
+  function selectScene(value, { gesture = false, restart = false, record = false, reward, immediate = false, quietMusic = false } = {}) {
     const previousScene = scene
     scene = value
     clearTimeout(transitionTimer)
@@ -294,7 +294,7 @@ export function createSound(onInterruption, probe) {
       ramp(roomTone.cutoff, scene === 'lodge' ? 420 : 680, .24)
       lastEnvironment = -Infinity
       const arrivingAtReport = scene === 'over' && previousScene === 'running'
-      const bed = scene === 'running' ? 1 : scene === 'title' ? .69 : scene === 'lodge' ? .54 : .46
+      const bed = quietMusic || scene === 'studio' ? 0 : scene === 'running' ? 1 : scene === 'title' ? .69 : scene === 'lodge' ? .54 : .46
       ramp(musicBed.gain, arrivingAtReport ? .15 : bed, scene === 'running' ? .16 : .21)
       if (arrivingAtReport) {
         if (reward === 'prestige' || reward === 'legendary') api.play('prestige')
@@ -311,7 +311,7 @@ export function createSound(onInterruption, probe) {
         }).catch(() => {})
       }
       void load('instruments')
-      if (scene === 'title' || scene === 'lodge' || scene === 'running') {
+      if (scene === 'title' || scene === 'lodge' || scene === 'kennel' || scene === 'running') {
         void load('goose')
         void load('mallard')
         void load('creek')
@@ -371,9 +371,9 @@ export function createSound(onInterruption, probe) {
         phase ? .085 : .34)
     },
     bird,
-    prepareWildlife(id) {
+    async prepareWildlife(id) {
       if (id === 'canada-goose') id = 'goose'
-      if (context && Object.hasOwn(sampleUrls, id) && !buffers.has(id)) void load(id)
+      if (context && Object.hasOwn(sampleUrls, id) && !buffers.has(id)) await load(id)
     },
     settings(profile) {
       for (const key of Object.keys(levels)) {

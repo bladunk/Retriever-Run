@@ -131,4 +131,14 @@
 @media (prefers-reduced-motion: no-preference) {
   :where(#menu, #lodge, #preferences, #field-report) button { transition: filter 100ms ease, background-color 120ms ease; }
 }
-:root[data-motion="reduced"] :where(#menu, #lodge, #preferences, #field-report) button { transition: none; }
+:root[data-reduce-motion] :where(#menu, #lodge, #preferences, #field-report) button { transition: none; }
+
+#lodge .lodge-interior { border-color: #997e56; background-color: var(--field-walnut); }
+#lodge .lodge-interior-art { filter: saturate(.90) contrast(1.03); }
+#lodge .lodge-interior :is(h3,h4), #lodge .lodge-tribute h4, #lodge .gallery-heading h3 {
+  font-family: var(--field-display);
+  color: var(--field-cream);
+}
+#lodge .lodge-tribute { border-color: var(--field-brass); }
+.journal-sections { margin-block: 0 12px; }
+.journal-sections button { flex: 1; }

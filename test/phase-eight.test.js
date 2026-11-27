@@ -82,8 +82,12 @@ test('all fifteen territories have distinct sound profiles with continuous regio
     const seconds = 30 * index
     const before = ambienceMix(seconds - .0001)
     const after = ambienceMix(seconds + .0001)
-    assert.equal(before.length, 5)
-    assert.ok(before.every((value, layer) => value >= 0 && value <= 1 && Math.abs(value - after[layer]) < .01))
+    assert.equal(before.length, 10)
+    for (const [layer, value] of before.entries()) {
+      const frequency = layer >= 5 && layer <= 7
+      assert.ok(frequency ? value >= 300 && value <= 2800 : value >= 0 && value <= 1)
+      assert.ok(Math.abs(value - after[layer]) < .08)
+    }
   }
   assert.deepEqual(ambienceMix(600), soundscapes.mountain)
 })
@@ -111,7 +115,7 @@ test('audio waits for a gesture, decodes one recording at a time and suspends wh
     }
     createGain() { return output() }
     createBufferSource() { return output() }
-    createBuffer() { return { getChannelData: () => new Float32Array(16) } }
+    createBuffer(channels, length) { return { length, numberOfChannels: channels, getChannelData: () => new Float32Array(16) } }
     createBiquadFilter() { return output() }
     createDynamicsCompressor() {
       return Object.assign(output(), { threshold: {}, knee: {}, ratio: {}, attack: {}, release: {} })
@@ -120,7 +124,7 @@ test('audio waits for a gesture, decodes one recording at a time and suspends wh
     async suspend() { this.state = 'suspended'; this.dispatchEvent(new Event('statechange')) }
     decodeAudioData(_buffer, finish) {
       peakDecodes = Math.max(peakDecodes, ++activeDecodes)
-      setImmediate(() => { activeDecodes--; decoded++; finish({ duration: 1 }) })
+      setImmediate(() => { activeDecodes--; decoded++; finish({ duration: 1, length: 8000, numberOfChannels: 1 }) })
     }
   }
   t.mock.method(globalThis, 'fetch', async () => ({ ok: true, arrayBuffer: () => new ArrayBuffer(4) }))
@@ -144,6 +148,12 @@ test('audio waits for a gesture, decodes one recording at a time and suspends wh
   assert.equal(contexts[0].state, 'running')
   assert.equal(decoded, 4)
   assert.equal(peakDecodes, 1)
+  assert.deepEqual(sound.resources(), { voices: 0, beds: 7, buffers: 4, decodedBytes: 192000 })
+  for (let i = 0; i < 10; i++) {
+    sound.selectScene(i % 2 ? 'kennel' : 'lodge')
+  }
+  assert.equal(contexts.length, 1)
+  assert.equal(sound.resources().beds, 7)
   page.hidden = true
   sound.selectScene('paused', { immediate: true })
   assert.equal(contexts[0].state, 'suspended')

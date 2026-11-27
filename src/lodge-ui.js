@@ -1,5 +1,5 @@
 import { rewardGroups } from './hunt-presentation.js'
-import { collectionSearch, collectionSelect, matchesCollection, primaryRoom, roomGroups } from './collection-browser.js'
+import { collectionSearch, matchesCollection, primaryRoom, roomGroups } from './collection-browser.js'
 import { encounterTiers, fieldSpecies, habitatEncounters } from './wildlife-catalog.js'
 import { journalFieldMarks } from './journal-field-marks.js'
 import { environmentalDiscoveries } from './environment-discoveries.js'
@@ -17,7 +17,7 @@ import { careerLine, careerRoom, nearbyHonor } from './career-ui.js'
 import { kennelRoom } from './kennel-ui.js'
 import { courseRuleset, legacyMigrationRuleset, localCourseRuleset } from './ruleset.js'
 import { fieldHonorsRoom } from './honor-ui.js'
-import { checkLabel, localHonors, waterfowlSpecies } from './field-honors.js'
+import { checkLabel, localHonors } from './field-honors.js'
 import { kennelItems } from './kennel-catalog.js'
 import { progressionMetrics } from './progression.js'
 
@@ -254,10 +254,11 @@ function journal(player) {
     node('h3', 'The Great Migration · territory time', 'section-title section-break'), migration, ...archive,
     node('h3', 'Field breakdown', 'section-title section-break'), breakdown)
   const discoveries = Object.entries(player.discoveries?.entries ?? {})
-  const fieldNotes = []
+  const notes = node('section', null, 'journal-environment')
+  notes.setAttribute('aria-label','Environmental discoveries')
+  notes.id = 'journal-environment'
+  notes.hidden = true
   if (discoveries.length) {
-    const notes = node('details',null,'career-ledger')
-    notes.append(node('summary','Environmental discoveries'))
     for (const [id,first] of discoveries) {
       const feature = environmentalDiscoveries[id]
       if (!feature) continue
@@ -266,8 +267,7 @@ function journal(player) {
         node('p',expeditionRegions.find(region=>region.key===feature.territory).name + ' · ' + first.slice(0,10)))
       notes.append(section)
     }
-    fieldNotes.push(notes)
-  }
+  } else notes.append(node('p','No environmental discoveries recorded.','room-note'))
   const intro = node('header', null, 'journal-guide-intro')
   const total = Object.keys(fieldSpecies).length
   const progressMeter = node('progress')
@@ -275,7 +275,27 @@ function journal(player) {
   progressMeter.value = known
   progressMeter.setAttribute('aria-label', 'Wildlife observed')
   intro.append(node('h3', 'Wildlife field guide'), node('span', known + ' of ' + total + ' observed'), progressMeter)
-  return [intro, filters, results, guide, ...fieldNotes, collections, lifetime]
+  const select = node('div', null, 'journal-categories journal-sections')
+  select.setAttribute('role','group')
+  select.setAttribute('aria-label','Journal sections')
+  const wildlife = node('div')
+  wildlife.id = 'journal-wildlife'
+  wildlife.append(intro, filters, results, guide, collections)
+  const btnGuide = node('button','Wildlife')
+  const btnNotes = node('button','Discoveries' + (discoveries.length ? ' · ' + discoveries.length : ''))
+  btnGuide.setAttribute('aria-controls',wildlife.id)
+  btnNotes.setAttribute('aria-controls',notes.id)
+  const setSection = showNotes => {
+    wildlife.hidden = showNotes
+    notes.hidden = !showNotes
+    btnGuide.setAttribute('aria-pressed',String(!showNotes))
+    btnNotes.setAttribute('aria-pressed',String(showNotes))
+  }
+  btnGuide.addEventListener('click',() => setSection(false))
+  btnNotes.addEventListener('click',() => setSection(true))
+  select.append(btnGuide,btnNotes)
+  setSection(false)
+  return [select, wildlife, notes, lifetime]
 }
 
 function leaderboard(lodge, metric, selectMetric) {
@@ -409,7 +429,7 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
   }))
 }
 
-export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, onClose, onKennel, onAppearance,
+export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, onClose, onKennel, onAppearance, onDestination,
   onStart, onJoin, onErase, inspectDogs }) {
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
@@ -452,6 +472,10 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
     const reading = demo ?? lodge
     const player = reading.current()
     const group = primaryRoom(room)
+    if (dialog.dataset.destination !== group) {
+      dialog.dataset.destination = group
+      onDestination?.(group)
+    }
     const title = ui['lodge-title']
     if (group === 'overview') title.replaceChildren('The ', node('em', 'Lodge'))
     else title.textContent = { kennel: 'Kennel', journal: 'Field Journal', worldwide: 'Worldwide', board: 'Camp' }[group]

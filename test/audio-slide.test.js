@@ -25,18 +25,23 @@ test('Marshland Run repeats after 32 bars and increases mix intensity without ch
     assert.ok(events.every((note, index) => !index || note.beat >= events[index - 1].beat))
   }
   assert.notDeepEqual(composeBar(0), composeBar(16))
-  for (const edge of [30, 60, 90, 120]) {
-    const previous = musicIntensity(edge - .01)
+  const moments = [0, 90, 175, 260, 340, 410, 450, 570]
+  for (const [index, edge] of moments.entries()) {
     const next = musicIntensity(edge)
-    assert.equal(next[0], previous[0])
-    assert.ok(next.some((level, index) => level > previous[index]))
-    assert.ok(next.every((level, index) => level >= previous[index]))
+    assert.equal(next.length, 9)
+    assert.ok(next.every(level => Number.isFinite(level) && level >= 0 && level <= 1))
+    if (index) {
+      const previous = musicIntensity(edge - .01)
+      assert.ok(next.every((level, layer) => Math.abs(level - previous[layer]) < .013))
+      assert.notDeepEqual(next, musicIntensity(moments[index - 1]))
+    }
   }
-  assert.deepEqual(musicIntensity(150), musicIntensity(120))
   assert.equal(musicIntensity(0)[3], 0)
-  assert.ok(musicIntensity(30)[3] > 0)
-  assert.ok(musicIntensity(60)[5] > 0)
-  assert.ok(musicMix('lodge', 0)[7] > musicMix('title', 0)[7])
+  assert.ok(musicIntensity(175)[3] > musicIntensity(90)[3])
+  assert.ok(musicIntensity(340)[8] > musicIntensity(175)[8])
+  assert.ok(musicIntensity(570)[6] > musicIntensity(450)[6])
+  assert.deepEqual(musicIntensity(570), musicIntensity(950))
+  assert.notDeepEqual(musicMix('lodge', 0), musicMix('kennel', 0))
   assert.equal(musicMix('lodge', 120)[2], 0)
   assert.ok(composeBar(7).some(note => note.instrument === 'harmonica'))
 })

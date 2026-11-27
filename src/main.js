@@ -106,7 +106,7 @@ const localPerformance = flags.get('perf') === '1'
 const performanceProbe = localPerformance ? createPerformanceProbe(undefined, flags.get('resources') !== '0') : null
 const sound = createSound(background, performanceProbe)
 if (performanceProbe) {
-  const readPerformance = () => ({ ...performanceProbe.read(), build: runningBuild })
+  const readPerformance = () => ({ ...performanceProbe.read(), audio: sound.resources(), build: runningBuild })
   window.retrieverPerformance = readPerformance
   const controls = document.createElement('details')
   const label = document.createElement('summary')
@@ -237,10 +237,8 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   },
   onOpen() { engageMusic() },
   onClose() { sound.selectScene(mode) },
-  onKennel(stage) {
-    showKennel?.(stage)
-    if (ui.lodge.open) sound.selectScene(stage ? 'kennel' : 'lodge')
-  },
+  onKennel(stage) { showKennel?.(stage) },
+  onDestination(destination) { sound.selectScene(destination === 'kennel' ? 'kennel' : 'lodge') },
   onAppearance(equipment) { dog?.appearance(equipment) },
   onStart(ticket) {
     if (!contextReady || !trailReady || productionSession.locked() ||
@@ -258,6 +256,11 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   onErase(player) { lodge.enroll(player.id, player.nickname, 'guest') },
 })
 const onboarding = createOnboarding(ui, lodge, camp, showTitleRecord, start)
+ui.lodge.addEventListener('click', event => {
+  if (event.target.closest('.lodge-tabs button, .legacy-room-nav button, .journal-categories button, .wildlife-card summary')) {
+    sound.play('interface')
+  }
+})
 ui['custom-camp'].addEventListener('click', () => { ui.preferences.close(); onboarding.open() })
 ui['open-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
 for (const button of ui['title-rooms'].querySelectorAll('[data-entry]'))
@@ -394,6 +397,7 @@ function initialize() {
       kennel: button => lodgeUI.open(button, 'kennel'),
       lodge: (button, room, exhibit, preview) => lodgeUI.open(button,room,exhibit,preview),
       renderer: () => renderer.info.memory,
+      sound,
     })
     restartStudio()
   })
@@ -1013,7 +1017,8 @@ function updateMusicButton() {
 function engageMusic() {
   audioGesture = true
   updateMusicButton()
-  sound.selectScene(ui.lodge.open ? 'lodge' : mode, { gesture: true })
+  const room = ui.lodge.dataset.destination === 'kennel' ? 'kennel' : 'lodge'
+  sound.selectScene(ui.lodge.open ? room : mode, { gesture: true })
 }
 
 function background() {
