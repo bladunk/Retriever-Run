@@ -1,3 +1,4 @@
+import { validatedDogName } from './dog-name.js'
 import { rankIndex } from './legacy-career.js'
 import { collectionGear } from './collection-gear.js'
 import { honorById } from './field-honors.js'
@@ -97,6 +98,8 @@ export function normalizeKennel(source, standing, progress, legacyStanding, prio
   const favorites = new Set(Array.isArray(source?.favorites) ? source.favorites : [])
   const kennel = { breed, inherited, equipment: defaultGear(breed), outfits: {},
     favorites: kennelItems.filter(item => favorites.has(item.id)).map(item => item.id) }
+  const name = validatedDogName(source?.name)
+  if (name) kennel.name = name
   for (const dog of progress.boyd ? ['lab', 'boyd'] : ['lab']) {
     const outfit = dog === breed ? source?.equipment : source?.outfits?.[dog]
     const equipment = defaultGear(dog)

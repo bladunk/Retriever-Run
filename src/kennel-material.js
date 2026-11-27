@@ -7,33 +7,51 @@ export function gearAppearance(equipment = classicGear) {
 }
 
 const patternStyle = { stripe: 1, brush: 2, plaid: 3, border: 4, seam: 5 }
-export function tintFieldPattern(material, point = 'position') {
+export function tintFieldPattern(material, point = 'position', cut = 'collar') {
   const style = { value: 0 }
   const accent = { value: new T.Color() }
+  const family = { value: 0 }
   const prior = material.onBeforeCompile
   material.onBeforeCompile = shader => {
     prior.call(material, shader)
-    Object.assign(shader.uniforms, { gearPattern: style, gearAccent: accent })
+    Object.assign(shader.uniforms, { gearPattern: style, gearAccent: accent, gearFamily: family })
     shader.vertexShader = 'varying vec3 gearPoint;\n' + shader.vertexShader.replace('#include <begin_vertex>',
       '#include <begin_vertex>\ngearPoint = ' + point + ';')
-    shader.fragmentShader = 'varying vec3 gearPoint; uniform float gearPattern; uniform vec3 gearAccent;\n' +
+    shader.fragmentShader = 'varying vec3 gearPoint; uniform float gearPattern, gearFamily; uniform vec3 gearAccent;\n' +
       shader.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
         if (gearPattern > .5) {
           vec3 p = gearPoint;
           float visible = 1. - smoothstep(.021,.105,length(fwidth(p)));
           float weave = sin(p.x*36. + p.y*14. + p.z*17.);
           float band = smoothstep(.45,.73,weave);
-          if (gearPattern == 2.) band = smoothstep(.03,.55,sin(p.x*19.+p.y*16.)*cos(p.z*24.-p.y*9.));
+          if (gearPattern == 2.) {
+            // Layer oblique, tapered stalks over broad, broken ground colors.
+            // The alternate grain directions distinguish grass and timber.
+            vec2 field = vec2(p.z + .74*p.x, p.y - .29*p.x);
+            float grain = field.x + mix(.51,1.33,gearFamily)*field.y;
+            float drift = sin(field.y*7.2+field.x*3.4);
+            float bedding = sin(grain*12.4+1.3*drift) + .74*sin(field.x*6.7-field.y*13.1);
+            vec3 shade = mix(diffuseColor.rgb*.52, gearAccent*.69,smoothstep(-.62,.52,bedding));
+            float branch = sin(grain*34.1 + sin(field.y*11.7)*1.5);
+            float straw = smoothstep(.69,.95,branch) * smoothstep(-.19,.42,
+              sin(field.y*19.4 + field.x*13.9 + 1.3*drift));
+            vec3 reeds = mix(shade,gearAccent*1.17,straw*.82*visible);
+            diffuseColor.rgb = mix(diffuseColor.rgb,reeds,.80);
+            band = 0.;
+          }
           if (gearPattern == 3.) band = max(band*.85,smoothstep(.55,.82,sin(p.y*54.-p.z*12.))*.65);
-          if (gearPattern == 4.) band = smoothstep(.12,.21,abs(p.x) + abs(p.y)*.58);
+          if (gearPattern == 4.) band = ${cut === 'bandana' ?
+            '1. - smoothstep(.055,.10,(1. - scarfCut.y) * min(scarfCut.x,1. - scarfCut.x))' :
+            'smoothstep(.12,.21,abs(p.x) + abs(p.y)*.58)'};
           if (gearPattern == 5.) band = smoothstep(.72,.99,weave)*.48;
           diffuseColor.rgb = mix(diffuseColor.rgb, gearAccent, band * visible * .76);
         }
       `)
   }
-  material.customProgramCacheKey = () => 'field-gear:' + point
+  material.customProgramCacheKey = () => 'field-gear:' + cut + ':' + point
   return item => {
     style.value = patternStyle[item.pattern] ?? 0
+    family.value = /^(cypress|northwoods|greenhead)/.test(item.id) ? 1 : 0
     accent.value.setHex(item.panel ?? item.binding ?? item.color ?? 0xffffff)
   }
 }
@@ -82,6 +100,16 @@ export function tintLabradorCoat(material, modelToRest, breed = 'lab') {
           float blaze = (1. - smoothstep(.05,.13,abs(p.x + .033))) * smoothstep(2.07,2.29,p.y);
           vec3 pointerFur = mix(vec3(.87,.82,.72),vec3(.21,.094,.064),liver*(1.-blaze));
           diffuseColor.rgb = mix(diffuseColor.rgb,pointerFur * coatShading,warmFur);
+        ` : ''}
+        ${breed === 'lab' ? `
+          float brisket = smoothstep(.95,1.58,p.z) * (1. - smoothstep(1.41,2.20,p.y));
+          float cheeks = cheek * (1. - .72*ears);
+          float gold = .34*ears + .16*saddle;
+          vec3 shortDoubleCoat = mix(vec3(.92,.85,.70),vec3(.86,.65,.38),gold);
+          float pigment = smoothstep(.21,.65,dot(diffuse,vec3(.2126,.7152,.0722)));
+          vec3 detail = mix(naturalCoat,shortDoubleCoat,max(brisket*.39,cheeks*.24) * pigment);
+          detail *= (.92 + .10*shoulder + .068*smallFur*grainFade) * diffuse;
+          diffuseColor.rgb = mix(diffuseColor.rgb,detail,warmFur * .42);
         ` : ''}
         float dark = 1. - smoothstep(.046,.22,naturalCoat.r);
         float nose = smoothstep(2.29,2.48,p.z) * smoothstep(2.05,2.34,p.y);

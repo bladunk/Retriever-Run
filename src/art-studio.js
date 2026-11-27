@@ -1,9 +1,12 @@
+import { defaultGear, kennelCatalog } from './kennel-catalog.js'
 import { expeditionRegions } from './expedition.js'
 import { fieldSpecies } from './wildlife-catalog.js'
 
 const cameras = {
-  trail: [0,0,1], shore: [-.82,-.25,.80], grove: [.74,1.2,1.05],
+  trail: [0,0,1], shore: [-.82,-.25,.80], grove: [.74,1.2,1.05], front: [3.14,-.52,.80], side: [1.57,-.47,.88], face: [2.58,-.26,.52],
 }
+
+const dogMoves = ['Idle','Sit','Run','Late run','Lane change','Jump','Slide','Land','Retrieve']
 
 export function openArtStudio(game, flags, api) {
   const details = document.createElement('details')
@@ -14,7 +17,12 @@ export function openArtStudio(game, flags, api) {
   const form = document.createElement('form')
   details.append(form)
   form.addEventListener('submit', event => event.preventDefault())
-  const state = { moving: false, speed: 1, yaw: 0, pitch: 0, zoom: 1, take: flags.get('view') === 'wildlife' ? 'Wildlife' : 'Trail', playback: 'Idle' }
+  const view = { dog: 'Dog', wildlife: 'Wildlife' }[flags.get('view')]
+  const playback = flags.get('motion')
+  const state = { moving: false, speed: 1, yaw: 0, pitch: 0, zoom: 1, take: view ?? 'Trail',
+    playback: dogMoves.includes(playback) ? playback : 'Idle',
+    dogCamera: flags.get('framing') === 'trail' ? 'gameplay' : 'orbit',
+    outfit: defaultGear(api.breed) }
   state.lighting = ['dawn','overcast','mist','rain','snow'].includes(flags.get('light')) ? flags.get('light') : 'route'
   state.nature = ['aurora','sunbreak'].includes(flags.get('nature')) ? flags.get('nature') : ''
   state.hazard = flags.get('hazard') === 'puddle' ? 'puddle' : ''
@@ -77,7 +85,7 @@ export function openArtStudio(game, flags, api) {
   select('Hazard lane', [[-1,'Left'],[0,'Middle'],[1,'Right']],String(state.hazardLane),
     value => { state.hazardLane = Number(value); api.reset() })
   const cameraPreset = Object.hasOwn(cameras, flags.get('camera')) ? flags.get('camera') : 'trail'
-  select('Camera preset', [['trail','Gameplay'],['shore','Shoreline'],['grove','Canopy']],cameraPreset, setCamera)
+  select('Camera preset', [['trail','Gameplay'],['shore','Shoreline'],['grove','Canopy'],['front','Dog front'],['side','Dog side'],['face','Dog face']],cameraPreset, setCamera)
   select('Lighting', [['route','Route weather'],['dawn','Sunrise'],['overcast','Overcast'],['mist','Morning mist'],['rain','Heavy rain'],['snow','Snow']],
     state.lighting, value => { state.lighting = value })
   select('Environmental event', [['','Route lighting'],['aurora','Aurora over the Divide'],['sunbreak','Eastern slopes sunbreak']],
@@ -93,8 +101,21 @@ export function openArtStudio(game, flags, api) {
   select('Wildlife model', [['auto','Default detail'],['fallback','Compact / unskinned']], state.fallback ? 'fallback' : 'auto',
     value => { state.fallback = value === 'fallback'; api.reset() })
   select('Dog', [['lab','Labrador'],['pointer','Pointer'],['boyd','Boyd']], api.breed, value => load('breed', value))
-  select('Dog animation', ['Idle','Run','Jump','Slide','Land','Retrieve'].map(key => [key,key]), 'Idle',
-    value => { state.playback = value })
+  select('Dog animation', dogMoves.map(key => [key,key]), state.playback, value => { state.playback = value })
+  select('Dog framing', [['gameplay','Gameplay'],['orbit','Inspection']], state.dogCamera,
+    value => { state.dogCamera = value })
+  for (const [category, label, query] of [
+    ['coat','Dog coat','coat'], ['vest','Dog vest','vest'], ['collar','Dog neckwear','neckwear'],
+  ]) {
+    const requested = flags.get(query)
+    const items = kennelCatalog[category].filter(item => !item.breed || item.breed === api.breed)
+    if (items.some(item => item.id === requested)) state.outfit[category] = requested
+    select(label, items.map(item => [item.id, item.name]), state.outfit[category], value => {
+      state.outfit[category] = value
+      api.appearance(state.outfit)
+    })
+  }
+  api.appearance(state.outfit)
   const yaw = range('Yaw', -3.14, 3.14, .04, 0, value => { state.yaw = value })
   const pitch = range('Elevation', -1, 2, .05, 0, value => { state.pitch = value })
   const zoom = range('Distance', .4, 2, .05, 1, value => { state.zoom = value })

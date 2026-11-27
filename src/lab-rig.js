@@ -1,6 +1,7 @@
 import * as T from 'three'
 import { createPawPlanting } from './paw-planting.js'
 import { collarBuckle, tintFieldPattern, tintLabradorCoat } from './kennel-material.js'
+import { createWorkingBandana } from './working-bandana.js'
 import { createWorkingVest } from './working-vest.js'
 import { masterHunter } from './master-hunter.js'
 import { disposeModel } from './model-disposal.js'
@@ -64,7 +65,7 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
     bird.visible = false
     return [species, bird]
   }) : []
-  const secondaryMotion = ['Ear2L', 'Ear2R', 'Tail4'].map(name => {
+  const secondaryMotion = ['Ear2L', 'Ear2R', 'Tail4', 'Back', 'Torso2', 'Tail2'].map(name => {
     const bone = root.getObjectByName(name)
     return { bone, base: bone.quaternion.clone() }
   })
@@ -87,18 +88,22 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
   const buckle = collarBuckle(brass)
   neck.add(buckle)
   const signature = breed === 'boyd' ? createSignatureCollar(neck) : undefined
-  const cloth = new T.BufferGeometry()
-  cloth.setAttribute('position', new T.Float32BufferAttribute([
-    -.31,.13,.03, -.16,.11,.13, 0,.10,.16, .16,.11,.13, .31,.13,.03,
-    -.13,-.10,.14, 0,-.13,.18, .13,-.10,.14, 0,-.34,.14,
-  ], 3))
-  cloth.setIndex([0,5,1,1,5,6,1,6,2,2,6,3,3,6,7,3,7,4,5,8,6,6,8,7])
-  cloth.computeVertexNormals()
-  const scarfMaterial = new T.MeshStandardMaterial({ color: 0x616946, roughness: .96, side: T.DoubleSide })
-  const dressScarf = tintFieldPattern(scarfMaterial)
-  const bandana = new T.Mesh(cloth, scarfMaterial)
-  bandana.position.set(0, .04, .36)
-  neck.add(bandana)
+  const ring = new T.Mesh(new T.TorusGeometry(.051, .009, 7, 16), brass)
+  ring.position.set(.326, .127, .272)
+  ring.rotation.y = .74
+  neck.add(ring)
+  const thread = new T.MeshStandardMaterial({ color: 0xc6a47b, roughness: .92 })
+  const stitches = new T.InstancedMesh(new T.BoxGeometry(.024,.004,.003), thread, 68)
+  const stitch = new T.Object3D()
+  for (let index = 0; index < stitches.count; index++) {
+    const around = (index % 34) * oneTurn / 34
+    stitch.position.set(Math.sin(around)*.407, index < 34 ? -.027 : .027, Math.cos(around)*.407)
+    stitch.rotation.y = around
+    stitch.updateMatrix()
+    stitches.setMatrixAt(index, stitch.matrix)
+  }
+  collar.add(stitches)
+  const bandana = createWorkingBandana(root, neck, breed, collarMaterial)
 
   const body = root.getObjectByName('Body')
   let air = 0
@@ -107,6 +112,7 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
   let compression = 0
   let earFollow = 0
   let banking = 0
+  let sit = 0
   const lean = new T.Quaternion()
   const headPose = head.quaternion.clone()
   const bodyPose = body.quaternion.clone()
@@ -128,27 +134,31 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
     appearance(gear) {
       collarMaterial.color.setHex(gear.collar.color)
       dressCollar(gear.collar)
-      dressScarf(gear.collar)
+      bandana.appearance(gear.collar)
       const wearingSignature = gear.collar.id === masterHunter.signature
       if (signature) signature.visible = wearingSignature
       collar.visible = !wearingSignature
-      bandana.visible = Boolean(gear.collar.bandana)
-      scarfMaterial.color.setHex(gear.collar.color)
-      buckle.visible = !wearingSignature && Boolean(gear.collar.buckle)
-      tag.visible = !wearingSignature && !buckle.visible
+      const dressedCollar = !wearingSignature && !gear.collar.bandana
+      collar.scale.y = gear.collar.buckle ? 1.12 : .96
+      stitches.visible = dressedCollar
+      thread.color.copy(collarMaterial.color).lerp(brass.color, .46)
+      buckle.visible = dressedCollar && Boolean(gear.collar.buckle)
+      ring.visible = dressedCollar
+      tag.visible = dressedCollar && !buckle.visible
       for (const dress of dressMesh) dress(gear.coat)
       if (gear.vest.color !== null) dressVest ??= meshes.map((mesh, index) => createWorkingVest(mesh, restSpaces[index]))
       for (const dress of dressVest ?? []) dress(gear.vest)
     },
     reset() {
-      air = groundCorrection = compression = earFollow = banking = 0
+      air = groundCorrection = compression = earFollow = banking = sit = 0
       idle = 0
     },
     pose({ dt, time, stride, airborne, jumpPhase, sliding, idle: resting, turn, landing, ground, wet = 0,
-      lateralSpeed = 0, retrieve, sinceRetrieve = Infinity, gait = 'idle' }) {
+      lateralSpeed = 0, retrieve, sinceRetrieve = Infinity, gait = 'idle', sit: sitting = false, kennel = false, speed = 11 }) {
       const blend = -Math.expm1(-15 * dt)
       idle += (Number(resting) - idle) * blend
       air += (Number(airborne) - air) * -Math.expm1(-34 * dt)
+      sit += (Number(kennel && sitting && resting) - sit) * -Math.expm1(-5.5 * dt)
       const low = sliding
       compression = Math.max(landing, compression * Math.exp(-18 * dt))
       const grounded = (1 - idle) * (1 - air)
@@ -158,13 +168,20 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
       weights[2] = (1 - idle) * air
       weights[3] = grounded * low
 
-      const alert = idle * (.12 + .31 * Math.max(0, Math.sin(time * .33)))
+      const alert = idle * (.13 + (.34 - .22 * sit) * Math.max(0, Math.sin(time * .40)))
+      const phase = stride / oneTurn
+      const effort = T.MathUtils.clamp((speed - 11) / 9, 0, 1)
+      const gather = Math.sin(stride - 1.1)
+      const breath = idle * Math.sin(time * 2.13 + .23 * Math.sin(time * .36))
+      const driving = grounded * (1 - low)
       const walk = gait === 'walk' ? idle : 0
       action(animations.Idle, time / animations.Idle.getClip().duration % 1, Math.max(0, weights[0] - alert - walk))
       action(animations.Alert, time / animations.Alert.getClip().duration % 1, Math.max(0, alert - walk))
       action(animations.Walk, time / animations.Walk.getClip().duration % 1, walk)
       const recovery = Math.min(weights[1] * .28, compression * .24)
-      action(animations.Gallop, stride / oneTurn % 1, weights[1] - recovery)
+      // A modest phase bias gives the planted part of the gallop more
+      // time while keeping the footstep cadence and simulation untouched.
+      action(animations.Gallop, (phase + .018 * gather + 1) % 1, weights[1] - recovery)
       action(animations.Land, 1 - Math.min(.97, compression), recovery)
       action(animations.Fail, .1, 0)
       action(animations.Jump, jumpPhase, weights[2])
@@ -184,16 +201,17 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
 
       // The outer player group stays at terrain plus jump height. Only skeletal
       // joints lower into the crouch, and the rig child may receive upward support.
-      body.position.y -= low * .88 + compression * .065
+      body.position.y += breath * .012 - low * .88 - compression * .065 - .47 * sit
       const takeoff = Math.sin(2 * Math.PI * jumpPhase)
       const jumpPitch = -.127 * air * takeoff
       const gaitNod = Math.sin(stride * 2 - .96) * grounded * (1 - low) * .022
-      body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105 + jumpPitch))
+      body.quaternion.premultiply(lean.setFromAxisAngle(pitchAxis, low * .105 + jumpPitch - .26 * sit + (.028 + .026 * effort) * gather * driving))
       body.quaternion.premultiply(lean.setFromAxisAngle(bankAxis, banking))
-      head.quaternion.multiply(lean.setFromAxisAngle(up, -turn * .08 + (resting ? .07 * Math.sin(time * .8) : 0)))
-      if (breed === 'boyd' && resting)
-        head.quaternion.multiply(lean.setFromAxisAngle(bankAxis, .043 * Math.sin(time * .54) * idle))
-      head.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, compression * .049 - .047 * air * takeoff + gaitNod))
+      head.quaternion.multiply(lean.setFromAxisAngle(up, -turn * .10 + idle * (.073 * Math.sin(time * .71) +
+          (kennel ? .102 * Math.sin(time * .23 + .6) : 0))))
+      if (resting && (kennel || breed === 'boyd'))
+        head.quaternion.multiply(lean.setFromAxisAngle(bankAxis, .050 * Math.sin(time * .54) * idle))
+      head.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, compression * .049 - .047 * air * takeoff + gaitNod + .13 * sit - .021 * breath))
       const reaching = !resting && sinceRetrieve < .31 ? Math.sin(Math.PI * Math.max(0, sinceRetrieve) / .31) : 0
       head.quaternion.multiply(lean.setFromAxisAngle(headPitch, reaching * .28 * (1 - .82 * Math.max(low, air))))
       for (const [species, bird] of carry) {
@@ -213,9 +231,16 @@ export function createLabradorRig(gltf, breed = 'lab', createPickup) {
         earFollow - turnFold - idle * .022 * Math.sin(time * 1.6)))
       const tailSway = idle * .045 * Math.sin(time * 2.6) + grounded * (1 - low) * (.051 * Math.sin(stride - .7) - .42 * banking)
       secondaryMotion[2].bone.quaternion.multiply(lean.setFromAxisAngle(up, tailSway))
+      secondaryMotion[3].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis,
+        driving * (.041 + .025 * effort) * Math.sin(stride + .32) - sit * .14))
+      secondaryMotion[4].bone.quaternion.multiply(lean.setFromAxisAngle(up,
+        banking * -.24 + driving * .024 * Math.sin(stride + .4)))
+      secondaryMotion[5].bone.quaternion.multiply(lean.setFromAxisAngle(pitchAxis, sit * -.13))
+      bandana.pose(time, stride, driving, banking)
       root.position.y = restingFloor
       root.updateMatrixWorld(true)
       if (low > .001) planting.solve(low, ground)
+      else if (sit > .001) planting.solve(sit, ground)
       else if (!airborne && !resting && compression > .16) planting.solve(compression * .48, ground, true)
       const correction = planting.support(ground + (low > .001 ? .030 : .014))
       groundCorrection = Math.max(correction, groundCorrection * Math.exp(-25 * dt))

@@ -66,6 +66,26 @@ for (let i = 0; i < positions.length; i += 3) {
   positions[i + 2] = z + muzzle * (pointer ? .23 : -.015)
   if (pointer && z < -1.54) positions[i + 2] += (-1.54 - z) * .71 * tail
   else if (!pointer && z < -1.56) positions[i] *= 1 + .17 * tail
+  if (breed === 'lab') {
+    // Field-line Labrador anatomy. Keep all skin weights, joints and UVs.
+    // More pectoral mass behind the shoulders, a short tuck into the loin,
+    // and a smoother transition from skull and cheek into a broad muzzle.
+    const shape = (center, width, value) => Math.exp(-(((value - center) / width) ** 2))
+    const skull = shape(1.87,.34,z)*smoothstep(2.09,2.42,y)
+    const cheek = shape(1.98,.31,z)*shape(2.20,.22,y)
+    const jaw = shape(2.20,.29,z)*shape(2.10,.15,y)
+    const front = shape(.78,.43,z)*shape(1.52,.45,y)
+    const haunch = shape(-.88,.37,z)*shape(1.13,.39,y)
+    const throat = shape(1.35,.38,z)*shape(1.78,.30,y)
+    const wrist = (1-smoothstep(.17,.38,y))*shape(.75,.42,z)
+    const tailBase = shape(-1.78,.36,z)*smoothstep(.95,1.38,y)
+    const tailTip = 1-smoothstep(-2.28,-1.88,z)
+    positions[i] *= 1 + .068*skull + .062*cheek + .026*jaw + .105*front +
+      .084*haunch + .038*throat + .04*wrist + .19*tailBase - .079*tailTip - .041*ear
+    positions[i+1] += .061*front + .035*haunch + .055*skull - .033*jaw -
+      .083*ear*(1-smoothstep(2.41,2.65,y)) + .046*tailBase
+    positions[i+2] -= .061*muzzle + .027*cheek - .027*wrist
+  }
   if (breed === 'boyd') {
     // Fit the narrower working head, rounded stop, folded ears and lean flank
     // in bind coordinates. Preserve the joint positions and the stride clips.
@@ -110,7 +130,7 @@ primitive.setAttribute('NORMAL', art.createAccessor('Smoothed coat normals', buf
 for (const texture of root.listTextures()) {
   const size = breed === 'boyd' ? 2048 : 1536
   texture.setImage(await sharp(texture.getImage()).resize(size, size)
-    .jpeg({ quality: breed === 'boyd' ? 92 : 91, mozjpeg: true }).toBuffer())
+    .jpeg({ quality: breed === 'pointer' ? 91 : 92, mozjpeg: true }).toBuffer())
 }
 
 const selected = new Map([['Idle', 'Idle'], ['Gallop', 'Gallop'], ['Gallop_Jump', 'Jump'], ['Idle_2_HeadLow', 'Low'], ['Idle_2', 'Alert'], ['Walk', 'Walk'],
@@ -158,7 +178,7 @@ for (const source of motion.getRoot().listAnimations()) {
   }
 }
 await MeshoptSimplifier.ready
-await art.transform(dedup(), weld(), simplify({ simplifier: MeshoptSimplifier, ratio: breed === 'boyd' ? .65 : .43, error: .012 }),
+await art.transform(dedup(), weld(), simplify({ simplifier: MeshoptSimplifier, ratio: breed === 'boyd' ? .65 : breed === 'lab' ? .47 : .43, error: .012 }),
   prune(), quantize({ quantizePosition: 14, quantizeNormal: 10, quantizeTexcoord: 13, quantizeWeight: 8 }), meshopt({ encoder: MeshoptEncoder, level: 'medium' }))
 console.log('triangles', root.listMeshes()[0].listPrimitives()[0].getIndices().getCount() / 3)
 await io.write('src/assets/' + (breed === 'lab' ? 'labrador' : breed) + '.glb', art)

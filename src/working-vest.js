@@ -9,7 +9,7 @@ function pattern({ x, y, z }) {
   const neckline = 1.08 + .66 * (1 - smooth(y, 1.80, 2.22)) - .22 * smooth(side, .15, .59)
   const tailEdge = -.90 + .22 * (1 - smooth(y, 1.35, 2.05))
   const armhole = Math.hypot((z - 1.00) / .58, (y - 1.11) / .61) - 1
-  return Math.min(z - tailEdge, neckline - z, y - 1.0, Math.max(.22 - side, .46 * armhole))
+  return Math.min(z - tailEdge, neckline - z, y - (1.0 + .061 * smooth(side, .18, .49)), Math.max(.20 - side, .46 * armhole))
 }
 
 function blendInfluences(a, b, t) {
@@ -67,7 +67,7 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
     if (!inner) exterior.set(vertex, index)
     const dorsalClosure = Math.exp(-Math.abs(rest.x) * 60) * smooth(rest.y, 1.85, 2.15)
     const rolledEdge = .005 * (1 - smooth(edge, 0, .052))
-    const pad = .005 * smooth(rest.y, 1.20, 1.65) * (1 - smooth(rest.y, 1.93, 2.18))
+    const pad = .012 * smooth(rest.y, 1.06, 1.45) * (1 - smooth(rest.y, 1.93, 2.18))
     const thickness = inner ? .003 : .013 + rolledEdge + pad + .007 * dorsalClosure
     locations.push(point.x + n.x * thickness, point.y + n.y * thickness, point.z + n.z * thickness)
     normals.push(n.x, n.y, n.z)
@@ -121,19 +121,22 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
 
   const material = new T.MeshStandardMaterial({ roughness: .88 })
   const coarseWeave = { value: .6 }
+  const textile = { value: 0 }
   const panel = { value: new T.Color() }
   const binding = { value: new T.Color() }
   material.onBeforeCompile = shader => {
-    Object.assign(shader.uniforms, { vestPanel: panel, vestBinding: binding, vestWeave: coarseWeave })
+    Object.assign(shader.uniforms, { vestPanel: panel, vestBinding: binding, vestWeave: coarseWeave, vestTextile: textile })
     shader.vertexShader = 'attribute vec4 fitRest; varying vec4 vestCut;\n' + shader.vertexShader
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvestCut = fitRest;')
-    shader.fragmentShader = 'varying vec4 vestCut; uniform vec3 vestPanel, vestBinding; uniform float vestWeave;\n' + shader.fragmentShader
+    shader.fragmentShader = 'varying vec4 vestCut; uniform vec3 vestPanel, vestBinding; uniform float vestWeave, vestTextile;\n' + shader.fragmentShader
       .replace('#include <color_fragment>', `#include <color_fragment>
         float side = abs(vestCut.x);
         float y = vestCut.y;
         float z = vestCut.z;
         float hem = 1.0 - smoothstep(.02, .045, vestCut.w);
-        float panelLine = y - 1.56 - .14 * z - .12 * cos(z * 2.4);
+        float panelLine = y - 1.48 - .14 * z - .13 * cos(z * 2.4);
+        float chestSeam = (y - 1.36) * .48 + z - .52 + .24*side;
+        float chestEdge = (1. - smoothstep(.006,.022,abs(chestSeam))) * (1. - smoothstep(1.67,1.83,y));
         float seam = 1.0 - smoothstep(.008, .025, abs(panelLine));
         float stitch = smoothstep(-.18, .20, sin(z * 156.0)) *
           (1.0 - smoothstep(.003, .009, abs(panelLine + .030)));
@@ -151,14 +154,19 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
         float weave = mix(warp*weft,sign(warp)*weft,vestWeave) * grainFade;
         float phase = sin(z * 136. + y * 103. + side * 88.);
         float boundStitch = (1. - smoothstep(.004,.013,abs(vestCut.w - .045))) * smoothstep(.1,.61,phase) * grainFade;
-        vec3 cloth = mix(vestPanel, diffuseColor.rgb, smoothstep(-.012,.012,panelLine));
+        float frontPanel = smoothstep(-.013,.013,chestSeam)*(1. - smoothstep(1.58,1.75,y));
+        vec3 cloth = mix(vestPanel*.77,diffuseColor.rgb,smoothstep(-.032,.018,panelLine));
+        cloth = mix(cloth,vestPanel*.69,.72*frontPanel);
+        float wax = sin(z*8.+side*5.) * sin(y*12.-z*7.);
+        cloth *= 1. + vestTextile*.044*wax;
+        cloth = mix(cloth,vestBinding,.39*chestEdge);
         cloth = mix(cloth, vestBinding, max(hem,max(seam*.49,webbing*.84)));
         cloth = mix(cloth, vestBinding*1.56 + vec3(.024,.018,.010), max(rail*.61,keeper*.81));
         float teeth = smoothstep(-.3,.65,sin(z*183.)) * zipper * grainFade;
         float bartack = max(1. - smoothstep(.011,.024,abs(z + .43)),1. - smoothstep(.011,.024,abs(z - .49))) *
           (1. - smoothstep(.03,.055,side)) * dorsal;
         float tabThread = grainFade * smoothstep(-.12,.51,sin(side*410.)) * bartack;
-        cloth += (.023*teeth + .035*stitch + boundStitch*.029 + tabThread*.036);
+        cloth += (.023*teeth + .018*chestEdge*grainFade + .035*stitch + boundStitch*.029 + tabThread*.036);
         float fastener = max(slider,loop*.85);
         cloth = mix(cloth,vec3(.34,.24,.129),fastener);
         diffuseColor.rgb = cloth * (1. + (.12 - vestWeave*.033)*weave);
@@ -176,7 +184,7 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
         }
       `)
   }
-  const decorate = tintFieldPattern(material, 'fitRest.xyz')
+  const decorate = tintFieldPattern(material, 'fitRest.xyz', 'vest')
   const mesh = new T.SkinnedMesh(geometry, material)
   mesh.name = 'WorkingDogVest'
   mesh.frustumCulled = false
@@ -190,9 +198,12 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
     if (!mesh.visible) return
     decorate(style)
     material.color.setHex(style.color)
-    material.roughness = style.rough
-    coarseWeave.value = T.MathUtils.clamp((style.rough - .68) * 4, 0, 1)
-    panel.value.setHex(style.panel)
-    binding.value.setHex(style.binding)
+    const neoprene = style.id.endsWith('-water-vest')
+    const waxed = style.id.endsWith('-heritage-vest') || style.id === 'seasoned-vest'
+    material.roughness = neoprene ? .77 : waxed ? .73 : style.rough ?? .88
+    textile.value = waxed ? 1 : 0
+    coarseWeave.value = neoprene ? .13 : waxed ? .81 : .96
+    panel.value.setHex(style.panel ?? style.color)
+    binding.value.setHex(style.binding ?? style.color)
   }
 }

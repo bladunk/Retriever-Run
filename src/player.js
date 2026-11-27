@@ -20,7 +20,7 @@ export function createPlayer(scene, breed = 'lab', createPickup, kit, maySwap = 
   const inspection = kit !== undefined
 
   function appearance() {
-    const gear = inspection && active === 'boyd' ? boydAppearance(kit) : gearAppearance(equipment)
+    const gear = inspection && active === 'boyd' && kit !== 'studio' ? boydAppearance(kit) : gearAppearance(equipment)
     if (active === 'boyd') gear.coat = boydAppearance().coat
     fallback.appearance(gear)
     rig?.appearance(gear)

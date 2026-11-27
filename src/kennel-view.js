@@ -26,7 +26,7 @@ export function createKennelView() {
   room.add(sky, key, rim, floor)
   const orbit = new T.PerspectiveCamera(32, 1, .1, 25)
   const pose = { x: 0, z: 0, height: 0, ground: 0, heading: 0, turn: 0, stride: 0, sliding: 0,
-    airborne: false, jumpPhase: 1, idle: true, landing: 0, time: 0, dt: 0 }
+    airborne: false, jumpPhase: 1, idle: true, kennel: true, landing: 0, time: 0, dt: 0 }
   let previous = -Infinity
   let angle = 1.06
   let targetAngle = angle
@@ -34,6 +34,7 @@ export function createKennelView() {
   let touchX
   let stage
   let framing
+  let buttonAngle
 
   function rotate(event) {
     if (event.pointerId !== pointer) return
@@ -42,6 +43,7 @@ export function createKennelView() {
   }
   function start(event) {
     if (!event.isPrimary || event.button !== 0) return
+    delete stage.dataset.yaw
     pointer = event.pointerId
     touchX = event.clientX
     stage.setPointerCapture(pointer)
@@ -50,6 +52,7 @@ export function createKennelView() {
   function onKey(event) {
     if (!['ArrowRight', 'ArrowLeft'].includes(event.key)) return
     event.preventDefault()
+    delete stage.dataset.yaw
     targetAngle += (event.key === 'ArrowRight' ? 1 : -1) * Math.PI / 6
   }
 
@@ -68,6 +71,7 @@ export function createKennelView() {
     attach(target) {
       if (stage) bind(stage, 'removeEventListener')
       stop()
+      buttonAngle = undefined
       stage = target
       if (stage) bind(stage, 'addEventListener')
     },
@@ -84,8 +88,16 @@ export function createKennelView() {
       previous = ms
       pose.time += reduced ? 0 : dt
       pose.dt = dt
+      pose.sit = stage?.dataset.sit === 'true'
+      if (stage?.dataset.yaw !== buttonAngle) {
+        buttonAngle = stage?.dataset.yaw
+        if (buttonAngle !== undefined) {
+          const heading = Number(buttonAngle) - targetAngle
+          targetAngle += Math.atan2(Math.sin(heading), Math.cos(heading))
+        }
+      }
       angle += (targetAngle - angle) * (reduced ? 1 : -Math.expm1(-13 * dt))
-      const radius = framing?.distance ?? Math.max(3.5, 6.05 / Math.max(.81, orbit.aspect))
+      const radius = framing?.distance ?? Math.max(3.7, 4.25 / Math.max(.78, orbit.aspect))
       const lateral = framing?.lateral ?? 0
       orbit.position.set(Math.sin(angle) * radius, framing?.height ?? 1.51, -Math.cos(angle) * radius + lateral)
       orbit.lookAt(0, framing?.focus ?? .78, -.11 + lateral)
