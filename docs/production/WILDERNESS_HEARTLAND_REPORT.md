@@ -22,7 +22,7 @@ The old puddle used a nearly flat ellipse and a separate soil decal at a fixed h
 
 The new pooled mesh follows the curved trail in each occupied lane. Its water resolves the union of the three collision boxes, with a narrow antialiased transition at the edge. An irregular damp-earth margin is explicitly outside the dangerous water. Silt and a restrained sky reflection distinguish it from dry or merely rain-darkened ground. Near-lane decorative stones follow the actual trail level. Larger stems and rocks have an off-lane setback. The existing camera, obstacle visibility range, fog and depth testing remain in use.
 
-The geometry test raycasts against actual tile triangles at the three lanes of each of the 15 territories. Readability evidence uses the normal chase camera. It includes a fixed-distance approach with the latest safe jump calculated using the same 120 Hz motion and collision code. This calculates the opportunity after the pictured frame for an isolated puddle. It does not measure a person's time to recognize every legal course combination.
+The geometry test raycasts against actual tile triangles at the three lanes of each of the 15 territories. WebKit rendered all 15 actual seeded puddles from 19 m at Balanced, across sunrise, overcast, fog, rain, wind, sleet and snow. At those frames the collision fixture allowed 0.60–1.20 s before the latest safe jump, above the course's 0.42 s reaction allowance. This measures the remaining time for an isolated puddle using the same 120 Hz motion and collision code. A human recognition threshold and mixed-hazard reaction time remain iPhone review items. The separate heavy-rain Studio fixture exercised Battery Saver and High. [Hazard approach gallery](evidence/heartland/REVIEW.md#occlusion-and-rain) · [Sweep timings](evidence/heartland/puddles.json)
 
 The permanent charter standard requires a moving camera review across presets and weather, a readable lane and intended escape, visual correspondence with swept bounds, and sufficient time before the last safe input. The existing course reaction allowance is 0.42 s, with additional setup where the maneuver needs it. The broader audit treats fences, logs, roots and driftwood as low silhouettes, branches and supported trunks as slide clearance, rocks and fallen trees as shape-dependent routes, and tall trunks, tractors, snowmobiles and geese as lane-exclusion cases. Creeks and longitudinal washouts keep their established cues. Puddle rendering is the visual correction in this PR. Recognition of every other course combination under native fog, rain and high speed remains an acceptance task. [Permanent standard](PLAYER_FIRST_CHARTER.md#obstacle-readability)
 
@@ -49,6 +49,38 @@ Seed 7. Balanced. Chromium's software renderer at 320 × 568 CSS pixels with a 4
 | Northern Dakota | 57 → 63 | 119,948 → 135,331 | 20 → 16 | 55 → 53 | 21 → 21 |
 
 The farm has the biggest addition at this camera, approximately 24% more triangles. It includes the rim vegetation, more standing crop and the farther grounded farm structures. Texture and geometry counts changed in both directions as the selected scenery changed. These captures cannot establish physical frame pacing or GPU memory. [15 matched gameplay comparisons](evidence/heartland/REVIEW.md) · [Frame data](evidence/heartland/matched-frames.json)
+
+### Startup and first scene submission
+
+This paired SwiftShader run used the same small viewport, DPR 2, seed generator and verified production startup path on a shared host.
+
+| Launch | Ready RC.3.1 → RC.4 | Hunt input to first submission | CPU time in first render |
+| --- | ---: | ---: | ---: |
+| Fresh install | 16,787 → 17,013 ms | 864 → 530 ms | 295 → 295 ms |
+| Cached offline reload | 15,713 → 16,122 ms | 357 → 580 ms | 58 → 507 ms |
+
+The cached RC.4 sample had a 4,835 ms first reported presentation interval during concurrent software rendering checks. It also first submitted ten geometries and three program variants, compared with five and one in the cached baseline. The sample is retained. This comparison raises a cached-launch question and gives no sound estimate of the change on iPhone. Check cold, warm and offline first hunts under comparable native conditions. [Startup phases and slow-frame observations](evidence/heartland/startup.json)
+
+### Matched offline motion and replay
+
+The paired Chromium runs started at 180 simulated seconds and continued to 225.14 using the same 40 inputs on the 120 Hz clock. They traversed the Platte and crossed into the Sandhills. Balanced graphics stayed fixed. A reduced 0.32 emulated pixel ratio and the accelerated test clock kept these passes within the software-rendering budget. Presentation timing under this clock is synthetic.
+
+| Observed metric | RC.3.1 | RC.4 |
+| --- | ---: | ---: |
+| Resident terrain tiles | 7 | 7 |
+| Peak regional packs | 2 | 0 |
+| Peak textures | 20 | 20 |
+| Peak geometries | 86 | 87 |
+| Peak draw calls | 74 | 76 |
+| Peak submitted triangles | 142,803 | 175,703 |
+| End-of-run programs | 27 | 26 |
+| Average software CPU frame work over 210 samples | 145.75 ms | 122.71 ms |
+| Worst software CPU frame work | 8,425 ms | 4,584 ms |
+| Worst measured tile integration slice | 9.1 ms | 42.4 ms |
+
+These were individual software runs with concurrent checks and substantial outliers. The large tile slice warrants a look in the native trace. Six equivalent offline Battery Saver restarts on RC.4 ended at 44 geometries, 12 textures and seven terrain tiles each, without changing the normal profile fixture. [Moving frame checks and raw samples](evidence/heartland/motion.json) · [Restart cycles](evidence/heartland/restarts.json)
+
+An uninterrupted offline software run reached 120.02 simulated seconds before the long render was stopped for execution time. A separate offline fixture ran from 446 to 461.04 simulated seconds through the final territory and into Endless. It used 20 scripted inputs and peaked at seven tiles, 12 textures and 73 geometries. The initial deep-start fixture briefly had only four tiles past its two-second lookahead deadline. The settled fixture waited for the relocated tiles before releasing its clock. The initial and settled samples remain available. [Endless capture](evidence/heartland/endless-approach.webp) · [Settled run](evidence/heartland/endless-approach.json) · [Direct relocation trace](evidence/heartland/endless-relocation.json)
 
 ## Regression results
 

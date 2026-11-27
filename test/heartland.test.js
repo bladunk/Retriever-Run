@@ -12,6 +12,8 @@ test('puddle uses the collision footprint with a non-colliding damp margin', () 
   const volumes = obstacleVolumes({ type:'puddle' })
   assert.deepEqual(puddleWidths.toArray(),volumes.map(volume=>volume.hx))
   assert.deepEqual(puddleLengths.toArray(),volumes.map(volume=>volume.hz))
+  assert.equal(puddleWidths.x, Math.max(...puddleWidths.toArray()))
+  assert.equal(puddleLengths.z, Math.max(...puddleLengths.toArray()))
   const surface = createPuddleSurface()
   const { position, marshDepth } = surface.geometry.attributes
   assert.ok(marshDepth.array.every(value=>value===3))

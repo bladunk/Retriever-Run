@@ -1,0 +1,1328 @@
+{
+  "engine": "chromium",
+  "samples": [
+    {
+      "version": "before",
+      "launch": "fresh installation",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "startup": {
+        "shellMs": 260.2,
+        "workerRequestMs": 262.4,
+        "workerReadyMs": 393.9,
+        "manifestReadyMs": 417.8,
+        "verificationStartMs": 451.3,
+        "verificationReadyMs": null,
+        "verificationMissingMs": 566.8,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 77.3,
+        "moduleRequestMs": 9175,
+        "moduleMs": 9585.1,
+        "rendererReadyMs": 10064.6,
+        "firstSceneSubmitMs": 11559,
+        "readyMs": 16787.3,
+        "opener": [
+          {
+            "at": 11559,
+            "durationMs": 1269.1,
+            "geometries": 14,
+            "textures": 6,
+            "programs": 9
+          },
+          {
+            "at": 14760.8,
+            "durationMs": 2467.7,
+            "geometries": 17,
+            "textures": 12,
+            "programs": 11
+          },
+          {
+            "at": 16292.7,
+            "durationMs": 896.1,
+            "geometries": 23,
+            "textures": 13,
+            "programs": 15
+          },
+          {
+            "at": 16782.5,
+            "durationMs": 6.8,
+            "geometries": 27,
+            "textures": 14,
+            "programs": 15
+          },
+          {
+            "at": 16789.2,
+            "durationMs": 1,
+            "geometries": 27,
+            "textures": 14,
+            "programs": 15
+          },
+          {
+            "at": 17505.6,
+            "durationMs": 2.5,
+            "geometries": 31,
+            "textures": 15,
+            "programs": 15
+          }
+        ]
+      },
+      "restart": {
+        "inputAt": 17511.19999998808,
+        "handlerAt": 17515.69999998808,
+        "before": {
+          "geometries": 31,
+          "textures": 15,
+          "programs": 15
+        },
+        "firstFrameSubmittedMs": 863.9,
+        "firstFrameCpuMs": 303.7,
+        "firstRenderMs": 294.6,
+        "after": {
+          "geometries": 36,
+          "textures": 16,
+          "programs": 17
+        },
+        "firstOperations": [
+          {
+            "at": 17988.100000023842,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 435.9
+          },
+          {
+            "at": 18000.899999976158,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 18073.399999976158,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0.3
+          },
+          {
+            "at": 18073.5,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 18073.5,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 18080.5,
+            "hunt": 1,
+            "name": "texture-upload",
+            "detail": "Habitat / ferns / fern_02_nor_gl"
+          },
+          {
+            "at": 18080.5,
+            "hunt": 1,
+            "name": "texture-preparation",
+            "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+            "durationMs": 4.6
+          }
+        ],
+        "nextAnimationCallbackMs": 877.8,
+        "firstPresentationIntervalMs": 24.2
+      },
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "capabilities": {
+        "longTasks": true,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "ready": 16787.30000001192,
+      "observations": [
+        {
+          "at": 18375.100000023842,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": null,
+          "cpuMs": 303.7,
+          "renderMs": 294.6,
+          "draws": 46,
+          "triangles": 130623,
+          "textures": 16,
+          "geometries": 36,
+          "programs": 17,
+          "textureDelta": 0,
+          "geometryDelta": 5,
+          "programDelta": 2,
+          "operations": [
+            {
+              "at": 18073.399999976158,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 0.3
+            },
+            {
+              "at": 18073.5,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 18073.5,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 18080.5,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_nor_gl"
+            },
+            {
+              "at": 18080.5,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+              "durationMs": 4.6
+            },
+            {
+              "at": 18375.399999976158,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 18387.100000023842,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "instruments",
+              "durationMs": 386.2
+            },
+            {
+              "at": 18394.899999976158,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_rough"
+            },
+            {
+              "at": 18394.899999976158,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_rough",
+              "durationMs": 2.3
+            },
+            {
+              "at": 18411.399999976158,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "Habitat / ferns"
+            }
+          ]
+        },
+        {
+          "at": 26505.899999976158,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": 8106.6,
+          "cpuMs": 8100,
+          "renderMs": 1.4,
+          "draws": 44,
+          "triangles": 127819,
+          "textures": 18,
+          "geometries": 37,
+          "programs": 18,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 18411.399999976158,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "Habitat / ferns"
+            },
+            {
+              "at": 26504.30000001192,
+              "hunt": 1,
+              "name": "geometry-preparation",
+              "detail": "Habitat / Fern 02",
+              "durationMs": 8094.5
+            },
+            {
+              "at": 26510,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "goose"
+            },
+            {
+              "at": 26570.80000001192,
+              "hunt": 1,
+              "name": "shader-initialize",
+              "detail": "Habitat / ferns / fern_02"
+            },
+            {
+              "at": 26580,
+              "hunt": 1,
+              "name": "shader-initialize",
+              "detail": "Opening / IcosahedronGeometry / MeshBasicMaterial"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "launch": "cached offline launch",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "startup": {
+        "shellMs": 8513.3,
+        "workerRequestMs": 8513.6,
+        "workerReadyMs": 8597.8,
+        "manifestReadyMs": 8670.7,
+        "verificationStartMs": 8671.5,
+        "verificationReadyMs": 9084.1,
+        "verificationMissingMs": null,
+        "controlled": true,
+        "navigationType": "reload",
+        "responseStartMs": 15.7,
+        "moduleRequestMs": 9084.4,
+        "moduleMs": 9324,
+        "rendererReadyMs": 9507.5,
+        "firstSceneSubmitMs": 10177.8,
+        "readyMs": 15712.7,
+        "opener": [
+          {
+            "at": 10177.8,
+            "durationMs": 486.1,
+            "geometries": 14,
+            "textures": 6,
+            "programs": 9
+          },
+          {
+            "at": 12414,
+            "durationMs": 1300.2,
+            "geometries": 14,
+            "textures": 10,
+            "programs": 9
+          },
+          {
+            "at": 13120.8,
+            "durationMs": 144.3,
+            "geometries": 17,
+            "textures": 12,
+            "programs": 11
+          },
+          {
+            "at": 14965.3,
+            "durationMs": 1052,
+            "geometries": 23,
+            "textures": 13,
+            "programs": 15
+          },
+          {
+            "at": 15709.8,
+            "durationMs": 9.1,
+            "geometries": 27,
+            "textures": 14,
+            "programs": 15
+          },
+          {
+            "at": 15719.4,
+            "durationMs": 2.1,
+            "geometries": 27,
+            "textures": 14,
+            "programs": 15
+          }
+        ]
+      },
+      "restart": {
+        "inputAt": 16123.400000035763,
+        "handlerAt": 16128.100000023842,
+        "before": {
+          "geometries": 27,
+          "textures": 14,
+          "programs": 15
+        },
+        "firstFrameSubmittedMs": 356.8,
+        "firstFrameCpuMs": 80.9,
+        "firstRenderMs": 57.6,
+        "after": {
+          "geometries": 32,
+          "textures": 15,
+          "programs": 16
+        },
+        "firstOperations": [
+          {
+            "at": 16176.600000023842,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 5.9
+          },
+          {
+            "at": 16188.300000011921,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 16381.400000035763,
+            "hunt": 1,
+            "name": "habitat-ready",
+            "detail": "ferns",
+            "durationMs": 356.5
+          },
+          {
+            "at": 16400.700000047684,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0.4
+          },
+          {
+            "at": 16400.700000047684,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 16400.700000047684,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 16416.600000023842,
+            "hunt": 1,
+            "name": "texture-upload",
+            "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+          },
+          {
+            "at": 16416.80000001192,
+            "hunt": 1,
+            "name": "texture-preparation",
+            "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+            "durationMs": 8.7
+          }
+        ],
+        "nextAnimationCallbackMs": 379.1,
+        "firstPresentationIntervalMs": 42.3
+      },
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "capabilities": {
+        "longTasks": true,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "ready": 15712.700000047684,
+      "observations": [
+        {
+          "at": 16480.200000047684,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": null,
+          "cpuMs": 80.9,
+          "renderMs": 57.6,
+          "draws": 39,
+          "triangles": 93019,
+          "textures": 15,
+          "geometries": 32,
+          "programs": 16,
+          "textureDelta": 0,
+          "geometryDelta": 5,
+          "programDelta": 1,
+          "operations": [
+            {
+              "at": 16480.30000001192,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 16497.5,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "instruments",
+              "durationMs": 309.2
+            },
+            {
+              "at": 16497.5,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "goose"
+            },
+            {
+              "at": 16504.900000035763,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 1,
+              "durationMs": 0.2
+            },
+            {
+              "at": 16515.400000035763,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_nor_gl"
+            },
+            {
+              "at": 16515.400000035763,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+              "durationMs": 10.1
+            },
+            {
+              "at": 16515.80000001192,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / ground / 1"
+            },
+            {
+              "at": 16515.900000035763,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / water / 1"
+            },
+            {
+              "at": 16515.900000035763,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / detail / 1"
+            },
+            {
+              "at": 16516.100000023842,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / 1"
+            },
+            {
+              "at": 16563.900000035763,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "goose",
+              "durationMs": 66.4
+            },
+            {
+              "at": 16563.900000035763,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "mallard"
+            }
+          ]
+        },
+        {
+          "at": 16522.5,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": 42.3,
+          "cpuMs": 20,
+          "renderMs": 7.1,
+          "draws": 44,
+          "triangles": 129569,
+          "textures": 16,
+          "geometries": 36,
+          "programs": 16,
+          "textureDelta": 0,
+          "geometryDelta": 4,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 16480.30000001192,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 16497.5,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "instruments",
+              "durationMs": 309.2
+            },
+            {
+              "at": 16497.5,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "goose"
+            },
+            {
+              "at": 16504.900000035763,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 1,
+              "durationMs": 0.2
+            },
+            {
+              "at": 16515.400000035763,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_nor_gl"
+            },
+            {
+              "at": 16515.400000035763,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+              "durationMs": 10.1
+            },
+            {
+              "at": 16515.80000001192,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / ground / 1"
+            },
+            {
+              "at": 16515.900000035763,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / water / 1"
+            },
+            {
+              "at": 16515.900000035763,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / detail / 1"
+            },
+            {
+              "at": 16516.100000023842,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / 1"
+            },
+            {
+              "at": 16563.900000035763,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "goose",
+              "durationMs": 66.4
+            },
+            {
+              "at": 16563.900000035763,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "mallard"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "launch": "fresh installation",
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "startup": {
+        "shellMs": 141.2,
+        "workerRequestMs": 144.7,
+        "workerReadyMs": 328.8,
+        "manifestReadyMs": 351,
+        "verificationStartMs": 352,
+        "verificationReadyMs": null,
+        "verificationMissingMs": 728.7,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 23.3,
+        "moduleRequestMs": 8730.8,
+        "moduleMs": 9097.2,
+        "rendererReadyMs": 9200.4,
+        "firstSceneSubmitMs": 10813.4,
+        "readyMs": 17012.9,
+        "opener": [
+          {
+            "at": 10813.3,
+            "durationMs": 1097.6,
+            "geometries": 14,
+            "textures": 6,
+            "programs": 9
+          },
+          {
+            "at": 14824.9,
+            "durationMs": 2307.9,
+            "geometries": 17,
+            "textures": 12,
+            "programs": 11
+          },
+          {
+            "at": 16429.1,
+            "durationMs": 604.1,
+            "geometries": 23,
+            "textures": 13,
+            "programs": 15
+          },
+          {
+            "at": 17012,
+            "durationMs": 14.9,
+            "geometries": 27,
+            "textures": 15,
+            "programs": 15
+          },
+          {
+            "at": 17022.2,
+            "durationMs": 4.6,
+            "geometries": 27,
+            "textures": 15,
+            "programs": 15
+          }
+        ]
+      },
+      "restart": {
+        "inputAt": 17815.80000001192,
+        "handlerAt": 17817.599999964237,
+        "before": {
+          "geometries": 27,
+          "textures": 16,
+          "programs": 15
+        },
+        "firstFrameSubmittedMs": 530,
+        "firstFrameCpuMs": 312.4,
+        "firstRenderMs": 294.6,
+        "after": {
+          "geometries": 31,
+          "textures": 17,
+          "programs": 16
+        },
+        "firstOperations": [
+          {
+            "at": 17830,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 9.3
+          },
+          {
+            "at": 17895,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 18044,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 9.3
+          },
+          {
+            "at": 18044.099999964237,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 18044.099999964237,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 18051.19999998808,
+            "hunt": 1,
+            "name": "texture-upload",
+            "detail": "Habitat / ferns / fern_02_nor_gl"
+          },
+          {
+            "at": 18051.19999998808,
+            "hunt": 1,
+            "name": "texture-preparation",
+            "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+            "durationMs": 3.7
+          }
+        ],
+        "nextAnimationCallbackMs": 579.7,
+        "firstPresentationIntervalMs": 61.9
+      },
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "capabilities": {
+        "longTasks": true,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "ready": 17012.899999976158,
+      "observations": [
+        {
+          "at": 18345.80000001192,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": null,
+          "cpuMs": 312.4,
+          "renderMs": 294.6,
+          "draws": 38,
+          "triangles": 92457,
+          "textures": 17,
+          "geometries": 31,
+          "programs": 16,
+          "textureDelta": 0,
+          "geometryDelta": 4,
+          "programDelta": 1,
+          "operations": [
+            {
+              "at": 18051.19999998808,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_nor_gl"
+            },
+            {
+              "at": 18051.19999998808,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+              "durationMs": 3.7
+            },
+            {
+              "at": 18346.19999998808,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 18394.399999976158,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "instruments",
+              "durationMs": 499.4
+            },
+            {
+              "at": 18394.5,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "goose"
+            },
+            {
+              "at": 18398.399999976158,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 1,
+              "durationMs": 0.2
+            },
+            {
+              "at": 18402.899999976158,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_rough"
+            },
+            {
+              "at": 18403,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_rough",
+              "durationMs": 3
+            },
+            {
+              "at": 18403.399999976158,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / ground / 1"
+            },
+            {
+              "at": 18403.5,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / water / 1"
+            },
+            {
+              "at": 18406.099999964237,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / detail / 1"
+            },
+            {
+              "at": 18406.19999998808,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / 1"
+            }
+          ]
+        },
+        {
+          "at": 18407.69999998808,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": 61.9,
+          "cpuMs": 12.2,
+          "renderMs": 4.7,
+          "draws": 42,
+          "triangles": 126307,
+          "textures": 18,
+          "geometries": 35,
+          "programs": 16,
+          "textureDelta": 0,
+          "geometryDelta": 4,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 18346.19999998808,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 18394.399999976158,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "instruments",
+              "durationMs": 499.4
+            },
+            {
+              "at": 18394.5,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "goose"
+            },
+            {
+              "at": 18398.399999976158,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 1,
+              "durationMs": 0.2
+            },
+            {
+              "at": 18402.899999976158,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_rough"
+            },
+            {
+              "at": 18403,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_rough",
+              "durationMs": 3
+            },
+            {
+              "at": 18403.399999976158,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / ground / 1"
+            },
+            {
+              "at": 18403.5,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / water / 1"
+            },
+            {
+              "at": 18406.099999964237,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / detail / 1"
+            },
+            {
+              "at": 18406.19999998808,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / 1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "launch": "cached offline launch",
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "startup": {
+        "shellMs": 5335.4,
+        "workerRequestMs": 5338.3,
+        "workerReadyMs": 5398.1,
+        "manifestReadyMs": 5409.9,
+        "verificationStartMs": 5410.1,
+        "verificationReadyMs": 6316.5,
+        "verificationMissingMs": null,
+        "controlled": true,
+        "navigationType": "reload",
+        "responseStartMs": 11.2,
+        "moduleRequestMs": 6316.9,
+        "moduleMs": 6511.6,
+        "rendererReadyMs": 6585,
+        "firstSceneSubmitMs": 8295.5,
+        "readyMs": 16122.4,
+        "opener": [
+          {
+            "at": 8295.4,
+            "durationMs": 1495.6,
+            "geometries": 14,
+            "textures": 6,
+            "programs": 9
+          },
+          {
+            "at": 11247.8,
+            "durationMs": 2915.6,
+            "geometries": 14,
+            "textures": 10,
+            "programs": 9
+          },
+          {
+            "at": 12737.4,
+            "durationMs": 513.7,
+            "geometries": 17,
+            "textures": 12,
+            "programs": 11
+          },
+          {
+            "at": 14698,
+            "durationMs": 964.3,
+            "geometries": 23,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 15898.3,
+            "durationMs": 12.1,
+            "geometries": 27,
+            "textures": 13,
+            "programs": 15
+          },
+          {
+            "at": 16128.5,
+            "durationMs": 5.3,
+            "geometries": 27,
+            "textures": 13,
+            "programs": 15
+          },
+          {
+            "at": 16829.6,
+            "durationMs": 2.7,
+            "geometries": 31,
+            "textures": 13,
+            "programs": 15
+          }
+        ]
+      },
+      "restart": {
+        "inputAt": 17035,
+        "handlerAt": 17037.80000001192,
+        "before": {
+          "geometries": 31,
+          "textures": 15,
+          "programs": 15
+        },
+        "firstFrameSubmittedMs": 579.9,
+        "firstFrameCpuMs": 517.3,
+        "firstRenderMs": 506.8,
+        "after": {
+          "geometries": 41,
+          "textures": 17,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 17044.600000023842,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 6.3
+          },
+          {
+            "at": 17094.600000023842,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 17099.30000001192,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 2,
+            "durationMs": 0.7
+          },
+          {
+            "at": 17101.400000035763,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0.3
+          },
+          {
+            "at": 17101.5,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 17101.5,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 17108,
+            "hunt": 1,
+            "name": "texture-upload",
+            "detail": "Habitat / ferns / fern_02_rough"
+          },
+          {
+            "at": 17108.100000023842,
+            "hunt": 1,
+            "name": "texture-preparation",
+            "detail": "Habitat / Fern 02 / fern_02_rough",
+            "durationMs": 5.3
+          },
+          {
+            "at": 17110.200000047684,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / ground / 2"
+          },
+          {
+            "at": 17110.200000047684,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / water / 2"
+          },
+          {
+            "at": 17110.30000001192,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / detail / 2"
+          },
+          {
+            "at": 17110.400000035763,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 2"
+          }
+        ],
+        "nextAnimationCallbackMs": 706.3,
+        "firstPresentationIntervalMs": 4834.9
+      },
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "capabilities": {
+        "longTasks": true,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "ready": 16122.400000035763,
+      "observations": [
+        {
+          "at": 17614.900000035763,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": null,
+          "cpuMs": 517.3,
+          "renderMs": 506.8,
+          "draws": 50,
+          "triangles": 147290,
+          "textures": 17,
+          "geometries": 41,
+          "programs": 18,
+          "textureDelta": 1,
+          "geometryDelta": 10,
+          "programDelta": 3,
+          "operations": [
+            {
+              "at": 17099.30000001192,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 2,
+              "durationMs": 0.7
+            },
+            {
+              "at": 17101.400000035763,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 0.3
+            },
+            {
+              "at": 17101.5,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 17101.5,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 17108,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_rough"
+            },
+            {
+              "at": 17108.100000023842,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_rough",
+              "durationMs": 5.3
+            },
+            {
+              "at": 17110.200000047684,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / ground / 2"
+            },
+            {
+              "at": 17110.200000047684,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / water / 2"
+            },
+            {
+              "at": 17110.30000001192,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / detail / 2"
+            },
+            {
+              "at": 17110.400000035763,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / 2"
+            },
+            {
+              "at": 17615.100000023842,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 17734.30000001192,
+              "hunt": 1,
+              "name": "terrain-main-thread-build",
+              "detail": 3,
+              "durationMs": 113.5
+            }
+          ]
+        },
+        {
+          "at": 22449.80000001192,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": 4834.9,
+          "cpuMs": 4708.5,
+          "renderMs": 3.2,
+          "draws": 48,
+          "triangles": 144486,
+          "textures": 18,
+          "geometries": 42,
+          "programs": 19,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 17615.100000023842,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 17734.30000001192,
+              "hunt": 1,
+              "name": "terrain-main-thread-build",
+              "detail": 3,
+              "durationMs": 113.5
+            },
+            {
+              "at": 17743.100000023842,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "Habitat / ferns"
+            },
+            {
+              "at": 22446.600000023842,
+              "hunt": 1,
+              "name": "geometry-preparation",
+              "detail": "Habitat / Fern 02",
+              "durationMs": 4704
+            },
+            {
+              "at": 22513.80000001192,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "instruments",
+              "durationMs": 5419.2
+            },
+            {
+              "at": 22525.900000035763,
+              "hunt": 1,
+              "name": "shader-initialize",
+              "detail": "Habitat / ferns / fern_02"
+            },
+            {
+              "at": 22532.5,
+              "hunt": 1,
+              "name": "shader-initialize",
+              "detail": "Opening / IcosahedronGeometry / MeshBasicMaterial"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

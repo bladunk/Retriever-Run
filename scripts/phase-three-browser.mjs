@@ -220,7 +220,7 @@ try {
           if (autoTest && !replay.opener && ticksToInput > 24) {
             stamp += 324
             replay.opener = true
-          } else stamp += Math.min(budget, ticksToInput) * (1000 / 120)
+          } else stamp += Math.max(0,Math.min(budget, ticksToInput, (replay.stopTick ?? Infinity) - state.ticks)) * (1000 / 120)
         } else {
           while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
             window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
@@ -744,6 +744,24 @@ try {
       await runAt(distance,7)
       await capture(label,{seed:7,drawingBuffer:await page.locator('#trail').evaluate(canvas => [canvas.width,canvas.height])})
     }
+  } else if (args.includes('heartland-motion-frames')) {
+    const seed = 7
+    const from = 187
+    const distance = distanceAtTime(from)
+    await openAt(distance,seed)
+    await page.evaluate(({ inputs, from }) => {
+      window.phaseThreeQA.soak = { inputs, duration:from+3, precise:true, ticksPerCallback:15,
+        firstTick:from*120, stopTick:0, next:0, nextSample:Infinity, samples:[] }
+    },{ inputs:guidedInputs(seed,from+2.4,distance), from })
+    await page.locator('#primary').tap()
+    await settle(distance,quality)
+    for (let frame=0;frame<18;frame++) {
+      const stopTick = 25+frame*12
+      await page.evaluate(stop => { window.phaseThreeQA.soak.stopTick = stop },stopTick)
+      await page.waitForFunction(stop => window.retrieverDebug?.mode !== 'running' || window.retrieverDebug.ticks >= stop,
+        stopTick,{timeout:60000})
+      await capture('moving-'+String(frame).padStart(2,'0'),{seed,sceneSeconds:from+stopTick*tickSeconds})
+    }
   } else if (args.includes('puddle-views')) {
     const only = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
     const lookahead = Number(args.find(arg => arg.startsWith('lookahead='))?.slice(10) ?? 19)
@@ -758,9 +776,11 @@ try {
       await runAt(distance,seed)
       const state = await page.evaluate(() => window.retrieverDebug)
       assert.ok(state.hazards.some(hazard=>hazard.type === 'puddle' && hazard.distance === entity.distance && hazard.lane === entity.lane))
+      const reaction = puddleReaction(entity,state)
+      assert.ok(reaction.lastSafeJumpSeconds >= reactionWindow, region.key + ' approach reaction allowance')
       await capture('puddle-'+region.key,{ seed, puddle:entity.distance, approachMeters:lookahead,
         approachSeconds:lookahead/state.speed, puddleLane:entity.lane,
-        ...puddleReaction(entity,state),
+        ...reaction,
         drawingBuffer:await page.locator('#trail').evaluate(canvas => [canvas.width,canvas.height]) })
     }
   } else if (args.includes('southern-views')) {
@@ -791,12 +811,18 @@ try {
     else await runAt(start, seed)
     await page.evaluate(({ inputs, duration, fast, precise, autoTest, from, ticksPerCallback }) => {
       window.phaseThreeQA.soak = { inputs, duration, fast, precise, autoTest,
-        ticksPerCallback, firstTick:from*120, next:0, nextSample:from, samples:[] }
+        ticksPerCallback, firstTick:from*120, stopTick:from && precise ? 0 : undefined, next:0, nextSample:from, samples:[] }
     }, { inputs, duration, fast: args.includes('fast'), precise, autoTest, from, ticksPerCallback })
     const videoStart = args.includes('video') ? (performance.now() - recordingStarted) / 1000 : null
     if (precise) {
       if (args.includes('offline')) await context.setOffline(true)
       await page.locator('#primary').tap()
+      // Starting deep in a route relocates every tile at once. Let that
+      // diagnostic portal settle before testing steady stream bounds.
+      if (from) {
+        await settle(start,quality)
+        await page.evaluate(() => { delete window.phaseThreeQA.soak.stopTick })
+      }
     }
     for (let checkpoint = Math.min(from+15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
       await page.waitForFunction(value => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
@@ -838,10 +864,14 @@ try {
     // playable initial tiles are already ready. From two seconds onward
     // retain the same lower bound as the settled route.
     // Phase 09 software reached 122 geometries, so use the current budget.
-    assert.ok(soak.samples.every(({ elapsed, tiles, packs, textures, geometries }) =>
-      tiles <= 7 && tiles >= (living ? (elapsed < from+2 ? 3 : 5) : 7) && packs <= (living ? 3 : 2) &&
-      textures <= (living ? 34 : 18) && geometries <= (living ? 130 : 90)), 'unexpected scene resource growth')
     await capture('soak-finish', { seed, duration, executed: soak.next })
+    const outsideBudget = soak.samples.find(({ elapsed, tiles, packs, textures, geometries }) => {
+      // A frozen deep preview can initially have only its playable tile.
+      const minimum = from && elapsed < from+.1 ? 1 : living ? elapsed < from+2 ? 3 : 5 : 7
+      return tiles > 7 || tiles < minimum || packs > (living ? 3 : 2) ||
+        textures > (living ? 34 : 18) || geometries > (living ? 130 : 90)
+    })
+    assert.equal(outsideBudget, undefined, 'scene resources outside the tested budget')
   } else if (args.includes('landmark-pass')) {
     const keys = args.filter(a => a.startsWith('only=')).map(a => a.slice(5))
     const selected = expeditionRegions.filter(r => keys.length ? keys.includes(r.key) : ['gulf','cypress','farm'].includes(r.key))
