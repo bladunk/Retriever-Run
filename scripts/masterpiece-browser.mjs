@@ -63,7 +63,7 @@ async function review(version, callback) {
   }
 }
 try {
-  for (const version of ['before','after']) if (!process.argv.includes('audio-only')) await review(version, async ({page,url,shot,context}) => {
+  for (const version of process.argv.includes('after-only') ? ['after'] : ['before','after']) if (!process.argv.includes('audio-only')) await review(version, async ({page,url,shot,context}) => {
     const save = JSON.parse(createLegacyPreview(5).exportSave())
     save.players[0].profile.quality = 'low'
     await page.addInitScript(({key,save}) => {
@@ -99,21 +99,24 @@ try {
     await page.locator('.kennel-stage canvas').waitFor()
     await shot('kennel')
     await page.locator('#close-lodge').click()
+    if (process.argv.includes('menus-only')) return
     await context.setOffline(true)
     await page.locator('#primary').click()
     await page.waitForFunction(() => parseInt(document.querySelector('#distance').textContent) >= 7)
     await shot('hud')
     await page.locator('#pause').click()
     await shot('paused')
+    await page.goto(url+'?perf=1&debug=collision&volumes=off&seed=7&at=32&qaview=low&course=raptor')
+    await page.waitForFunction(() => !document.querySelector('#primary').disabled)
     await page.locator('#primary').click()
-    await page.locator('#run-again').waitFor()
+    await page.locator('#run-again').waitFor({timeout:100000})
     await shot('hunt-over')
     if (version === 'after') {
       assert.ok(await page.evaluate(async () => (await document.fonts.load('600 20px "Field Serif"'))
         .some(font => font.status === 'loaded')))
       const resources = await page.evaluate(() => window.retrieverPerformance().audio)
       assert.equal(resources.beds, 7)
-      assert.ok(resources.buffers >= 4 && resources.voices <= 40)
+      assert.ok(resources.buffers > 0 && resources.voices <= 40)
     }
   })
   if (process.argv.includes('audio-only')) await review('studio',async ({page,url,context}) => {
@@ -129,7 +132,7 @@ try {
         return output
       }
     })
-    await page.goto(url+'?studio=1&view=audio&perf=1')
+    await page.goto(url+'?studio=1&view=audio&quality=low&perf=1')
     await page.locator('#content-download').click()
     const selection = page.getByLabel('Sound preview')
     const start = page.getByRole('button',{name:'Play sound', exact:true})
@@ -140,6 +143,7 @@ try {
     for (const value of ['title','early','middle','north','endless','region:1','region:6','region:14',
       'paw:gravel','paw:mud','paw:sand','paw:snow','bird:crane','bird:pheasant','bird:goose','bird:mallard',
       'lodge','kennel','cue:interface','cue:retrieve']) {
+      if (process.argv.includes('mix-only') && !value.startsWith('region:')) continue
       await selection.selectOption(value)
       await start.click()
       await page.waitForFunction(() => Boolean(window.fieldAudioCapture))

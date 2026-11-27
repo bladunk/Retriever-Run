@@ -98,7 +98,8 @@ export function offlineWorker(app) {
         const bytes = readFileSync(resolve(output.dir, file))
         const group = groupFor(file, shell)
         const id = cleanId(file)
-        const license = item?.type === 'chunk' ? 'code' : id === 'forest-needles.webp' ? 'original'
+        const license = /^(source-serif-4-latin\.woff2|SOURCE-SERIF-OFL\.txt)$/.test(id) ? 'OFL-1.1'
+          : item?.type === 'chunk' ? 'code' : id === 'forest-needles.webp' ? 'original'
           : /^(branding|icons)\//.test(file) ? 'boyd-artwork' : groups[group].license
         const references = item?.type === 'chunk' ? [...item.imports, ...(item.viteMetadata?.importedCss ?? []),
           ...(item.viteMetadata?.importedAssets ?? [])] : []

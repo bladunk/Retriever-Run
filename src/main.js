@@ -1,3 +1,4 @@
+import fontLicense from './assets/fonts/SOURCE-SERIF-OFL.txt?url'
 import { addDestinationIcons } from './field-icons.js'
 import { pawSurface } from './field-foley.js'
 import { hapticFeedback, rewardGroups } from './hunt-presentation.js'
@@ -62,6 +63,7 @@ import './masterpiece.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
 addDestinationIcons(ui)
+ui['font-license'].href = fontLicense
 const volumeKeys = Object.keys(audioDefaults)
 const systemMotion = matchMedia('(prefers-reduced-motion: reduce)')
 const reduceMotion = () => systemMotion.matches || profile.motion

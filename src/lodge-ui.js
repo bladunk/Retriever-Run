@@ -268,7 +268,7 @@ function journal(player) {
       notes.append(section)
     }
   } else notes.append(node('p','No environmental discoveries recorded.','room-note'))
-  const intro = node('header', null, 'journal-guide-intro')
+  const intro = node('div', null, 'journal-guide-intro')
   const total = Object.keys(fieldSpecies).length
   const progressMeter = node('progress')
   progressMeter.max = total
