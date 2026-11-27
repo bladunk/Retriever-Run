@@ -4,7 +4,7 @@ import { expeditionRegions } from './expedition.js'
 import { checkLabel } from './field-honors.js'
 import { date, node, number } from './lodge-elements.js'
 import { migrationMap } from './lodge-map.js'
-import { availableFinish, completeMigrations, earnedTrophies, lodgeFinishes, lodgeProgress, lodgeTiers,
+import { availableFinish, completeMigrations, earnedTrophies, lodgeFinishes, lodgeProgress, lodgeRequirements, lodgeTiers,
   migrationStop, trophyFor, trophyLimit } from './lodge-progress.js'
 import { fieldSpecies } from './wildlife-catalog.js'
 import { wildlifePortrait } from './wildlife-portrait.js'
@@ -59,8 +59,8 @@ export function exhibitCaption(item) {
   return body
 }
 
-function chooseExhibits(player) {
-  const pins = player.lodgeDisplay.pins.map(key => trophyFor(player,key)).filter(Boolean)
+export function chooseExhibits(player, selected = player.lodgeDisplay.pins) {
+  const pins = selected.map(key => trophyFor(player,key)).filter(Boolean)
   const automatic = earnedTrophies(player).filter(item => item.category !== 'hall' && !pins.some(pin => pin.key === item.key))
     .sort((left,right) => galleryPriority[left.category] - galleryPriority[right.category] ||
       (Date.parse(right.date) || 0) - (Date.parse(left.date) || 0) || left.name.localeCompare(right.name))
@@ -115,6 +115,14 @@ export function legacyInterior(player, context) {
   const shelf = node('div', null, 'legacy-mantel')
   shelf.setAttribute('aria-label','Earned displays')
   const caption = node('section', null, 'legacy-inspection')
+  const furnishing = progress.upgrades.slice().reverse().find(entry => ['equipment','journal','map','decoy','observation'].includes(entry.art))
+  if (furnishing) {
+    const artwork = exhibitButton('', () => inspect({ name:furnishing.name, badge:'Earned furnishing',
+      art:furnishing.art, description:lodgeRequirements(furnishing) }), 'legacy-furnishing')
+    artwork.setAttribute('aria-label','Inspect ' + furnishing.name)
+    artwork.append(exhibitImage(furnishing))
+    room.append(artwork)
+  }
   caption.hidden = true
   caption.setAttribute('aria-label','Display inspection')
   const transport = node('div', null, 'legacy-return')
@@ -195,10 +203,16 @@ export function legacyInterior(player, context) {
   decor.append(choices,status)
   const latest = node('section',null,'legacy-room-notes')
   if (progress.upgrades.length) {
-    const label = node('h4', 'Cabin additions')
+    const additions = node('details', null, 'legacy-additions')
+    additions.append(node('summary', 'Cabin additions · ' + progress.upgrades.length))
     const list = node('ul')
-    for (const upgrade of progress.upgrades.slice(-3).reverse()) list.append(node('li',upgrade.name))
-    latest.append(label,list)
+    for (const upgrade of progress.upgrades.toReversed()) {
+      const row = node('li')
+      row.append(node('strong',upgrade.name),node('span',lodgeRequirements(upgrade),'legacy-muted'))
+      list.append(row)
+    }
+    additions.append(list)
+    latest.append(additions)
   }
   latest.append(exhibitButton('Career timeline', () => navigate('history')),exhibitButton('Lifetime records', () => navigate('records')))
   return [scene,progressPanel,decor,latest]

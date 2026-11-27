@@ -42,26 +42,26 @@ try {
     const page = await context.newPage()
     const errors = []
     page.on('pageerror', error => errors.push(error.message))
-    await page.addInitScript(() => {
+    const profiles = studioOnly ? [] : Array.from({length:5},(_,i) => createLegacyPreview(i+1).exportSave())
+    await page.addInitScript(profiles => {
       const tier = Number(new URLSearchParams(location.search).get('fixture'))
       const key = 'retriever-run.record'
-      if (tier) {
-        const snapshot = sessionStorage.getItem('qa-legacy-' + tier)
-        if (snapshot && sessionStorage.getItem('qa-applied') !== String(tier)) {
-          localStorage.setItem(key,snapshot)
-          sessionStorage.setItem('qa-applied',String(tier))
-        }
+      if (!profiles.length) {
+        localStorage.setItem(key,'{"legacySentinel":true}')
+      } else if (profiles[tier-1] && sessionStorage.getItem('qa-applied') !== String(tier)) {
+        localStorage.setItem(key,profiles[tier-1])
+        sessionStorage.setItem('qa-applied',String(tier))
       }
-    })
-    await page.goto(origin + '/' + edition + '/', {waitUntil:'domcontentloaded'})
-    if (!studioOnly)
-      for (let tier=1; tier<=5; tier++) await page.evaluate(({ tier, data }) => {
-        sessionStorage.setItem('qa-legacy-' + tier,data)
-      },{ tier, data:createLegacyPreview(tier).exportSave() })
+    },profiles)
     async function enter(tier) {
       await page.goto(origin + '/' + edition + '/?perf=1&' + (studioOnly
         ? 'studio=1&view=lodge&tier=' + tier
         : 'fixture=' + tier),{waitUntil:'domcontentloaded'})
+      await page.waitForFunction(() => {
+        const gate = document.querySelector('#content-screen')
+        const download = document.querySelector('#content-download')
+        return gate?.open && !download.disabled || !document.querySelector('#game').hidden && !gate?.open
+      },null,{timeout:60_000})
       if (await page.locator('#content-screen').isVisible()) await page.locator('#content-download').tap()
       if (!studioOnly) {
         await page.locator('#open-lodge').tap()
@@ -79,7 +79,6 @@ try {
       captures.push(edition+'-'+name+'.jpg')
     }
     if (studioOnly) {
-      await page.evaluate(() => localStorage.setItem('retriever-run.record','{"legacySentinel":true}'))
       await enter(5)
       await image('qualified')
       assert.match(await page.locator('.legacy-cabin-title').textContent(),/Master Hunter’s Lodge/)
@@ -123,7 +122,7 @@ try {
     await current.waitFor()
     const key = await current.getAttribute('data-trophy')
     await current.getByRole('button',{name:'Pin trophy',exact:true}).tap()
-    assert.match(await current.locator('summary').textContent(),/Displayed/)
+    assert.match(await current.locator('summary').textContent(),/Pinned display/)
     await image('pin',current)
     await page.locator('[data-lodge-room=collection]').tap()
     await page.getByRole('button',{name:'Field finds',exact:true}).tap()

@@ -11,12 +11,12 @@
   background: linear-gradient(180deg,#181c17cf,transparent 37%,transparent 71%,#1a1915b0);
 }
 .legacy-interior-art { position: absolute; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: center 53%; }
-.legacy-cabin-title { position: absolute; left: clamp(12px,4vw,28px); top: 14px; right: 12px; margin: 0; text-shadow: 0 2px 5px #151811; }
+.legacy-interior .legacy-cabin-title { display: block; padding: 0; border: 0; background: transparent; position: absolute; left: clamp(12px,4vw,28px); top: 14px; right: 12px; margin: 0; text-shadow: 0 2px 5px #151811; }
 .legacy-eyebrow { margin: 0; color: #e0c393; font-size: .67rem; text-transform: uppercase; font-weight: 700; letter-spacing: .16em; }
 .legacy-cabin-title h3, .legacy-gallery h3, .legacy-history h3, .legacy-records h3 {
   font: 600 clamp(1.4rem,5.8vw,2.45rem)/1.09 Georgia,serif; margin: .2em 0; color: #fbf1dc;
 }
-.legacy-preview-label { display: inline-block; padding-top: .4em; color: #fdf0d1; font-size: .72rem; }
+.legacy-preview-label { display: inline-block; padding-top: .1em; color: #fdf0d1; font-size: .72rem; }
 .legacy-cabin .legacy-wall-chart { position: absolute; right: 9%; top: 33%; width: 22%; min-width: 61px; aspect-ratio: .78;
   display: grid; place-content: stretch; padding: 3px; background: #63472d; border: 2px solid #aa7c4b;
   border-radius: 2px; box-shadow: 2px 6px 14px #140f09bf, inset 0 0 0 1px #342211; }
@@ -148,3 +148,12 @@
 .lodge[data-demo-lodge] #camp-profile, #lodge[data-demo-lodge] #camp-profile { display: none; }
 .legacy-journey-controls { display: flex; justify-content: space-between; gap: 8px; margin: 5px 0; }
 .legacy-journey-controls button { min-height: 44px; padding-inline: 18px; }
+
+.legacy-cabin .legacy-furnishing { position: absolute; left: 12%; bottom: 9%; width: 24%; min-width: 52px; min-height: 44px;
+  padding: 0; border: 0; background: transparent; overflow: visible; }
+.legacy-furnishing .exhibit-art img { max-height: 55px; opacity: .97; filter: drop-shadow(0 5px 5px #18120ca0); }
+
+.legacy-additions { width: 100%; }
+.legacy-additions summary { min-height: 44px; display: list-item; align-content: center; }
+.legacy-additions li { margin-bottom: 7px; }
+.legacy-additions li span { display: block; }

@@ -1,7 +1,7 @@
 import { collectionSearch, matchesCollection } from './collection-browser.js'
 import './lodge-gallery.css'
 import { careerStanding } from './career.js'
-import { exhibitCaption, exhibitImage, legacyInterior, routeWall } from './legacy-room.js'
+import { chooseExhibits, exhibitCaption, exhibitImage, legacyInterior, routeWall } from './legacy-room.js'
 import { legacyTimeline } from './legacy-history.js'
 import { expeditionRegions } from './expedition.js'
 import { honorById } from './field-honors.js'
@@ -70,7 +70,8 @@ function trophyRoom(player, { lodge, target, navigate, competitive = [] }) {
   }
   function render(scroll = false) {
     const pins = ownedDisplay()
-    const choices = trophies.filter(item => (category === 'All' || category === 'On display' && pins.includes(item.key) ||
+    const displayed = new Set(chooseExhibits(player,pins).map(item => item.key))
+    const choices = trophies.filter(item => (category === 'All' || category === 'On display' && displayed.has(item.key) ||
       groups[category]?.includes(item.category)) && matchesCollection(search.value,item.name,item.badge))
     page = Math.max(0,Math.min(page,Math.ceil(choices.length / pageSize)-1))
     const start = page * pageSize
@@ -82,7 +83,7 @@ function trophyRoom(player, { lodge, target, navigate, competitive = [] }) {
       const summary = node('summary')
       const title = node('span')
       const pinned = pins.includes(item.key)
-      title.append(node('strong',item.name),node('small',item.badge + (pinned ? ' · Displayed' : '')))
+      title.append(node('strong',item.name),node('small',item.badge + (pinned ? ' · Pinned display' : displayed.has(item.key) ? ' · On mantel' : '')))
       summary.append(exhibitImage(item),title)
       const about = exhibitCaption(item)
       if ((!lodge.practice || lodge.preview) && item.category !== 'competitive') {
