@@ -1,0 +1,70 @@
+{
+  "build": {
+    "version": "1.0.0-rc.3.1",
+    "id": "368a0bd"
+  },
+  "seed": 7,
+  "engine": "chromium",
+  "controlledClock": true,
+  "simulatedSeconds": 18.006666666666604,
+  "samples": 36,
+  "changes": [
+    {
+      "elapsedSeconds": 0,
+      "preset": "balanced",
+      "atlas": "full",
+      "decision": null
+    },
+    {
+      "elapsedSeconds": 4.0316666666666645,
+      "preset": "low",
+      "atlas": "full",
+      "decision": {
+        "from": "balanced",
+        "to": "low",
+        "reason": "sustained frame pressure",
+        "samples": 37,
+        "late": 36,
+        "meanMs": 32.88,
+        "maxMs": 33.33,
+        "seconds": 1.22,
+        "pressureWindows": 2,
+        "headroomWindows": 0
+      }
+    },
+    {
+      "elapsedSeconds": 10.014999999999889,
+      "preset": "balanced",
+      "atlas": "full",
+      "decision": {
+        "from": "low",
+        "to": "balanced",
+        "reason": "consistent frame headroom",
+        "samples": 73,
+        "late": 0,
+        "meanMs": 16.55,
+        "maxMs": 16.67,
+        "seconds": 1.21,
+        "pressureWindows": 0,
+        "headroomWindows": 3
+      }
+    },
+    {
+      "elapsedSeconds": 15.00666666666639,
+      "preset": "high",
+      "atlas": "full",
+      "decision": {
+        "from": "balanced",
+        "to": "high",
+        "reason": "consistent frame headroom",
+        "samples": 73,
+        "late": 0,
+        "meanMs": 16.55,
+        "maxMs": 16.67,
+        "seconds": 1.21,
+        "pressureWindows": 0,
+        "headroomWindows": 4
+      }
+    }
+  ]
+}

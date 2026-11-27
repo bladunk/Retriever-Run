@@ -13,7 +13,7 @@ export function fitSignLettering(message, measure, maxLines = 2) {
     const sizes = lines.map(measure)
     const longest = Math.max(...sizes)
     const size = Math.floor(Math.min((width - padding * 2) / longest * 100 / .82,
-      (height - 30) / (lines.length * 1.06), 111))
+      (height - 30) / (lines.length * 1.06), 119))
     const scale = Math.min(1, (width - padding * 2) / (longest * size / 100))
     const imbalance = (longest - Math.min(...sizes)) / longest
     const score = size - (lines.length - 1) * 4 - imbalance * 5 - (1 - scale) * 16

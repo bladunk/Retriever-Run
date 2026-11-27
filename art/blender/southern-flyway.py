@@ -134,7 +134,7 @@ def oak(name, wide, compact):
         end=Vector((math.cos(a)*.21,math.sin(a)*.21,-.068))
         model.beam(start,middle,.037,.022,0x615246,5)
         model.beam(middle,end,.022,.007,0x675747,4)
-    palette=(0x8c6949,0xa98053,0x82784e,0x776047,0xb59163)
+    palette=(0x887454,0x95905b,0x7f8258,0x777350,0xa49468)
     for i in range(8 if compact else 11):
         angle=i*2.39996+rng.uniform(-.22,.24)
         axis=Vector((math.cos(angle),math.sin(angle),0))
@@ -151,25 +151,34 @@ def oak(name, wide, compact):
             model.beam(bend.lerp(end,.48),tip,.008,.002,0x716052,4)
             if i < (2 if wide else 3) or (i+n)%6==1:
                 continue
-            for fan in range(2 if compact else 3):
-                center=tip+axis*rng.uniform(-.061,.061)+lateral*rng.uniform(-.060,.061)
-                width=rng.uniform(.041,.093)
-                forward=axis+Vector((0,0,rng.uniform(-.55,.52)))
-                across=lateral+Vector((0,0,rng.uniform(-.55,.57)))
-                cols=[center]
-                coords=[(.247,.492)]
-                for j in range(7):
-                    a=j*math.tau/7
-                    cols.append(center+(forward*math.cos(a)+across*math.sin(a))*width*rng.uniform(.71,1.21))
-                    coords.append((.247+.211*math.cos(a),.492-.211*math.sin(a)))
-                for j,position in enumerate(coords):
-                    leaves[len(model.vertices)+j]=position
-                model.patch(cols,[(0,j+1,(j+1)%7+1) for j in range(7)],
-                    [tone(palette[(i+n+fan)%5],rng.uniform(.69,1.21)) for _ in cols])
+            # A closed leaf cluster stays attached and retains depth in profile.
+            center=bend.lerp(tip,.64 if n==0 else .86)+Vector((0,0,.014))
+            width=rng.uniform(.101,.149)*(.91 if n else 1.17)
+            points_per_ring=5 if compact else 6
+            vertices, pigments, faces=[],[],[]
+            for row in range(2):
+                for j in range(points_per_ring):
+                    a=(j+row*.19)*math.tau/points_per_ring
+                    radius=width*rng.uniform(.77,1.14)
+                    point=center+(axis*math.cos(a)+lateral*.87*math.sin(a))*radius
+                    point.z+=width*((.37 if row else -.27)+rng.uniform(-.16,.16))
+                    vertices.append(point)
+                    pigments.append(tone(palette[(i+n+row)%len(palette)],rng.uniform(.78,1.18)))
+            vertices.extend((center+Vector((0,0,-width*.54)),center+Vector((0,0,width*.62))))
+            pigments.extend((tone(palette[(i+n)%len(palette)],.76),tone(palette[(i+n+1)%len(palette)],1.09)))
+            for j in range(points_per_ring):
+                k=(j+1)%points_per_ring
+                faces.extend(((j,k,k+points_per_ring,j+points_per_ring),
+                    (points_per_ring*2,k,j),(points_per_ring*2+1,j+points_per_ring,k+points_per_ring)))
+            for j in range(len(vertices)):
+                leaves[len(model.vertices)+j]=(-.12,.5)
+            model.patch(vertices,faces,pigments)
     obj=model.build(True)
     mesh=obj.data
+    # Blender's glTF exporter flips V. The packed Three.js forest atlas uses
+    # V=.978 for the solid wood marker shared with the procedural tree trunks.
     for loop in mesh.loops:
-        mesh.uv_layers.active.data[loop.index].uv=leaves.get(loop.vertex_index,(.022,.978))
+        mesh.uv_layers.active.data[loop.index].uv=leaves.get(loop.vertex_index,(.022,.022))
 
 def color_for(index):
     return ((index*5)%11)/10

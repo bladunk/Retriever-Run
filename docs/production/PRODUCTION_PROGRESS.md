@@ -2,9 +2,9 @@
 
 ## Resume here
 
-- Operation Wilderness Southern Flyway is on `codex/retriever-run-wilderness-southern-flyway`, based on merged Raptor `a26ab273be73868760df2d040ce03c57673d28c3`. Live RC.2 is `7db32d3`; compiled RC.3 is `3205d74`. [Draft PR #41](https://github.com/bladunk/Retriever-Run/pull/41) · [Southern Flyway report](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md)
-- The first five territories now have regional landforms, water treatments, sky and distant silhouettes, original Blender scenery and new camera and lighting presets in the isolated Art Studio. The terrain changes preserve exact playable heights, and the later ten regions' checked terrain packets match RC.2. The Raptor course, signed competition, career data and saves remain the existing contracts.
-- Both live Worldwide reads returned the expected closed, empty board. Leave the published build and competitive gate in place during owner review. Native benchmarks and final artistic acceptance remain open. Heartland follows owner approval of the Southern Flyway candidate. [Roadmap](PRODUCTION_ROADMAP.md)
+- Operation Clarity is on `codex/retriever-run-clarity`, based on merged Southern Flyway `d5c64d989b9811da2208eca757742dcc533a5559`. Published RC.3 is `3205d74`. The configured RC.3.1 candidate is `368a0bd`. [Clarity report](CLARITY_REPORT.md) · [Draft PR #42](https://github.com/bladunk/Retriever-Run/pull/42)
+- The owner rejected RC.3 on iPhone Safari. RC.3.1 separates first-hunt initialization from Auto's sustained quality decisions, preserves scene and sign clarity, and replaces detached leaf cards on Delta and Flooded Timber trees with attached crowns. Both courses and saves retain their existing contracts.
+- Resume with the physical iPhone checklist in the Clarity report after an approved preview. The competitive gate remains closed. Heartland follows owner acceptance of the correction. [Roadmap](PRODUCTION_ROADMAP.md) · [Southern Flyway report](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md)
 
 ## Implemented in Phase 01
 

@@ -27,6 +27,7 @@ export function createLivingWilderness(scene, call, prewarmSound, probe, sightPr
   let missedRig
   let rigEncounters = 0
   let fallbackEncounters = 0
+  const fallbackReasons = {}
 
   function retire(slot) {
     if (!slot) return
@@ -43,7 +44,7 @@ export function createLivingWilderness(scene, call, prewarmSound, probe, sightPr
     return { event, art, seen: 0, recorded: false, sounded: false }
   }
 
-  function update(time, distance, detail, mode, events, camera, observation) {
+  function update(time, distance, detail, mode, events, camera, observation, allowRigs = detail > 0) {
     const running = mode === 'running'
     const inspecting = mode === 'studio'
     const dt = Math.max(0, Math.min(.2, time - previousTime))
@@ -88,12 +89,16 @@ export function createLivingWilderness(scene, call, prewarmSound, probe, sightPr
       if ((running || inspecting) && nearest < encounterApproach(upcoming.species)[0]) {
         active = prepared
         prepared = undefined
-        active.model = detail > 0 ? models.ready(upcoming.species) : undefined
+        active.model = allowRigs ? models.ready(upcoming.species) : undefined
         if (livingModels[upcoming.species]) {
           if (active.model) rigEncounters++
           else {
             fallbackEncounters++
-            if (upcoming.species !== 'mallard' && detail > 0) missedRig = upcoming.species
+            const reason = allowRigs ? models.fallbackReason(upcoming.species) : 'battery saver'
+            fallbackReasons[reason] = (fallbackReasons[reason] ?? 0) + 1
+            active.fallbackReason = reason
+            probe?.operation('wildlife-fallback', { species:upcoming.species, reason })
+            if (upcoming.species !== 'mallard' && allowRigs) missedRig = upcoming.species
           }
         }
         probe?.operation('wildlife-visible', upcoming.species)
@@ -105,7 +110,7 @@ export function createLivingWilderness(scene, call, prewarmSound, probe, sightPr
     sightProbe?.begin(time, running)
     if (departing) draw(departing, time, distance, detail, running, camera, observation, dt)
     if (active) {
-      if (inspecting && detail > 0 && !active.model) {
+      if (inspecting && allowRigs && !active.model) {
         active.model = models.ready(active.event.species)
         if (active.model) scene.add(active.model.root)
       }
@@ -195,8 +200,8 @@ export function createLivingWilderness(scene, call, prewarmSound, probe, sightPr
     art.appendageMesh.instanceMatrix.needsUpdate = Boolean(limbs)
     count += slot.drawn
   }
-  update.warmBreak = (renderer, camera, mode, detail, distance, events) => {
-    if (detail === 0 || mode === 'running') return
+  update.warmBreak = (renderer, camera, mode, detail, distance, events, allowRigs = detail > 0) => {
+    if (!allowRigs || mode === 'running') return
     keys.length = 0
     if (active?.model) keys.push(active.event.species)
     if (mode === 'studio' && events[0] && livingModels[events[0].species] && !keys.includes(events[0].species))
@@ -217,8 +222,8 @@ export function createLivingWilderness(scene, call, prewarmSound, probe, sightPr
   }
   update.invalidateGPU = models.invalidateGPU
   update.active = () => count
-  update.metrics = () => ({ ...models.metrics(), rigEncounters, fallbackEncounters })
+  update.metrics = () => ({ ...models.metrics(), rigEncounters, fallbackEncounters, fallbackReasons:{ ...fallbackReasons } })
   update.stamp = () => active ? { ...active.event, drawn: active.drawn, model: Boolean(active.model),
-    seen: active.seen, leaderInFrame: active.leaderInFrame } : null
+    seen: active.seen, leaderInFrame: active.leaderInFrame, fallbackReason:active.model ? null : active.fallbackReason ?? 'no authored rig' } : null
   return update
 }

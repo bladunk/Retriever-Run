@@ -2,7 +2,7 @@ import * as T from 'three'
 import { createChimneySmoke, updateChimneySmoke } from './chimney-smoke.js'
 import { gulfGeometry } from './gulf-models.js'
 import { cypressModel } from './cypress-models.js'
-import { prepareGulfSurfaces, regionalSurfaceResidency } from './gulf-surfaces.js'
+import { gulfReady, prepareGulfSurfaces, regionalSurfaceResidency } from './gulf-surfaces.js'
 import { cornModel } from './corn.js'
 import { environmentAssets, fernTerritories } from './environment-assets.js'
 import { landscapeProfiles } from './migration-landscapes.js'
@@ -49,10 +49,11 @@ function settleTreeHaze(material, wind = false) {
       shader.uniforms.forestQuality = field.fieldDetail
       shader.uniforms.windClock = windClock
       shader.uniforms.windStrength = windStrength
-      shader.vertexShader = 'uniform float windClock, windStrength; varying vec3 barkPoint; varying float solidWood;\n' + shader.vertexShader
+      shader.vertexShader = 'uniform float windClock, windStrength; varying vec3 barkPoint; varying float solidWood, leafVolume;\n' + shader.vertexShader
         .replace('#include <begin_vertex>', `#include <begin_vertex>
           barkPoint = position;
-          solidWood = 1. - step(.055,uv.x);
+          leafVolume = 1. - step(0.,uv.x);
+          solidWood = (1. - step(.055,uv.x)) * step(.90,uv.y) * (1. - leafVolume);
           #ifdef USE_INSTANCING
             float crown = smoothstep(.39, .98, position.y);
             float gust = sin(windClock * 1.13 + instanceMatrix[3].x * .46 + instanceMatrix[3].z * .52);
@@ -63,9 +64,19 @@ function settleTreeHaze(material, wind = false) {
       shader.fragmentShader = fieldAtlasShader + `
         uniform float forestQuality;
         varying vec3 barkPoint;
-        varying float solidWood;
-      ` + shader.fragmentShader.replace('#include <color_fragment>', `
+        varying float solidWood, leafVolume;
+      ` + shader.fragmentShader.replace('#include <map_fragment>', `
+        if (leafVolume + solidWood < .5) {
+          #include <map_fragment>
+        }
+      `).replace('#include <color_fragment>', `
         #include <color_fragment>
+        if (leafVolume > .5) {
+          float foliage = sin(dot(barkPoint,vec3(138.,182.,102.))) * cos(dot(barkPoint,vec3(94.,-152.,187.)));
+          float grain = sin(dot(barkPoint,vec3(49.,64.,-57.)) + foliage*.7);
+          float footprint = length(fwidth(barkPoint));
+          diffuseColor.rgb *= 1. + (.116*foliage + .106*grain) * (1.-smoothstep(.007,.033,footprint));
+        }
         if (landscapeReady > .5 && solidWood > .5 && forestQuality > .0) {
           vec2 barkUV = vec2((barkPoint.x + barkPoint.z * .83) * 2.8, barkPoint.y * 2.4);
           vec2 dx = dFdx(barkUV), dy = dFdy(barkUV);
@@ -262,10 +273,11 @@ export function createTerrain(scene, showSign, probe) {
     tile.trees.material = cards?.material ?? treeMaterial
     tile.trees.count = 0
     const swamp = packet.territory === 'cypress'
+    const delta = packet.territory === 'flyway'
     const floodedTimber = packet.territory === 'timber'
     tile.swamp = swamp
     for (const [index, mesh] of tile.forest.entries()) {
-      const compact = field.fieldDetail.value < 2
+      const compact = delta || field.fieldDetail.value < 2
       const trees = swamp ? cypressModel(index > 0 ? 2 : variant)
         : floodedTimber ? southernModel((index ? 'WillowOak' : 'BottomlandOak') + (compact ? 'LOD' : ''))
         : forestModel(variants[index], compact, Math.abs(packet.index + index) % 2)
@@ -280,7 +292,7 @@ export function createTerrain(scene, showSign, probe) {
       const width = height * (.80 + n % 5 * .087)
       // Outer-bank trees use a single lighter silhouette at every distance.
       // They never share a pivot or fade against a near-bank tree.
-      const outer = !swamp && Math.abs(packet.trees[at]) > 26
+      const outer = !swamp && !delta && Math.abs(packet.trees[at]) > 26
       const batch = outer ? tile.trees : tile.forest[variants[0] === variants[1] ? 0 : packet.trees[at + 6]]
       dummy.scale.set(width, height, width)
       if (outer && cards) {
@@ -470,8 +482,17 @@ export function createTerrain(scene, showSign, probe) {
 
   return {
     packCount: environmentAssets.count,
+    openingStamp() {
+      let ready = Number(Boolean(gulfReady.value))
+      for (const tile of tiles) if (tile.root.visible && tile.index >= -1 && tile.index <= 4) ready |= 1 << (tile.index+2)
+      return ready + landscapeMap.value.id * 256
+    },
     openingMetrics: () => ({ packets: openingTiles.size, reused: openingHits }),
     landscapeResidency: () => ({ ...landscapeResidency(), ...regionalSurfaceResidency() }),
+    foliage: () => tiles.filter(tile => tile.root.visible).map(tile => ({ index:tile.index,
+      outer:tile.trees.visible ? tile.trees.geometry.name || 'regional tree cards' : null,
+      groves:tile.forest.filter(grove => grove.visible).map(grove => grove.geometry.name || 'authored forest'),
+      ferns:tile.ferns.visible ? tile.ferns.count : 0 })),
     sightMeshes(target) {
       target.length = 0
       for (const tile of tiles) {
@@ -515,7 +536,7 @@ export function createTerrain(scene, showSign, probe) {
       const index = Math.floor(distance / segmentLength)
       return slot(index).index === index && slot(index).seed === seedAt(index)
     },
-    update(distance, time, weather, detail) {
+    update(distance, time, weather, detail, atlasDetail = detail, retainFerns = false) {
       const usesHabitatPack = coverTypes.has(regionAtDistance(distance).key) ||
         coverTypes.has(regionAtDistance(distance + 320).key)
       if (!requestedEnvironment && usesHabitatPack) {
@@ -523,7 +544,7 @@ export function createTerrain(scene, showSign, probe) {
         requestPack('trees')
         requestPack('grass')
       }
-      const wantsFern = detail > 0 && ((keepOpeningFerns && distance < expeditionRegions[1].marker) ||
+      const wantsFern = (detail > 0 || retainFerns && requestedFerns) && ((keepOpeningFerns && distance < expeditionRegions[1].marker) ||
         fernTerritories.has(regionAtDistance(distance).key) ||
         fernTerritories.has(regionAtDistance(distance + 380).key))
       if (wantsFern && !requestedFerns) {
@@ -539,11 +560,11 @@ export function createTerrain(scene, showSign, probe) {
       field.fieldWet.value = weather.wet
       field.fieldFrost.value = weather.frost ?? 0
       field.fieldDetail.value = detail
-      if (probe && compactAtlas !== (detail === 0)) {
-        compactAtlas = detail === 0
+      if (probe && compactAtlas !== (atlasDetail === 0)) {
+        compactAtlas = atlasDetail === 0
         probe.operation('atlas-selection', compactAtlas ? 'compact' : 'full')
       }
-      updateLandscapeQuality(detail)
+      updateLandscapeQuality(atlasDetail)
       prepareGulfSurfaces(distance < expeditionRegions[1].marker + 44, probe)
       if (probe && lastAtlas !== landscapeMap.value) {
         lastAtlas = landscapeMap.value

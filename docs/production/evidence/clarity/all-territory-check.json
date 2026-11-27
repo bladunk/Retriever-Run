@@ -1,0 +1,220 @@
+{
+  "engine": "webkit",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "quality": "low",
+  "regions": [
+    {
+      "territory": "gulf",
+      "label": "gulf-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 50,
+      "triangles": 114072,
+      "textures": 12,
+      "geometries": 39,
+      "tiles": 5
+    },
+    {
+      "territory": "cypress",
+      "label": "cypress-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 53,
+      "triangles": 130093,
+      "textures": 11,
+      "geometries": 52,
+      "tiles": 7
+    },
+    {
+      "territory": "flyway",
+      "label": "flyway-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 47,
+      "triangles": 113156,
+      "textures": 10,
+      "geometries": 46,
+      "tiles": 7
+    },
+    {
+      "territory": "timber",
+      "label": "timber-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 56,
+      "triangles": 118940,
+      "textures": 12,
+      "geometries": 49,
+      "tiles": 6
+    },
+    {
+      "territory": "ozark",
+      "label": "ozark-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 53,
+      "triangles": 94261,
+      "textures": 11,
+      "geometries": 48,
+      "tiles": 5
+    },
+    {
+      "territory": "farm",
+      "label": "farm-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 50,
+      "triangles": 107690,
+      "textures": 12,
+      "geometries": 53,
+      "tiles": 6
+    },
+    {
+      "territory": "platte",
+      "label": "platte-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 57,
+      "triangles": 115463,
+      "textures": 12,
+      "geometries": 57,
+      "tiles": 7
+    },
+    {
+      "territory": "sandhills",
+      "label": "sandhills-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 42,
+      "triangles": 79563,
+      "textures": 11,
+      "geometries": 51,
+      "tiles": 7
+    },
+    {
+      "territory": "prairie",
+      "label": "prairie-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 51,
+      "triangles": 92153,
+      "textures": 11,
+      "geometries": 56,
+      "tiles": 7
+    },
+    {
+      "territory": "dakota",
+      "label": "dakota-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 46,
+      "triangles": 91223,
+      "textures": 11,
+      "geometries": 52,
+      "tiles": 7
+    },
+    {
+      "territory": "manitoba",
+      "label": "manitoba-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 43,
+      "triangles": 83845,
+      "textures": 11,
+      "geometries": 50,
+      "tiles": 7
+    },
+    {
+      "territory": "parklands",
+      "label": "parklands-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 59,
+      "triangles": 105238,
+      "textures": 13,
+      "geometries": 55,
+      "tiles": 6
+    },
+    {
+      "territory": "boreal",
+      "label": "boreal-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 44,
+      "triangles": 96644,
+      "textures": 11,
+      "geometries": 45,
+      "tiles": 5
+    },
+    {
+      "territory": "foothills",
+      "label": "foothills-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 48,
+      "triangles": 107577,
+      "textures": 11,
+      "geometries": 48,
+      "tiles": 5
+    },
+    {
+      "territory": "mountain",
+      "label": "mountain-15",
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "917604b"
+      },
+      "seed": 7,
+      "draws": 46,
+      "triangles": 83085,
+      "textures": 12,
+      "geometries": 47,
+      "tiles": 5
+    }
+  ]
+}

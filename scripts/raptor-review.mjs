@@ -32,8 +32,8 @@ const browser = await engine.launch(engine === chromium ? { executablePath: proc
   args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader'] } : {})
 const samples = []
 
-async function inspect(version, viewport, test) {
-  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor:1 })
+async function inspect(version, viewport, test, scale = 1) {
+  const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor:scale })
   try {
     const errors = []
     const page = await context.newPage()
@@ -53,7 +53,32 @@ async function open(page, url) {
 }
 
 try {
-  if (process.argv.includes('southern-studio')) for (const version of ['studio-before','studio']) {
+  if (process.argv.includes('clarity-startup')) for (const version of ['before','after']) {
+    await inspect(version,{width:320,height:568},async (page,prefix) => {
+      const read = () => page.evaluate(() => window.retrieverPerformance())
+      const startHunt = async launch => {
+        await page.waitForFunction(() => !document.querySelector('#primary').disabled,null,{timeout:65000})
+        const before = await read()
+        await page.locator('#primary').click()
+        await page.waitForFunction(() => window.retrieverPerformance().restartTrace?.nextAnimationCallbackMs >= 0,
+          null,{timeout:65000})
+        const after = await read()
+        samples.push({ version, launch, build:after.build, startup:after.startupPhases, restart:after.restartTrace,
+          drawingBuffer:after.drawingBuffer, capabilities:after.capabilities, ready:before.ready,
+          observations:after.slowFrames.filter(frame=>frame.hunt === 1).slice(0,2) })
+      }
+      await page.addInitScript(() => {
+        let state = 7
+        Math.random = () => ((state = Math.imul(state,1664525) + 1013904223 | 0) >>> 0) / 0x100000000
+      })
+      await open(page,prefix+'?perf=1&resources=1')
+      await startHunt('fresh installation')
+      await page.context().setOffline(true)
+      await page.reload({waitUntil:'domcontentloaded'})
+      await startHunt('cached offline launch')
+    },2)
+  }
+  else if (process.argv.includes('southern-studio')) for (const version of ['studio-before','studio']) {
     const keys = ['gulf','cypress','flyway','timber','ozark']
     for (let index = 0; index < keys.length; index++) {
       await inspect(version,{width:320,height:568},async (page,prefix) => {
@@ -179,7 +204,7 @@ try {
       })
     }
   }
-  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio'].includes(arg))) {
+  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio','clarity-startup'].includes(arg))) {
     await inspect('studio',{width:390,height:844},async (page,prefix) => {
       await open(page,prefix+'?studio=1&perf=1&territory=13&seed=7&breed=boyd')
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio')

@@ -48,8 +48,19 @@ function distribution(values, count) {
 
 export function createPerformanceProbe(now = () => performance.now(), traceResources = false) {
   const tagged = new WeakSet()
-  const navigationMark = globalThis.performance?.getEntriesByName('retriever-module-request')[0]
-  const startup = { moduleRequestMs: navigationMark ? round(navigationMark.startTime) : null, moduleMs: round(now()) }
+  const clock = globalThis.performance
+  const stamp = key => {
+    const entry = clock?.getEntriesByName('retriever-' + key)[0]
+    return entry ? round(entry.startTime) : null
+  }
+  const navigation = clock?.getEntriesByType?.('navigation')[0]
+  const startup = { shellMs:stamp('shell'), workerRequestMs:stamp('worker-request'), workerReadyMs:stamp('worker-ready'),
+    manifestReadyMs:stamp('manifest-ready'), verificationStartMs:stamp('verification-start'),
+    verificationReadyMs:stamp('verification-ready'), verificationMissingMs:stamp('verification-missing'),
+    controlled:stamp('controlled-launch') !== null, navigationType:navigation?.type ?? null,
+    responseStartMs:navigation ? round(navigation.responseStart) : null,
+    moduleRequestMs:stamp('module-request'), moduleMs:round(now()) }
+  const opener = []
   let restartTrace
   let awaitingNext
 
@@ -138,6 +149,20 @@ export function createPerformanceProbe(now = () => performance.now(), traceResou
   return {
     stamp: now,
     operation, geometry, material, texture,
+    nameOpening(scene) {
+      if (!traceResources) return
+      scene.traverseVisible(node => {
+        if (!node.isMesh) return
+        const label = 'Opening / ' + (node.name || node.geometry.name || node.geometry.type)
+        geometry(node.geometry, label)
+        if (Array.isArray(node.material)) for (const shade of node.material) material(shade, label)
+        else material(node.material, label)
+      })
+    },
+    openingRender(started, info) {
+      append(opener,{ at:round(now()), durationMs:round(now()-started), ...info.memory,
+        programs:info.programs?.length ?? 0 },12)
+    },
     stage(name) { startup[name] ??= round(now()) },
     animationCallback(at) {
       if (awaitingNext && restartTrace) {
@@ -168,7 +193,7 @@ export function createPerformanceProbe(now = () => performance.now(), traceResou
       record.preset = preset
       record.detail = detail
     },
-    frame(wall, cpu, renderer, territory, at = now(), renderMs = 0) {
+    frame(wall, cpu, renderer, territory, at = now(), renderMs = 0, beforeDraw) {
       if (start !== undefined) {
         record.restart = at - start
         start = undefined
@@ -176,6 +201,7 @@ export function createPerformanceProbe(now = () => performance.now(), traceResou
         restartTrace.firstFrameCpuMs = round(cpu)
         restartTrace.firstRenderMs = round(renderMs)
         restartTrace.after = { ...renderer.memory, programs: renderer.programs?.length ?? 0 }
+        restartTrace.firstOperations = operations.filter(entry => entry.hunt === hunt?.id).slice(-24)
         awaitingNext = true
       }
       const interval = at - (lastPresentation ?? at)
@@ -199,10 +225,10 @@ export function createPerformanceProbe(now = () => performance.now(), traceResou
       record.draws = renderer.render.calls
       record.triangles = renderer.render.triangles
       const { textures, geometries } = renderer.memory
-      const textureDelta = textures - record.textures
-      const geometryDelta = geometries - record.geometries
+      const textureDelta = textures - (beforeDraw?.textures ?? record.textures)
+      const geometryDelta = geometries - (beforeDraw?.geometries ?? record.geometries)
       const programs = renderer.programs?.length ?? 0
-      const programDelta = programs - record.programs
+      const programDelta = programs - (beforeDraw?.programs ?? record.programs)
       record.textures = textures
       record.geometries = geometries
       record.programs = programs
@@ -233,7 +259,7 @@ export function createPerformanceProbe(now = () => performance.now(), traceResou
         averageFPS: presentationMs?.average ? +(1000 / presentationMs.average).toFixed(1) : null,
         hunt: hunt ? summary(hunt) : null, session: summary(session), previousHunts: [...previousHunts],
         slowFrames: slowFrames.map(frame => ({ ...frame, operations: [...frame.operations] })), operations: [...operations],
-        startupPhases: { ...startup }, restartTrace: restartTrace ? { ...restartTrace } : null,
+        startupPhases: { ...startup, opener:[...opener] }, restartTrace: restartTrace ? { ...restartTrace } : null,
         capabilities: { longTasks: longTasksSupported, namedResourceHooks: traceResources, gpuExecutionTime: null },
         longTasksSupported, longTasks: [...longTasks] }
     },
