@@ -121,6 +121,13 @@ const skyFragment = `
       color = mix(color,dawnCloud,cloudBank*southernSky*.58);
     }
     color = mix(color, cloudLight, cover*smoothstep(.025, .20, height) * .79);
+    if (sunbreak > .001) {
+      vec2 streak = vec2(direction.x + direction.y * .7, direction.y * 4.);
+      float slit = pow(max(0.,1. - abs(streak.x+.10)*1.8),1.6);
+      float rays = .48 + noise(vec2(streak.x * 13.,clock * .015)) * .52;
+      color += sunColor * smoothstep(.015,.14,height) * (1.-smoothstep(.28,.63,height)) *
+        slit * rays * (1.-cover*.53) * sunbreak * .29;
+    }
     if (night > .001) {
       float azimuth = atan(direction.x,-direction.z);
       vec3 twilight = mix(horizon,zenith,smoothstep(.01,.44,height));
@@ -183,7 +190,7 @@ export function createAtmosphere(scene) {
   const sky = new T.Mesh(new T.SphereGeometry(146, 32, 16), new T.ShaderMaterial({
     uniforms: { zenith: { value: new T.Color() }, horizon: { value: new T.Color() },
       sunColor: { value: new T.Color() }, dawn: { value: dawnDirection }, cloud: { value: 0 }, clock: { value: 0 },
-      skyDetail: { value: 1 }, southernSky:{ value:0 }, night:{ value:0 } },
+      skyDetail: { value: 1 }, southernSky:{ value:0 }, night:{ value:0 }, sunbreak:{ value:0 } },
     vertexShader: skyVertex, fragmentShader: skyFragment, side: T.BackSide, depthWrite: false,
   }))
   sky.renderOrder = -50
@@ -229,6 +236,7 @@ export function createAtmosphere(scene) {
       const night = effect === 'aurora' ? strength : 0
       const sunbreak = effect === 'sunbreak' ? strength : 0
       uniforms.night.value = night
+      uniforms.sunbreak.value = sunbreak
       uniforms.zenith.value.lerp(nightSky,night)
       uniforms.horizon.value.lerp(nightHorizon,night)
       uniforms.sunColor.value.lerp(peach,sunbreak*.85).lerp(moon,night)

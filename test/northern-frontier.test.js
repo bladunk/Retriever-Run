@@ -33,7 +33,7 @@ test('Northern scenery assets are bounded and solid branches support compact spr
     const geometry=forestModel('blackSpruce',quality)
     assert.ok(geometry.attributes.uv.array.some((value,index)=>index%2===0&&value<0))
     assert.ok(geometry.attributes.position.array.every(Number.isFinite))
-    assert.ok(geometry.index.count<=4600)
+    assert.ok(geometry.index.count<=4500)
   }
   const manitoba=expeditionRegions[10]
   const landing=buildTile(Math.ceil(manitoba.marker/30)+1,7).landmark

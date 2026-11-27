@@ -562,11 +562,12 @@ function initialize() {
       const pulse = 1.05 + Math.sin(visualTime * 11) * .13
       glow.scale.set(pulse, pulse, 1)
       if (!titleSceneUpdated) scenery(distance, visualTime, weather)
-      leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reduceMotion())
+      const region = regionAt(display.elapsed)
+      leaves(region.index, distance, visualTime, weather, preset.detail, reduceMotion())
       camera.updateMatrixWorld()
       if (mode === 'running' && !diagnosticsRequested) {
         let visible = strength >= .66 ? skyEvent?.id : undefined
-        const landmark = !visible && terrain.discovery(distance)
+        const landmark = !visible && region.key === 'manitoba' && terrain.discovery(distance)
         if (landmark) {
           placeOnTrail(discoveryPoint,landmark.distance,landmark.x,distance)
           discoveryPoint.y = Math.max(-.26,landmark.ground) + 1.15

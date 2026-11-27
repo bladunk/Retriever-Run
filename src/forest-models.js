@@ -218,7 +218,7 @@ export function forestModel(kind, compact = false, form = 0) {
       const stem = conifer ? Math.min(1.02, along) : along
       spray(twig[0] * stem + z * bend, twig[1] + lift, twig[2] * stem - x * bend,
         width * (conifer ? 1.43 : 1.19), width * (.53 + random() * .31), angle + (conifer ? (j % 2 ? .8 : -.5) + j * .16 : j * 1.05),
-        conifer ? .23 - .105 * j : .26 - .14 * j, tint, conifer || mobile ? 7 : 9,
+        conifer ? .23 - .105 * j : .26 - .14 * j, tint, conifer ? 6 : mobile ? 7 : 9,
         conifer ? (j % 2 ? .56 : -.46) : roundCrown ? (j % 2 ? .87 : -.65) : .25)
       if ((kind === 'snowPine' || kind === 'fir' && t > .62) && j === 1 && n % 3 !== 0) {
         spray(twig[0] * along + z * bend, twig[1] + lift + .03, twig[2] * along - x * bend,
