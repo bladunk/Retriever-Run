@@ -42,6 +42,12 @@ test('Delta and timber crown triangles have vertical thickness at all foliage de
     const faces = geometry.index.array
     let crownFaces = 0
     let vertical = 0
+    let barkVertices = 0
+    for (let i=0; i<uv.count; i++) {
+      if (uv.getX(i)<0 || uv.getX(i)>=.03) continue
+      assert.ok(uv.getY(i)>.95,'wood marker survives Blender glTF V conversion')
+      barkVertices++
+    }
     for (let i=0; i<faces.length; i+=3) {
       const a=faces[i], b=faces[i+1], c=faces[i+2]
       if (uv.getX(a)>=0 || uv.getX(b)>=0 || uv.getX(c)>=0) continue
@@ -50,6 +56,7 @@ test('Delta and timber crown triangles have vertical thickness at all foliage de
       vertical += Number(Math.max(...axis)-Math.min(...axis) > .015)
     }
     assert.ok(crownFaces>120)
+    assert.ok(barkVertices>50)
     assert.ok(vertical>crownFaces*.45)
   }
 })

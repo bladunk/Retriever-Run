@@ -134,7 +134,7 @@ def oak(name, wide, compact):
         end=Vector((math.cos(a)*.21,math.sin(a)*.21,-.068))
         model.beam(start,middle,.037,.022,0x615246,5)
         model.beam(middle,end,.022,.007,0x675747,4)
-    palette=(0x8c6949,0xa98053,0x82784e,0x776047,0xb59163)
+    palette=(0x887454,0x95905b,0x7f8258,0x777350,0xa49468)
     for i in range(8 if compact else 11):
         angle=i*2.39996+rng.uniform(-.22,.24)
         axis=Vector((math.cos(angle),math.sin(angle),0))
@@ -152,15 +152,15 @@ def oak(name, wide, compact):
             if i < (2 if wide else 3) or (i+n)%6==1:
                 continue
             # A closed leaf cluster stays attached and retains depth in profile.
-            center=tip+Vector((0,0,.018))
-            width=rng.uniform(.069,.114)
-            points_per_ring=4 if compact else 5
+            center=bend.lerp(tip,.64 if n==0 else .86)+Vector((0,0,.014))
+            width=rng.uniform(.101,.149)*(.91 if n else 1.17)
+            points_per_ring=5 if compact else 6
             vertices, pigments, faces=[],[],[]
             for row in range(2):
                 for j in range(points_per_ring):
                     a=(j+row*.19)*math.tau/points_per_ring
                     radius=width*rng.uniform(.77,1.14)
-                    point=center+(axis*math.cos(a)+lateral*.76*math.sin(a))*radius
+                    point=center+(axis*math.cos(a)+lateral*.87*math.sin(a))*radius
                     point.z+=width*((.37 if row else -.27)+rng.uniform(-.16,.16))
                     vertices.append(point)
                     pigments.append(tone(palette[(i+n+row)%len(palette)],rng.uniform(.78,1.18)))
@@ -175,8 +175,10 @@ def oak(name, wide, compact):
             model.patch(vertices,faces,pigments)
     obj=model.build(True)
     mesh=obj.data
+    # Blender's glTF exporter flips V. The packed Three.js forest atlas uses
+    # V=.978 for the solid wood marker shared with the procedural tree trunks.
     for loop in mesh.loops:
-        mesh.uv_layers.active.data[loop.index].uv=leaves.get(loop.vertex_index,(.022,.978))
+        mesh.uv_layers.active.data[loop.index].uv=leaves.get(loop.vertex_index,(.022,.022))
 
 def color_for(index):
     return ((index*5)%11)/10

@@ -60,7 +60,7 @@ try {
         await page.waitForFunction(() => !document.querySelector('#primary').disabled,null,{timeout:65000})
         const before = await read()
         await page.locator('#primary').click()
-        await page.waitForFunction(() => window.retrieverPerformance().restartTrace?.firstFrameSubmittedMs >= 0,
+        await page.waitForFunction(() => window.retrieverPerformance().restartTrace?.nextAnimationCallbackMs >= 0,
           null,{timeout:65000})
         const after = await read()
         samples.push({ version, launch, build:after.build, startup:after.startupPhases, restart:after.restartTrace,

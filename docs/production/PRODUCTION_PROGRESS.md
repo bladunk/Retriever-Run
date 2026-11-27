@@ -2,7 +2,7 @@
 
 ## Resume here
 
-- Operation Clarity is on `codex/retriever-run-clarity`, based on merged Southern Flyway `d5c64d989b9811da2208eca757742dcc533a5559`. Published RC.3 is `3205d74`. The configured RC.3.1 comparison build is `973bc49`. [Clarity report](CLARITY_REPORT.md)
+- Operation Clarity is on `codex/retriever-run-clarity`, based on merged Southern Flyway `d5c64d989b9811da2208eca757742dcc533a5559`. Published RC.3 is `3205d74`. The configured RC.3.1 candidate is `368a0bd`. [Clarity report](CLARITY_REPORT.md) · [Draft PR #42](https://github.com/bladunk/Retriever-Run/pull/42)
 - The owner rejected RC.3 on iPhone Safari. RC.3.1 separates first-hunt initialization from Auto's sustained quality decisions, preserves scene and sign clarity, and replaces detached leaf cards on Delta and Flooded Timber trees with attached crowns. Both courses and saves retain their existing contracts.
 - Resume with the physical iPhone checklist in the Clarity report after an approved preview. The competitive gate remains closed. Heartland follows owner acceptance of the correction. [Roadmap](PRODUCTION_ROADMAP.md) · [Southern Flyway report](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md)
 

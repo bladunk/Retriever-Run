@@ -1,12 +1,13 @@
 # Operation Clarity | RC.3.1
 
-Operation Clarity starts from merged Southern Flyway commit `d5c64d989b9811da2208eca757742dcc533a5559`. The published comparison build is `1.0.0-rc.3 · 3205d74`. The branch is `codex/retriever-run-clarity`. The owner's RC.3 acceptance remains open. This branch addresses the reported rendering regressions and retains the Southern Flyway layouts.
+Operation Clarity starts from merged Southern Flyway commit `d5c64d989b9811da2208eca757742dcc533a5559`. The configured candidate is `1.0.0-rc.3.1 · 368a0bd`, with content manifest `e66178643922f5bd4132`. The published comparison build is `1.0.0-rc.3 · 3205d74`. The candidate retains the Southern Flyway layouts. [Draft PR #42](https://github.com/bladunk/Retriever-Run/pull/42)
 
 ## Confirmed root causes
 
 - **One startup stall could drive Auto into Low.** RC.3 fed the first gameplay callback into an exponential average. A 324 ms interval can raise its nominal 16.7 ms average to about 147 ms. One such sample followed by ideal 60 Hz callbacks can satisfy the RC.3 downgrade condition. Recovery required more than twelve consecutive seconds below the fast average. The owner’s switch to Low then coupled a sub-CSS-pixel drawing buffer, compact atlas, fern release and rig suppression.
 - **Lettering was rendered into the reduced scene buffer.** The sign’s independent 1,024 × 448 source already used anisotropic trilinear filtering and mipmaps. Changing the terrain atlas did not change that canvas. At the recorded 0.86 scene scale, even the already-filtered letters were upscaled with the scene. A smaller, more oblique board and busy grain reduced usable contrast on approach.
 - **Broadleaf crowns could disappear in profile.** The Delta’s near willow and cottonwood meshes used flat alpha-tested fans offset from twig endpoints. Distant cards came from a second atlas path. Holes, edge-on views and shading made unsupported streaks visible across quality levels. Flooded Timber’s authored crowns also relied on leaf fans, with separate trunk and root geometry.
+- **Flooded Timber could lose its trunks.** The WebKit handoff exposed stippled bark and seemingly suspended crowns. The glTF export flipped the Blender V coordinate into a cutout part of the atlas. Packed oak bark now uses the same verified solid marker as the procedural trunks, and solid wood bypasses alpha sampling. The last oak pass overlaps irregular crowns farther in along the branch and keeps the existing detailed and compact mesh budgets.
 - **The first RC.3 resource deltas could read as total residency.** The previous sampled graphics counters began at zero even when the covered title had already drawn. The 27/54/28 counts from the physical trace therefore cannot attribute individual uploads or shader work. The 318 ms render interval does establish a real CPU-side submission cost.
 - **The pre-module delay includes offline verification.** The controlled launch waits for service worker registration or lookup, manifest retrieval and required-asset SHA-256 checks before requesting the game module. The older trace lacked separate timestamps for those steps. [Owner iPhone summary](evidence/clarity/native-rc3-owner.json)
 
@@ -27,6 +28,25 @@ Auto Low can use an already prepared wildlife rig. Selected Battery Saver retain
 ## Diagnostics
 
 The normal `?perf=1` export enables app-owned resource names. Add `&resources=0` for a lighter trace. The labels track Three.js submissions and preparation events. They are independent of Safari Long Tasks and do not measure GPU completion. Startup now reports shell, worker, manifest and verification milestones. Restart shows resource totals at input and after first draw, actual draw deltas, first scene workload and the next animation callback. Quality reasons, window pressure and recovery eligibility appear alongside canvas pixels, effective scale, terrain atlas and sign texture sizes, active foliage and fallback reasons.
+
+## Software browser measurements
+
+Chromium, SwiftShader, 320 × 568 CSS pixels at emulated DPR 2, the same seed sequence, game profile and production boot. Each cell shows RC.3 → RC.3.1 before the final oak UV and crown correction, which does not change launch or adaptive code. The figures are wall-clock observations of individual launches on a shared host.
+
+| Launch | Ready from navigation | Hunt input to first submission | First submission CPU render |
+| --- | ---: | ---: | ---: |
+| Initial verified install | 9,582 → 10,758 ms | 691 → 242 ms | 430 → 107 ms |
+| Verified offline reload | 9,989 → 7,647 ms | 423 → 392 ms | 304 → 54 ms |
+
+A rehearsal of the intermediate candidate showed the opposite ready-time pattern. The repeatable direction across the two software comparisons was lower first-submission work. Some covered title draws themselves took over one second on SwiftShader. Total startup and any tradeoff on iPhone Safari require matched native measurements. In the final fresh run, RC.3's plotted first-frame delta of 17 textures, 35 geometries and 17 programs started from the probe's previous zero totals. Actual counters were already 16, 20 and 12 at the Hunt input. RC.3.1's in-draw sample captured zero additional textures, five geometries and two programs. The new report separately saw one texture added from input to the end of the submission. [Final raw observations](evidence/clarity/startup-final.json) · [Earlier rehearsal](evidence/clarity/startup-rehearsal.json)
+
+The final cached launch spent about 329 ms verifying the cache, after about 3.5 seconds before reaching the bootstrap script's first marker. That split illustrates why the original iPhone's 2,366 ms before module request cannot be attributed specifically to GPU preparation or SHA-256 alone. Network and update state for that native sample remain unresolved.
+
+The packaged build is 17,863,088 bytes. The verified required assets total 17,776,267 bytes across 122 entries. Against the exact published RC.3 manifest, the candidate requires 1,728,843 bytes of changed required digests before HTTP compression. There are no new foliage image downloads. The visual geometry is in the bundled scene modules. The dependency and production database contracts are unchanged.
+
+## Regression coverage
+
+`npm test` passed all 211 tests. New tests exercise the RC.3 cold-stall pattern, sustained downgrade and recovery, solid Delta and timber crowns, first-frame resource accounting and wildlife fallback eligibility. The production verifier passed the configured Pages subpath build. The unit suite covers both deterministic courses, legacy saves, cache validation, competitive restrictions and Studio isolation.
 
 ## Native owner checklist
 

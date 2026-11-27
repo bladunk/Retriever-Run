@@ -53,7 +53,7 @@ function settleTreeHaze(material, wind = false) {
         .replace('#include <begin_vertex>', `#include <begin_vertex>
           barkPoint = position;
           leafVolume = 1. - step(0.,uv.x);
-          solidWood = (1. - step(.055,uv.x)) * (1. - leafVolume);
+          solidWood = (1. - step(.055,uv.x)) * step(.90,uv.y) * (1. - leafVolume);
           #ifdef USE_INSTANCING
             float crown = smoothstep(.39, .98, position.y);
             float gust = sin(windClock * 1.13 + instanceMatrix[3].x * .46 + instanceMatrix[3].z * .52);
@@ -66,7 +66,7 @@ function settleTreeHaze(material, wind = false) {
         varying vec3 barkPoint;
         varying float solidWood, leafVolume;
       ` + shader.fragmentShader.replace('#include <map_fragment>', `
-        if (leafVolume < .5) {
+        if (leafVolume + solidWood < .5) {
           #include <map_fragment>
         }
       `).replace('#include <color_fragment>', `
