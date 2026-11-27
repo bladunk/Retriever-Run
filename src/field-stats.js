@@ -6,6 +6,7 @@ import { expeditionRegions, regionAt } from './expedition.js'
 import { obstacles } from './obstacles.js'
 import { fieldSpecies, retrieveSpecies } from './wildlife-catalog.js'
 import { rocks } from './rocks.js'
+import { environmentalDiscoveries } from './environment-discoveries.js'
 
 export const counters = ['treats', 'logs', 'slidesCleared', 'geese', 'ducks', 'pheasants', 'jumps', 'slides']
 export const causes = ['water', 'logs', 'geese', 'other']
@@ -32,6 +33,7 @@ export function createRunStatistics(runId, onSkill = () => {}, course = courseRu
   const discovered = new Set()
   const recoveredRoutes = new Map()
   const observed = new Set()
+  const environment = new Set()
   const wildlife = {}
   const field = { clears: {}, shifts: 0, routes: 0, chain: 0 }
   let chain = 0
@@ -74,6 +76,9 @@ export function createRunStatistics(runId, onSkill = () => {}, course = courseRu
         regions[event.territory] = (regions[event.territory] ?? 0) + 1
       }
       onSkill({ kind: 'wildlife-observed', species: event.species, territory: event.territory, rarity: event.rarity })
+    },
+    observeEnvironment(id) {
+      if (!finalized && Object.hasOwn(environmentalDiscoveries,id)) environment.add(id)
     },
     pickup(type, entity) {
       if (finalized) return
@@ -151,7 +156,8 @@ export function createRunStatistics(runId, onSkill = () => {}, course = courseRu
     finish(run, hazard) {
       if (finalized) return null
       finalized = true
-      return { ...this.preview(run), wildlife, field, cause: deathCause(hazard), hazard, bestStreak: run.bestStreak }
+      return { ...this.preview(run), wildlife, field, ...(environment.size ? { environment:[...environment] } : {}),
+        cause: deathCause(hazard), hazard, bestStreak: run.bestStreak }
     },
   }
 }

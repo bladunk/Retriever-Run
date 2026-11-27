@@ -1,0 +1,305 @@
+{
+  "engine": "webkit",
+  "results": [
+    {
+      "label": "puddle-gulf",
+      "approachMeters": 19,
+      "approachSeconds": 1.3249646248406666,
+      "contactSeconds": 1.2083333333333333,
+      "puddleLane": 0,
+      "seed": 7,
+      "lastSafeJumpSeconds": 1.2,
+      "courseReactionSeconds": 0.42,
+      "weather": "Autumn sunrise",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-cypress",
+      "approachMeters": 19,
+      "approachSeconds": 0.9407948776130437,
+      "contactSeconds": 0.8666666666666667,
+      "puddleLane": 0,
+      "seed": 7,
+      "lastSafeJumpSeconds": 0.8583333333333333,
+      "courseReactionSeconds": 0.42,
+      "weather": "Overcast",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-flyway",
+      "approachMeters": 19,
+      "approachSeconds": 0.9032413340457225,
+      "contactSeconds": 0.8333333333333334,
+      "puddleLane": 0,
+      "seed": 7,
+      "lastSafeJumpSeconds": 0.825,
+      "courseReactionSeconds": 0.42,
+      "weather": "Overcast",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 6
+    },
+    {
+      "label": "puddle-timber",
+      "approachMeters": 19,
+      "approachSeconds": 0.8101492376224424,
+      "contactSeconds": 0.75,
+      "puddleLane": 0,
+      "seed": 13,
+      "lastSafeJumpSeconds": 0.7416666666666667,
+      "courseReactionSeconds": 0.42,
+      "weather": "Morning fog",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-ozark",
+      "approachMeters": 19,
+      "approachSeconds": 0.766775060695493,
+      "contactSeconds": 0.7,
+      "puddleLane": 0,
+      "seed": 7,
+      "lastSafeJumpSeconds": 0.6916666666666667,
+      "courseReactionSeconds": 0.42,
+      "weather": "Light rain",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-farm",
+      "approachMeters": 19,
+      "approachSeconds": 0.7246465915401974,
+      "contactSeconds": 0.6666666666666666,
+      "puddleLane": 0,
+      "seed": 11,
+      "lastSafeJumpSeconds": 0.6583333333333333,
+      "courseReactionSeconds": 0.42,
+      "weather": "Heavy rain",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 6
+    },
+    {
+      "label": "puddle-platte",
+      "approachMeters": 19,
+      "approachSeconds": 0.7071586481931385,
+      "contactSeconds": 0.65,
+      "puddleLane": 0,
+      "seed": 7,
+      "lastSafeJumpSeconds": 0.6416666666666666,
+      "courseReactionSeconds": 0.42,
+      "weather": "Windy",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 7
+    },
+    {
+      "label": "puddle-sandhills",
+      "approachMeters": 19,
+      "approachSeconds": 0.6850530495412073,
+      "contactSeconds": 0.625,
+      "puddleLane": 0,
+      "seed": 7,
+      "lastSafeJumpSeconds": 0.6166666666666667,
+      "courseReactionSeconds": 0.42,
+      "weather": "Snow",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-prairie",
+      "approachMeters": 19,
+      "approachSeconds": 0.6736724980982336,
+      "contactSeconds": 0.625,
+      "puddleLane": 0,
+      "seed": 11,
+      "lastSafeJumpSeconds": 0.6166666666666667,
+      "courseReactionSeconds": 0.42,
+      "weather": "Sleet",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-dakota",
+      "approachMeters": 19,
+      "approachSeconds": 0.6615512973487652,
+      "contactSeconds": 0.6083333333333333,
+      "puddleLane": 0,
+      "seed": 13,
+      "lastSafeJumpSeconds": 0.6,
+      "courseReactionSeconds": 0.42,
+      "weather": "Sleet",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 7
+    },
+    {
+      "label": "puddle-manitoba",
+      "approachMeters": 19,
+      "approachSeconds": 0.657298141362937,
+      "contactSeconds": 0.6083333333333333,
+      "puddleLane": 0,
+      "seed": 13,
+      "lastSafeJumpSeconds": 0.6,
+      "courseReactionSeconds": 0.42,
+      "weather": "Overcast",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 7
+    },
+    {
+      "label": "puddle-parklands",
+      "approachMeters": 19,
+      "approachSeconds": 0.6566069084456798,
+      "contactSeconds": 0.6,
+      "puddleLane": 0,
+      "seed": 19,
+      "lastSafeJumpSeconds": 0.5916666666666667,
+      "courseReactionSeconds": 0.42,
+      "weather": "Morning fog",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-boreal",
+      "approachMeters": 19,
+      "approachSeconds": 0.6559087069087396,
+      "contactSeconds": 0.6,
+      "puddleLane": 1,
+      "seed": 11,
+      "lastSafeJumpSeconds": 0.6,
+      "courseReactionSeconds": 0.42,
+      "weather": "Light rain",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-foothills",
+      "approachMeters": 19,
+      "approachSeconds": 0.6556128147534824,
+      "contactSeconds": 0.6083333333333333,
+      "puddleLane": 0,
+      "seed": 13,
+      "lastSafeJumpSeconds": 0.6,
+      "courseReactionSeconds": 0.42,
+      "weather": "Light rain",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 5
+    },
+    {
+      "label": "puddle-mountain",
+      "approachMeters": 19,
+      "approachSeconds": 0.6552853940334541,
+      "contactSeconds": 0.6,
+      "puddleLane": 1,
+      "seed": 7,
+      "lastSafeJumpSeconds": 0.6,
+      "courseReactionSeconds": 0.42,
+      "weather": "High-country snow",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "tiles": 7
+    }
+  ]
+}

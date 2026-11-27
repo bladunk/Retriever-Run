@@ -83,21 +83,40 @@ export function shoreHeight(region, distance, x) {
       const spit = .56*dome((edge-18.9-5.1*bend)/3.3)*dome(Math.sin(distance*.043)*1.83)
       return [.04 + ripple*.65 - 1.26*open + spit + outer*(2.40+.89*bend), width * 1.34]
     }
-    case 'lacustrine':
-      return [low + .53 * dome((edge - 12 - bend * 3) / 3.8) + .27 * Math.sin(edge * .20 + distance * .04) + outer * .52, width]
-    case 'parkland': {
-      const mosaic = .97 * Math.sin(edge * .145 + side + distance * .068) * Math.cos(distance * .039)
-      return [.16 + mosaic + ripple + outer * 1.3 - .86 * dome((edge - 19 - bend * 6) / 6.8), width * 1.2]
+    case 'lacustrine': {
+      const opening = 22 + 7.1*Math.sin(distance*.014+side)
+      const lagoon = dome((edge-opening)/15.7)
+      const reedIsland = dome((edge-15.1-4.8*bend)/4.2) * dome(1.6*Math.sin(distance*.028+side))
+      const channel = dome((edge-7.9-2.9*bend)/3.8)
+      return [.17 - 1.51*lagoon - .62*channel + 1.23*reedIsland + .25*outer + ripple*.48, width*1.2]
     }
-    case 'boreal':
-      return [low + outer * (2.75 + bend) + .56 * Math.sin(edge * .39 - distance * .069) + .34, width * 1.11]
+    case 'parkland': {
+      const roll = .5+.5*Math.cos(x*.093+distance*.025+1.1*bend)
+      const hill = 5.7*roll**1.34*saturate((edge-7.6)/16) + outer*(1.8+1.4*bend)
+      const kettle = 2.64*dome((edge-12.8-3.8*bend)/5.5)*dome(1.47*Math.sin(distance*.032+side))
+      return [.22 + hill - kettle + ripple*.51, width*1.22]
+    }
+    case 'boreal': {
+      const basin = 2.28*dome((edge-21.2-6.7*Math.sin(distance*.022+side))/8.7)*dome(1.32*Math.sin(distance*.018+side))
+      const shelf = .45*Math.sin(edge*.44-distance*.092)+.65*bend
+      const shield = outer*(5.1+2.6*Math.cos(distance*.028-x*.051))
+      return [.57 + shelf + shield - basin, width*1.28]
+    }
     case 'foothills': {
-      const slope = outer ** .74 * (10.4 + 4.6 * bend + 1.2 * Math.sin(distance * .12))
-      return [low + slope + .58 * Math.sin(edge * .39 - distance * .069) + .41, width]
+      const shoulder = saturate((edge-13)/46)**1.05 * (25 + 10*Math.sin(distance*.022+side) + 3*bend)
+      const bendRun = 9.8 + 4.7*Math.sin(distance*.035+side)
+      const river = 1.62*dome((edge-bendRun)/4.3)
+      const bar = .68*dome((edge-15.4+bend*2.8)/4.3) * Math.max(0,bend)
+      const talus = .34*Math.sin(edge*.33-distance*.110)+.18*Math.cos(x*.78+distance*.034)
+      return [.32 + shoulder - river + bar + talus, width*1.4]
     }
     default: {
-      const cliff = outer ** .78 * (7.0 + 5.9 * bend + 2.2 * Math.cos(distance * .079 + side))
-      return [low + cliff + .58 * Math.sin(edge * .34 + distance * .061) + .19, width]
+      const inlet = 19.6+6.6*Math.sin(distance*.019+side)
+      const lake = 1.66*dome((edge-inlet)/11.3)
+      const bank = .73*dome((edge-6.7+bend*1.2)/2.92)
+      const slopes = saturate((edge-19.5-4.1*bend)/39)**1.34*(25.5+10.4*Math.cos(distance*.021+side))
+      const escarpment = .53*Math.sin(edge*.25-distance*.123) * Math.cos(x*.062 + side)
+      return [-.02 + slopes + bank - lake + escarpment, width*1.29]
     }
   }
 }

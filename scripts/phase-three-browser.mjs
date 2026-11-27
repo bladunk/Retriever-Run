@@ -734,7 +734,7 @@ try {
     await writeFile(resolve(output, 'restart-cycles.json'), JSON.stringify({ seed:7, quality, cycles, samples }, null, 2))
   } else if (args.includes('clarity-views')) {
     const { signDistance } = await fromSource('sign-placement')
-    const points = [['opening',distanceAtTime(5)],['notice',signDistance(0)-5.8],
+    const points = [['opening',distanceAtTime(args.includes('raptor') ? 4.15 : 5)],['notice',signDistance(0)-5.8],
       ['delta-canopy',distanceAtTime(75)],['delta-handoff',distanceAtTime(83)]]
     if (args.includes('woodland')) points.push(['delta-edge',distanceAtTime(89)],['timber',distanceAtTime(102)],
       ['notice-approach',signDistance(0)-14.5])
@@ -744,9 +744,9 @@ try {
       await runAt(distance,7)
       await capture(label,{seed:7,drawingBuffer:await page.locator('#trail').evaluate(canvas => [canvas.width,canvas.height])})
     }
-  } else if (args.includes('heartland-motion-frames')) {
-    const seed = 7
-    const from = 187
+  } else if (args.includes('heartland-motion-frames') || args.includes('motion-frames')) {
+    const seed = Number(args.find(arg => arg.startsWith('seed='))?.slice(5) ?? 7)
+    const from = Number(args.find(arg => arg.startsWith('from-seconds='))?.slice(13) ?? 187)
     const distance = distanceAtTime(from)
     await openAt(distance,seed)
     await page.evaluate(({ inputs, from }) => {

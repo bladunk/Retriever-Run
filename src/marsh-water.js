@@ -14,10 +14,11 @@ Object.assign(uniforms, {
   waterHorizon: { value: new T.Color(0xe3b994) }, waterLight: { value: new T.Color(0xffdaaa) },
   waterSun: { value: dawnDirection }, landscapeMap, landscapeReady,
   waterProfile: { value: new T.Vector4(.60, .42, .67, .78) }, waterWind: { value: 0 },
-  southernWater: { value: 0 },
+  southernWater: { value: 0 }, twilight: { value:0 },
   gulfEnd: { value: expeditionRegions[1].marker }, gulfMap, gulfProperties, gulfReady,
   swampRange: { value: new T.Vector2(expeditionRegions[1].marker, expeditionRegions[2].marker) },
   platteRange: { value: new T.Vector2(expeditionRegions[6].marker, expeditionRegions[7].marker) },
+  alpineStart: { value: expeditionRegions[13].marker },
   puddleWidths: { value: puddleWidths }, puddleLengths: { value: puddleLengths },
 })
 
@@ -43,8 +44,8 @@ export const marshWater = new T.ShaderMaterial({
     uniform float waterClock, waterDetail, waterWeather, waterFrost;
     uniform vec2 worldOrigin;
     uniform vec4 waterProfile;
-    uniform float waterWind, southernWater;
-    uniform float gulfEnd;
+    uniform float waterWind, southernWater, twilight;
+    uniform float gulfEnd, alpineStart;
     uniform vec2 swampRange, platteRange;
     uniform vec3 puddleWidths, puddleLengths;
     ${fieldAtlasShader}
@@ -66,6 +67,7 @@ export const marshWater = new T.ShaderMaterial({
       vec3 wetGravel = mix(vec3(.095,.077,.050),vec3(.13,.107,.077),smoothstep(.0,margin, edge));
       wetGravel *= 1. + variation*.31*textureFade;
       vec3 skyImage = mix(waterSky,waterHorizon, .35 + .20*bands*textureFade);
+      skyImage = mix(skyImage,max(skyImage,vec3(.185,.242,.251)),twilight*.88);
       vec3 silt = mix(vec3(.066,.077,.067),waterTint*.58, .46);
       vec3 reflected = mix(silt,skyImage * vec3(.47,.61,.65), .43 + graze*.36);
       reflected *= .92 + .10*bands*textureFade;
@@ -90,6 +92,7 @@ export const marshWater = new T.ShaderMaterial({
         (1. - smoothstep(swampRange.y - 29., swampRange.y + 18., -p.y));
       float braid = smoothstep(platteRange.x-36.,platteRange.x+36.,-p.y) *
         (1. - smoothstep(platteRange.y-36.,platteRange.y+36.,-p.y));
+      float alpine = smoothstep(alpineStart-35.,alpineStart+42.,-p.y);
       vec2 flow = normalize(vec2(.26 + waterProfile.y * .43, 1.0));
       vec2 drift = p + vec2(.49 * sin(p.x*.64 + p.y*.38), .44 * cos(p.y*.59-p.x*.73));
       drift += southernWater * vec2(.88 * sin(p.y*.19-p.x*.24),.73*cos(p.x*.11+p.y*.17));
@@ -137,6 +140,8 @@ export const marshWater = new T.ShaderMaterial({
       lake = mix(lake, mix(bankBed*(.66 + .57*strand), basin, deep), southernWater*.57);
       lake = mix(lake, mix(vec3(.176,.141,.084)*(.82+strand*.27),vec3(.068,.106,.108),deep),
         braid*.77*(1.-crossing));
+      lake = mix(lake,mix(vec3(.142,.143,.119)*(.91+.22*strand),vec3(.061,.102,.108),deep),
+        alpine*.81*(1.-crossing));
       // Trail crossings use the same water as the banks. Reach a deeper
       // channel color in the middle, and leave the wet gravel edges visible.
       vec3 channel = mix(waterTint * .82, vec3(.048,.074,.061), coast);
@@ -171,6 +176,7 @@ export const marshWater = new T.ShaderMaterial({
         (1. - coast * .28) * (1. - swamp * .81);
       float reflectivity = fresnel * mix(.50, .92, deep) * mix(1., .64, crossing) * (.58 + waterProfile.z * .67);
       vec3 color = mix(lake, reflectedLight, reflectivity);
+      color += alpine * twilight * graze * deep * (1.-crossing) * vec3(.012,.039,.025) * (.39+.36*broad);
       color += braid*(1.-crossing)*graze*(.021+.027*smoothstep(.37,.88,crossWave))*waterSky;
       float wave = smoothstep(.40,.93, crossWave*.7 + broad*.3);
       float fade = 1. - smoothstep(.16,.43,length(fwidth(p)));
@@ -225,6 +231,7 @@ export function updateMarshWater(time, center, distance, weather, detail) {
   uniforms.waterWeather.value = weather.wet
   uniforms.waterWind.value = weather.wind
   uniforms.southernWater.value = weather.southern ?? 0
+  uniforms.twilight.value = weather.twilight ?? 0
   if (weather.waterProfile) uniforms.waterProfile.value.copy(weather.waterProfile)
   uniforms.waterFrost.value = weather.frost ?? 0
   uniforms.worldOrigin.value.set(center, -distance)

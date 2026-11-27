@@ -8,6 +8,7 @@ const silhouettes = [
   [0x5d6c56, 10, 4.9, .53], [0x637e6d, 18.8, 13.2, .62],
   [0x838457, 8.2, 1.9, .54], [0x77836c, 3.7, 1.5, .57], [0x8c8453, 23.5, .46, .72],
   [0x81845e, 10.3, .85, .45], [0x768480, 5.6, .69, .19],
+  [0x718583, 4.9, 1.4, .27], [0x807e59, 13.8, 4.2, .45], [0x536758, 16.9, 7.7, .23],
 ].map(([hex, ...contour]) => ({ tint:new T.Color(hex), contour:new T.Vector3(...contour) }))
 const none = { tint:new T.Color(0), contour:new T.Vector3() }
 const profile = region => silhouettes[region.index] ?? none

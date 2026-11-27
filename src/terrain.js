@@ -28,7 +28,8 @@ const treeMaterial = new T.MeshLambertMaterial({ vertexColors: true })
 const forestMaterial = forestSurface()
 const cropMaterial = new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide })
 const fieldTints = [0xf6e4c9, 0xfff5de, 0xe0dfc3]
-const coverTypes = new Set(landscapeProfiles.filter(region => region.licensedGrass && !region.heartland).map(region => region.key))
+const coverTypes = new Set(landscapeProfiles.filter(region => region.licensedGrass && !region.heartland && region.key !== 'parklands')
+  .map(region => region.key))
 const heartlandTypes = new Set(landscapeProfiles.filter(region => region.heartland).map(region => region.key))
 const cropGeometries = [cornModel(), cornModel(false, true), cornModel(true)]
 const cropFarMaterial = cropMaterial.clone()
@@ -36,7 +37,7 @@ const cardsReady = new WeakSet()
 const dummy = new T.Object3D()
 const heartlandPlants = new Map()
 function heartlandPlant(territory) {
-  const name = territory === 'dakota' || territory === 'prairie' ? 'WetlandRushes' : 'PrairieSeedheads'
+  const name = ['dakota','prairie','manitoba'].includes(territory) ? 'WetlandRushes' : 'PrairieSeedheads'
   if (!heartlandPlants.has(name)) {
     const geometry = packedGeometry(heartlandMeshes[name])
     geometry.name = name
@@ -289,10 +290,11 @@ export function createTerrain(scene, showSign, probe) {
     const swamp = packet.territory === 'cypress'
     const delta = packet.territory === 'flyway'
     const heartland = heartlandTypes.has(packet.territory)
+    const northern = packet.northern
     const floodedTimber = packet.territory === 'timber'
     tile.swamp = swamp
     for (const [index, mesh] of tile.forest.entries()) {
-      const compact = delta || heartland || field.fieldDetail.value < 2
+      const compact = delta || heartland || northern && index === 1 || field.fieldDetail.value < 2
       const trees = swamp ? cypressModel(index > 0 ? 2 : variant)
         : floodedTimber ? southernModel((index ? 'WillowOak' : 'BottomlandOak') + (compact ? 'LOD' : ''))
         : forestModel(variants[index], compact, Math.abs(packet.index + index) % 2)
@@ -307,7 +309,7 @@ export function createTerrain(scene, showSign, probe) {
       const width = height * (.80 + n % 5 * .087)
       // Outer-bank trees use a single lighter silhouette at every distance.
       // They never share a pivot or fade against a near-bank tree.
-      const outer = !swamp && !delta && !heartland && Math.abs(packet.trees[at]) > 26
+      const outer = !swamp && !delta && !heartland && !northern && Math.abs(packet.trees[at]) > 26
       const batch = outer ? tile.trees : tile.forest[variants[0] === variants[1] ? 0 : packet.trees[at + 6]]
       dummy.scale.set(width, height, width)
       if (outer && cards) {
@@ -339,7 +341,7 @@ export function createTerrain(scene, showSign, probe) {
     tile.tufts.geometry = vegetation[packet.plantType][0]
     tile.tufts.material = reedMaterial
     const gulf = packet.territory === 'gulf'
-    if (gulf || swamp || heartland) {
+    if (gulf || swamp || heartland || northern) {
       tile.tufts.geometry = gulf ? southernModel('SaltFlatGrass') : swamp ? cypressModel(3) : heartlandPlant(packet.territory)
       tile.tufts.count = packet.shoreGrass.length / 4
       for (let n = 0; n < tile.tufts.count; n++) {
@@ -385,7 +387,7 @@ export function createTerrain(scene, showSign, probe) {
     tile.usesFernPack = Boolean(fern)
     tile.plantType = packet.plantType
     tile.gulf = gulf
-    tile.heartland = heartland
+    tile.layeredGrass = heartland || northern
     tile.reedTotal = packet.reeds.length / 6
     for (let n = 0; n < tile.reedTotal; n++) {
       const at = n * 6
@@ -538,6 +540,14 @@ export function createTerrain(scene, showSign, probe) {
       index: tile.index, landmark: tile.landmark, solid: tile.solid.visible ? tile.solid.geometry.id : null,
       solidOpaque: tile.solid.visible && !tile.solid.material.transparent && tile.solid.material.opacity === 1, habitats: tile.habitats?.length ?? 0,
     })) },
+    discovery(distance) {
+      for (const tile of tiles) {
+        const feature = tile.landmark
+        if (!tile.root.visible || !tile.solid.visible || !feature?.discovery) continue
+        const ahead = feature.distance-distance
+        if (ahead >= 9 && ahead <= 38) return feature
+      }
+    },
     count() { return tiles.reduce((count, tile) => count + Number(tile.index !== null), 0) },
     prepareFerns(renderer, camera, prime, detail, distance) {
       if (prime && detail > 0 && distance < 120 && !requestedFerns) {
@@ -621,7 +631,7 @@ export function createTerrain(scene, showSign, probe) {
         tile.crops[1].visible = tile.crops[1].count > 0 &&
           tileStart + segmentLength + 2 > range[0] && tileStart < range[3] + 2
         tile.ferns.visible = detail > 0 && fernGPU.ready() && tile.ferns.count > 0 && tileStart < 49
-        tile.tufts.visible = tile.tufts.count > 0 && (tile.gulf || tile.swamp || tile.heartland ? tileStart < (detail > 0 ? 44 : 18)
+        tile.tufts.visible = tile.tufts.count > 0 && (tile.gulf || tile.swamp || tile.layeredGrass ? tileStart < (detail > 0 ? 44 : 18)
           : detail > 0 && tileStart < 38)
         if (tile.gulf) tile.tufts.geometry = southernModel(detail > 1 && tileStart < 16 ? 'TidalCordgrass' : 'SaltFlatGrass')
         const richPlants = i - center <= (detail === 0 ? 0 : 1) ? 1 : 0

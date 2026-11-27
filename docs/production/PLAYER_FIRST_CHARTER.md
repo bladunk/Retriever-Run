@@ -2,7 +2,23 @@
 
 Retriever Run is free, ad-free and free of purchases. Each feature should make the game more enjoyable, immersive, rewarding, accessible, or reliable. A run should be easy to start, difficult to master, and worth exploring.
 
-## Commitments
+## Permanent owner commitments
+
+1. No advertisements.
+2. No pay-to-win mechanics.
+3. No loot boxes.
+4. No mandatory daily challenges.
+5. No login streak penalties.
+6. No energy limits or restricted lives.
+7. No forced account creation.
+8. No intrusive notifications.
+9. No artificial scarcity or timed purchase pressure.
+10. No unnecessary grinding.
+11. No unavoidable deaths.
+12. No sacrificing visual clarity to inflate FPS.
+13. No unnecessary paid infrastructure.
+
+## How we apply the charter
 
 - Keep advertisements, microtransactions, pay-to-win mechanics, paid loot boxes, energy systems, and limited lives out of the game.
 - Keep daily or weekly challenges, logins, social sharing, and notifications optional. Avoid login streaks, inactivity penalties, forced notification permission requests, and unnecessary registration.

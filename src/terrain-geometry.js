@@ -13,6 +13,7 @@ import { signAnchor } from './sign-placement.js'
 import { dressFieldEdge } from './field-edge-art.js'
 import { dressWildBanks } from './wilderness-banks.js'
 import { dressSouthernBank } from './southern-banks.js'
+import { dressNorthernScenery } from './northern-bank-art.js'
 
 const box = new T.BoxGeometry()
 const stone = new T.IcosahedronGeometry(1, 0)
@@ -51,6 +52,7 @@ export function buildTile(index, seed = 0) {
   const start = index * segmentLength
   const colors = regionAtDistance(start + segmentLength * .5)
   const { key } = colors
+  const northern = colors.index >= 10
   const winter = colors.snow > .6
   const random = seededRandom(((index + 77) * 4871) ^ Math.imul(seed, 0x6cd15b9d))
   const between = (min, max) => min + random() * (max - min)
@@ -291,6 +293,8 @@ export function buildTile(index, seed = 0) {
       const nearBank = i < Math.ceil(colors.treesPerSide * .58)
       const x = side * (key === 'flyway' ? between(15.7, 41) : key === 'sandhills' ? between(36, 64)
         : key === 'farm' ? between(17, 48) : key === 'platte' ? nearBank ? between(14, 23) : between(29, 43)
+        : key === 'manitoba' ? between(12.6, 39)
+        : key === 'mountain' ? nearBank ? between(7.8,19) : between(27,58)
         : nearBank ? between(5.7, 14.0) : between(16, 51))
       const at = start - z
       const ground = earth(at, x)
@@ -298,7 +302,9 @@ export function buildTile(index, seed = 0) {
       const shoreTree = ['willow', 'cottonwood'].includes(colors.species[i % 2])
       const lowest = wetRoots ? -1.53 : shoreTree ? -.62 : -.38
       if (ground < lowest || i > 1 && vegetationPocket(colors.kind, at, x) < -.39) continue
-      const height = colors.treeScale * (i % 5 === 3 ? between(4.1, 6.3) : between(6.0, 11.9))
+      if (key === 'parklands' && i > 2 && Math.sin(at*.035+side) + .43*Math.sin(x*.30) < -.37) continue
+      if (key === 'boreal' && i > 3 && Math.sin(at*.025+side) > .78 && Math.abs(x)<14) continue
+      const height = colors.treeScale * (i % 5 === 3 ? between(4.1, 6.3) : between(6.0, northern ? 13.9 : 11.9))
       const heading = headingAt(at)
       const kind = (i + index + Number(side === 1)) % 3 === 0 ? 1 : 0
       trees.push(centerAt(at) - base + Math.cos(heading) * x, ground, z - Math.sin(heading) * x, height,
@@ -402,6 +408,7 @@ export function buildTile(index, seed = 0) {
   const landmark = dressMigrationLandmark({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x),
     waterline, random, branch })
   dressWildBanks({ add, region: colors, index, earth: (meters, x) => earth(start + meters, x), waterline })
+  dressNorthernScenery({ add,region:colors,index,seed,earth,waterline,landmark,sign })
   if (key === 'gulf' && index % 3 !== 2) {
     const debris = seededRandom(Math.imul(index + 67, 0xb19b53) ^ seed)
     const side = index % 2 ? 1 : -1
@@ -565,17 +572,17 @@ export function buildTile(index, seed = 0) {
         }
       }
     }
-  } else if (colors.heartland) {
+  } else if (colors.heartland || northern) {
     const plants = seededRandom(Math.imul(index + 267, 0x7b825e7) ^ seed)
     for (const side of [-1,1]) {
       for (let patch = 0; patch < 5; patch++) {
         const at = start + 3 + patch*5.6
-        const shore = 5.0 + 12.8*plants()**1.65
+        const shore = 5.0 + (key === 'manitoba' ? 17.5 : 12.8)*plants()**1.65
         for (let stem = 0; stem < 3; stem++) {
           const distance = at + (plants()-.5)*4.2
           const x = side*(shore + (plants()-.5)*2.2)
           const y = earth(distance,x)
-          const rush = key === 'prairie' || key === 'dakota'
+          const rush = key === 'prairie' || key === 'dakota' || key === 'manitoba'
           if (y < waterline - .27 || rush && y > .56 ||
             sign && Math.abs(distance-sign.distance) < 4 && Math.sign(sign.width) === side ||
             landmark && Math.abs(distance-landmark.distance) < 4 && Math.abs(x-landmark.x) < 3.6) continue
@@ -590,7 +597,7 @@ export function buildTile(index, seed = 0) {
   const ground = pack(land)
   const waterPacket = water ? pack(water) : null
   return { index, seed, ground, detail, solid, water: waterPacket, reeds: new Float32Array(reeds), habitats, anchors, landmark: landmark ? { id: key + ':' + index + ':' + seed, ...landmark } : null,
-    shoreGrass: new Float32Array(shoreGrass), plantType, trees: new Float32Array(scenicTrees), crops: new Float32Array(crops), harvested, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
+    shoreGrass: new Float32Array(shoreGrass), plantType, trees: new Float32Array(scenicTrees), crops: new Float32Array(crops), harvested, northern, treeStyle: winter ? 3 : colors.conifers > .48 ? 2
       : key === 'cypress' ? 4 : key === 'timber' ? 1 : 0, territory: key, chimney, sign }
 }
 

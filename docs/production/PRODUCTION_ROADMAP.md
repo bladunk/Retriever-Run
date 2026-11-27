@@ -39,6 +39,8 @@ Record these alongside the upcoming art, encounters and course work. Phase 05 re
 
 ## Wilderness and artistic release milestones
 
+The [master roadmap](MASTER_ROADMAP.md) is the canonical register of approved scope, dependencies, current status and acceptance criteria.
+
 | Candidate | Scope |
 | --- | --- |
 | RC.3 · Southern Flyway | Gulf Coast, Cypress, Mississippi Delta, Arkansas Flooded Timber and Ozark River Country. [Southern Flyway report](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md) |
@@ -48,4 +50,8 @@ Record these alongside the upcoming art, encounters and course work. Phase 05 re
 | RC.7 · Gun Dog | Desirable neoprene and waxed canvas vests, proper triangular bandanas, better collars/coats, anatomy and a visual Kennel |
 | RC.8 · Legacy | Believable evolving cabins, readable career progression, carved decoys, sculptures, photographs, engravings and maps |
 | RC.9 · Masterpiece | Cohesive typography, interface, sound, transitions and Journal presentation |
-| RC.10 · Gold Master | Independent and physical-device testing, hosted Worldwide verification, and separately approved production operations |
+| RC.10 · One More Hunt | Game feel, skill and replayability. Any scoring changes require a separate deterministic ruleset and activation approval. |
+| RC.11 · Developer Command Center | Optional player feedback, private developer tools and a separately approved, transparent data collection design. |
+| RC.12 · Connected | Private friend comparisons, sharing, verified profiles and Worldwide standings. |
+| RC.13 · Proving Grounds | Independent beta, physical-device coverage and repeatable release certification. |
+| RC.14 · Gold Master | Complete polish, native acceptance, hosted verification, and separately approved launch operations. |

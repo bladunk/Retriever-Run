@@ -1,0 +1,125 @@
+{
+  "engine": "webkit",
+  "samples": [
+    {
+      "region": "manitoba",
+      "event": "",
+      "quality": "balanced",
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "isolated": true,
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "textures": 23,
+      "geometries": 54,
+      "programs": 25
+    },
+    {
+      "region": "parklands",
+      "event": "",
+      "quality": "high",
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "isolated": true,
+      "drawingBuffer": {
+        "width": 502,
+        "height": 891,
+        "scale": 1.57,
+        "devicePixelRatio": 2,
+        "preset": "high"
+      },
+      "textures": 24,
+      "geometries": 61,
+      "programs": 27
+    },
+    {
+      "region": "boreal",
+      "event": "",
+      "quality": "low",
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "isolated": true,
+      "drawingBuffer": {
+        "width": 336,
+        "height": 596,
+        "scale": 1.05,
+        "devicePixelRatio": 2,
+        "preset": "low"
+      },
+      "textures": 11,
+      "geometries": 53,
+      "programs": 17
+    },
+    {
+      "region": "foothills",
+      "event": "sunbreak",
+      "quality": "balanced",
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "isolated": true,
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "textures": 23,
+      "geometries": 71,
+      "programs": 27
+    },
+    {
+      "region": "mountain",
+      "event": "aurora",
+      "quality": "low",
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "isolated": true,
+      "drawingBuffer": {
+        "width": 336,
+        "height": 596,
+        "scale": 1.05,
+        "devicePixelRatio": 2,
+        "preset": "low"
+      },
+      "textures": 11,
+      "geometries": 42,
+      "programs": 17
+    },
+    {
+      "region": "mountain",
+      "event": "aurora",
+      "quality": "high",
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "isolated": true,
+      "drawingBuffer": {
+        "width": 502,
+        "height": 891,
+        "scale": 1.57,
+        "devicePixelRatio": 2,
+        "preset": "high"
+      },
+      "textures": 24,
+      "geometries": 64,
+      "programs": 26
+    }
+  ]
+}

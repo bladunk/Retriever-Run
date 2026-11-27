@@ -129,6 +129,41 @@ try {
     samples.push({ territory:'platte', weather:'heavy rain', seed:7, isolated:true,
       build:await page.evaluate(() => window.retrieverPerformance().build) })
   },2)
+  else if (process.argv.includes('northern-studio')) for (const [territory,offset,region,event,quality] of [
+    [11,1,'manitoba','','balanced'],
+    [12,15,'parklands','','high'],
+    [13,15,'boreal','','low'],
+    [14,15,'foothills','sunbreak','balanced'],
+    [15,16,'mountain','aurora','low'],
+    [15,16,'mountain','aurora','high'],
+  ]) await inspect('studio',{width:320,height:568},async (page,prefix) => {
+    const original = '{"fixture":"preserve normal save"}'
+    const shaderErrors = []
+    page.on('console', message => {
+      if (/THREE\.WebGLProgram|Shader Error/.test(message.text())) shaderErrors.push(message.text())
+    })
+    await page.addInitScript(value => localStorage.setItem('retriever-run.record',value),original)
+    await open(page,prefix+'?studio=1&perf=1&seed=7&territory='+territory+'&offset='+offset+
+      '&quality='+quality+(event ? '&nature='+event : '')+(event === 'aurora' ? '&hazard=puddle' : ''))
+    await page.waitForFunction(({ region,quality }) => {
+      const perf = window.retrieverPerformance?.()
+      return document.querySelector('#game').dataset.mode === 'studio' && perf?.territory === region &&
+        perf.residentTiles >= 6 && perf.surfaces.active === (quality === 'low' ? 'compact' : 'full')
+    },{region,quality},{timeout:75000})
+    await page.screenshot({path:resolve(output,(event || region)+'-'+quality+'.jpg'),type:'jpeg',quality:86})
+    await page.locator('#art-studio summary').click()
+    assert.equal(await page.getByLabel('Environmental event').inputValue(),event)
+    if (event === 'aurora') assert.equal(await page.getByLabel('Trail hazard').inputValue(),'puddle')
+    if (event) {
+      await page.getByRole('button',{name:'Play camera'}).click()
+      await page.getByRole('button',{name:'Stop camera'}).waitFor()
+    }
+    assert.deepEqual(shaderErrors,[])
+    assert.equal(await page.evaluate(() => localStorage.getItem('retriever-run.record')),original)
+    const perf = await page.evaluate(() => window.retrieverPerformance())
+    samples.push({region,event,quality,build:perf.build,isolated:true,
+      drawingBuffer:perf.drawingBuffer,textures:perf.textures,geometries:perf.geometries,programs:perf.programs})
+  },2)
   else if (process.argv.includes('worldwide')) for (const combine of [true, false]) {
     await inspect('after',{width:320,height:568},async (page,prefix) => {
       const calls = []
@@ -230,7 +265,7 @@ try {
       })
     }
   }
-  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio','heartland-studio','clarity-startup'].includes(arg))) {
+  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio','heartland-studio','northern-studio','clarity-startup'].includes(arg))) {
     await inspect('studio',{width:390,height:844},async (page,prefix) => {
       await open(page,prefix+'?studio=1&perf=1&territory=13&seed=7&breed=boyd')
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio')

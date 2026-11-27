@@ -15,7 +15,8 @@ export function openArtStudio(game, flags, api) {
   details.append(form)
   form.addEventListener('submit', event => event.preventDefault())
   const state = { moving: false, speed: 1, yaw: 0, pitch: 0, zoom: 1, take: 'Trail', playback: 'Idle' }
-  state.lighting = ['dawn','overcast','mist','rain'].includes(flags.get('light')) ? flags.get('light') : 'route'
+  state.lighting = ['dawn','overcast','mist','rain','snow'].includes(flags.get('light')) ? flags.get('light') : 'route'
+  state.nature = ['aurora','sunbreak'].includes(flags.get('nature')) ? flags.get('nature') : ''
   state.hazard = flags.get('hazard') === 'puddle' ? 'puddle' : ''
   state.hazardLane = Math.max(-1, Math.min(1, Number.parseInt(flags.get('lane'), 10) || 0))
   const saved = new URL(location.href)
@@ -74,8 +75,10 @@ export function openArtStudio(game, flags, api) {
     value => { state.hazardLane = Number(value); api.reset() })
   const cameraPreset = Object.hasOwn(cameras, flags.get('camera')) ? flags.get('camera') : 'trail'
   select('Camera preset', [['trail','Gameplay'],['shore','Shoreline'],['grove','Canopy']],cameraPreset, setCamera)
-  select('Lighting', [['route','Route weather'],['dawn','Sunrise'],['overcast','Overcast'],['mist','Morning mist'],['rain','Heavy rain']],
+  select('Lighting', [['route','Route weather'],['dawn','Sunrise'],['overcast','Overcast'],['mist','Morning mist'],['rain','Heavy rain'],['snow','Snow']],
     state.lighting, value => { state.lighting = value })
+  select('Environmental event', [['','Route lighting'],['aurora','Aurora over the Divide'],['sunbreak','Eastern slopes sunbreak']],
+    state.nature, value => { state.nature = value })
   const species = select('Wildlife species', Object.values(fieldSpecies).map(animal => [animal.id, animal.name]), flags.get('species') ?? 'deer',
     value => { state.species = value; api.reset() })
   state.species = species.value || 'deer'

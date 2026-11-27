@@ -11,7 +11,8 @@ export const dawnDirection = new T.Vector3(-.58, .22, -.82).normalize()
 // lighting pass. Values blend on the shared atmosphere transitions.
 const flywayLight = [[-.23,.115,1.06,.03],[-.43,.255,.84,.24],[-.30,.16,.94,.08],
   [-.42,.20,.84,.19],[-.34,.246,.98,.14],[-.61,.36,1.04,.03],[-.26,.16,1.06,.10],
-  [-.59,.31,1.10,.09],[-.45,.26,1.03,.04],[-.31,.20,1.09,-.02]]
+  [-.59,.31,1.10,.09],[-.45,.26,1.03,.04],[-.31,.20,1.09,-.02],
+  [-.32,.18,1.18,.06],[-.61,.25,1.03,.25],[-.51,.30,1.15,.12],[-.59,.24,1.03,.20],[-.45,.28,1.09,.18]]
 const neutralLight = [-.58,.22,1,0]
 
 const states = [
@@ -26,7 +27,7 @@ const states = [
 ].map(([name, sky, horizon, sun, fog, cloud, rain, snow, wind, light]) => ({
   name, sky: new T.Color(sky), horizon: new T.Color(horizon), sun: new T.Color(sun), fog, cloud, rain, snow, wind, light,
 }))
-const reviewLights = { dawn: states[0], overcast: states[1], mist: states[2], rain: states[4] }
+const reviewLights = { dawn: states[0], overcast: states[1], mist: states[2], rain: states[4], snow: states[6] }
 
 const weatherInterval = 34
 const transition = 12
@@ -70,7 +71,7 @@ const skyFragment = `
   uniform vec3 horizon;
   uniform vec3 sunColor;
   uniform float cloud;
-  uniform float clock, skyDetail, southernSky;
+  uniform float clock, skyDetail, southernSky, night, sunbreak;
   uniform vec3 dawn;
   varying vec3 ray;
 
@@ -79,6 +80,23 @@ const skyFragment = `
     vec2 i = floor(p), f = fract(p);
     f = f*f*(3.-2.*f);
     return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+1.), f.x), f.y);
+  }
+
+  vec3 curtain(float across, float height, float offset) {
+    float fold = across + .043*sin(across*14.1+clock*.11-offset);
+    float base = .175+offset*.078 + .063*sin(fold*4.1+offset*3.2+clock*.047)
+      + .024*cos(fold*11.3+offset*1.4-clock*.10);
+    float lift = height - base;
+    float rim = exp(-abs(lift)*42.);
+    float ribs = mix(.66 + .22*sin(fold*58. + offset + clock*.22), .68, smoothstep(.005,.029,fwidth(fold)));
+    float curtainBody = smoothstep(-.012,.037,lift) * exp(-max(0.,lift)*(9.+3.*sin(fold*10.)));
+    float slow = .49 + .51*noise(vec2(fold*6.4 + offset*4.,clock*.056));
+    float open = smoothstep(.01,.21,abs(fold+offset*.44-.93)) * slow;
+    vec3 jade = vec3(.050,.355,.216);
+    vec3 upper = vec3(.116,.133,.292);
+    vec3 fringe = vec3(.160,.068,.125);
+    return open * (jade*rim*.73 + mix(jade,upper,smoothstep(.05,.24,lift))*curtainBody*ribs
+      + fringe * exp(-abs(lift+.019)*77.)*.37);
   }
 
   void main() {
@@ -103,6 +121,24 @@ const skyFragment = `
       color = mix(color,dawnCloud,cloudBank*southernSky*.58);
     }
     color = mix(color, cloudLight, cover*smoothstep(.025, .20, height) * .79);
+    if (sunbreak > .001) {
+      vec2 streak = vec2(direction.x + direction.y * .7, direction.y * 4.);
+      float slit = pow(max(0.,1. - abs(streak.x+.10)*1.8),1.6);
+      float rays = .48 + noise(vec2(streak.x * 13.,clock * .015)) * .52;
+      color += sunColor * smoothstep(.015,.14,height) * (1.-smoothstep(.28,.63,height)) *
+        slit * rays * (1.-cover*.53) * sunbreak * .29;
+    }
+    if (night > .001) {
+      float azimuth = atan(direction.x,-direction.z);
+      vec3 twilight = mix(horizon,zenith,smoothstep(.01,.44,height));
+      vec2 stars = vec2(azimuth,height)*vec2(210.,190.);
+      float spark = step(.992, hash(floor(stars))) * (1.-smoothstep(.045,.20,length(fract(stars)-.5)));
+      twilight += vec3(.68,.78,.98)*spark*smoothstep(.10,.32,height)*.22;
+      vec3 veil = curtain(azimuth,height,0.);
+      if (skyDetail > .5) veil += curtain(azimuth+.14,height,.91)*.48;
+      twilight += veil * smoothstep(.047,.19,height) * night;
+      color = mix(color,twilight,night);
+    }
     gl_FragColor = vec4(color, 1.);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
@@ -154,7 +190,7 @@ export function createAtmosphere(scene) {
   const sky = new T.Mesh(new T.SphereGeometry(146, 32, 16), new T.ShaderMaterial({
     uniforms: { zenith: { value: new T.Color() }, horizon: { value: new T.Color() },
       sunColor: { value: new T.Color() }, dawn: { value: dawnDirection }, cloud: { value: 0 }, clock: { value: 0 },
-      skyDetail: { value: 1 }, southernSky:{ value:0 } },
+      skyDetail: { value: 1 }, southernSky:{ value:0 }, night:{ value:0 }, sunbreak:{ value:0 } },
     vertexShader: skyVertex, fragmentShader: skyFragment, side: T.BackSide, depthWrite: false,
   }))
   sky.renderOrder = -50
@@ -174,12 +210,16 @@ export function createAtmosphere(scene) {
   const atmosphereWater = new T.Vector4()
   const daylight = [.06, .16, -.10, -.33, .26, .42, .35, .52, .18, .04, -.12, .17, -.27, .36, .51]
   const accent = new T.Color()
+  const nightSky = new T.Color(0x0b1b38)
+  const nightHorizon = new T.Color(0x486077)
+  const peach = new T.Color(0xffc084)
+  const moon = new T.Color(0xdce6ff)
   const rain = precipitation(scene, false)
   const snow = precipitation(scene, true)
   const result = { name: '', wind: 0, wet: 0, rain: 0, frost: 0, sky: new T.Color(), zenith: new T.Color(),
     light: new T.Color(), waterTint: new T.Color(), waterProfile: new T.Vector4() }
   return {
-    update(elapsed, time, budget, distance = 0, lighting = 'route') {
+    update(elapsed, time, budget, distance = 0, lighting = 'route', effect, strength = 0) {
       const override = reviewLights[lighting]
       const { from, to, blend } = override ? { from:override, to:override, blend:0 } : routeWeatherAt(elapsed)
       const lerp = (key) => T.MathUtils.lerp(from[key], to[key], blend)
@@ -193,11 +233,19 @@ export function createAtmosphere(scene) {
       tint(uniforms.zenith.value, 'sky', .76)
       tint(uniforms.horizon.value, 'horizon', .70)
       tint(uniforms.sunColor.value, 'sun', .64)
+      const night = effect === 'aurora' ? strength : 0
+      const sunbreak = effect === 'sunbreak' ? strength : 0
+      uniforms.night.value = night
+      uniforms.sunbreak.value = sunbreak
+      uniforms.zenith.value.lerp(nightSky,night)
+      uniforms.horizon.value.lerp(nightHorizon,night)
+      uniforms.sunColor.value.lerp(peach,sunbreak*.85).lerp(moon,night)
       result.frost = snowLevel(region)
       southernHorizon(distance, region, uniforms.horizon.value)
-      horizon(distance, northLevel(region), result.frost, uniforms.horizon.value, budget)
+      const summit = T.MathUtils.lerp(Number(region.from.kind === 'alpine'), Number(region.to.kind === 'alpine'), region.blend)
+      horizon(distance, northLevel(region), result.frost, uniforms.horizon.value, budget,summit)
       const lightness = T.MathUtils.lerp(daylight[region.from.index], daylight[region.to.index], region.blend)
-      uniforms.cloud.value = T.MathUtils.clamp(lerp('cloud') - lightness * .24, .05, .99)
+      uniforms.cloud.value = T.MathUtils.clamp(lerp('cloud') - lightness * .24 - sunbreak*.49, .05, .99)
       result.waterProfile.fromArray(waterProfiles[region.from.key]).lerp(atmosphereWater.fromArray(waterProfiles[region.to.key]), region.blend)
       uniforms.clock.value = time
       uniforms.skyDetail.value = budget > .53 ? 1 : 0
@@ -206,7 +254,7 @@ export function createAtmosphere(scene) {
       result.zenith.copy(uniforms.zenith.value)
       result.light.copy(uniforms.sunColor.value)
       result.waterTint.setHex(region.from.waterTint).lerp(tone.setHex(region.to.waterTint), region.blend)
-      fog.density = T.MathUtils.lerp(lerp('fog'), blendProperty(region, 'fog'), .72)
+      fog.density = T.MathUtils.lerp(lerp('fog'), blendProperty(region, 'fog'), .72) * (1-.46*night-.32*sunbreak)
       sun.color.copy(uniforms.sunColor.value)
       sun.intensity = lerp('light') * 1.12 * (1 + lightness * .21)
       const lightFrom = flywayLight[region.from.index] ?? neutralLight
@@ -221,14 +269,19 @@ export function createAtmosphere(scene) {
         T.MathUtils.lerp(lightFrom[2], lightTo[2], region.blend)
       fill.groundColor.setHex(region.from.bank).lerp(tone.setHex(region.to.bank), region.blend).multiplyScalar(.71)
       sun.intensity *= 1.08 - shade * .10 + swamp * .33 + T.MathUtils.lerp(lightFrom[3], lightTo[3], region.blend)
-      result.rain = lerp('rain') * (1 - result.frost)
+      // Twilight affects distant visibility and sky color. Neutral fill and
+      // a mild moon contribution preserve the trail and hazard silhouettes.
+      fill.intensity *= 1 + .11*night
+      sun.intensity = T.MathUtils.lerp(sun.intensity + .66*sunbreak,.82,night)
+      result.rain = lerp('rain') * (1 - result.frost) * (1-Math.max(night,sunbreak))
       result.wind = lerp('wind')
       result.wet = Math.min(1, result.rain + lerp('snow') * .24)
+      result.twilight = night
       result.southern = T.MathUtils.lerp(Number(region.from.index < 5), Number(region.to.index < 5), region.blend)
       uniforms.southernSky.value = result.southern
-      result.name = blend > .5 ? to.name : from.name
+      result.name = night > .6 ? 'Aurora twilight' : sunbreak > .6 ? 'Eastern slopes sunbreak' : blend > .5 ? to.name : from.name
       rain(result.rain, time, result.wind, budget)
-      snow(Math.max(lerp('snow') * .56, result.frost * .10), time, result.wind, budget)
+      snow(Math.max(lerp('snow') * .56, result.frost * .10)*(1-.89*night), time, result.wind, budget)
       return result
     },
   }
