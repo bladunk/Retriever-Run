@@ -1,0 +1,150 @@
+.legacy-cabin, .legacy-gallery, .legacy-history, .legacy-records {
+  --legacy-ink: #f5ead5;
+  --legacy-muted: #cbba99;
+  --legacy-brass: #cba975;
+  color: var(--legacy-ink);
+}
+.legacy-cabin { padding: 0; overflow: hidden; border: 1px solid #715739; border-radius: 10px; background: #382b22; }
+.legacy-interior { position: relative; isolation: isolate; overflow: hidden; aspect-ratio: 1/1.075; background: #382c22; }
+.legacy-interior::after {
+  content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg,#181c17cf,transparent 37%,transparent 71%,#1a1915b0);
+}
+.legacy-interior-art { position: absolute; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: center 53%; }
+.legacy-cabin-title { position: absolute; left: clamp(12px,4vw,28px); top: 14px; right: 12px; margin: 0; text-shadow: 0 2px 5px #151811; }
+.legacy-eyebrow { margin: 0; color: #e0c393; font-size: .67rem; text-transform: uppercase; font-weight: 700; letter-spacing: .16em; }
+.legacy-cabin-title h3, .legacy-gallery h3, .legacy-history h3, .legacy-records h3 {
+  font: 600 clamp(1.4rem,5.8vw,2.45rem)/1.09 Georgia,serif; margin: .2em 0; color: #fbf1dc;
+}
+.legacy-preview-label { display: inline-block; padding-top: .4em; color: #fdf0d1; font-size: .72rem; }
+.legacy-cabin .legacy-wall-chart { position: absolute; right: 9%; top: 33%; width: 22%; min-width: 61px; aspect-ratio: .78;
+  display: grid; place-content: stretch; padding: 3px; background: #63472d; border: 2px solid #aa7c4b;
+  border-radius: 2px; box-shadow: 2px 6px 14px #140f09bf, inset 0 0 0 1px #342211; }
+.legacy-cabin .legacy-wall-chart canvas { display: block; width: 100%; min-width: 0; height: auto; pointer-events: none; }
+.legacy-cabin .legacy-wall-chart { font: 700 clamp(.47rem,2.1vw,.72rem)/1.2 Georgia, serif; color: #ffebc4; }
+.legacy-cabin .legacy-wall-chart[data-complete=true] { border-color: #d2ad68; background: #775034; }
+.legacy-cabin .legacy-dog-tag { position: absolute; right: 9%; bottom: 7%; min-height: 44px; max-width: 54%; padding-inline: 12px;
+  background: linear-gradient(157deg,#98704a,#543823); border: 1px solid #bf9863; color: #fff0cc;
+  border-radius: 3px; box-shadow: 1px 5px 9px #382920; font: 700 .88rem Georgia,serif; overflow-wrap: anywhere; }
+.legacy-cabin .legacy-boyd-frame { position: absolute; left: 31%; top: 28%; width: 20%; padding: 3%; min-width: 55px;
+  background: #a4885e; border: 3px ridge #765339; box-shadow: 3px 7px 19px #1b1410aa; }
+.legacy-boyd-frame img { display: block; width: 100%; height: auto; }
+.legacy-cabin { --cloth: #5f513f; --thread: #c4b08d; }
+.legacy-cabin[data-finish=willow] { --cloth: #434f3b; --thread: #b5b28b; }
+.legacy-cabin[data-finish=tobacco] { --cloth: #664631; --thread: #bd9a6c; }
+.legacy-cabin[data-finish=slate] { --cloth: #364848; --thread: #b8bea5; }
+.legacy-cabin[data-finish=heritage] { --cloth: #513237; --thread: #c4a47c; }
+.legacy-mantel {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(85px,1fr)); gap: 6px; min-height: 67px; align-items: stretch;
+  padding: 8px 9px 9px; border-top: 3px ridge #9b754d; border-bottom: 1px solid #816345;
+  background: repeating-linear-gradient(19deg,#f6e6bf08 0 1px,transparent 1px 3px), var(--cloth);
+}
+.legacy-cabin .legacy-shelf-item { background: #11180f2b; padding: 4px 3px 6px; border: 1px solid #e5cb9537; border-radius: 4px;
+  min-height: 92px; display: grid; grid-template-rows: minmax(44px,78px) 1fr; align-items: center; min-width: 0; }
+.legacy-shelf-item span:last-child { font-size: .72rem; color: #fbf0d7; overflow-wrap: anywhere; }
+.legacy-shelf-item[aria-pressed=true] { border-color: var(--thread); outline: 1px solid var(--thread); }
+.legacy-empty-shelf { align-self: center; justify-self: center; margin: .5rem; font: italic .85rem Georgia,serif; color: #f2dec0; }
+.legacy-return { display: grid; grid-template-columns: 1.25fr 1fr; gap: 8px; padding: 8px; background: #25251d; }
+.legacy-return button, .legacy-room-notes button, .legacy-next button { min-height: 44px; }
+.legacy-return .legacy-hunt { color: #24261b; background: #d9ba84; font-weight: 800; }
+.legacy-inspection { padding: 12px 15px; background: #23291f; }
+.legacy-inspection header { display: grid; align-items: center; grid-template-columns: 1fr auto; }
+.legacy-inspection header h4 { grid-column: 1/-1; margin: .25em 0; font: 600 1.33rem Georgia,serif; }
+.legacy-inspection button { min-height: 44px; }
+.legacy-tribute-detail { margin: 0; display: flex; align-items: end; gap: 16px; }
+.legacy-tribute-detail img:first-child { width: min(58%,180px); height: auto; border: 3px double #ae8d58; }
+.legacy-tribute-detail img:last-child { width: 55px; height: auto; }
+.legacy-next { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 10px; margin-block: 12px 6px; padding: 5px 0; }
+.legacy-next p { margin: .3em 0; color: #f3e2bf; font: 600 1rem Georgia,serif; }
+.legacy-next progress { width: 100%; height: 8px; accent-color: #ae8652; grid-row: 2; }
+.legacy-next span { grid-row: 2; }
+.legacy-decor { border-block: 1px solid #a58a5b5e; margin: 8px 0; padding: 5px 0; }
+.legacy-decor summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; color: #ead8b5; }
+.legacy-decor summary::after { content: '+'; margin-left: auto; padding: 0 .4em; }
+.legacy-decor[open] summary::after { content: '−'; }
+.legacy-fabric-options { display: grid; grid-template-columns: repeat(auto-fit,minmax(90px,1fr)); gap: 6px; }
+.legacy-fabric-options button { min-height: 64px; padding: 6px 3px; display: grid; gap: 3px; justify-items: center; font-size: .73rem; }
+.legacy-fabric-options button[aria-pressed=true] { border-color: #d9bb81; outline: 1px solid #bd9c65; }
+.legacy-fabric-options i { width: 40px; height: 19px; border: 1px solid #b99c6c; border-radius: 4px;
+  background: repeating-linear-gradient(20deg,#efcf9524 0 1px,transparent 1px 4px),var(--sample,#564638); }
+[data-fabric=willow] { --sample: #434f3b; }
+[data-fabric=tobacco] { --sample: #664631; }
+[data-fabric=slate] { --sample: #364848; }
+[data-fabric=heritage] { --sample: #513237; }
+.legacy-room-notes { padding-block: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+.legacy-room-notes h4, .legacy-room-notes ul { width: 100%; margin: 0; }
+.legacy-room-notes ul { color: #d4c6a7; padding-inline-start: 1.3rem; font-size: .84rem; }
+.legacy-muted { color: #cbbb9c; font-size: .8rem; }
+.exhibit-art { display: grid; place-items: center; width: 100%; min-height: 0; }
+.exhibit-art img { width: 100%; max-width: 200px; height: 100%; max-height: 118px; object-fit: contain; filter: drop-shadow(1px 4px 4px #10130f72); }
+.legacy-mantel .exhibit-art img { max-height: 72px; }
+.exhibit-art[data-art=field-photograph] img, .exhibit-art[data-art=aurora-frame] img {
+  width: 82%; height: auto; aspect-ratio: 1.25; object-fit: cover;
+  border: 3px solid #765d40; outline: 1px solid #ddc5988a; border-radius: 1px;
+}
+.exhibit-art[data-grade=Platinum] img { filter: drop-shadow(0 3px 4px #090e0d) drop-shadow(0 0 1px #dec4a1); }
+.exhibit-caption { font-size: .87rem; color: #e9ddc2; }
+.exhibit-caption p { margin: .32em 0 .65em; }
+.exhibit-caption ul { padding-inline-start: 1.25rem; }
+.exhibit-caption time { display: block; margin: 8px 0; }
+.legacy-route-wall { position: relative; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,.86fr); align-items: center; gap: 12px;
+  margin: 0 0 10px; border: 6px ridge #8e7047; padding: 10px;
+  background: radial-gradient(at 27% 31%,#385046,#212d24); box-shadow: inset 0 0 16px #0b140e85; }
+.legacy-route-wall[data-complete=true] { border-color: #c69c62; }
+.legacy-route-wall canvas { width: 100%; height: auto; min-width: 0; }
+.legacy-route-wall h4 { margin: 5px 0; font: 600 clamp(1.25rem,5vw,2.3rem)/1.07 Georgia,serif; color:#f7e8c7; }
+.legacy-route-wall p { margin: 7px 0; font-size: .82rem; color: #ddc89e; }
+.legacy-route-engraving { color: #bdad8c; columns: 2; font: 600 .76rem Georgia,serif; margin-block: 8px 19px; padding-inline-start: 1.4rem; }
+.legacy-route-engraving li { break-inside: avoid; padding-block: .16em; opacity: .68; }
+.legacy-route-engraving li[data-reached=true] { color: #f4dfb2; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .legacy-cabin *, .legacy-gallery * { scroll-behavior: auto; } }
+
+.legacy-route-engraving button { min-height: 44px; width: 100%; text-align: left; background: transparent;
+  padding: 1px 4px; font-size: .79rem; border: 0; color: inherit; }
+.legacy-route-engraving button[aria-current="true"] { background: #6d5b3a66; color: #ffe2ad; }
+.legacy-room-nav { overflow-x: auto; display: flex; gap: 5px; padding-block: 5px 8px; scrollbar-width: thin; }
+.legacy-room-nav[hidden] { display: none; }
+.legacy-room-nav button { white-space: nowrap; min-height: 44px; padding: 5px 9px; font-size: .77rem; flex: 0 0 auto;
+  border: 1px solid transparent; border-radius: 4px; background: transparent; color: #d7c29b; }
+.legacy-room-nav button[aria-current=page] { border-color: #ac8e5f; background: #463d2c; color: #ffe1a6; }
+.legacy-filter-chips { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0; }
+.legacy-filter-chips button { min-height: 44px; padding: 5px 9px; font-size: .77rem; border-radius: 13px; }
+.legacy-filter-chips button[aria-pressed=true] { background: #7f6642; color: #fff2d6; }
+.legacy-gallery { display: grid; gap: 8px; }
+.legacy-gallery > .lodge-trophy-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.legacy-gallery .lodge-trophy { min-width: 0; background: #2e382c; padding: 0; border-radius: 7px; overflow: hidden; }
+.legacy-gallery .lodge-trophy[open] { grid-column: 1/-1; }
+.legacy-gallery .lodge-trophy summary {
+  display: grid; justify-items: center; text-align: center; grid-template: 96px minmax(46px,auto)/minmax(0,1fr);
+  gap: 4px; overflow-wrap: anywhere; list-style: none; padding: 8px 7px 5px;
+  background: radial-gradient(at 50% 12%,#62614376,#252d2500 84%);
+}
+.legacy-gallery .lodge-trophy summary::-webkit-details-marker { display: none; }
+.legacy-gallery .lodge-trophy summary .exhibit-art { grid-column: auto; grid-row: auto; height: 100%; }
+.legacy-gallery .lodge-trophy summary .exhibit-art img { max-height: 96px; }
+.legacy-gallery .lodge-trophy .exhibit-caption { padding: 0 12px 12px; }
+.legacy-gallery summary strong { display: block; padding: 2px; font-family: Georgia,serif; }
+.legacy-gallery summary small { color: #d7bd92; }
+.legacy-gallery .lodge-trophy[data-prestige] { outline: 1px solid #c4a57288; outline-offset: -2px; background-color: #3a3a2c; }
+.legacy-gallery .legacy-swap { display: flex; flex-wrap: wrap; gap: 6px; }
+.legacy-gallery .exhibit-caption button, .legacy-gallery .lodge-paging button { min-height: 44px; }
+.legacy-history { padding-inline: 3px; }
+.legacy-timeline { list-style: none; margin: 12px 0; padding: 0 0 0 17px; border-left: 1px solid #b6955f; }
+.legacy-timeline li { position: relative; padding: 4px 0 15px 6px; }
+.legacy-timeline li::before { position: absolute; content: ''; left: -23px; top: 15px; width: 9px; height: 9px;
+  background: #c6a26d; transform: rotate(45deg); }
+.legacy-timeline h4 { margin: 2px 0; color: #f6e7c7; font: 600 1.08rem Georgia,serif; }
+.legacy-timeline time { display: block; margin-top: 4px; font-size: .74rem; color: #c8b58f; }
+.legacy-timeline p { margin: .2rem 0; }
+.legacy-history .career-ledger summary { min-height: 44px; }
+.legacy-records .record-card { min-height: 65px; background: #30382b; }
+.legacy-records h4 { margin: 12px 0 8px; color: #e9cfa3; font: 600 1.2rem Georgia,serif; }
+.legacy-tier-rank .patch-badge { color: #e0bc82; }
+.career-patch[data-rank-tier="1"] .patch-badge, .career-patch[data-rank-tier="2"] .patch-badge { border-radius: 3px; }
+.career-patch[data-rank-tier="4"] .patch-badge, .career-patch[data-rank-tier="5"] .patch-badge { border: 2px double #c19c63; }
+.career-patch[data-rank-tier="7"] .patch-badge, .career-patch[data-rank-tier="8"] .patch-badge { border: 3px double #dfc18a; border-radius: 5px 5px 45% 45%; }
+.career-patch[data-rank-tier="9"] .patch-badge, .career-patch[data-rank-tier="10"] .patch-badge { border: 3px double #d6ae67; background: #604b37; }
+
+.lodge[data-demo-lodge] #camp-profile, #lodge[data-demo-lodge] #camp-profile { display: none; }
+.legacy-journey-controls { display: flex; justify-content: space-between; gap: 8px; margin: 5px 0; }
+.legacy-journey-controls button { min-height: 44px; padding-inline: 18px; }

@@ -14,13 +14,13 @@ const lakes = [[223,104,15,6,-.20],[253,130,18,6,-.22],[264,147,4,11,.27],
 const width = 362
 const height = 352
 
-export function migrationMap() {
+export function migrationMap(scale = 2) {
   const canvas = document.createElement('canvas')
-  canvas.width = width * 2
-  canvas.height = height * 2
+  canvas.width = Math.round(width * scale)
+  canvas.height = Math.round(height * scale)
   canvas.setAttribute('aria-hidden', 'true')
   const ctx = canvas.getContext('2d')
-  ctx.scale(2, 2)
+  ctx.scale(scale, scale)
   return { canvas, draw(player, selected) {
     const fill = ctx.createLinearGradient(0, 0, width, height)
     fill.addColorStop(0, '#f4dfad')

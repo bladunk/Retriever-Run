@@ -63,6 +63,7 @@ export function careerRoom(player, insignia) {
     const prestige = rank.level === 100
     const earned = standing.level >= rank.level && (!prestige || qualified)
     patch.dataset.earned = String(earned)
+    patch.dataset.rankTier = String(dogRanks.indexOf(rank)+1)
     const badge = node('div', null, 'patch-badge')
     badge.append(insignia(rank.emblem))
     patch.append(badge, node('strong', rank.name), node('span', 'Level ' + rank.level),

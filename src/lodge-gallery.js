@@ -1,42 +1,22 @@
-import { collectionSearch, collectionSelect, matchesCollection } from './collection-browser.js'
+import { collectionSearch, matchesCollection } from './collection-browser.js'
 import './lodge-gallery.css'
 import { careerStanding } from './career.js'
-import { qualificationCard } from './career-ui.js'
+import { exhibitCaption, exhibitImage, legacyInterior, routeWall } from './legacy-room.js'
+import { legacyTimeline } from './legacy-history.js'
 import { expeditionRegions } from './expedition.js'
-import { checkLabel, honorById } from './field-honors.js'
+import { honorById } from './field-honors.js'
 import { verifiedHonorRequirements } from './ranked-camp.js'
 import { causes, causeNames } from './field-stats.js'
 import { duration, rows, cards, node, number, meters, date } from './lodge-elements.js'
-import { migrationMap } from './lodge-map.js'
-import { completeMigrations, displayEquipment, earnedTrophies, lodgeProgress, lodgeRequirements, lodgeTiers, lodgeUpgrades,
-  migrationStop, trophyLimit } from './lodge-progress.js'
+import { completeMigrations, displayEquipment, earnedTrophies, migrationStop, trophyLimit } from './lodge-progress.js'
 import { courseRuleset, legacyMigrationRuleset, localCourseRuleset } from './ruleset.js'
-import { fieldSpecies } from './wildlife-catalog.js'
-import { wildlifePortrait } from './wildlife-portrait.js'
+import { ownedGear } from './kennel-catalog.js'
 
-const categoryNames = { honors: 'Field Honors', legend: 'Legendary', wildlife: 'Wildlife observations',
-  retrieves: 'Retrieves', regional: 'Regional displays', career: 'Career milestones', hall: 'Hall of Shame', competitive: 'Worldwide Camp' }
-const categoryOrder = { legend: 0, competitive: 1, regional: 2, retrieves: 3, wildlife: 4, career: 5, honors: 6, hall: 7 }
+const categoryOrder = { discovery: 1, legend: 0, competitive: 1, regional: 2, retrieves: 3, wildlife: 4, career: 5, honors: 6, hall: 7 }
 const medals = { Platinum: 4, Gold: 3, Silver: 2, Bronze: 1 }
 const occurred = trophy => trophy.date ? Date.parse(trophy.date) : 0
 const awardOrder = (a, b) => occurred(b) - occurred(a) || categoryOrder[a.category] - categoryOrder[b.category] ||
   (medals[b.badge] ?? 0) - (medals[a.badge] ?? 0) || a.name.localeCompare(b.name)
-const artRoot = './lodge/'
-const prestigeKit = ['./branding/boyd-portrait.webp', './branding/master-hunter.png']
-
-function curated(trophies, pins = []) {
-  const display = pins.slice()
-  const topics = new Set(pins.map(trophy => trophy.checks?.[0]?.key ?? trophy.key))
-  for (const trophy of trophies) {
-    if (display.length >= trophyLimit) break
-    const topic = trophy.checks?.[0]?.key ?? trophy.key
-    if (topics.has(topic)) continue
-    topics.add(topic)
-    display.push(trophy)
-  }
-  return display
-}
-
 function action(label, click, attributes) {
   const button = node('button', label)
   button.type = 'button'
@@ -52,249 +32,123 @@ function heading(title, text) {
   return header
 }
 
-function image(source, width, height, className) {
-  const img = node('img', null, className)
-  img.src = source
-  img.width = width
-  img.height = height
-  img.alt = ''
-  img.decoding = 'async'
-  return img
-}
-
-function ornament(kind) {
-  const img = image(artRoot + kind + '.webp', 176, 164, 'lodge-ornament')
-  img.loading = 'lazy'
-  return img
-}
-
-function displayShelf(entries, open, label) {
-  const shelf = node('section', null, 'lodge-shelf')
-  shelf.setAttribute('aria-label', label)
-  for (const entry of entries) {
-    const item = action('', () => open(entry))
-    const art = entry.species
-      ? image(wildlifePortrait(fieldSpecies[entry.species], true), 100, 70, 'lodge-ornament field-illustration')
-      : ornament(entry.art)
-    item.append(art, node('strong', entry.name), node('small', entry.badge ?? 'Lodge addition'))
-    shelf.append(item)
-  }
-  return shelf
-}
-
-function upgradeList(progress) {
-  const details = node('details', null, 'career-ledger')
-  details.append(node('summary', 'Lodge additions · ' + progress.upgrades.length + ' of ' + lodgeUpgrades.length))
-  const earned = new Set(progress.upgrades.map(upgrade => upgrade.id))
-  const list = node('ul', null, 'career-requirements lodge-upgrades')
-  for (const up of lodgeUpgrades) {
-    const unlocked = earned.has(up.id)
-    const row = node('li')
-    row.id = 'addition-' + up.id
-    row.dataset.met = String(unlocked)
-    row.append(node('strong', up.name), node('small', (unlocked ? 'Earned · ' : '') + lodgeRequirements(up)))
-    list.append(row)
-  }
-  details.append(list)
-  return details
-}
-
-function tribute(player) {
-  const earned = Boolean(player.progression.boyd) && !player.progression.paused
-  const plaque = node('section', null, 'lodge-tribute')
-  plaque.setAttribute('aria-label', 'Master Hunter tribute')
-  plaque.dataset.qualified = String(earned)
-  if (earned) {
-    const portrait = image(prestigeKit[0], 768, 960, 'tribute-portrait')
-    portrait.alt = 'Boyd, the yellow Labrador, wearing his signature collar'
-    portrait.loading = 'lazy'
-    plaque.append(portrait)
-  }
-  const inscription = node('div', null, 'tribute-inscription')
-  if (earned) inscription.append(image(prestigeKit[1], 52, 52))
-  inscription.append(node('p', earned ? 'QUALIFIED' : 'RESERVED', 'lodge-kicker'),
-    node('h4', 'Boyd · Master Hunter'),
-    node('p', earned ? player.nickname + ' · Earned ' + date(player.progression.boyd)
-      : 'This tribute opens when the full Master Hunter checklist is complete.'))
-  if (earned) inscription.append(node('small', 'Signature collar · Master Hunter vest · Master Hunter bandana'))
-  plaque.append(inscription)
-  const requirements = node('details', null, 'career-ledger tribute-requirements')
-  requirements.append(node('summary', 'Master Hunter requirements'), qualificationCard(player))
-  return [plaque, requirements]
-}
-
-function overview(player, { navigate, competitive = [] }) {
-  const standing = careerStanding(player.career)
-  const progress = lodgeProgress(player, standing)
-  const tier = progress.tier
-  const next = lodgeTiers.find(candidate => candidate.level > standing.level)
-  const room = node('section', null, 'lodge-interior lodge-' + tier.id)
-  room.dataset.tier = tier.id
-  const intro = node('div', null, 'lodge-tier-title')
-  const rank = standing.level === 100 && !player.progression.boyd ? 'Level 100' : standing.rank.name + ' · Level ' + standing.level
-  intro.append(node('p', 'TIER ' + tier.numeral + '  /  ' + rank, 'lodge-kicker'), node('h3', tier.name))
-  const frame = image(artRoot + 'tier-' + (lodgeTiers.indexOf(tier) + 1) + '.webp', 720, 440, 'lodge-interior-art')
-  frame.alt = tier.description
-  const note = node('p', next ? next.name + ' opens at Level ' + next.level : 'The lodge is fully built. The collection still grows.', 'room-note')
-  room.append(intro, frame, note)
-  const additions = upgradeList(progress)
-  const display = []
-  for (const up of progress.upgrades.toReversed()) {
-    if (!display.some(entry => entry.art === up.art)) display.push(up)
-    if (display.length === 3) break
-  }
-  if (display.length) room.append(displayShelf(display, entry => {
-    additions.open = true
-    additions.querySelector('#addition-' + entry.id)?.scrollIntoView({ block: 'center' })
-  }, 'Earned Lodge additions'))
-  const [master, requirements] = tribute(player)
-  const shortcuts = node('div', null, 'lodge-shortcuts')
-  shortcuts.append(action('Your retriever', () => navigate('kennel')), action('Master Hunter', () => {
-    master.scrollIntoView({ block: 'start' })
-    requirements.querySelector('summary').focus({ preventScroll: true })
-  }))
-  room.append(shortcuts)
-  const trophies = earnedTrophies(player)
-  const pins = player.lodgeDisplay.pins.flatMap(key => trophies.filter(item => item.key === key))
-  const fallback = trophies.filter(item => item.category !== 'hall').sort(awardOrder)
-  const chosen = curated(fallback, pins)
-  const shelf = node('section', null, 'lodge-display-room')
-  shelf.append(heading('On display', pins.length ? 'Your pinned trophies take the front shelf.' :
-    chosen.length ? 'Pin an earned trophy to put it here.' : 'The first shelf is ready for a field discovery or earned Honor.'))
-  if (chosen.length) shelf.append(displayShelf(chosen, entry => navigate('collection', entry.key), 'Trophy shelf'))
-  if (competitive.length) shelf.append(node('p', number(competitive.length) + ' awards recorded by Worldwide Camp', 'room-note'))
-  shelf.append(action('Open the trophy room', () => navigate('collection')))
-  return [room, additions, shelf, master, requirements]
-}
-
 function trophyRoom(player, { lodge, target, navigate, competitive = [] }) {
-  const online = competitive.map(id => ({ key: 'competitive:' + id, category: 'competitive', name: honorById.get(id).name,
-    badge: honorById.get(id).tier, art: 'legend', description: 'Worldwide Camp · ' + verifiedHonorRequirements[id] }))
+  const online = competitive.filter(id => honorById.has(id)).map(id => ({ key:'competitive:' + id,
+    category:'competitive', name:honorById.get(id).name, badge:honorById.get(id).tier, art:'legend',
+    description:'Worldwide Camp · ' + verifiedHonorRequirements[id] }))
   const trophies = [...earnedTrophies(player), ...online].sort(awardOrder)
-  const room = node('section', null, 'lodge-display-room')
-  const significant = trophies.filter(item => item.category === 'legend' || item.badge === 'Platinum' ||
-    (item.category === 'honors' && item.badge === 'Gold' && item.date))
-  const gallery = heading('Trophy room', number(trophies.length) + ' earned displays')
-  if (significant.length && !target) gallery.append(displayShelf(curated(significant),
-    item => jumpTo(item.key), 'Recent or distinguished trophies'))
-  const filters = node('div', null, 'board-filters')
-  const categories = node('select')
-  categories.setAttribute('aria-label', 'Trophy category')
-  for (const [key, label] of Object.entries({ all: 'All trophies', pinned: 'Pinned shelf', ...categoryNames })) {
-    const option = node('option', label)
-    option.value = key
-    categories.append(option)
-  }
+  const room = node('section', null, 'legacy-gallery')
   const search = collectionSearch('Search trophies')
-  const rarity = collectionSelect('Trophy rarity', { all: 'All tiers', Bronze: 'Bronze', Silver: 'Silver', Gold: 'Gold', Platinum: 'Platinum' })
-  const sort = collectionSelect('Order trophies', { recent: 'Newest first', name: 'Name', tier: 'Highest tier first' })
-  const tools = node('div', null, 'collection-tools')
-  filters.append(categories, rarity, sort, action('Full Field Honors', () => navigate('trophies')))
-  tools.append(search, filters)
-  const status = node('p', null, 'room-note')
-  status.setAttribute('role', 'status')
-  const list = node('div', null, 'lodge-trophy-list')
-  const paging = node('div', null, 'lodge-paging')
-  const range = node('span', null, 'room-note')
-  const previous = action('Previous', () => { page--; render(true) })
-  const next = action('Next', () => { page++; render(true) })
-  paging.append(previous, range, next)
+  const chips = node('div',null,'legacy-filter-chips')
+  chips.setAttribute('role','group')
+  chips.setAttribute('aria-label','Trophy category')
+  const groups = {
+    'All':null, 'On display':['pinned'], 'Field finds':['discovery','wildlife','retrieves','regional'],
+    'Medals & milestones':['honors','career','legend','competitive'], 'Camp humor':['hall'],
+  }
+  const list = node('div',null,'lodge-trophy-list')
+  const status = node('p',null,'room-note')
+  status.setAttribute('role','status')
+  const paging = node('div',null,'lodge-paging')
+  const range = node('span',null,'room-note')
+  const previous = action('Previous',() => { page--; render(true) })
+  const next = action('Next',() => { page++; render(true) })
+  paging.append(previous,range,next)
   let page = 0
-  let highlight
+  let highlight = target
+  let category = 'All'
   const pageSize = 10
-  const ownedDisplay = () => lodge.players().find(item => item.id === player.id).lodgeDisplay.pins
-  function pool() {
-    const choices = trophies.filter(item => (categories.value === 'all' ||
-      (categories.value === 'pinned' ? ownedDisplay().includes(item.key) : item.category === categories.value)) &&
-      (rarity.value === 'all' || item.badge === rarity.value) && matchesCollection(search.value, item.name, item.badge))
-    if (sort.value === 'name') choices.sort((a, b) => a.name.localeCompare(b.name))
-    if (sort.value === 'tier') choices.sort((a, b) => (medals[b.badge] ?? 0) - (medals[a.badge] ?? 0))
-    return choices
+  const ownedDisplay = () => lodge.players().find(item => item.id === player.id)?.lodgeDisplay.pins ?? []
+  function changeDisplay(item, replacement) {
+    const wasPinned = ownedDisplay().includes(item.key)
+    const saved = lodge.toggleTrophy(player.id,item.key,replacement ?? null)
+    status.textContent = saved ? (wasPinned ? 'Automatic display restored.' : 'On your mantel.') : 'This display could not be saved.'
+    if (!saved) return
+    highlight = item.key
+    render()
+    list.querySelector('[open] summary')?.focus({preventScroll:true})
   }
   function render(scroll = false) {
-    const choices = pool()
-    page = Math.min(page, Math.max(0, Math.ceil(choices.length / pageSize) - 1))
     const pins = ownedDisplay()
+    const choices = trophies.filter(item => (category === 'All' || category === 'On display' && pins.includes(item.key) ||
+      groups[category]?.includes(item.category)) && matchesCollection(search.value,item.name,item.badge))
+    page = Math.max(0,Math.min(page,Math.ceil(choices.length / pageSize)-1))
     const start = page * pageSize
-    list.replaceChildren(...choices.slice(start, start + pageSize).map(item => {
-      const detail = node('details', null, 'lodge-trophy')
+    list.replaceChildren(...choices.slice(start,start+pageSize).map(item => {
+      const detail = node('details',null,'lodge-trophy')
       detail.dataset.trophy = item.key
+      if (item.category === 'legend' || item.badge === 'Platinum') detail.dataset.prestige = 'true'
       detail.open = highlight === item.key
       const summary = node('summary')
       const title = node('span')
-      title.append(node('strong', item.name), node('small', item.badge + (pins.includes(item.key) ? ' · Pinned' : '')))
-      summary.append(item.species ? image(wildlifePortrait(fieldSpecies[item.species], true),100,70) : ornament(item.art), title)
-      const about = node('div', null, 'trophy-detail')
-      if (item.description) about.append(node('p', item.description))
-      if (item.checks?.length) {
-        const criteria = node('ul')
-        item.checks.forEach(check => criteria.append(node('li', checkLabel(check))))
-        about.append(criteria)
-      }
-      if (item.date) about.append(node('p', 'Recorded ' + date(item.date)))
-      if (!lodge.practice && item.category !== 'competitive') about.append(action(pins.includes(item.key) ? 'Unpin trophy' : 'Pin trophy', () => {
-        const changed = lodge.toggleTrophy(player.id, item.key)
-        status.textContent = changed ? (pins.includes(item.key) ? 'Trophy unpinned.' : 'Trophy pinned to your shelf.')
-          : pins.length >= trophyLimit ? 'Unpin a trophy to make room for another.' : 'Unable to save that display.'
-        if (changed) {
-          highlight = item.key
-          render()
-          Array.from(list.children).find(card => card.dataset.trophy === item.key)?.querySelector('button')?.focus({ preventScroll: true })
+      const pinned = pins.includes(item.key)
+      title.append(node('strong',item.name),node('small',item.badge + (pinned ? ' · Displayed' : '')))
+      summary.append(exhibitImage(item),title)
+      const about = exhibitCaption(item)
+      if ((!lodge.practice || lodge.preview) && item.category !== 'competitive') {
+        if (pinned || pins.length < trophyLimit)
+          about.append(action(pinned ? 'Unpin trophy' : 'Pin trophy',() => changeDisplay(item)))
+        else {
+          const choices = node('div',null,'legacy-swap')
+          for (const pin of pins) {
+            const old = trophies.find(entry => entry.key === pin)
+            if (old) choices.append(action('Replace ' + old.name,() => changeDisplay(item,pin)))
+          }
+          about.append(choices)
         }
-      }))
-      detail.append(summary, about)
+      }
+      detail.append(summary,about)
       return detail
     }))
-    if (!choices.length) list.append(node('p', 'No earned trophies in this view.', 'room-note'))
-    range.textContent = choices.length ? (start + 1) + '–' + Math.min(choices.length, start + pageSize) + ' of ' + choices.length : '0 trophies'
-    previous.disabled = !page
-    next.disabled = start + pageSize >= choices.length
+    if (!choices.length) list.append(node('p','No earned trophies in this view.','room-note'))
+    range.textContent = choices.length ? (start+1)+'–'+Math.min(choices.length,start+pageSize)+' of '+choices.length : '0 trophies'
+    previous.disabled = page === 0
+    next.disabled = start+pageSize >= choices.length
     paging.hidden = choices.length <= pageSize
-    if (scroll) paging.scrollIntoView({ block: 'start' })
+    if (scroll) paging.scrollIntoView({block:'start'})
   }
-  function jumpTo(key) {
-    categories.value = rarity.value = 'all'
-    sort.value = 'recent'
-    search.value = ''
-    page = Math.max(0, Math.floor(trophies.findIndex(item => item.key === key) / pageSize))
-    highlight = key
-    render()
-    requestAnimationFrame(() => [...list.children].find(card => card.dataset.trophy === key)?.scrollIntoView({ block: 'start' }))
+  for (const label of Object.keys(groups)) {
+    const chip = action(label,() => {
+      category = label
+      for (const other of chips.children) other.setAttribute('aria-pressed',String(other === chip))
+      page = 0
+      highlight = undefined
+      render()
+    },{'aria-pressed':String(category === label)})
+    chips.append(chip)
   }
-  const resetPage = () => { page = 0; highlight = undefined; render() }
-  for (const filter of [categories, rarity, sort]) filter.addEventListener('change', resetPage)
-  search.addEventListener('input', resetPage)
-  room.append(gallery, tools, status, paging, list)
-  if (target) jumpTo(target)
-  else render()
+  search.addEventListener('input',() => { page = 0; highlight = undefined; render() })
+  room.append(heading('Trophy room',number(trophies.length) + ' earned displays'),
+    search,chips,status,paging,list,action('Field Honors',() => navigate('trophies')))
+  if (target) page = Math.floor(Math.max(0,trophies.findIndex(item => item.key === target)) / pageSize)
+  render()
+  if (target) requestAnimationFrame(() => list.querySelector('[open]')?.scrollIntoView({block:'start'}))
   return [room]
 }
 
 function migration(player, lodge, navigate) {
-  const completed = completeMigrations(player)
-  const summary = number(player.migration.farthest) + ' of ' + expeditionRegions.length + ' reached · ' + number(completed) +
-    ' complete migration' + (completed === 1 ? '' : 's')
-  const panel = node('section', null, 'lodge-map-room')
-  const chart = migrationMap()
-  const controls = node('div', null, 'lodge-map-controls')
-  const stops = node('select')
-  stops.setAttribute('aria-label', 'Migration territory')
-  for (const region of expeditionRegions) stops.append(node('option', (region.index + 1) + ' · ' + region.name))
-  const previous = action('←', () => move(stops.selectedIndex - 1), { 'aria-label': 'Previous territory' })
-  const next = action('→', () => move(stops.selectedIndex + 1), { 'aria-label': 'Next territory' })
-  controls.append(previous, stops, next)
+  const panel = node('section',null,'lodge-map-room')
+  let selected = 0
+  const wall = routeWall(player,index => move(index,true))
+  const controls = node('div',null,'legacy-journey-controls')
+  const previous = action('←',() => move(selected - 1),{'aria-label':'Previous territory'})
+  const next = action('→',() => move(selected + 1),{'aria-label':'Next territory'})
+  controls.append(previous,next)
   const detail = node('article', null, 'career-ledger migration-details')
   const records = lodge.personalEntries(player.id).filter(run => run.course === localCourseRuleset)
-  function move(index) {
-    stops.selectedIndex = index
-    const stop = migrationStop(player,index)
+  function move(index, scroll = false) {
+    selected = Math.min(14,Math.max(0,index))
+    const stop = migrationStop(player,selected)
     const { region } = stop
     const status = stop.traversed ? 'Traversed' : stop.reached ? 'Reached' : 'Unreached'
     detail.dataset.region = region.key
     detail.dataset.status = status.toLowerCase()
-    chart.draw(player, index)
-    previous.disabled = index === 0
-    next.disabled = index === expeditionRegions.length - 1
+    wall.draw(player,selected)
+    for (const [index,row] of [...wall.route.children].entries())
+      row.firstElementChild.setAttribute('aria-current',String(index === selected))
+    previous.disabled = selected === 0
+    next.disabled = selected === expeditionRegions.length - 1
+    if (scroll) detail.scrollIntoView({block:'nearest'})
     const regionRecords = records.filter(run => run.territoryKey === region.key)
     const best = key => regionRecords.length ? Math.max(...regionRecords.map(run => run[key])) : null
     const stats = node('dl', null, 'field-list')
@@ -320,8 +174,7 @@ function migration(player, lodge, navigate) {
       detail.append(memories)
     }
   }
-  panel.append(heading('Great Migration', summary), chart.canvas, controls, detail)
-  stops.addEventListener('change', () => move(stops.selectedIndex))
+  panel.append(wall.plate,controls,detail,wall.route)
   move(Math.max(0,player.migration.farthest - 1))
   return [panel]
 }
@@ -377,16 +230,68 @@ function hall(player, navigate) {
   return [room]
 }
 
+function history(player, lodge) {
+  const standing = careerStanding(player.career)
+  const timeline = legacyTimeline(player,standing,lodge.personalEntries(player.id))
+  const room = node('section',null,'legacy-history')
+  room.append(heading('Career timeline','The hunts and milestones that built this Lodge.'))
+  function chapter(entries) {
+    const line = node('ol',null,'legacy-timeline')
+    for (const entry of entries) {
+      const event = node('li')
+      event.append(node('p',entry.kind,'legacy-eyebrow'),node('h4',entry.name))
+      if (entry.detail != null) event.append(node('p', typeof entry.detail === 'number' ? number(entry.detail) + ' pts' : entry.detail))
+      if (entry.date) {
+        const time = node('time',date(entry.date))
+        time.dateTime = entry.date
+        event.append(time)
+      }
+      line.append(event)
+    }
+    return line
+  }
+  if (!timeline.dated.length && !timeline.undated.length)
+    room.append(node('p', 'Your first completed hunt starts this story.','room-note'))
+  if (timeline.dated.length) {
+    const list = chapter(timeline.dated.slice(0,12))
+    room.append(list)
+    if (timeline.dated.length > 12) {
+      let shown = 12
+      const more = action('More milestones', () => {
+        list.append(...chapter(timeline.dated.slice(shown,shown+12)).children)
+        shown += 12
+        more.hidden = shown >= timeline.dated.length
+      })
+      room.append(more)
+    }
+  }
+  if (timeline.undated.length) {
+    const archive = node('details',null,'career-ledger')
+    archive.append(node('summary','Accomplishments without recorded dates'),chapter(timeline.undated))
+    room.append(archive)
+  }
+  return [room]
+}
+
 function recordPanels(player, lodge) {
   const { profile, records, stats, migration: route } = player
+  const room = node('section',null,'legacy-records')
   const section = node('div', null, 'record-grid')
   section.append(...cards([
     ['Highest hunt score', profile.best ? number(profile.best) : '—'], ['Greatest distance', profile.farthest ? meters(profile.farthest) : '—'],
     ['Longest hunt', records.duration ? duration(records.duration) : '—'], ['Most retrieves in a hunt', records.retrieves ? number(records.retrieves) : '—'],
     ['Best treat streak', profile.streak ? number(profile.streak) : '—'], ['Longest verified clear chain', player.progression.best.chain || '—'],
+  ]))
+  const totals = node('div',null,'record-grid')
+  totals.append(...cards([
     ['Lifetime distance', meters(stats.distance)], ['Lifetime retrieves', number(profile.retrieves)], ['Completed hunts', number(stats.runs)],
     ['Active hunt time', duration(stats.playtime)], ['Farthest territory', expeditionRegions[route.farthest - 1]?.name ?? '—'],
     ['Complete migrations', number(completeMigrations(player))],
+    ['Wildlife species observed',number(Object.values(player.wildlife.species).filter(row => row.seen).length)],
+    ['Rare wildlife sightings',number(Object.values(player.wildlife.species).reduce((sum,row) => sum+row.rare,0))],
+    ['Environmental discoveries',number(Object.keys(player.discoveries.entries).length)],
+    ['Field Honors',number(Object.keys(player.progression.honors).length)],
+    ['Equipment owned',number(ownedGear(player,careerStanding(player.career)).length)],
   ]))
   const all = lodge.personalEntries(player.id)
   const grouped = [[localCourseRuleset, 'Current Great Migration'], [courseRuleset, 'Phase 05 Great Migration'], [legacyMigrationRuleset, 'Earlier Great Migration'], ['legacy-10', 'Original route']]
@@ -403,11 +308,13 @@ function recordPanels(player, lodge) {
     book.append(values)
     books.append(book)
   }
-  return [heading('Personal records','Career totals include earlier versions. Retained competitive results are grouped by ruleset.'),section,books]
+  room.append(heading('Field records'),node('h4','Personal bests'),section,node('h4','Tracked career totals'),totals,books)
+  return [room]
 }
 
 export function showLodgeRoom(room, player, context) {
-  if (room === 'overview') return overview(player, context)
+  if (room === 'overview') return legacyInterior(player, context)
+  if (room === 'history') return history(player,context.lodge)
   if (room === 'collection') return trophyRoom(player, context)
   if (room === 'migration') return migration(player, context.lodge, context.navigate)
   if (room === 'equipment') return equipment(player, context.navigate)

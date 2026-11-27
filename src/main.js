@@ -384,6 +384,7 @@ function initialize() {
       reset: restartStudio,
       appearance: equipment => dog.appearance(equipment),
       kennel: button => lodgeUI.open(button, 'kennel'),
+      lodge: (button, room, exhibit, preview) => lodgeUI.open(button,room,exhibit,preview),
       renderer: () => renderer.info.memory,
     })
     restartStudio()
@@ -1169,21 +1170,29 @@ function start(ticket, inputAt) {
   if (productionSession.locked() || ui['content-screen'].open || mode === 'running' || !trailReady || !contextReady ||
       ui.onboarding.open || ui.tutorial.open) return
   performanceProbe?.restart(inputAt, renderer.info)
+  const profileStart = performanceProbe?.stamp()
   if (!lodge.current().enrollment && !diagnosticsRequested) {
     const player = lodge.current()
     lodge.enroll(player.id, player.nickname, 'guest')
+    performanceProbe?.operation('hunt-guest-profile', 'local save', profileStart)
   }
   runPlayer = lodge.current().id
   runPermit = !diagnosticsRequested && ticket?.profile === runPlayer &&
     ticket.owner === camp.member(runPlayer)?.identity ? ticket : null
   runTrace = runPermit ? recordRankedActions() : null
   runCourse = runPermit || collisionRequested && flags.get('course') === 'phase05' ? courseRuleset : localCourseRuleset
+  const trailStart = performanceProbe?.stamp()
   resetTrail(runPermit?.seed ?? debug?.seed ?? Math.floor(Math.random() * 0x100000000))
+  performanceProbe?.operation('hunt-trail-reset', 'state and replay setup', trailStart)
   coaching = lodge.current().stats.runs < 3
   const onSkill = debug ? event => debug.skill(event) : undefined
   runStatistics = previewRegion ? createRunStatistics(undefined, onSkill, runCourse) : lodge.beginRun(onSkill, runCourse)
+  const uiStart = performanceProbe?.stamp()
   setMode('running', { gesture: true, restart: true })
+  performanceProbe?.operation('hunt-scene-entry','HUD and gesture audio',uiStart)
+  const spawnStart = performanceProbe?.stamp()
   populate()
+  performanceProbe?.operation('hunt-opening-entities','trail entity population',spawnStart)
 }
 
 function mainMenu() {

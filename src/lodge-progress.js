@@ -1,3 +1,5 @@
+import { hallOfShame as humorousPatches, medals, patches } from './honors.js'
+import { environmentalDiscoveries } from './environment-discoveries.js'
 import { careerStanding, dogRanks, levelFromXP } from './career.js'
 import { expeditionRegions, migrationDuration } from './expedition.js'
 import { honorById, localHonors, waterfowlSpecies } from './field-honors.js'
@@ -54,6 +56,7 @@ const hasHonor = (player, id) => Object.hasOwn(player.progression.honors, id)
 const seen = (player, id) => player.wildlife.species[id]?.seen ?? 0
 const lookup = new Map(kennelItems.map(item => [item.id, item]))
 const hallOfShame = 'Hall of Shame'
+const patchesById = new Map(patches.map(patch => [patch.id, patch]))
 
 export function lodgeRequirements(upgrade) {
   const { kind, target, level } = upgrade
@@ -87,6 +90,21 @@ export function lodgeChanges(before, after) {
     upgrades: after.upgrades.filter(upgrade => !existing.has(upgrade.id)) }
 }
 
+export function honorDisplay(honor) {
+  const check = honor.checks[0]?.key ?? ''
+  const [kind, id] = check.split(':')
+  if (honor.id === 'legend-whole-course') return { art: 'migration' }
+  if (honor.category === hallOfShame) return { art: 'certificate' }
+  if (honor.category === 'Legendary') return { art: 'bronze-flight' }
+  if (kind === 'seen' && Object.hasOwn(fieldSpecies,id)) return { art: 'observation', species: id }
+  if (kind === 'retrieve') return { art: id === 'pheasant' ? 'pheasant' : 'decoy' }
+  if (honor.category === 'Exploration' || honor.category === 'Regional') return { art: 'map' }
+  if (honor.category === 'Obstacle Mastery' || honor.category === 'Skill & Survival') return { art: 'skill-form' }
+  if (honor.category === 'Wildlife & Upland' || honor.category === 'Secrets') return { art: 'observation' }
+  if (honor.category === 'Retrieval & Waterfowl') return { art: 'decoy' }
+  return { art: honor.tier === 'Platinum' ? 'bronze-flight' : 'record' }
+}
+
 export function trophyFor(player, key) {
   if (typeof key !== 'string') return null
   const separator = key.indexOf(':')
@@ -96,7 +114,7 @@ export function trophyFor(player, key) {
     const honor = honorById.get(id)
     if (!honor || honor.pending || !hasHonor(player, id)) return null
     const category = honor.category === hallOfShame ? 'hall' : honor.category === 'Legendary' ? 'legend' : 'honors'
-    return { key, category, name: honor.name, art: category === 'hall' ? 'shame' : category === 'legend' ? 'legend' : 'medal',
+    return { key, category, name: honor.name, ...honorDisplay(honor),
       date: player.progression.honors[id], badge: honor.tier, checks: honor.checks }
   }
   if (kind === 'observe' || kind === 'retrieve') {
@@ -109,6 +127,27 @@ export function trophyFor(player, key) {
       art: watched ? 'observation' : id === 'pheasant' ? 'pheasant' : 'decoy', species: watched ? id : undefined,
       badge: watched ? 'Field observation' : 'Retrieve display', date: watched ? row.first : null,
       description: count + ' ' + noun + (count === 1 ? '' : 's') }
+  }
+  if (kind === 'discovery') {
+    if (!Object.hasOwn(environmentalDiscoveries,id) || !Object.hasOwn(player.discoveries.entries,id)) return null
+    const entry = environmentalDiscoveries[id]
+    return { key, category:'discovery', name:entry.name, territory:entry.territory,
+      date:player.discoveries.entries[id], description:entry.note,
+      art:id === 'platte-crane-passage' ? 'bronze-flight' : id === 'divide-aurora' ? 'aurora-frame' : 'map',
+      badge:'Field discovery' }
+  }
+  if (kind === 'migration' && id === 'complete' && completeMigrations(player)) {
+    return { key, category:'legend', name:'The Great Migration', art:'migration', badge:'All 15 territories',
+      description:'Completed the route from Gulf Coast Marsh to Canadian Mountain Wilderness.' }
+  }
+  if (kind === 'patch') {
+    const patch = patchesById.get(id)
+    const dates = player.patches[id]
+    if (!patch || !dates?.length) return null
+    const grade = patch.goals.length > 1 ? medals[dates.length - 1] + ' patch' : 'Field patch'
+    const humorous = humorousPatches.includes(patch)
+    return { key, category:humorous ? 'hall' : 'honors', name:patch.name, date:dates.at(-1),
+      art:humorous ? 'certificate' : 'record', badge:grade, description:patch.description }
   }
   if (kind === 'region') {
     const region = expeditionRegions.find(place => place.key === id)
@@ -128,6 +167,8 @@ export function trophyFor(player, key) {
 
 export function earnedTrophies(player) {
   const keys = [...Object.keys(player.progression.honors).map(id => 'honor:' + id),
+    ...Object.keys(player.discoveries.entries).map(id => 'discovery:' + id),
+    ...Object.keys(player.patches).map(id => 'patch:' + id), 'migration:complete',
     ...Object.keys(player.wildlife.species).flatMap(id => ['observe:' + id, 'retrieve:' + id]),
     ...expeditionRegions.map(region => 'region:' + region.key), ...dogRanks.map(rank => 'rank:' + rank.id)]
   return keys.map(key => trophyFor(player, key)).filter(Boolean)
@@ -138,11 +179,25 @@ export const recentGearLimit = 6
 export const lodgeDisplayVersion = 1
 const bounded = (list, eligible, limit) => Array.isArray(list) ? [...new Set(list.filter(eligible))].slice(0, limit) : []
 
+export const lodgeFinishes = Object.freeze([
+  { id:'camp', name:'Camp canvas', level:1 },
+  { id:'willow', name:'Forest wool', level:11 },
+  { id:'tobacco', name:'Saddle leather', level:26 },
+  { id:'slate', name:'Northwoods tartan', level:51 },
+  { id:'heritage', name:'Heritage burgundy', level:76 },
+])
+
+export function availableFinish(id, player) {
+  const level = levelFromXP(player.career.xp)
+  return lodgeFinishes.find(item => item.id === id && level >= item.level)
+}
+
 export function normalizeLodgeDisplay(raw, player, practice = false) {
   const source = !practice && raw?.version === lodgeDisplayVersion ? raw : {}
   const available = Array.isArray(source.recentGear) && source.recentGear.length
     ? new Set(ownedGear(player, careerStanding(player.career)).map(item => item.id)) : null
-  return { version: lodgeDisplayVersion,
+  const finish = availableFinish(source.finish, player)?.id
+  return { version: lodgeDisplayVersion, ...(finish && finish !== 'camp' ? { finish } : {}),
     pins: bounded(source.pins, key => Boolean(trophyFor(player, key)), trophyLimit),
     recentGear: available ? bounded(source.recentGear, id => available.has(id), recentGearLimit) : [] }
 }

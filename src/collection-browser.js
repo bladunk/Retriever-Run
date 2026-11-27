@@ -30,7 +30,7 @@ export function recentlyEarned(a, b) {
 }
 
 export const roomGroups = {
-  overview: ['overview', 'collection', 'trophies', 'career', 'records', 'migration', 'shame'],
+  overview: ['overview', 'collection', 'trophies', 'career', 'history', 'records', 'migration', 'shame'],
   kennel: ['kennel', 'equipment'],
   journal: ['journal'],
   worldwide: ['worldwide', 'camp-profile', 'camp-archives'],

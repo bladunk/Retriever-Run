@@ -437,6 +437,19 @@ export function createTerrain(scene, showSign, probe) {
     if (done) {
       job.tile.preparation = { buildMs: job.packet.buildMs, unpackMs: job.total, integrationPeakMs: job.max }
       probe?.operation('terrain-ready', job.packet.index, start)
+      if (probe && (job.packet.territory === 'boreal' || job.packet.territory === 'foothills')) {
+        const buffers = Object.fromEntries(['ground','water','solid','detail'].flatMap(name => {
+          const geometry = job.tile[name].geometry
+          if (!geometry.attributes.position) return []
+          const bytes = Object.values(geometry.attributes).reduce((total,attribute) => total + attribute.array.byteLength,
+            geometry.index?.array.byteLength ?? 0)
+          return [[name, { vertices:geometry.attributes.position.count, bytes }]]
+        }))
+        probe.operation('terrain-transition-packet', {
+          territory:job.packet.territory, tile:job.packet.index, buildMs:job.packet.buildMs,
+          integrationMs:job.total, peakSliceMs:job.max, buffers,
+        })
+      }
       integration = null
     } else if (probe && duration > 4) probe.operation('terrain-slice', job.packet.index, start)
   }
