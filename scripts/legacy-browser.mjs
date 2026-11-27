@@ -3,11 +3,13 @@ import { createServer } from 'node:http'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { extname, resolve, sep } from 'node:path'
 import { chromium, devices, webkit } from 'playwright'
+import { lodgeFixture } from './lodge-fixtures.mjs'
 import { createLegacyPreview } from '../src/legacy-preview.js'
 
 const output = resolve(process.env.FIELD_QA_OUTPUT ?? 'qa-output/legacy')
 const mode = process.argv.includes('chromium') ? chromium : webkit
 const studioOnly = process.argv.includes('studio')
+const earning = process.argv.includes('earning')
 const small = process.argv.includes('small')
 const viewport = small ? { width:320,height:568 } : { width:390,height:844 }
 const roots = new Map([
@@ -49,12 +51,19 @@ try {
       nextPlayer:20, nextRun:Math.max(...saved.map(save => save.nextRun)),
     }
     const ids = saved.map(save => save.active)
-    await page.addInitScript(combined => {
+    if (earning && combined) {
+      ids[0] = 9
+      combined.active = 9
+      combined.players = [lodgeFixture().players.find(player => player.id === 9)]
+      combined.entries = []
+    }
+    await page.addInitScript(({combined,earning}) => {
       const key = 'retriever-run.record'
       if (combined) {
         if (!localStorage.getItem(key)) localStorage.setItem(key,JSON.stringify(combined))
       } else if (!localStorage.getItem(key)) localStorage.setItem(key,'{"legacySentinel":true}')
-    },combined)
+      if (earning) Math.random = () => 7 / 0x100000000
+    },{combined,earning})
     async function load(tier) {
       await page.goto(origin + '/' + edition + '/?perf=1' + (studioOnly
         ? '&studio=1&view=lodge&tier=' + tier : ''),{waitUntil:'domcontentloaded'})
@@ -103,8 +112,41 @@ try {
       await page.locator('[data-fabric=slate]').tap()
       assert.equal(await page.locator('.legacy-cabin').getAttribute('data-finish'),'slate')
       assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).legacySentinel),true)
-      qa.studio = { qualified:true, isolated:true }
+      const exhibits = []
+      if (process.argv.includes('showcase')) {
+        await page.locator('[data-lodge-room=collection]').tap()
+        const search = page.getByRole('searchbox',{name:'Search trophies'})
+        for (const [label,query] of [['waterfowl','Greenhead Retriever'],['crane','Sandhill Cranes over the Platte'],
+          ['skill','Dry Boots'],['migration-award','The Great Migration'],['aurora','Aurora over the Divide']]) {
+          await search.fill(query)
+          const tile = page.locator('[data-trophy]').first()
+          await tile.waitFor()
+          await tile.locator('summary').tap()
+          await image(label,tile)
+          exhibits.push(label)
+        }
+        assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).legacySentinel),true)
+      }
+      qa.studio = { qualified:true, isolated:true, exhibits }
       assert.deepEqual(errors,[])
+      continue
+    }
+    if (earning) {
+      await enter(1)
+      await image('before-earning')
+      await page.locator('.legacy-hunt').tap()
+      const link = page.getByRole('button',{name:'See the Lodge',exact:true})
+      await link.waitFor({timeout:180_000})
+      await image('earned-announcement',page.locator('.report-lodge-award'))
+      await link.tap()
+      await page.locator('[data-tier=cabin]').waitFor()
+      await image('earned-cabin')
+      const record = await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).players[0])
+      assert.equal(record.stats.runs,1)
+      assert.ok(record.legacyHistory.milestones['lodge:cabin'])
+      assert.deepEqual(errors,[])
+      qa.earning = { tier:'cabin', singleReceipt:true, runs:record.stats.runs }
+      await context.close()
       continue
     }
     for (let tier=1; tier<=5; tier++) {
