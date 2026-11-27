@@ -20,7 +20,9 @@ The first two aurora panels show the same isolated puddle in twilight at Battery
 
 [Northern puddle approaches](puddles.webp) · [All 15 approach and jump-window measurements](puddles.json)
 
-[Offline arrival in Endless](endless.webp) · [Rendered segment trace](endless.json)
+[Battery Saver opening, signs and Delta canopy](clarity.webp)
+
+[Offline arrival in Endless](endless.webp) · [Final build segment](endless.json) · [Continuous final build trace](continuous.json)
 
 ## Reproduce
 

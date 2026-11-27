@@ -734,7 +734,7 @@ try {
     await writeFile(resolve(output, 'restart-cycles.json'), JSON.stringify({ seed:7, quality, cycles, samples }, null, 2))
   } else if (args.includes('clarity-views')) {
     const { signDistance } = await fromSource('sign-placement')
-    const points = [['opening',distanceAtTime(5)],['notice',signDistance(0)-5.8],
+    const points = [['opening',distanceAtTime(args.includes('raptor') ? 4.15 : 5)],['notice',signDistance(0)-5.8],
       ['delta-canopy',distanceAtTime(75)],['delta-handoff',distanceAtTime(83)]]
     if (args.includes('woodland')) points.push(['delta-edge',distanceAtTime(89)],['timber',distanceAtTime(102)],
       ['notice-approach',signDistance(0)-14.5])

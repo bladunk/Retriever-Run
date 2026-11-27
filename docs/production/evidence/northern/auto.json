@@ -1,0 +1,213 @@
+{
+  "engine": "webkit",
+  "build": {
+    "version": "1.0.0-rc.5",
+    "id": "41f414c"
+  },
+  "elapsed": 18.006666666666632,
+  "transitions": [
+    {
+      "seconds": 0,
+      "buffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "balanced"
+      },
+      "atlas": "full",
+      "adaptive": {
+        "level": "balanced",
+        "resetReason": "hunt start",
+        "stabilizing": true,
+        "stabilizationRemainingMs": 1080,
+        "cooldownRemainingMs": 0,
+        "recoveryWindows": 0,
+        "recoveryTarget": 4,
+        "window": {
+          "samples": 0,
+          "late": 0,
+          "seconds": 0
+        }
+      }
+    },
+    {
+      "seconds": 4.031666666666658,
+      "buffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "low"
+      },
+      "atlas": "full",
+      "adaptive": {
+        "level": "low",
+        "resetReason": "hunt start",
+        "stabilizing": false,
+        "stabilizationRemainingMs": 0,
+        "cooldownRemainingMs": 2117,
+        "recoveryWindows": 0,
+        "recoveryTarget": 3,
+        "window": {
+          "samples": 9,
+          "late": 8,
+          "seconds": 0.28333333333333116
+        },
+        "lastWindow": {
+          "samples": 37,
+          "late": 36,
+          "meanMs": 32.88,
+          "maxMs": 33.33,
+          "seconds": 1.22,
+          "pressureWindows": 2,
+          "headroomWindows": 0
+        },
+        "lastDecision": {
+          "from": "balanced",
+          "to": "low",
+          "reason": "sustained frame pressure",
+          "samples": 37,
+          "late": 36,
+          "meanMs": 32.88,
+          "maxMs": 33.33,
+          "seconds": 1.22,
+          "pressureWindows": 2,
+          "headroomWindows": 0
+        }
+      }
+    },
+    {
+      "seconds": 9.014999999999887,
+      "buffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "balanced"
+      },
+      "atlas": "full",
+      "adaptive": {
+        "level": "balanced",
+        "resetReason": "hunt start",
+        "stabilizing": false,
+        "stabilizationRemainingMs": 0,
+        "cooldownRemainingMs": 2008,
+        "recoveryWindows": 0,
+        "recoveryTarget": 4,
+        "window": {
+          "samples": 24,
+          "late": 0,
+          "seconds": 0.3916666666666532
+        },
+        "lastWindow": {
+          "samples": 73,
+          "late": 0,
+          "meanMs": 16.67,
+          "maxMs": 16.67,
+          "seconds": 1.22,
+          "pressureWindows": 0,
+          "headroomWindows": 3
+        },
+        "lastDecision": {
+          "from": "low",
+          "to": "balanced",
+          "reason": "consistent frame headroom",
+          "samples": 73,
+          "late": 0,
+          "meanMs": 16.67,
+          "maxMs": 16.67,
+          "seconds": 1.22,
+          "pressureWindows": 0,
+          "headroomWindows": 3
+        }
+      }
+    },
+    {
+      "seconds": 13.514999999999695,
+      "buffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "high"
+      },
+      "atlas": "full",
+      "adaptive": {
+        "level": "high",
+        "resetReason": "hunt start",
+        "stabilizing": false,
+        "stabilizationRemainingMs": 0,
+        "cooldownRemainingMs": 2367,
+        "recoveryWindows": 0,
+        "recoveryTarget": null,
+        "window": {
+          "samples": 2,
+          "late": 0,
+          "seconds": 0.03333333333333212
+        },
+        "lastWindow": {
+          "samples": 73,
+          "late": 0,
+          "meanMs": 16.67,
+          "maxMs": 16.67,
+          "seconds": 1.22,
+          "pressureWindows": 0,
+          "headroomWindows": 4
+        },
+        "lastDecision": {
+          "from": "balanced",
+          "to": "high",
+          "reason": "consistent frame headroom",
+          "samples": 73,
+          "late": 0,
+          "meanMs": 16.67,
+          "maxMs": 16.67,
+          "seconds": 1.22,
+          "pressureWindows": 0,
+          "headroomWindows": 4
+        }
+      }
+    }
+  ],
+  "signs": {
+    "width": 1024,
+    "height": 448,
+    "filtering": "trilinear mipmaps",
+    "requestedAnisotropy": 8,
+    "visible": []
+  },
+  "surfaces": {
+    "active": "full",
+    "pending": false,
+    "lastLoadMs": 1009,
+    "width": 2560,
+    "height": 2048,
+    "estimatedRgbaMipBytes": 27962027,
+    "gulfAtlas": true,
+    "gulfAtlasPending": false
+  },
+  "hunt": {
+    "id": 1,
+    "discarded": 0,
+    "peakTextures": 22,
+    "peakGeometries": 68,
+    "presentation": {
+      "samples": 923,
+      "maxMs": 538,
+      "over20": 922,
+      "over33_3": 917,
+      "over50": 626,
+      "averageMs": 57.41
+    },
+    "cpu": {
+      "samples": 924,
+      "maxMs": 726,
+      "over20": 883,
+      "over33_3": 608,
+      "over50": 30,
+      "averageMs": 36.77
+    },
+    "averageFPS": 17.4
+  }
+}

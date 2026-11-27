@@ -1,0 +1,150 @@
+{
+  "engine": "chromium",
+  "seed": 7,
+  "offline": true,
+  "quality": "low",
+  "from": 0,
+  "elapsed": 461.0400000000011,
+  "executed": 408,
+  "build": {
+    "version": "1.0.0-rc.5",
+    "id": "3ee97be"
+  },
+  "drawingBuffer": {
+    "width": 102,
+    "height": 181,
+    "scale": 0.3199999928474426,
+    "devicePixelRatio": 0.3199999928474426,
+    "preset": "low"
+  },
+  "territory": "mountain",
+  "transitions": [
+    {
+      "territory": "gulf",
+      "wall": 0,
+      "at": 11526.800000011921
+    },
+    {
+      "territory": "cypress",
+      "wall": 450,
+      "at": 80217.80000001192
+    },
+    {
+      "territory": "flyway",
+      "wall": 450,
+      "at": 131750.80000001192
+    },
+    {
+      "territory": "timber",
+      "wall": 450,
+      "at": 204312.20000004768
+    },
+    {
+      "territory": "ozark",
+      "wall": 450,
+      "at": 337888
+    },
+    {
+      "territory": "farm",
+      "wall": 283.33333333337214,
+      "at": 565348.8000000119
+    },
+    {
+      "territory": "platte",
+      "wall": 450,
+      "at": 761109.1000000238
+    },
+    {
+      "territory": "sandhills",
+      "wall": 450,
+      "at": 959543.7000000477
+    },
+    {
+      "territory": "prairie",
+      "wall": 450,
+      "at": 1102934.4000000358
+    },
+    {
+      "territory": "dakota",
+      "wall": 450,
+      "at": 1181033.5
+    },
+    {
+      "territory": "manitoba",
+      "wall": 450,
+      "at": 1245598.800000012
+    },
+    {
+      "territory": "parklands",
+      "wall": 450,
+      "at": 1301543
+    },
+    {
+      "territory": "boreal",
+      "wall": 450,
+      "at": 1385549.7000000477
+    },
+    {
+      "territory": "foothills",
+      "wall": 450,
+      "at": 1414947
+    },
+    {
+      "territory": "mountain",
+      "wall": 450,
+      "at": 1437438.800000012
+    }
+  ],
+  "hunt": {
+    "id": 1,
+    "discarded": 1633,
+    "peakTextures": 13,
+    "peakGeometries": 129,
+    "presentation": {
+      "samples": 1999,
+      "maxMs": 6086.400000035763,
+      "over20": 1897,
+      "over33_3": 1871,
+      "over50": 1854,
+      "averageMs": 727.51
+    },
+    "cpu": {
+      "samples": 2000,
+      "maxMs": 3984.2000000476837,
+      "over20": 141,
+      "over33_3": 116,
+      "over50": 40,
+      "averageMs": 18.03
+    },
+    "averageFPS": 1.4
+  },
+  "draws": 63,
+  "triangles": 141423,
+  "textures": 13,
+  "geometries": 124,
+  "programs": 29,
+  "residentTiles": 7,
+  "ranges": {
+    "textures": [
+      11,
+      13
+    ],
+    "geometries": [
+      34,
+      129
+    ],
+    "tiles": [
+      3,
+      7
+    ],
+    "packs": [
+      0,
+      2
+    ],
+    "tileSliceMs": [
+      0.19999998807907104,
+      42.10000002384186
+    ]
+  },
+  "sampleCount": 923
+}

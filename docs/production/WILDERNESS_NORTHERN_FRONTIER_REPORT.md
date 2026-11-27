@@ -101,9 +101,13 @@ Six offline Chromium Battery Saver restarts finished at **44 geometries, 12 text
 
 An alternating Node sample built 12 matching terrain tiles per territory on each revision, after warming one tile per build. Median typed-array packet size increased around the marshes, rocks and mountains. Boreal had the largest increase, about 128 KB per sampled packet. Median build wall time in that sample was 82 → 83 ms in the Boreal, and 75.8 → 72.4 ms in the Foothills. The worker packet includes transfer buffers, and its size does not give the renderer’s GPU residency. [Worker packet sizes and timings](evidence/northern/terrain-packets.json)
 
-### Final territory into Endless
+The WebKit Auto fixture exercised the same decision path with a scripted opener and sustained pressure, then gave it controlled headroom. It reached Balanced → Battery Saver → Balanced → High, with the last transition observed at 13.51 simulated seconds. The full atlas stayed resident. The report retained 1024 × 448 sign textures with trilinear mipmaps and requested 8× anisotropy. The first Chromium attempt timed out under concurrent software load at 4.50 simulated seconds. The separate WebKit retry passed. The scripted cadence establishes adaptive behavior independently of the actual device frame rate. [Auto trace](evidence/northern/auto.json)
 
-The separate offline Chromium segment started at 420 seconds and passed 461 seconds using 44 scripted inputs on the actual fixed-step route. Across 83 checkpoints, terrain reached seven tiles, geometry peaked at 85 and textures peaked at 13. The final snapshot retained 25 shader programs and the mountain territory. This fast-clock run uses a 102 × 181 Battery Saver buffer to keep the software test practical. The probe discarded 145 wall-time samples over 350 ms while retaining them in the presentation interval distribution. It is a coverage and residency result. The CPU and interval figures describe the occupied software renderer. [Endless arrival](evidence/northern/endless.webp) · [Segment trace](evidence/northern/endless.json)
+### Rendered offline route
+
+The final runtime `41f414c` completed a continuous offline WebKit run from the Gulf Coast through all **15 territories** to **461.03 simulated seconds**, eleven seconds into Endless. The capture used 408 fixed-step scripted inputs. Across 923 checkpoints the renderer used at most seven tiles, two packs, 12 textures and 124 geometries. The route remained in the mountain territory with 28 programs at the last sample.
+
+The run uses an accelerated clock and a 102 × 181 Battery Saver buffer. The diagnostic flagged 1,663 synthetic wall-time samples above its 350 ms limit. The trace still reports all real presentation intervals, including a 472 ms maximum. This was a route coverage and resource residency test. It provides no physical-device performance estimate. An earlier Chromium draft and a separate offline final-build Chromium segment from 420 to 461 seconds provide additional coverage. [Continuous final trace](evidence/northern/continuous.json) · [Continuous Chromium draft](evidence/northern/continuous-preview.json) · [Final Chromium Endless segment](evidence/northern/endless.json) · [Endless arrival](evidence/northern/endless.webp)
 
 ### Hazard readability
 
@@ -116,6 +120,7 @@ The rendered WebKit pass inspected one real seeded puddle in each territory at 1
 - Existing built-in puddle clearance checks cover all 45 territory and lane combinations.
 - Production artifact, required asset checks and manifest verification passed. WebKit verified a partial Labrador transfer, retry, corruption repair and an interrupted Heartland-to-RC.5 update. A hunt and unsaved Lodge edit blocked activation; two prior hunts survived and an unchanged audio file transferred only once. [Update trace](evidence/northern/offline-update.json)
 - Six Art Studio cases passed in WebKit with the terrain atlas matching the selected preset and no shader compile errors. This includes Low and High with an aurora and the isolated northern puddle. The ordinary save stayed byte-for-byte identical. No Studio discovery was written.
+- The legacy WebKit opening pose intersected a real center-lane log in the tuned course. The capture now starts earlier on that same seed. The corrected run passed the opening, sign approach and Delta canopy views in Battery Saver. Northern foliage and sign rendering were also inspected under the Studio event lighting. [Shared-system clarity samples](evidence/northern/clarity.webp)
 - Both production standings reads returned HTTP 200 with closed empty records. Hosted ranked submissions require a separate certification exercise.
 
 ## Art Studio on iPhone
