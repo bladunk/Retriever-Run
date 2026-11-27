@@ -20,6 +20,11 @@ const notes = createFieldNotes()
 const scope = new URL('./', location.href)
 const store = createContentStore(scope)
 const worker = navigator.serviceWorker
+const traceStartup = new URLSearchParams(location.search).get('perf') === '1'
+function startupMark(phase) {
+  if (traceStartup) performance.mark('retriever-' + phase)
+}
+startupMark('shell')
 let manifest
 let waiting
 let updateManifest
@@ -77,7 +82,7 @@ function closeScreen() {
 async function startGame() {
   closeScreen()
   game.hidden = false
-  if (!launch && new URLSearchParams(location.search).get('perf') === '1') performance.mark('retriever-module-request')
+  if (!launch) startupMark('module-request')
   launch ??= import('./main.js')
   try { await launch } catch (error) {
     if (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) console.error(error)
@@ -120,7 +125,9 @@ async function examine({ autoStart = false, update = false } = {}) {
   if (update) select('pending-version').textContent = 'Pending · ' + (target.app ? buildLabel(target.app) : target.version.slice(0, 7))
   description.textContent = update ? 'Prepare changed files and apply the update between hunts.'
     : 'Save the terrain, Labrador and sounds on this device so you can hunt offline.'
+  if (!update) startupMark('verification-start')
   inspected = await store.inspect(target)
+  if (!update) startupMark(inspected.missing.length ? 'verification-missing' : 'verification-ready')
   if (!update) productionSession.setPrepared(!inspected.missing.length && Boolean(worker.controller))
   networkUI()
   if (!update && !inspected.missing.length) {
@@ -303,9 +310,13 @@ async function boot() {
   }
   networkUI()
   try {
+    startupMark('worker-request')
     registration = await worker.getRegistration(scope.href) ??
       await worker.register(new URL('offline-sw.js', scope), { updateViaCache: 'none' })
+    startupMark('worker-ready')
+    startupMark(worker.controller ? 'controlled-launch' : 'uncontrolled-launch')
     manifest = await loadContentManifest(scope)
+    startupMark('manifest-ready')
     select('content-open').hidden = false
     watchUpdates()
     checkUpdate()

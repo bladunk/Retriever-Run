@@ -96,7 +96,7 @@ let calloutAnimation
 
 const flags = new URLSearchParams(location.search)
 const localPerformance = flags.get('perf') === '1'
-const performanceProbe = localPerformance ? createPerformanceProbe(undefined, flags.get('resources') === '1') : null
+const performanceProbe = localPerformance ? createPerformanceProbe(undefined, flags.get('resources') !== '0') : null
 const sound = createSound(background, performanceProbe)
 if (performanceProbe) {
   const readPerformance = () => ({ ...performanceProbe.read(), build: runningBuild })
@@ -178,7 +178,7 @@ let landing = 0
 let splashUntil = 0
 let layout = cameraLayout(1)
 const follow = newCameraState()
-const adapt = adaptiveQuality()
+const adapt = adaptiveQuality(decision => performanceProbe?.operation('auto-quality-decision', decision))
 let previousTime
 let gesture
 let lastCondition = ''
@@ -213,6 +213,8 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   rankedCamp,
   onPlayer() {
     profile = lodge.current().profile
+    adapt.stabilize('profile change', true)
+    autoPreset = 'balanced'
     setMotionPreference()
     if (!diagnosticsRequested) dog?.chooseBreed(lodge.current().kennel.breed)
     dog?.appearance(lodge.current().kennel.equipment)
@@ -272,6 +274,10 @@ function initialize() {
     residentTiles: terrain.count(), residentPacks: terrain.packCount(), surfaces: terrain.landscapeResidency(),
     openingTerrain: terrain.openingMetrics(),
     dogBreed: dog?.activeBreed() ?? 'loading',
+    adaptiveQuality: adapt.read(),
+    drawingBuffer: { width:ui.trail.width, height:ui.trail.height, scale:renderer.getPixelRatio(), devicePixelRatio,
+      preset:profile.quality === 'auto' ? autoPreset : profile.quality },
+    signs: signs.clarity(), foliage: terrain.foliage(),
     tileTimings: terrain.measurements(), wildlife: wildlife.active(), wildlifeModels: wildlife.metrics(),
     trailPool: { keys: pool.size, idle: [...pool.values()].reduce((sum, bucket) => sum + bucket.length, 0) },
   }))
@@ -389,10 +395,19 @@ function initialize() {
   }
 
   const present = adaptivePresentation()
+  const scissor = new T.Vector4()
+  let openerStamp
   let lastRenderMs
   let lastWildlifeWarm = -Infinity
 
   const stepOnTerrain = dt => terrain.readyAt(run.distance) && step(dt)
+  function scenery(distance, time, weather) {
+    signs.begin()
+    // Auto can reduce drawing work without reallocating the terrain atlas.
+    terrain.update(distance, time, weather, preset.detail, profile.quality === 'low' ? 0 : 1,
+      profile.quality === 'auto')
+    signs.finish()
+  }
 
   function render(ms) {
     const renderStart = performanceProbe?.stamp() ?? 0
@@ -400,6 +415,7 @@ function initialize() {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     previousTime = ms
     if (!contextReady) return
+    let titleSceneUpdated = false
     if (dog.installPrepared()) needsRedraw = true
     if (ui.lodge.open) {
       if (kennelStage) kennel.render(renderer, dog, ms, reduceMotion())
@@ -419,11 +435,13 @@ function initialize() {
     // The approved title artwork is opaque. Keep the opener's worker and
     // resource jobs moving without continuously animating a covered scene.
     if (mode === 'title' && !needsRedraw && titleWeather && !diagnosticsRequested) {
-      signs.begin()
-      terrain.update(run.distance, visualTime, titleWeather, preset.detail)
-      signs.finish()
-      warmSafe(ms)
-      return
+      scenery(run.distance, visualTime, titleWeather)
+      titleSceneUpdated = true
+      if (openerStamp === terrain.openingStamp() || navigator.scheduling?.isInputPending?.()) {
+        warmSafe(ms)
+        return
+      }
+      needsRedraw = true
     }
     if (mode === 'running' && profile.quality === 'auto') {
       const selected = adapt(wall)
@@ -466,7 +484,7 @@ function initialize() {
       const ground = trailHeight(distance, display.x)
       const body = playerFrame(dogPosition, display, distance)
       const comfort = profile.comfort || reduceMotion()
-      if (idle) {
+      if (idle && diagnosticsRequested) {
         if (layout.portrait) {
           camera.position.set(2.4, 1.95, 3.85)
           camera.lookAt(.06, -.26, -.65)
@@ -529,13 +547,12 @@ function initialize() {
       glow.position.set(body.x, ground + .045, body.z)
       const pulse = 1.05 + Math.sin(visualTime * 11) * .13
       glow.scale.set(pulse, pulse, 1)
-      signs.begin()
-      terrain.update(distance, visualTime, weather, preset.detail)
-      signs.finish()
+      if (!titleSceneUpdated) scenery(distance, visualTime, weather)
       leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reduceMotion())
       camera.updateMatrixWorld()
       const encounters = inspecting && studioEvent ? studioEvents : terrain.encounters()
-      wildlife(visualTime, distance, inspecting && studio.fallback ? 0 : preset.detail, mode, encounters, camera, observeWildlife)
+      wildlife(visualTime, distance, inspecting && studio.fallback ? 0 : preset.detail, mode, encounters, camera, observeWildlife,
+        inspecting ? !studio.fallback && preset.detail > 0 : profile.quality !== 'low')
       if (!idle && !frozen && !inspecting) {
         updateConditions(weather.name)
         sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
@@ -552,23 +569,42 @@ function initialize() {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps, wildlife: wildlife.stamp,
       }, camera, signs)
       const drawStart = performanceProbe?.stamp()
-      renderer.render(scene, camera)
-      performanceProbe?.stage('firstSceneSubmitMs')
-      if ((mode === 'running' || inspecting) && performanceProbe) {
-        const end = performanceProbe.stamp()
-        performanceProbe.graphics(profile.quality, preset.detail)
-        performanceProbe.frame(wall * 1000, end - renderStart, renderer.info, regionAt(display.elapsed).key, end, end - drawStart)
+      if (mode === 'title' && !diagnosticsRequested) {
+        // Use the gameplay camera and backbuffer program variants while the
+        // approved title covers the canvas. Draw as opener tiles arrive.
+        openerStamp = terrain.openingStamp()
+        performanceProbe?.nameOpening(scene)
+        renderer.getScissor(scissor)
+        renderer.setScissor(0,0,2,2)
+        renderer.setScissorTest(true)
+        try { renderer.render(scene,camera) } finally {
+          renderer.setScissorTest(false)
+          renderer.setScissor(scissor)
+        }
+        performanceProbe?.openingRender(drawStart,renderer.info)
+      } else {
+        const { memory, programs } = renderer.info
+        const beforeDraw = performanceProbe && { textures:memory.textures, geometries:memory.geometries,
+          programs:programs?.length ?? 0 }
+        renderer.render(scene, camera)
+        if ((mode === 'running' || inspecting) && performanceProbe) {
+          const end = performanceProbe.stamp()
+          performanceProbe.graphics(profile.quality, preset.detail)
+          performanceProbe.frame(wall * 1000, end - renderStart, renderer.info, regionAt(display.elapsed).key, end, end - drawStart, beforeDraw)
+        }
       }
+      performanceProbe?.stage('firstSceneSubmitMs')
       needsRedraw = false
     }
-    warmSafe(ms)
+    if (mode !== 'title' || diagnosticsRequested) warmSafe(ms)
   }
 
   function warmSafe(ms) {
-    if (mayPrepareWildlife() && ms - lastWildlifeWarm >= 80 && !navigator.scheduling?.isInputPending?.()) {
+    if (mayPrepareWildlife() && ms - lastWildlifeWarm >= 60 && !navigator.scheduling?.isInputPending?.()) {
       lastWildlifeWarm = ms
       if (!trailReady || !terrain.prepareFerns(renderer, camera, true, preset.detail, run.distance))
-        wildlife.warmBreak(renderer, camera, mode, preset.detail, run.distance, studioEvent ? studioEvents : terrain.encounters())
+        wildlife.warmBreak(renderer, camera, mode, preset.detail, run.distance, studioEvent ? studioEvents : terrain.encounters(),
+          profile.quality !== 'low' && !studio?.fallback)
     }
   }
 
@@ -936,6 +972,7 @@ function setMode(value, options = {}) {
     previousTime = undefined
     controls.reset()
     gesture = undefined
+    if (value === 'running') adapt.stabilize(options.restart ? 'hunt start' : 'resume')
   }
   ui.game.dataset.mode = value
   const running = value === 'running'
@@ -1235,7 +1272,11 @@ function bindInput() {
   for (const key of ['quality', 'swipe', 'comfort', 'haptics', 'motion', 'keepAwake']) {
     ui[key].addEventListener('change', () => {
       profile[key] = key === 'quality' || key === 'swipe' ? ui[key].value : ui[key].checked
-      if (key === 'quality') resize()
+      if (key === 'quality') {
+        adapt.stabilize('graphics preference', true)
+        autoPreset = 'balanced'
+        resize()
+      }
       if (key === 'motion') setMotionPreference()
       if (key === 'keepAwake') void wakeLock.set(mode === 'running' && profile.keepAwake)
       saveProfile()

@@ -32,7 +32,7 @@ function paint(ctx, sign, seed) {
     const y = Math.floor(random() * height)
     const x = (random() - .05) * width
     ctx.strokeStyle = grain % 3 ? '#0d0b07' : '#ffdc97'
-    ctx.globalAlpha = .08 + random() * .17
+    ctx.globalAlpha = .045 + random() * .095
     ctx.lineWidth = 1 + random() * 2.4
     ctx.beginPath()
     ctx.moveTo(x, y)
@@ -89,6 +89,7 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
     root.name = 'Trail notice'
     root.visible = false
     root.add(...supports, backing, plate)
+    probe?.texture(texture, 'Trail notice lettering')
     scene.add(root)
     return { root, canvas, context: null, texture, plate, backing, supports, key: '', seen: false }
   })
@@ -107,7 +108,7 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
         slot.context ??= slot.canvas.getContext('2d')
         paint(slot.context, sign, anchor.tile * 5137 + seed)
         slot.texture.needsUpdate = true
-        const frame = sign.style === 'north' ? [2.73, 1.32, 2.16] : [2.88, 1.38, 2.22]
+        const frame = sign.style === 'north' ? [3.10, 1.39, 2.16] : [3.26, 1.47, 2.22]
         const [w, h, y] = frame
         slot.backing.scale.set(w, h, 1)
         slot.plate.scale.set(w - .026, h - .026, 1)
@@ -127,13 +128,16 @@ export function createTrailSigns(scene, makeCanvas = () => document.createElemen
       if (anchor.distance - distance > 64) return
       placeOnTrail(slot.root.position, anchor.distance, anchor.width, distance)
       slot.root.position.y = anchor.y
-      slot.root.rotation.y = headingAt(anchor.distance) - Math.sign(anchor.width) * .36
+      slot.root.rotation.y = headingAt(anchor.distance) - Math.sign(anchor.width) * .24
       slot.seen = true
     },
     finish() {
       for (const slot of slots) slot.root.visible = slot.seen
     },
     visible() { return slots.filter(slot => slot.root.visible).map(slot => slot.plate) },
+    clarity() { return { width:slots[0].canvas.width, height:slots[0].canvas.height,
+      filtering:'trilinear mipmaps', requestedAnisotropy:slots[0].texture.anisotropy,
+      visible:slots.filter(slot => slot.root.visible).map(slot => slot.root.userData.notice.ordinal) } },
   }
 }
 

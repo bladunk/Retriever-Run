@@ -114,6 +114,29 @@ export function forestModel(kind, compact = false, form = 0) {
     }
   }
 
+  // A closed, irregular crown cluster at the tip of a woody branch. Leaf
+  // volume samples its baked pigment, while the shared atlas still supplies
+  // the bark and the fine sprays on conifers.
+  function crownCluster(x, y, z, length, width, height, angle, tint) {
+    const sides = mobile ? 5 : 7
+    const first = positions.length / 3
+    const sin = Math.sin(angle), cos = Math.cos(angle)
+    for (let ring = 0; ring < 2; ring++) for (let n = 0; n < sides; n++) {
+      const phase = (n + ring*.20) * Math.PI*2/sides
+      const contour = .76 + random()*.44
+      const u = Math.cos(phase)*length*contour*(ring ? .82 : 1)
+      const v = Math.sin(phase)*width*contour
+      vertex(x+cos*u-sin*v, y+height*((ring ? .47 : -.30)+(random()-.5)*.27), z+sin*u+cos*v,
+        tint, (ring ? .96 : .73)+random()*.31, -.12, .5)
+    }
+    const sole = vertex(x+length*.12,y-height*.78,z,tint,.75,-.12,.5)
+    const top = vertex(x-length*.15,y+height*.85,z,tint,1.08,-.12,.5)
+    for (let n = 0; n < sides; n++) {
+      const a = first+n, b = first+(n+1)%sides
+      indices.push(a,a+sides,b, b,a+sides,b+sides, sole,a,b, top,b+sides,a+sides)
+    }
+  }
+
   const foot = [0, -.025, 0]
   const crotch = [trunkRatio * (form ? .22 : .10), .48, -.025]
   const crown = [trunkRatio * .16, .79, -.019]
@@ -159,6 +182,24 @@ export function forestModel(kind, compact = false, form = 0) {
     }
     const tint = foliage[n % foliage.length]
     const width = conifer ? radius * .47 + .025 : spread * .52 * (1 - t * .30)
+    if (roundCrown) {
+      for (let j = 0; j < 2; j++) {
+        const along = j ? .91 : .61
+        const offset = (j ? 1 : -1)*width*(.28 + random()*.16)
+        const crownX = twig[0]*along + z*offset
+        const crownY = y + h*(.61 + j*.32) + (willow ? -.018 : .032)
+        const crownZ = twig[2]*along - x*offset
+        wood(fork,[crownX,crownY,crownZ],.0055,.0021,bark,4)
+        crownCluster(crownX,crownY,crownZ,width*(j ? 1.12 : 1.28),width*.80,
+          width*(willow ? .55 : .71),angle + (j ? .33 : -.54),foliage[(n+j)%foliage.length])
+        // Leaf fringes intersect the solid crown. They soften its outline
+        // without carrying the silhouette or floating off the branch.
+        if (j === 1 && (!mobile || n % 2 === 0)) {
+          spray(crownX,crownY+.016,crownZ,width*1.15,width*.85,angle+.57,.46,tint,7,-.54)
+        }
+      }
+      continue
+    }
     if (conifer) {
       // Overlapping inner boughs sheath the leader. Outer sprays break up the
       // outline and hang differently on spruce, fir and the higher-crowned pine.
@@ -191,7 +232,7 @@ export function forestModel(kind, compact = false, form = 0) {
   }
 
   const geometry = new T.BufferGeometry()
-  geometry.name = kind
+  geometry.name = kind + (compact ? ' / compact' : ' / detailed')
   geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3))
   geometry.setAttribute('color', new T.Float32BufferAttribute(colors, 3))
   geometry.setAttribute('uv', new T.Float32BufferAttribute(uv, 2))

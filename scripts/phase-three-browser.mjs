@@ -184,7 +184,13 @@ try {
           while (nextTick() <= state.ticks) {
             window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
           }
-          stamp += Math.min(15, nextTick() - state.ticks) * (1000 / 120)
+          const autoTest = replay.autoTest
+          const budget = autoTest ? state.elapsed < 5.2 ? 4 : 2 : 15
+          const ticksToInput = nextTick() - state.ticks
+          if (autoTest && !replay.opener && ticksToInput > 24) {
+            stamp += 324
+            replay.opener = true
+          } else stamp += Math.min(budget, ticksToInput) * (1000 / 120)
         } else {
           while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
             window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
@@ -214,7 +220,8 @@ try {
         qa.soak.samples.push({ elapsed: state.elapsed, distance: state.distance,
           draws: sample.draws, triangles: sample.triangles, geometries: sample.geometries,
           textures: sample.textures, tiles: sample.residentTiles, packs: sample.residentPacks,
-          tileSliceMs: Math.max(0, ...(sample.tileTimings ?? []).map(tile => tile.integrationPeakMs ?? tile.unpackMs ?? 0)) })
+          tileSliceMs: Math.max(0, ...(sample.tileTimings ?? []).map(tile => tile.integrationPeakMs ?? tile.unpackMs ?? 0)),
+          ...(qa.soak.autoTest ? { buffer:sample.drawingBuffer, adaptive:sample.adaptiveQuality, atlas:sample.surfaces.active } : {}) })
         qa.soak.nextSample += .5
       }
       if (state?.mode === 'running' && qa.rendered < 180) {
@@ -294,7 +301,7 @@ try {
 
   async function capture(label, extra = {}) {
     assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running')
-    await page.screenshot({ path: resolve(output, label + '.png'), scale: args.includes('retina') ? 'device' : 'css', timeout: 45_000 })
+    await page.screenshot({ path: resolve(output, label + '.png'), scale: args.includes('retina') && !args.includes('css-shots') ? 'device' : 'css', timeout: 45_000 })
     if (args.includes('video')) extra.recordingSeconds = (performance.now() - recordingStarted) / 1000
     results.push(await page.evaluate(({ label, extra }) => ({
       label, ...extra, ...window.retrieverDebug, perf: window.retrieverPerformance(),
@@ -693,6 +700,18 @@ try {
     assert.equal(samples.at(-1).hunt.id,cycles)
     assert.ok(samples.every(sample => sample.final.tiles <= 7 && sample.final.wildlife <= 2))
     await writeFile(resolve(output, 'restart-cycles.json'), JSON.stringify({ seed:7, quality, cycles, samples }, null, 2))
+  } else if (args.includes('clarity-views')) {
+    const { signDistance } = await fromSource('sign-placement')
+    const points = [['opening',distanceAtTime(5)],['notice',signDistance(0)-5.8],
+      ['delta-canopy',distanceAtTime(75)],['delta-handoff',distanceAtTime(83)]]
+    if (args.includes('woodland')) points.push(['delta-edge',distanceAtTime(89)],['timber',distanceAtTime(102)],
+      ['notice-approach',signDistance(0)-14.5])
+    const only = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
+    for (const [label,distance] of points) {
+      if (only.length && !only.includes(label)) continue
+      await runAt(distance,7)
+      await capture(label,{seed:7,drawingBuffer:await page.locator('#trail').evaluate(canvas => [canvas.width,canvas.height])})
+    }
   } else if (args.includes('southern-views')) {
     const seed = 7
     const offsets = args.includes('center-only') ? [15] : [5, 15, 27]
@@ -711,11 +730,13 @@ try {
     const seed = 7
     const inputs = guidedInputs(seed, duration)
     const precise = args.includes('precise')
+    const autoTest = args.includes('clarity-auto')
+    if (autoTest) assert.ok(precise && quality === 'auto' && duration >= 18)
     if (precise) await openAt(0, seed)
     else await runAt(0, seed)
-    await page.evaluate(({ inputs, duration, fast, precise }) => {
-      window.phaseThreeQA.soak = { inputs, duration, fast, precise, next: 0, nextSample: 0, samples: [] }
-    }, { inputs, duration, fast: args.includes('fast'), precise })
+    await page.evaluate(({ inputs, duration, fast, precise, autoTest }) => {
+      window.phaseThreeQA.soak = { inputs, duration, fast, precise, autoTest, next: 0, nextSample: 0, samples: [] }
+    }, { inputs, duration, fast: args.includes('fast'), precise, autoTest })
     const videoStart = args.includes('video') ? (performance.now() - recordingStarted) / 1000 : null
     if (precise) {
       if (args.includes('offline')) await context.setOffline(true)
@@ -742,6 +763,14 @@ try {
       renderedEnd: endPerformance }, null, 2) + '\n')
     assert.equal(soak.state.mode, 'running', JSON.stringify(soak.state))
     assert.ok(soak.samples.length >= duration, 'insufficient rendered samples')
+    if (autoTest) {
+      const presets = soak.samples.map(sample => sample.buffer.preset)
+      assert.ok(soak.opener)
+      assert.deepEqual(presets.filter((preset, index) => index === 0 || presets[index-1] !== preset),
+        ['balanced', 'low', 'balanced', 'high'])
+      assert.equal(soak.samples.at(-1).atlas, 'full')
+      assert.ok(soak.samples.every(sample => sample.atlas !== 'compact'))
+    }
     const living = 'wildlife' in soak.state
     // The precise route can start before lookahead fills, while the
     // playable initial tiles are already ready. From two seconds onward

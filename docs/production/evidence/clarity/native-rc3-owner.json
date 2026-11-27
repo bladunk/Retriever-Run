@@ -1,0 +1,23 @@
+{
+  "source": "Owner iPhone Safari summary for RC.3. The original per-frame export is unavailable.",
+  "build": { "version": "1.0.0-rc.3", "id": "3205d74" },
+  "presentation": { "frames": 12284, "averageFPS": 60, "maxMs": 61, "over20Ms": 223, "over33_3Ms": 6, "over50Ms": 1 },
+  "cpuAverageMs": 2.47,
+  "discardedSimulationSamples": 0,
+  "startupPhases": { "moduleRequestMs": 2366, "moduleMs": 2439, "rendererReadyMs": 2444, "firstSceneSubmitMs": 2705, "readyMs": 2954 },
+  "restartTrace": { "firstFrameSubmittedMs": 476, "firstFrameCpuMs": 324, "firstRenderMs": 318, "nextAnimationCallbackMs": 487 },
+  "reportedInitialDeltas": { "textures": 27, "geometries": 54, "programs": 28 },
+  "resources": { "peakTextures": 27, "peakGeometries": 118, "residentTerrainTiles": 7, "atlas": [1280, 1024] },
+  "wildlife": { "riggedEncounters": 1, "fallbackEncounters": 16 },
+  "farthestTerritory": "Platte River Valley",
+  "timeline": [
+    { "at": 40089, "event": "Initial Gulf Coast frame", "cpuMs": 324, "renderMs": 318 },
+    { "at": 40924, "event": "Auto Balanced to Low" },
+    { "at": 40925, "event": "Drawing buffer resized", "width": 402, "height": 714, "scale": 0.86 },
+    { "at": 40926, "event": "Compact terrain atlas selected" },
+    { "at": 40928, "event": "Fern habitat released" },
+    { "at": 40941, "event": "Compact terrain atlas displayed" },
+    { "at": 40990, "event": "Slow frame", "presentationMs": 61, "cpuMs": 49 }
+  ],
+  "capabilities": { "namedResourceHooks": false, "longTasks": false, "gpuExecutionTime": null }
+}

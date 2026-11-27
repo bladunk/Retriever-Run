@@ -121,6 +121,14 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
       }
     },
     get: id => decoded.get(id),
+    fallbackReason(id) {
+      if (!livingModels[id]) return 'no authored rig'
+      if (failed.has(id)) return 'load failed'
+      if (decoded.get(id)?.warmup.shaderFailed) return 'preparation failed'
+      if (waiting === id || loaded?.id === id) return 'loading'
+      if (decoded.has(id)) return 'preparing'
+      return 'outside resident pool'
+    },
     ready(id) {
       const model = decoded.get(id)
       const work = model?.warmup

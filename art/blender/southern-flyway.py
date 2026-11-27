@@ -151,21 +151,28 @@ def oak(name, wide, compact):
             model.beam(bend.lerp(end,.48),tip,.008,.002,0x716052,4)
             if i < (2 if wide else 3) or (i+n)%6==1:
                 continue
-            for fan in range(2 if compact else 3):
-                center=tip+axis*rng.uniform(-.061,.061)+lateral*rng.uniform(-.060,.061)
-                width=rng.uniform(.041,.093)
-                forward=axis+Vector((0,0,rng.uniform(-.55,.52)))
-                across=lateral+Vector((0,0,rng.uniform(-.55,.57)))
-                cols=[center]
-                coords=[(.247,.492)]
-                for j in range(7):
-                    a=j*math.tau/7
-                    cols.append(center+(forward*math.cos(a)+across*math.sin(a))*width*rng.uniform(.71,1.21))
-                    coords.append((.247+.211*math.cos(a),.492-.211*math.sin(a)))
-                for j,position in enumerate(coords):
-                    leaves[len(model.vertices)+j]=position
-                model.patch(cols,[(0,j+1,(j+1)%7+1) for j in range(7)],
-                    [tone(palette[(i+n+fan)%5],rng.uniform(.69,1.21)) for _ in cols])
+            # A closed leaf cluster stays attached and retains depth in profile.
+            center=tip+Vector((0,0,.018))
+            width=rng.uniform(.069,.114)
+            points_per_ring=4 if compact else 5
+            vertices, pigments, faces=[],[],[]
+            for row in range(2):
+                for j in range(points_per_ring):
+                    a=(j+row*.19)*math.tau/points_per_ring
+                    radius=width*rng.uniform(.77,1.14)
+                    point=center+(axis*math.cos(a)+lateral*.76*math.sin(a))*radius
+                    point.z+=width*((.37 if row else -.27)+rng.uniform(-.16,.16))
+                    vertices.append(point)
+                    pigments.append(tone(palette[(i+n+row)%len(palette)],rng.uniform(.78,1.18)))
+            vertices.extend((center+Vector((0,0,-width*.54)),center+Vector((0,0,width*.62))))
+            pigments.extend((tone(palette[(i+n)%len(palette)],.76),tone(palette[(i+n+1)%len(palette)],1.09)))
+            for j in range(points_per_ring):
+                k=(j+1)%points_per_ring
+                faces.extend(((j,k,k+points_per_ring,j+points_per_ring),
+                    (points_per_ring*2,k,j),(points_per_ring*2+1,j+points_per_ring,k+points_per_ring)))
+            for j in range(len(vertices)):
+                leaves[len(model.vertices)+j]=(-.12,.5)
+            model.patch(vertices,faces,pigments)
     obj=model.build(True)
     mesh=obj.data
     for loop in mesh.loops:

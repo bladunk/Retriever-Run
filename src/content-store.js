@@ -39,15 +39,30 @@ export function createContentStore(scope, { storage = globalThis.caches, request
     const cache = await open()
     const assets = installation(manifest)
     const missing = []
-    for (const asset of assets) {
+    async function verified(asset) {
       const key = lookup(asset)
       const cached = await cache.match(key)
-      if (await isValid(cached, asset)) continue
+      if (await isValid(cached, asset)) return true
       if (cached) await cache.delete(key)
       // Promote files from the previous Pages worker only after verification.
       const legacy = await storage.match(new URL(asset.path, scope).href)
-      if (legacy && await isValid(legacy.clone(), asset)) await cache.put(key, legacy)
-      else missing.push(asset)
+      if (!legacy || !await isValid(legacy.clone(), asset)) return false
+      await cache.put(key, legacy)
+      return true
+    }
+    // Overlap Cache Storage and hashing on a verified launch while keeping
+    // at most two files' verification buffers alive. Never race digest aliases.
+    for (let index = 0; index < assets.length;) {
+      const first = assets[index++]
+      const second = assets[index]
+      if (!second || first.sha256 === second.sha256) {
+        if (!await verified(first)) missing.push(first)
+        continue
+      }
+      index++
+      const [firstReady, secondReady] = await Promise.all([verified(first), verified(second)])
+      if (!firstReady) missing.push(first)
+      if (!secondReady) missing.push(second)
     }
     const total = totalBytes(assets)
     return { total, cached: total - totalBytes(missing), missing }
