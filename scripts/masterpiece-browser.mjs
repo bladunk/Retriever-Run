@@ -63,7 +63,19 @@ async function review(version, callback) {
   }
 }
 try {
-  for (const version of process.argv.includes('after-only') ? ['after'] : ['before','after']) if (!process.argv.includes('audio-only')) await review(version, async ({page,url,shot,context}) => {
+  const audition = process.argv.includes('audio-only') || process.argv.includes('studio-only')
+  const editions = process.argv.includes('after-only') ? ['after'] : ['before','after']
+  for (const version of audition ? [] : editions) await review(version, async ({page,url,shot,context}) => {
+    if (process.argv.includes('report-only')) {
+      await page.goto(url+'?perf=1&debug=collision&volumes=off&seed=7&at=32&qaview=low&course=raptor')
+      await page.locator('#content-download').click()
+      await page.waitForFunction(() => !document.querySelector('#primary').disabled)
+      await context.setOffline(true)
+      await page.locator('#primary').click()
+      await page.locator('#run-again').waitFor({timeout:100000})
+      await shot('hunt-over')
+      return
+    }
     const save = JSON.parse(createLegacyPreview(5).exportSave())
     save.players[0].profile.quality = 'low'
     await page.addInitScript(({key,save}) => {
@@ -118,6 +130,20 @@ try {
       assert.equal(resources.beds, 7)
       assert.ok(resources.buffers > 0 && resources.voices <= 40)
     }
+  })
+  if (process.argv.includes('studio-only')) await review('studio',async ({page,url,shot}) => {
+    await page.goto(url+'?studio=1&view=report&quality=low')
+    await page.locator('#content-download').click()
+    const done = page.getByRole('button',{name:'Back to Art Studio',exact:true})
+    await done.waitFor()
+    const save = await page.evaluate(key => localStorage.getItem(key), saveKey)
+    await shot('report-example')
+    await page.locator('#report-details-toggle').click()
+    await page.locator('#report-details').waitFor()
+    await done.click()
+    await page.locator('#art-studio').waitFor()
+    await page.locator('#field-report').waitFor({state:'hidden'})
+    assert.equal(await page.evaluate(key => localStorage.getItem(key), saveKey),save)
   })
   if (process.argv.includes('audio-only')) await review('studio',async ({page,url,context}) => {
     await page.addInitScript(() => {
