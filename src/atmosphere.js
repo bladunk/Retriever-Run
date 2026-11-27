@@ -71,7 +71,7 @@ const skyFragment = `
   uniform vec3 horizon;
   uniform vec3 sunColor;
   uniform float cloud;
-  uniform float clock, skyDetail, southernSky, night;
+  uniform float clock, skyDetail, southernSky, night, sunbreak;
   uniform vec3 dawn;
   varying vec3 ray;
 
