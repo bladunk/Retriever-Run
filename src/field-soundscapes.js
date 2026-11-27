@@ -13,11 +13,11 @@ export const soundscapes = {
   sandhills:  [ .97, .22, .53, .16, .08 ],
   prairie:    [ .84, .40, .53, .13, .21 ],
   dakota:     [ .91, .48, .31, .05, .25 ],
-  manitoba:   [ .61, .68, .45, .20, .50 ],
-  parklands:  [ .58, .27, .61, .09, .17 ],
-  boreal:     [ .40, .46, .70, .06, .54 ],
-  foothills:  [ .77, .51, .65, .02, .60 ],
-  mountain:   [ .96, .64, .33, .00, .74 ],
+  manitoba:   [ .67, .78, .38, .14, .38 ],
+  parklands:  [ .53, .28, .77, .06, .16 ],
+  boreal:     [ .34, .46, .82, .04, .48 ],
+  foothills:  [ .69, .71, .57, .01, .83 ],
+  mountain:   [ .88, .74, .28, .00, .84 ],
 }
 
 export function ambienceMix(seconds) {

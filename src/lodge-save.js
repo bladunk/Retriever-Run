@@ -10,6 +10,7 @@ import { migrationCourse } from './ruleset.js'
 import { defaultGear, kennelCatalog, legacyGear, ownedGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 import { advanceFieldwork, awardFieldHonors, masterHunterChecks, normalizeProgression, qualifyBoyd } from './progression.js'
 import { lodgeChanges, lodgeProgress, normalizeLodgeDisplay, recordLodgeGear, trophyFor, trophyLimit } from './lodge-progress.js'
+import { normalizeDiscoveries, recordDiscoveries } from './environment-discoveries.js'
 
 export const saveKey = 'retriever-run.record'
 export const saveVersion = 6
@@ -74,6 +75,7 @@ function normalizePlayer(raw, id, schema, practice) {
       playtime, index < expeditionRegions.length - 1 ? total : Infinity)),
   }
   player.wildlife = normalizeWildlife(raw?.wildlife, player.stats)
+  player.discoveries = normalizeDiscoveries(practice ? null : raw?.discoveries)
   player.enrollment = ['guest', 'worldwide', 'returning'].includes(raw?.enrollment)
     ? raw.enrollment : legacy ? 'returning' : null
   const priorLevel = schema === 2 ? legacyLevel(raw?.career?.xp) : undefined
@@ -332,6 +334,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const oldGear = practice ? [] : ownedGear(player, previousStanding)
       const previousLodge = practice ? null : lodgeProgress(player, previousStanding, oldGear)
       const newWildlife = practice ? [] : commitWildlife(player.wildlife, result, runId, date)
+      if (!practice) recordDiscoveries(player.discoveries,result.environment,date)
       const statistics = player.stats
       statistics.runs++
       statistics.deaths++
@@ -381,6 +384,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const entry = { ...result, id: runId, player: id, date }
       delete entry.wildlife
       delete entry.field
+      delete entry.environment
       save.entries = retainedEntries([...save.entries, entry])
       const placements = emptyCounts(metrics)
       const courseEntries = save.entries.filter(run => run.course === entry.course)

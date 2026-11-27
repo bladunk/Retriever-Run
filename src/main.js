@@ -3,6 +3,7 @@ import * as T from 'three'
 import { createHazard, createPickup, prepareWashout } from './art.js'
 import { preparePuddle } from './puddle-art.js'
 import { createAtmosphere } from './atmosphere.js'
+import { discoveryStrength, planDiscoveries, skyDiscovery } from './environment-discoveries.js'
 import { createSound } from './audio.js'
 import { cameraLayout, newCameraState, updateFollow } from './camera.js'
 import { firstContact, hazardFrame, isWaterHazard, playerFrame } from './collision.js'
@@ -147,6 +148,9 @@ let profile = lodge.current().profile
 setMotionPreference()
 let runPlayer
 let runStatistics
+let discoveriesPlan = []
+let lastDiscovery
+let discoverySince = 0
 let runPermit
 let runTrace
 let coaching = false
@@ -403,6 +407,7 @@ function initialize() {
 
   const present = adaptivePresentation()
   const scissor = new T.Vector4()
+  const discoveryPoint = new T.Vector3()
   let openerStamp
   let lastRenderMs
   let lastWildlifeWarm = -Infinity
@@ -531,8 +536,10 @@ function initialize() {
       }
       landing *= Math.exp(-12 * dt)
       const height = getHeight(display)
+      const skyEvent = !inspecting && skyDiscovery(discoveriesPlan,display.elapsed)
+      const strength = inspecting ? Number(Boolean(studio.nature)) : discoveryStrength(skyEvent,display.elapsed)
       const weather = atmosphere.update(display.elapsed, visualTime, reduceMotion() ? .34 : preset.weather, distance,
-        inspecting ? studio.lighting : 'route')
+        inspecting ? studio.lighting : 'route', inspecting ? studio.nature : skyEvent?.effect, strength)
       if (idle) titleWeather = weather
       setRockWeather(weather)
       trailPose = {
@@ -557,6 +564,22 @@ function initialize() {
       if (!titleSceneUpdated) scenery(distance, visualTime, weather)
       leaves(regionAt(display.elapsed).index, distance, visualTime, weather, preset.detail, reduceMotion())
       camera.updateMatrixWorld()
+      if (mode === 'running' && !diagnosticsRequested) {
+        let visible = strength >= .66 ? skyEvent?.id : undefined
+        const landmark = !visible && terrain.discovery(distance)
+        if (landmark) {
+          placeOnTrail(discoveryPoint,landmark.distance,landmark.x,distance)
+          discoveryPoint.y = Math.max(-.26,landmark.ground) + 1.15
+          discoveryPoint.project(camera)
+          if (Math.abs(discoveryPoint.x)<.92 && Math.abs(discoveryPoint.y)<.90 && Math.abs(discoveryPoint.z)<1)
+            visible = landmark.discovery
+        }
+        if (lastDiscovery !== visible) {
+          lastDiscovery = visible
+          discoverySince = display.elapsed
+        }
+        if (visible && display.elapsed-discoverySince >= .7) runStatistics?.observeEnvironment(visible)
+      }
       const encounters = inspecting && studioEvent ? studioEvents : terrain.encounters()
       wildlife(visualTime, distance, inspecting && studio.fallback ? 0 : preset.detail, mode, encounters, camera, observeWildlife,
         inspecting ? !studio.fallback && preset.detail > 0 : profile.quality !== 'low')
@@ -1079,6 +1102,8 @@ function resetTrail(seed) {
   entities.length = 0
   effects.length = 0
   run = newRun()
+  discoveriesPlan = planDiscoveries(seed)
+  lastDiscovery = undefined
   signSeed = seed
   setTerrainSeed(seed)
   currentTerritory = null

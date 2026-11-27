@@ -2,6 +2,7 @@ import { rewardGroups } from './hunt-presentation.js'
 import { collectionSearch, collectionSelect, matchesCollection, primaryRoom, roomGroups } from './collection-browser.js'
 import { encounterTiers, fieldSpecies, habitatEncounters } from './wildlife-catalog.js'
 import { journalFieldMarks } from './journal-field-marks.js'
+import { environmentalDiscoveries } from './environment-discoveries.js'
 import { speciesArtwork, wildlifePortrait } from './wildlife-portrait.js'
 import { causes, causeNames, hazardName } from './field-stats.js'
 import { fieldHonors, hallOfShame, honorProgress, medals, patches } from './honors.js'
@@ -232,7 +233,21 @@ function journal(player) {
   lifetime.append(node('summary', 'Lifetime Field Journal'), grid,
     node('h3', 'The Great Migration · territory time', 'section-title section-break'), migration, ...archive,
     node('h3', 'Field breakdown', 'section-title section-break'), breakdown)
-  return [node('h3', 'Wildlife · ' + known + ' of ' + Object.keys(fieldSpecies).length + ' observed', 'section-title'),
+  const discoveries = Object.entries(player.discoveries?.entries ?? {})
+  const fieldNotes = []
+  if (discoveries.length) {
+    const notes = node('details',null,'career-ledger')
+    notes.append(node('summary','Environmental discoveries'))
+    for (const [id,first] of discoveries) {
+      const feature = environmentalDiscoveries[id]
+      const section = node('section',null,'room-note')
+      section.append(node('strong',feature.name),node('p',feature.note),
+        node('p',expeditionRegions.find(region=>region.key===feature.territory).name + ' · ' + first.slice(0,10)))
+      notes.append(section)
+    }
+    fieldNotes.push(notes)
+  }
+  return [...fieldNotes,node('h3', 'Wildlife · ' + known + ' of ' + Object.keys(fieldSpecies).length + ' observed', 'section-title'),
     node('p', 'Waterfowl · ' + values.get('waterfowl-count') + ' of ' + waterfowlSpecies.length + ' observed', 'room-note'), collections,
     filters, results, guide, lifetime]
 

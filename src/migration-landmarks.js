@@ -33,8 +33,9 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
   const [x0, period, lead] = siting[role]
   const ordinal = index - Math.ceil(region.marker / segmentLength)
   const openingCamp = role === 'fish-shack' && ordinal === 3
+  const reedwatch = role === 'marsh-dock' && ordinal === 1
   if (ordinal < 0 || ordinal % period !== lead && !openingCamp) return null
-  const x = (openingCamp ? 6.78 : x0) + (random() - .5) * 1.65
+  const x = (openingCamp ? 6.78 : reedwatch ? -7.7 : x0) + (random() - .5) * 1.65
   const z = -16.0 + (random() - .5) * 5.2
   const ground = earth(-z, x)
   const put = (color, px, y, pz, w, h, d, roll = 0, layer = 2) =>
@@ -251,5 +252,18 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     }
     lodge(...palette[role])
   }
-  return { role, distance: index * segmentLength - z, x, ground }
+  if (reedwatch) {
+    const deck = Math.max(waterline+.29,ground+.21)
+    pier(x-2.15,z+2.74,2.14,3.23,deck)
+    const railX = x-1.41, railZ = z+3.47
+    put(oak,railX,deck+.45,railZ,.14,.85,.15)
+    put(oak,railX,deck+.85,railZ+.39,.12,.10,1.22)
+    // A hand-carved loon sits on the lake-facing rail.
+    add(rock,0x404642,railX,deck+1.03,railZ,.16,.14,.38,0,-.17)
+    branch(0x303d3a,railX,deck+1.08,railZ+.14,railX,deck+1.22,railZ+.16,.052)
+    add(rock,0x45524b,railX,deck+1.22,railZ+.18,.09,.076,.11)
+    branch(0x827b62,railX,deck+1.22,railZ+.21,railX,deck+1.212,railZ+.30,.024)
+  }
+  return { role, distance: index * segmentLength - z, x, ground,
+    ...(reedwatch ? { discovery:'reedwatch-landing' } : {}) }
 }

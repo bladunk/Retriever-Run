@@ -744,9 +744,9 @@ try {
       await runAt(distance,7)
       await capture(label,{seed:7,drawingBuffer:await page.locator('#trail').evaluate(canvas => [canvas.width,canvas.height])})
     }
-  } else if (args.includes('heartland-motion-frames')) {
+  } else if (args.includes('heartland-motion-frames') || args.includes('motion-frames')) {
     const seed = 7
-    const from = 187
+    const from = Number(args.find(arg => arg.startsWith('from-seconds='))?.slice(13) ?? 187)
     const distance = distanceAtTime(from)
     await openAt(distance,seed)
     await page.evaluate(({ inputs, from }) => {

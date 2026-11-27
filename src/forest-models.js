@@ -5,7 +5,9 @@ import { seededRandom } from './trail.js'
 export const forestProfiles = Object.fromEntries(landscapeProfiles.map(region => [region.key, region.species]))
 
 const northernStands = {
-  boreal: [['spruce', 'fir'], ['fir', 'jackPine'], ['spruce', 'snag'], ['fir', 'spruce'], ['jackPine', 'tamarack']],
+  parklands: [['aspen','birch'],['aspen','aspen'],['birch','aspen'],['aspen','snag']],
+  boreal: [['blackSpruce','jackPine'],['fir','blackSpruce'],['blackSpruce','snag'],['spruce','blackSpruce'],['jackPine','tamarack']],
+  foothills: [['jackPine','fir'],['fir','aspen'],['spruce','fir'],['jackPine','snag'],['fir','spruce']],
   mountain: [['fir', 'snowPine'], ['snowPine', 'spruce'], ['snowPine', 'snag'], ['fir', 'snowPine'], ['spruce', 'jackPine']],
 }
 
@@ -25,6 +27,7 @@ const shapes = {
   birch: [.23, .18, .92, 0xc4bc9f, [0xa2a163, 0x92965d, 0xaf9b61]],
   snag: [.25, .27, .79, 0x6e6151, []],
   spruce: [.29, .17, .98, 0x5e5749, [0x496758, 0x587568, 0x425f53]],
+  blackSpruce: [.209, .25, .995, 0x615a4c, [0x3e5d4c,0x526956,0x637668]],
   fir: [.24, .23, .97, 0x6c6355, [0x537468, 0x47685b, 0x728481]],
   jackPine: [.30, .34, .99, 0x7c6f5d, [0x546b52, 0x637b54, 0x546451]],
   tamarack: [.25, .20, .95, 0x756955, [0x9d9253, 0xadb16a, 0x77834d]],
@@ -33,7 +36,7 @@ const shapes = {
 
 const cache = new Map()
 const residents = new Map()
-const conifers = new Set(['spruce', 'fir', 'jackPine', 'snowPine', 'tamarack'])
+const conifers = new Set(['spruce', 'blackSpruce', 'fir', 'jackPine', 'snowPine', 'tamarack'])
 const up = new T.Vector3(0, 1, 0)
 
 export function assignForestGeometry(mesh, geometry) {
@@ -167,7 +170,7 @@ export function forestModel(kind, compact = false, form = 0) {
     const roundCrown = !conifer && !['cypress', 'snag'].includes(kind)
     const y = conifer ? trunkRatio + t * (.935 - trunkRatio) + Math.sin(n * 2.7) * .025 : roundCrown
       ? .52 + Math.sin(n * 1.69) * .14 + random() * .19 : trunkRatio + t * (.89 - trunkRatio)
-    const h = willow ? .045 - t * .082 : conifer ? (kind === 'spruce' ? -.063 : kind === 'jackPine' ? .018 : -.029) * (1 - t)
+    const h = willow ? .045 - t * .082 : conifer ? (kind === 'blackSpruce' ? -.084 : kind === 'spruce' ? -.063 : kind === 'jackPine' ? .018 : -.029) * (1 - t)
       + .067 * t : .080 + random() * .089
     const radius = spread * (conifer ? (1 - t) ** (kind === 'fir' ? 1.05 : .78) + .10 : roundCrown
       ? Math.sqrt(Math.max(.14, 1 - ((y + h - .73) / .36) ** 2)) : .71 + Math.sin(t * Math.PI) * .29) *
@@ -205,6 +208,8 @@ export function forestModel(kind, compact = false, form = 0) {
       // outline and hang differently on spruce, fir and the higher-crowned pine.
       spray(x * radius * .31, y + h * .33 + .019, z * radius * .31, width * 1.02, width * .71,
         angle + .46, .43, foliage[(n + 1) % foliage.length], 7, -.28)
+      if (n % 3 === 0) crownCluster(fork[0],fork[1]+.009,fork[2],width*.83,width*.56,width*.28,
+        angle,foliage[(n+1)%foliage.length])
     }
     for (let j = 0; j < (mobile ? 4 : 5); j++) {
       const along = .52 + j * (conifer ? .175 : .111)
