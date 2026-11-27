@@ -9,6 +9,7 @@ import { leaningTree } from './leaning-tree.js'
 import { trailTimber } from './trail-timber.js'
 import { rockMesh } from './rock-art.js'
 import { marshWater } from './marsh-water.js'
+import { createPuddleSurface } from './puddle-art.js'
 import { laneWidth, placeOnTrail, trailHeight } from './trail.js'
 
 const sphere = new T.SphereGeometry(1, 12, 8)
@@ -21,8 +22,7 @@ const pickupMaterial = new T.MeshLambertMaterial({ vertexColors: true })
 const baked = new Map()
 const hardwood = new Set([0x514033, 0xb18354, 0xb67c45, 0x8c7b58])
 const crossingSurface = streamRibbon()
-const soakedGround = new T.CircleGeometry(1, 22).rotateX(-Math.PI / 2)
-const wetShapes = [pondSheet(), depthGeometry(crossingSurface.clone(), true)]
+const crossingWater = depthGeometry(crossingSurface.clone())
 const bankMaterial = new T.MeshLambertMaterial({ color: 0xffffff, vertexColors: true })
 const creekBed = crossingSurface.clone()
 const bedPosition = creekBed.attributes.position
@@ -36,39 +36,25 @@ for (let n = 0; n < bedPosition.count; n++) {
   sedimentTone.setHex(edge > .80 ? 0x817058 : 0x494133).multiplyScalar(.82 + ripple * .31).toArray(bedColor, n * 3)
 }
 creekBed.setAttribute('color', new T.BufferAttribute(bedColor, 3))
-const puddleBankMaterial = new T.MeshLambertMaterial({ color: 0x645847 })
 const wheel = new T.CylinderGeometry(1, 1, 1, 12).rotateZ(Math.PI / 2)
 
-function depthGeometry(geometry, ribbon) {
+function depthGeometry(geometry) {
   const uv = geometry.attributes.uv
   const depths = new Float32Array(uv.count)
   for (let n = 0; n < depths.length; n++) {
-    const x = uv.getX(n) * 2 - 1, y = uv.getY(n) * 2 - 1
-    depths[n] = 1 + Math.max(0, 1 - (ribbon ? Math.abs(y) : Math.hypot(x, y))) * .74
+    const across = uv.getY(n) * 2 - 1
+    depths[n] = 1 + (1 - Math.abs(across)) * .74
   }
   geometry.setAttribute('marshDepth', new T.BufferAttribute(depths, 1))
   return geometry
 }
 
-function pondSheet() {
-  const patch = soakedGround.clone()
-  const pos = patch.attributes.position
-  for (let n = 1; n < pos.count; n++) {
-    const angle = Math.atan2(pos.getZ(n), pos.getX(n))
-    const irregular = .93 + .11 * Math.cos(angle * 3) + .045 * Math.sin(angle * 5)
-    pos.setX(n, pos.getX(n) * irregular)
-    pos.setZ(n, pos.getZ(n) * irregular)
-  }
-  return depthGeometry(patch, false)
-}
-
-function fitWaterHazard(object, stream) {
-  const bed = stream ? new T.Mesh(creekBed, bankMaterial) :
-    new T.Mesh(soakedGround, puddleBankMaterial)
-  bed.scale.set(stream ? 7.41 : 1.0, 1, stream ? 2.23 : .90)
+function fitStream(object) {
+  const bed = new T.Mesh(creekBed, bankMaterial)
+  bed.scale.set(7.41, 1, 2.23)
   bed.position.y = .013
-  const mesh = new T.Mesh(wetShapes[Number(stream)], marshWater)
-  mesh.scale.set(stream ? 7.24 : .92, 1, stream ? 2.12 : .82)
+  const mesh = new T.Mesh(crossingWater, marshWater)
+  mesh.scale.set(7.24, 1, 2.12)
   mesh.position.y = .023
   object.add(bed, mesh)
   return object
@@ -160,7 +146,8 @@ function group(parent, x = 0, y = 0, z = 0) {
 export function createHazard(parent, type, x = 0, z = 0, wide = false, variant = 0, turn = 1) {
   const object = group(parent, x, 0, z)
   const key = 'hazard-' + type + (wide ? '-wide' : '')
-  if (type === 'puddle' || type === 'stream') return fitWaterHazard(object, type === 'stream')
+  if (type === 'puddle') return object.add(createPuddleSurface(marshWater))
+  if (type === 'stream') return fitStream(object)
   if (type === 'washout') return object
   if (type === 'rock') {
     object.add(rockMesh(variant, turn))

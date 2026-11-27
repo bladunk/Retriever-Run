@@ -3,8 +3,8 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const [scratch, tools, region = 'gulf'] = process.argv.slice(2)
-if (!scratch || !tools || !['gulf', 'cypress', 'opening-day', 'southern-flyway'].includes(region))
-  throw new Error('Usage: node scripts/art/pack-gulf.mjs <Blender output directory> <glTF tooling directory> [gulf|cypress|opening-day|southern-flyway]')
+if (!scratch || !tools || !['gulf', 'cypress', 'opening-day', 'southern-flyway', 'heartland'].includes(region))
+  throw new Error('Usage: node scripts/art/pack-gulf.mjs <Blender output directory> <glTF tooling directory> [gulf|cypress|opening-day|southern-flyway|heartland]')
 const require = createRequire(resolve(tools, 'package.json'))
 const { NodeIO } = require('@gltf-transform/core')
 const { EXTMeshoptCompression, KHRMeshQuantization } = require('@gltf-transform/extensions')

@@ -1,0 +1,706 @@
+{
+  "seed": 7,
+  "quality": "low",
+  "cycles": 6,
+  "samples": [
+    {
+      "hunt": {
+        "id": 1,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 48,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 2573.699999988079,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 1068.87
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 1288.5,
+          "over20": 8,
+          "over33_3": 8,
+          "over50": 4,
+          "averageMs": 156.41
+        },
+        "averageFPS": 0.9
+      },
+      "restart": 2985.7000000476837,
+      "restartTrace": {
+        "inputAt": 14320.100000023842,
+        "handlerAt": 14330,
+        "before": {
+          "geometries": 20,
+          "textures": 11,
+          "programs": 12
+        },
+        "firstFrameSubmittedMs": 2995.6,
+        "firstFrameCpuMs": 1219.2,
+        "firstRenderMs": 1189.9,
+        "after": {
+          "geometries": 34,
+          "textures": 11,
+          "programs": 16
+        },
+        "firstOperations": [
+          {
+            "at": 14613.700000047684,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 275.9
+          },
+          {
+            "at": 14637.700000047684,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 14883.100000023842,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "instruments",
+            "durationMs": 245.4
+          },
+          {
+            "at": 16103.200000047684,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 1,
+            "durationMs": 5.7
+          },
+          {
+            "at": 16111.800000011921,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0.3
+          },
+          {
+            "at": 16111.800000011921,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 16111.900000035763,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 16126.300000011921,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 16126.300000011921,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / ground / 1"
+          },
+          {
+            "at": 16126.300000011921,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / water / 1"
+          },
+          {
+            "at": 16126.400000035763,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / detail / 1"
+          },
+          {
+            "at": 16126.5,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 16126.5,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 3007.6,
+        "firstPresentationIntervalMs": 63
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 6,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-raptor",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 2,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 3942,
+          "over20": 24,
+          "over33_3": 24,
+          "over50": 24,
+          "averageMs": 1791.66
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 39.30000001192093,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 0,
+          "averageMs": 8.49
+        },
+        "averageFPS": 0.6
+      },
+      "restart": 2586.199999988079,
+      "restartTrace": {
+        "inputAt": 47119.30000001192,
+        "handlerAt": 47125.60000002384,
+        "before": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 2592.5,
+        "firstFrameCpuMs": 19.5,
+        "firstRenderMs": 8.8,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 49702.60000002384,
+            "hunt": 2,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0.6
+          },
+          {
+            "at": 49702.700000047684,
+            "hunt": 2,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 49702.700000047684,
+            "hunt": 2,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 2598.6,
+        "firstPresentationIntervalMs": 19.3
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-raptor",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 3,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 6213.299999952316,
+          "over20": 24,
+          "over33_3": 24,
+          "over50": 23,
+          "averageMs": 2415.25
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 51.19999998807907,
+          "over20": 4,
+          "over33_3": 4,
+          "over50": 1,
+          "averageMs": 12.5
+        },
+        "averageFPS": 0.4
+      },
+      "restart": 1863.5,
+      "restartTrace": {
+        "inputAt": 100533.80000001192,
+        "handlerAt": 100538,
+        "before": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 1867.7,
+        "firstFrameCpuMs": 4.2,
+        "firstRenderMs": 1.6,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 102399,
+            "hunt": 3,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0.4
+          },
+          {
+            "at": 102399,
+            "hunt": 3,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 102399,
+            "hunt": 3,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 1879.1,
+        "firstPresentationIntervalMs": 13.6
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-raptor",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 4,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 3983.900000035763,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 1500.64
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 98.89999997615814,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 1,
+          "averageMs": 8.92
+        },
+        "averageFPS": 0.7
+      },
+      "restart": 1798.8999999761581,
+      "restartTrace": {
+        "inputAt": 168701.10000002384,
+        "handlerAt": 168705.10000002384,
+        "before": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 1802.9,
+        "firstFrameCpuMs": 6.9,
+        "firstRenderMs": 1,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 170502.80000001192,
+            "hunt": 4,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0.6
+          },
+          {
+            "at": 170502.80000001192,
+            "hunt": 4,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 170502.80000001192,
+            "hunt": 4,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 1813.8,
+        "firstPresentationIntervalMs": 12.4
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-raptor",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 5,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 3834.099999964237,
+          "over20": 24,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 1764.18
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 43.90000003576279,
+          "over20": 2,
+          "over33_3": 2,
+          "over50": 0,
+          "averageMs": 9.39
+        },
+        "averageFPS": 0.6
+      },
+      "restart": 1965.6000000238419,
+      "restartTrace": {
+        "inputAt": 212524.10000002384,
+        "handlerAt": 212527.30000001192,
+        "before": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 1968.8,
+        "firstFrameCpuMs": 8,
+        "firstRenderMs": 0.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 214491.80000001192,
+            "hunt": 5,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 4.4
+          },
+          {
+            "at": 214491.80000001192,
+            "hunt": 5,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 214491.80000001192,
+            "hunt": 5,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 1983.6,
+        "firstPresentationIntervalMs": 16.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-raptor",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 6,
+        "discarded": 0,
+        "peakTextures": 12,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 2571.100000023842,
+          "over20": 23,
+          "over33_3": 23,
+          "over50": 23,
+          "averageMs": 1315.02
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 13.5,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 3.8
+        },
+        "averageFPS": 0.8
+      },
+      "restart": 1679.3999999761581,
+      "restartTrace": {
+        "inputAt": 264930.10000002384,
+        "handlerAt": 264934.60000002384,
+        "before": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 1683.9,
+        "firstFrameCpuMs": 4.2,
+        "firstRenderMs": 1.9,
+        "after": {
+          "geometries": 44,
+          "textures": 12,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 266611.8000000119,
+            "hunt": 6,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0.3
+          },
+          {
+            "at": 266611.90000003576,
+            "hunt": 6,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 266611.90000003576,
+            "hunt": 6,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 1691.5,
+        "firstPresentationIntervalMs": 9.2
+      },
+      "final": {
+        "geometries": 44,
+        "textures": 12,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-raptor",
+        "territory": "gulf",
+        "stage": 1
+      }
+    }
+  ]
+}

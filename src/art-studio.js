@@ -15,7 +15,9 @@ export function openArtStudio(game, flags, api) {
   details.append(form)
   form.addEventListener('submit', event => event.preventDefault())
   const state = { moving: false, speed: 1, yaw: 0, pitch: 0, zoom: 1, take: 'Trail', playback: 'Idle' }
-  state.lighting = ['dawn','overcast','mist'].includes(flags.get('light')) ? flags.get('light') : 'route'
+  state.lighting = ['dawn','overcast','mist','rain'].includes(flags.get('light')) ? flags.get('light') : 'route'
+  state.hazard = flags.get('hazard') === 'puddle' ? 'puddle' : ''
+  state.hazardLane = Math.max(-1, Math.min(1, Number.parseInt(flags.get('lane'), 10) || 0))
   const saved = new URL(location.href)
 
   function label(text, control) {
@@ -61,12 +63,18 @@ export function openArtStudio(game, flags, api) {
   Object.assign(seed, { type: 'number', inputMode: 'numeric', min: 0, max: 4294967295, value: api.seed, step: 1 })
   label('Course seed', seed)
   button('Load seed', () => { if (seed.checkValidity()) load('seed', seed.value) })
-  select('Graphics', ['low','balanced','high'].map((key, i) => [key, ['Battery Saver','Balanced','High'][i]]),
-    api.quality, api.graphics)
+  const presets = ['low','balanced','high']
+  const graphics = presets.includes(flags.get('quality')) ? flags.get('quality') : api.quality
+  select('Graphics', presets.map((key, i) => [key, ['Battery Saver','Balanced','High'][i]]), graphics, api.graphics)
+  if (graphics !== api.quality) api.graphics(graphics)
   select('View', [['Trail','Territory'], ['Wildlife','Wildlife'], ['Dog','Dog']], 'Trail', value => { state.take = value; api.reset() })
+  select('Trail hazard', [['','Course as played'],['puddle','Isolated puddle']],state.hazard,
+    value => { state.hazard = value; api.reset() })
+  select('Hazard lane', [[-1,'Left'],[0,'Middle'],[1,'Right']],String(state.hazardLane),
+    value => { state.hazardLane = Number(value); api.reset() })
   const cameraPreset = Object.hasOwn(cameras, flags.get('camera')) ? flags.get('camera') : 'trail'
   select('Camera preset', [['trail','Gameplay'],['shore','Shoreline'],['grove','Canopy']],cameraPreset, setCamera)
-  select('Lighting', [['route','Route weather'],['dawn','Sunrise'],['overcast','Overcast'],['mist','Morning mist']],
+  select('Lighting', [['route','Route weather'],['dawn','Sunrise'],['overcast','Overcast'],['mist','Morning mist'],['rain','Heavy rain']],
     state.lighting, value => { state.lighting = value })
   const species = select('Wildlife species', Object.values(fieldSpecies).map(animal => [animal.id, animal.name]), flags.get('species') ?? 'deer',
     value => { state.species = value; api.reset() })

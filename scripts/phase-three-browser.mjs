@@ -40,7 +40,7 @@ const fromSource = name => import(pathToFileURL(resolve(source, 'src', name + '.
 const { expeditionRegions } = await fromSource('expedition')
 const { distanceAtTime, speedAtTime, courseStages, stageAt, localDirector } = await fromSource('difficulty')
 const { advance, createCourse, newRun, reactionWindow } = await fromSource('runner')
-const { firstContact } = await fromSource('collision')
+const { firstContact, laneWidth } = await fromSource('collision')
 const { tickSeconds } = await fromSource('timing')
 const { createRunControls } = await fromSource('run-controls')
 const { buildTile } = await fromSource('terrain-geometry')
@@ -76,6 +76,29 @@ function rowsFor(seed, stop) {
   const rows = []
   for (let row = next(); row.time < stop; row = next()) rows.push(row)
   return rows
+}
+
+function puddleReaction(entity, state) {
+  function arrival(jumpTick = -1) {
+    const run = Object.assign(newRun(), { distance:state.distance, elapsed:state.elapsed, speed:state.speed,
+      lane:entity.lane, x:entity.lane*laneWidth })
+    const controls = createRunControls()
+    for (let tick = 0; run.distance < entity.distance + 2.5; tick++) {
+      if (tick === jumpTick) controls.enqueue('jump')
+      controls.apply(run, () => {})
+      const previous = { ...run }
+      advance(run, tickSeconds)
+      if (firstContact(previous, run, [entity], {})) return tick
+    }
+    return null
+  }
+  const contact = arrival()
+  assert.ok(contact !== null, 'running through the puddle should collide')
+  for (let tick = contact; tick >= 0; tick--) {
+    if (arrival(tick) === null) return { contactSeconds:contact*tickSeconds,
+      lastSafeJumpSeconds:tick*tickSeconds, courseReactionSeconds:reactionWindow }
+  }
+  assert.fail('no jump from the captured approach clears the puddle')
 }
 
 
@@ -186,17 +209,18 @@ try {
         if (replay.precise) {
           // Deliver the scripted input on its original simulation tick.
           // The number of ticks between frames can vary while tiles stream.
-          const nextTick = () => replay.next < replay.inputs.length ? Math.round(replay.inputs[replay.next].at * 120) : Infinity
+          const nextTick = () => replay.next < replay.inputs.length ?
+            Math.round(replay.inputs[replay.next].at * 120) - (replay.firstTick ?? 0) : Infinity
           while (nextTick() <= state.ticks) {
             window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
           }
           const autoTest = replay.autoTest
-          const budget = autoTest ? state.elapsed < 5.2 ? 4 : 2 : 15
+          const budget = autoTest ? state.elapsed < 5.2 ? 4 : 2 : replay.ticksPerCallback ?? 15
           const ticksToInput = nextTick() - state.ticks
           if (autoTest && !replay.opener && ticksToInput > 24) {
             stamp += 324
             replay.opener = true
-          } else stamp += Math.min(budget, ticksToInput) * (1000 / 120)
+          } else stamp += Math.max(0,Math.min(budget, ticksToInput, (replay.stopTick ?? Infinity) - state.ticks)) * (1000 / 120)
         } else {
           while (replay.inputs[replay.next]?.at <= state.elapsed + .025) {
             window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
@@ -307,7 +331,9 @@ try {
 
   async function capture(label, extra = {}) {
     assert.equal(await page.locator('#game').getAttribute('data-mode'), 'running')
-    await page.screenshot({ path: resolve(output, label + '.png'), scale: args.includes('retina') && !args.includes('css-shots') ? 'device' : 'css', timeout: 45_000 })
+    const jpeg = args.includes('jpeg')
+    await page.screenshot({ path: resolve(output, label + (jpeg ? '.jpg' : '.png')), ...(jpeg ? { quality:92 } : {}),
+      scale: args.includes('retina') && !args.includes('css-shots') ? 'device' : 'css', timeout: 45_000 })
     if (args.includes('video')) extra.recordingSeconds = (performance.now() - recordingStarted) / 1000
     results.push(await page.evaluate(({ label, extra }) => ({
       label, ...extra, ...window.retrieverDebug, perf: window.retrieverPerformance(),
@@ -718,6 +744,45 @@ try {
       await runAt(distance,7)
       await capture(label,{seed:7,drawingBuffer:await page.locator('#trail').evaluate(canvas => [canvas.width,canvas.height])})
     }
+  } else if (args.includes('heartland-motion-frames')) {
+    const seed = 7
+    const from = 187
+    const distance = distanceAtTime(from)
+    await openAt(distance,seed)
+    await page.evaluate(({ inputs, from }) => {
+      window.phaseThreeQA.soak = { inputs, duration:from+3, precise:true, ticksPerCallback:15,
+        firstTick:from*120, stopTick:0, next:0, nextSample:Infinity, samples:[] }
+    },{ inputs:guidedInputs(seed,from+2.4,distance), from })
+    await page.locator('#primary').tap()
+    await settle(distance,quality)
+    for (let frame=0;frame<18;frame++) {
+      const stopTick = 25+frame*12
+      await page.evaluate(stop => { window.phaseThreeQA.soak.stopTick = stop },stopTick)
+      await page.waitForFunction(stop => window.retrieverDebug?.mode !== 'running' || window.retrieverDebug.ticks >= stop,
+        stopTick,{timeout:60000})
+      await capture('moving-'+String(frame).padStart(2,'0'),{seed,sceneSeconds:from+stopTick*tickSeconds})
+    }
+  } else if (args.includes('puddle-views')) {
+    const only = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
+    const lookahead = Number(args.find(arg => arg.startsWith('lookahead='))?.slice(10) ?? 19)
+    const fixtures = [7,11,13,19,29,47].flatMap(seed => rowsFor(seed,450).flatMap(row =>
+      row.entities.filter(entity => entity.type === 'puddle').map(entity => ({ seed, time:row.time, entity }))))
+    for (const region of expeditionRegions) {
+      if (only.length && !only.includes(region.key)) continue
+      const options = fixtures.filter(({ time }) => time > region.seconds + 4 &&
+        time < (expeditionRegions[region.index+1]?.seconds ?? 450) - 1)
+      const { seed, entity } = options.find(({ entity }) => entity.lane === 0) ?? options[0]
+      const distance = entity.distance - lookahead
+      await runAt(distance,seed)
+      const state = await page.evaluate(() => window.retrieverDebug)
+      assert.ok(state.hazards.some(hazard=>hazard.type === 'puddle' && hazard.distance === entity.distance && hazard.lane === entity.lane))
+      const reaction = puddleReaction(entity,state)
+      assert.ok(reaction.lastSafeJumpSeconds >= reactionWindow, region.key + ' approach reaction allowance')
+      await capture('puddle-'+region.key,{ seed, puddle:entity.distance, approachMeters:lookahead,
+        approachSeconds:lookahead/state.speed, puddleLane:entity.lane,
+        ...reaction,
+        drawingBuffer:await page.locator('#trail').evaluate(canvas => [canvas.width,canvas.height]) })
+    }
   } else if (args.includes('southern-views')) {
     const seed = 7
     const offsets = args.includes('center-only') ? [15] : [5, 15, 27]
@@ -732,23 +797,34 @@ try {
     }
   } else if (args.includes('soak')) {
     const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
+    const from = Number(args.find(arg => arg.startsWith('from-seconds='))?.slice(13) ?? 0)
+    const ticksPerCallback = args.includes('fast-long') ? 27 : 15
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
+    assert.ok(Number.isInteger(from) && from >= 0 && from <= duration-15)
     const seed = 7
-    const inputs = guidedInputs(seed, duration)
+    const start = distanceAtTime(from)
+    const inputs = guidedInputs(seed, duration, start)
     const precise = args.includes('precise')
     const autoTest = args.includes('clarity-auto')
     if (autoTest) assert.ok(precise && quality === 'auto' && duration >= 18)
-    if (precise) await openAt(0, seed)
-    else await runAt(0, seed)
-    await page.evaluate(({ inputs, duration, fast, precise, autoTest }) => {
-      window.phaseThreeQA.soak = { inputs, duration, fast, precise, autoTest, next: 0, nextSample: 0, samples: [] }
-    }, { inputs, duration, fast: args.includes('fast'), precise, autoTest })
+    if (precise) await openAt(start, seed)
+    else await runAt(start, seed)
+    await page.evaluate(({ inputs, duration, fast, precise, autoTest, from, ticksPerCallback }) => {
+      window.phaseThreeQA.soak = { inputs, duration, fast, precise, autoTest,
+        ticksPerCallback, firstTick:from*120, stopTick:from && precise ? 0 : undefined, next:0, nextSample:from, samples:[] }
+    }, { inputs, duration, fast: args.includes('fast'), precise, autoTest, from, ticksPerCallback })
     const videoStart = args.includes('video') ? (performance.now() - recordingStarted) / 1000 : null
     if (precise) {
       if (args.includes('offline')) await context.setOffline(true)
       await page.locator('#primary').tap()
+      // Starting deep in a route relocates every tile at once. Let that
+      // diagnostic portal settle before testing steady stream bounds.
+      if (from) {
+        await settle(start,quality)
+        await page.evaluate(() => { delete window.phaseThreeQA.soak.stopTick })
+      }
     }
-    for (let checkpoint = Math.min(15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
+    for (let checkpoint = Math.min(from+15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
       await page.waitForFunction(value => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
         window.retrieverDebug?.elapsed >= value, checkpoint, { timeout: 240_000 })
         .catch(async error => {
@@ -769,12 +845,12 @@ try {
     }
     const soak = await page.evaluate(() => ({ ...window.phaseThreeQA.soak, state: window.retrieverDebug }))
     const endPerformance = await page.evaluate(() => window.retrieverPerformance())
-    await writeFile(resolve(output, 'soak.json'), JSON.stringify({ engine: engine.name(), seed, duration,
+    await writeFile(resolve(output, 'soak.json'), JSON.stringify({ engine: engine.name(), seed, duration, from,
       offline: args.includes('offline'), quality, executed: soak.next, samples: soak.samples, elapsed: soak.state.elapsed,
       videoStart, videoEnd:videoStart === null ? null : (performance.now() - recordingStarted) / 1000,
       renderedEnd: endPerformance }, null, 2) + '\n')
     assert.equal(soak.state.mode, 'running', JSON.stringify(soak.state))
-    assert.ok(soak.samples.length >= duration, 'insufficient rendered samples')
+    assert.ok(soak.samples.length >= duration-from, 'insufficient rendered samples')
     if (autoTest) {
       const presets = soak.samples.map(sample => sample.buffer.preset)
       assert.ok(soak.opener)
@@ -788,10 +864,14 @@ try {
     // playable initial tiles are already ready. From two seconds onward
     // retain the same lower bound as the settled route.
     // Phase 09 software reached 122 geometries, so use the current budget.
-    assert.ok(soak.samples.every(({ elapsed, tiles, packs, textures, geometries }) =>
-      tiles <= 7 && tiles >= (living ? (elapsed < 2 ? 3 : 5) : 7) && packs <= (living ? 3 : 2) &&
-      textures <= (living ? 34 : 18) && geometries <= (living ? 130 : 90)), 'unexpected scene resource growth')
     await capture('soak-finish', { seed, duration, executed: soak.next })
+    const outsideBudget = soak.samples.find(({ elapsed, tiles, packs, textures, geometries }) => {
+      // A frozen deep preview can initially have only its playable tile.
+      const minimum = from && elapsed < from+.1 ? 1 : living ? elapsed < from+2 ? 3 : 5 : 7
+      return tiles > 7 || tiles < minimum || packs > (living ? 3 : 2) ||
+        textures > (living ? 34 : 18) || geometries > (living ? 130 : 90)
+    })
+    assert.equal(outsideBudget, undefined, 'scene resources outside the tested budget')
   } else if (args.includes('landmark-pass')) {
     const keys = args.filter(a => a.startsWith('only=')).map(a => a.slice(5))
     const selected = expeditionRegions.filter(r => keys.length ? keys.includes(r.key) : ['gulf','cypress','farm'].includes(r.key))

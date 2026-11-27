@@ -1,0 +1,308 @@
+[
+  {
+    "build": {
+      "version": "1.0.0-rc.3.1",
+      "id": "368a0bd"
+    },
+    "from": 186.5,
+    "finish": 189.2,
+    "seed": 7,
+    "frames": 13,
+    "meanAnimationIntervalMs": 2040.9384615384613,
+    "meanCpuMs": 306.10000000681197,
+    "frameSummary": {
+      "id": 1,
+      "discarded": 19,
+      "peakTextures": 21,
+      "peakGeometries": 58,
+      "presentation": {
+        "samples": 22,
+        "maxMs": 3593.199999988079,
+        "over20": 19,
+        "over33_3": 19,
+        "over50": 19,
+        "averageMs": 993.96
+      },
+      "cpu": {
+        "samples": 23,
+        "maxMs": 4024.100000023842,
+        "over20": 8,
+        "over33_3": 6,
+        "over50": 4,
+        "averageMs": 403.9
+      },
+      "averageFPS": 1
+    },
+    "restart": {
+      "inputAt": 22110.80000001192,
+      "handlerAt": 23327.899999976158,
+      "before": {
+        "geometries": 27,
+        "textures": 22,
+        "programs": 14
+      },
+      "firstFrameSubmittedMs": 5911.3,
+      "firstFrameCpuMs": 4024.1,
+      "firstRenderMs": 4008.7,
+      "after": {
+        "geometries": 35,
+        "textures": 18,
+        "programs": 17
+      },
+      "firstOperations": [
+        {
+          "at": 23831.80000001192,
+          "hunt": 1,
+          "name": "audio-initialize",
+          "detail": "Web Audio",
+          "durationMs": 318.4
+        },
+        {
+          "at": 23878.69999998808,
+          "hunt": 1,
+          "name": "audio-decode-start",
+          "detail": "instruments"
+        },
+        {
+          "at": 23999.100000023842,
+          "hunt": 1,
+          "name": "habitat-request",
+          "detail": "trees"
+        },
+        {
+          "at": 23999.100000023842,
+          "hunt": 1,
+          "name": "habitat-request",
+          "detail": "grass"
+        },
+        {
+          "at": 23999.30000001192,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Gulf atlas / color"
+        },
+        {
+          "at": 23999.30000001192,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Gulf atlas / properties"
+        },
+        {
+          "at": 23999.30000001192,
+          "hunt": 1,
+          "name": "gulf-atlas-release",
+          "detail": "Gulf Coast Marsh"
+        },
+        {
+          "at": 23999.5,
+          "hunt": 1,
+          "name": "geometry-dispose",
+          "detail": "Habitat / ferns"
+        },
+        {
+          "at": 24005.30000001192,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+        },
+        {
+          "at": 24006.899999976158,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Habitat / ferns / fern_02_nor_gl"
+        },
+        {
+          "at": 24007.100000023842,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Habitat / ferns / fern_02_rough"
+        },
+        {
+          "at": 24007.399999976158,
+          "hunt": 1,
+          "name": "material-dispose",
+          "detail": "Habitat / ferns"
+        },
+        {
+          "at": 24007.600000023842,
+          "hunt": 1,
+          "name": "habitat-release",
+          "detail": "ferns",
+          "durationMs": 8.2
+        }
+      ],
+      "nextAnimationCallbackMs": 5966,
+      "firstPresentationIntervalMs": 69.9
+    }
+  },
+  {
+    "build": {
+      "version": "1.0.0-rc.4",
+      "id": "a524eac"
+    },
+    "from": 186.5,
+    "finish": 189.2,
+    "seed": 7,
+    "frames": 14,
+    "meanAnimationIntervalMs": 1176.142857142857,
+    "meanCpuMs": 126.96666667461395,
+    "frameSummary": {
+      "id": 1,
+      "discarded": 19,
+      "peakTextures": 19,
+      "peakGeometries": 54,
+      "presentation": {
+        "samples": 22,
+        "maxMs": 2286.400000035763,
+        "over20": 17,
+        "over33_3": 17,
+        "over50": 17,
+        "averageMs": 668.01
+      },
+      "cpu": {
+        "samples": 23,
+        "maxMs": 1785.9000000357628,
+        "over20": 4,
+        "over33_3": 4,
+        "over50": 3,
+        "averageMs": 176.1
+      },
+      "averageFPS": 1.5
+    },
+    "restart": {
+      "inputAt": 16804.69999998808,
+      "handlerAt": 23468.599999964237,
+      "before": {
+        "geometries": 24,
+        "textures": 22,
+        "programs": 13
+      },
+      "firstFrameSubmittedMs": 9401.6,
+      "firstFrameCpuMs": 1785.9,
+      "firstRenderMs": 1775,
+      "after": {
+        "geometries": 31,
+        "textures": 18,
+        "programs": 16
+      },
+      "firstOperations": [
+        {
+          "at": 24034.69999998808,
+          "hunt": 1,
+          "name": "audio-initialize",
+          "detail": "Web Audio",
+          "durationMs": 252.2
+        },
+        {
+          "at": 24099.5,
+          "hunt": 1,
+          "name": "audio-decode-start",
+          "detail": "instruments"
+        },
+        {
+          "at": 24304,
+          "hunt": 1,
+          "name": "audio-decode-ready",
+          "detail": "instruments",
+          "durationMs": 204.5
+        },
+        {
+          "at": 24304.099999964237,
+          "hunt": 1,
+          "name": "audio-decode-start",
+          "detail": "goose"
+        },
+        {
+          "at": 24313,
+          "hunt": 1,
+          "name": "audio-decode-ready",
+          "detail": "goose",
+          "durationMs": 8.9
+        },
+        {
+          "at": 24313,
+          "hunt": 1,
+          "name": "audio-decode-start",
+          "detail": "mallard"
+        },
+        {
+          "at": 24323.599999964237,
+          "hunt": 1,
+          "name": "audio-decode-ready",
+          "detail": "mallard",
+          "durationMs": 10.6
+        },
+        {
+          "at": 24323.599999964237,
+          "hunt": 1,
+          "name": "audio-decode-start",
+          "detail": "creek"
+        },
+        {
+          "at": 24412.599999964237,
+          "hunt": 1,
+          "name": "audio-decode-ready",
+          "detail": "creek",
+          "durationMs": 89
+        },
+        {
+          "at": 24421.399999976158,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Gulf atlas / color"
+        },
+        {
+          "at": 24421.5,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Gulf atlas / properties"
+        },
+        {
+          "at": 24421.5,
+          "hunt": 1,
+          "name": "gulf-atlas-release",
+          "detail": "Gulf Coast Marsh"
+        },
+        {
+          "at": 24421.599999964237,
+          "hunt": 1,
+          "name": "geometry-dispose",
+          "detail": "Habitat / ferns"
+        },
+        {
+          "at": 24421.80000001192,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+        },
+        {
+          "at": 24422.19999998808,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Habitat / ferns / fern_02_nor_gl"
+        },
+        {
+          "at": 24422.599999964237,
+          "hunt": 1,
+          "name": "texture-dispose",
+          "detail": "Habitat / ferns / fern_02_rough"
+        },
+        {
+          "at": 24422.899999976158,
+          "hunt": 1,
+          "name": "material-dispose",
+          "detail": "Habitat / ferns"
+        },
+        {
+          "at": 24422.899999976158,
+          "hunt": 1,
+          "name": "habitat-release",
+          "detail": "ferns",
+          "durationMs": 1.4
+        }
+      ],
+      "nextAnimationCallbackMs": 9407.4,
+      "firstPresentationIntervalMs": 8.3
+    }
+  }
+]

@@ -44,6 +44,6 @@ test('Gulf bank cover is local, bounded and seeded outside the playable trail', 
     }
   }
   assert.ok(instances > 30)
-  for (const region of expeditionRegions.slice(2))
+  for (const region of expeditionRegions.slice(2).filter(region => !region.heartland))
     assert.equal(buildTile(Math.ceil(region.marker / 30), 7).shoreGrass.length, 0, region.key)
 })

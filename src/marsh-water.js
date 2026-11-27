@@ -4,6 +4,7 @@ import { fieldAtlasShader } from './field-atlas-shader.js'
 import { dawnDirection } from './atmosphere.js'
 import { expeditionRegions } from './expedition.js'
 import { gulfMap, gulfProperties, gulfReady, gulfScans } from './gulf-surfaces.js'
+import { puddleWidths, puddleLengths, puddleMargin } from './puddle-art.js'
 
 const uniforms = T.UniformsUtils.clone(T.UniformsLib.fog)
 Object.assign(uniforms, {
@@ -16,6 +17,8 @@ Object.assign(uniforms, {
   southernWater: { value: 0 },
   gulfEnd: { value: expeditionRegions[1].marker }, gulfMap, gulfProperties, gulfReady,
   swampRange: { value: new T.Vector2(expeditionRegions[1].marker, expeditionRegions[2].marker) },
+  platteRange: { value: new T.Vector2(expeditionRegions[6].marker, expeditionRegions[7].marker) },
+  puddleWidths: { value: puddleWidths }, puddleLengths: { value: puddleLengths },
 })
 
 export const marshWater = new T.ShaderMaterial({
@@ -24,11 +27,13 @@ export const marshWater = new T.ShaderMaterial({
     attribute float marshDepth, marshCanopy;
     varying float bedDepth, bankCanopy;
     varying vec3 waterPoint;
+    varying vec2 puddleUV;
     #include <fog_pars_vertex>
     void main() {
       bedDepth = marshDepth;
       bankCanopy = marshCanopy;
       waterPoint = (modelMatrix * vec4(position, 1.)).xyz;
+      puddleUV = position.xz;
       vec4 mvPosition = modelViewMatrix * vec4(position, 1.);
       gl_Position = projectionMatrix * mvPosition;
       #include <fog_vertex>
@@ -40,20 +45,51 @@ export const marshWater = new T.ShaderMaterial({
     uniform vec4 waterProfile;
     uniform float waterWind, southernWater;
     uniform float gulfEnd;
-    uniform vec2 swampRange;
+    uniform vec2 swampRange, platteRange;
+    uniform vec3 puddleWidths, puddleLengths;
     ${fieldAtlasShader}
     ${gulfScans}
     uniform vec3 waterSky, waterHorizon, waterSun, waterLight, waterTint;
     varying float bedDepth, bankCanopy;
     varying vec3 waterPoint;
+    varying vec2 puddleUV;
     #include <fog_pars_fragment>
+
+    vec3 trailPool(vec2 p, float edge) {
+      float variation = sin(p.x*73. + sin(p.y*57.)*2.) * cos(p.y*64.-p.x*39.);
+      float margin = ${puddleMargin.toFixed(2)} * (.73 + .22*sin(p.x*17. + p.y*13.) + .05*variation);
+      if (edge > margin) discard;
+      float water = 1.-smoothstep(-.027,.006,edge);
+      float graze = pow(1.-max(0.,normalize(cameraPosition-waterPoint).y),2.);
+      float bands = sin(p.y*15.+p.x*8.3+waterClock*2.6+sin(p.x*9.)*.48);
+      float textureFade = 1.-smoothstep(.025,.16,length(fwidth(p)));
+      vec3 wetGravel = mix(vec3(.095,.077,.050),vec3(.13,.107,.077),smoothstep(.0,margin, edge));
+      wetGravel *= 1. + variation*.31*textureFade;
+      vec3 skyImage = mix(waterSky,waterHorizon, .35 + .20*bands*textureFade);
+      vec3 silt = mix(vec3(.066,.077,.067),waterTint*.58, .46);
+      vec3 reflected = mix(silt,skyImage * vec3(.47,.61,.65), .43 + graze*.36);
+      reflected *= .92 + .10*bands*textureFade;
+      reflected += (1.-smoothstep(.014,.059,abs(edge+.027))) * vec3(.023,.019,.010);
+      return mix(wetGravel,reflected,water);
+    }
 
     void main() {
       if (bedDepth <= 0.) discard;
       vec2 p = waterPoint.xz + worldOrigin;
+      if (bedDepth > 2.) {
+        vec2 pool = abs(puddleUV);
+        vec3 edges = max(pool.x-puddleWidths, pool.y-puddleLengths);
+        gl_FragColor = vec4(trailPool(p,min(edges.x,min(edges.y,edges.z))),1.);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+        #include <fog_fragment>
+        return;
+      }
       float coast = 1. - smoothstep(gulfEnd - 11., gulfEnd + 16., -p.y);
       float swamp = smoothstep(swampRange.x - 18., swampRange.x + 29., -p.y) *
         (1. - smoothstep(swampRange.y - 29., swampRange.y + 18., -p.y));
+      float braid = smoothstep(platteRange.x-36.,platteRange.x+36.,-p.y) *
+        (1. - smoothstep(platteRange.y-36.,platteRange.y+36.,-p.y));
       vec2 flow = normalize(vec2(.26 + waterProfile.y * .43, 1.0));
       vec2 drift = p + vec2(.49 * sin(p.x*.64 + p.y*.38), .44 * cos(p.y*.59-p.x*.73));
       drift += southernWater * vec2(.88 * sin(p.y*.19-p.x*.24),.73*cos(p.x*.11+p.y*.17));
@@ -95,10 +131,12 @@ export const marshWater = new T.ShaderMaterial({
       vec3 lake = mix(mud, waterTint, deep);
       lake = mix(lake, mix(vec3(.055,.042,.023), vec3(.012,.025,.018),deep), swamp * .63);
       lake = mix(lake, mix(vec3(.105,.093,.052),vec3(.026,.119,.108),deep),coast * .74);
-      float stream = smoothstep(.52,.78,waterProfile.y) * southernWater;
+      float stream = max(braid,smoothstep(.52,.78,waterProfile.y) * southernWater);
       vec3 bankBed = mix(vec3(.116,.097,.057), vec3(.181,.159,.111), stream);
       vec3 basin = mix(waterTint*.81, vec3(.031,.077,.062),coast*.65);
       lake = mix(lake, mix(bankBed*(.66 + .57*strand), basin, deep), southernWater*.57);
+      lake = mix(lake, mix(vec3(.176,.141,.084)*(.82+strand*.27),vec3(.068,.106,.108),deep),
+        braid*.77*(1.-crossing));
       // Trail crossings use the same water as the banks. Reach a deeper
       // channel color in the middle, and leave the wet gravel edges visible.
       vec3 channel = mix(waterTint * .82, vec3(.048,.074,.061), coast);
@@ -133,6 +171,7 @@ export const marshWater = new T.ShaderMaterial({
         (1. - coast * .28) * (1. - swamp * .81);
       float reflectivity = fresnel * mix(.50, .92, deep) * mix(1., .64, crossing) * (.58 + waterProfile.z * .67);
       vec3 color = mix(lake, reflectedLight, reflectivity);
+      color += braid*(1.-crossing)*graze*(.021+.027*smoothstep(.37,.88,crossWave))*waterSky;
       float wave = smoothstep(.40,.93, crossWave*.7 + broad*.3);
       float fade = 1. - smoothstep(.16,.43,length(fwidth(p)));
       color += coast * fade * (rim*.020 + deep * wave * graze * .016) *

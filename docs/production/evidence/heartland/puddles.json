@@ -1,0 +1,246 @@
+{
+  "engine": "webkit",
+  "quality": "balanced",
+  "fixtures": [
+    {
+      "seed": 7,
+      "distance": 191.6482226949627,
+      "weather": "Autumn sunrise",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 210.6482226949627,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 1.2,
+      "contactSeconds": 1.2083333333333333,
+      "courseReactionSeconds": 0.42,
+      "territory": "gulf"
+    },
+    {
+      "seed": 7,
+      "distance": 865.8609695568584,
+      "weather": "Overcast",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 884.8609695568584,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.8583333333333333,
+      "contactSeconds": 0.8666666666666667,
+      "courseReactionSeconds": 0.42,
+      "territory": "cypress"
+    },
+    {
+      "seed": 7,
+      "distance": 1095.9636220484522,
+      "weather": "Overcast",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 1114.9636220484522,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.825,
+      "contactSeconds": 0.8333333333333334,
+      "courseReactionSeconds": 0.42,
+      "territory": "flyway"
+    },
+    {
+      "seed": 13,
+      "distance": 2047.2129415439485,
+      "weather": "Morning fog",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 2066.2129415439485,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.7416666666666667,
+      "contactSeconds": 0.75,
+      "courseReactionSeconds": 0.42,
+      "territory": "timber"
+    },
+    {
+      "seed": 7,
+      "distance": 2726.5808133290866,
+      "weather": "Light rain",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 2745.5808133290866,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.7,
+      "contactSeconds": 0.7083333333333334,
+      "courseReactionSeconds": 0.42,
+      "territory": "ozark"
+    },
+    {
+      "seed": 11,
+      "distance": 3706.7466423583696,
+      "weather": "Heavy rain",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 3725.7466423583696,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.6583333333333333,
+      "contactSeconds": 0.6666666666666666,
+      "courseReactionSeconds": 0.42,
+      "territory": "farm"
+    },
+    {
+      "seed": 7,
+      "distance": 4262.374523258537,
+      "weather": "Windy",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 4281.374523258537,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.65,
+      "contactSeconds": 0.65,
+      "courseReactionSeconds": 0.42,
+      "territory": "platte"
+    },
+    {
+      "seed": 7,
+      "distance": 5208.142076733252,
+      "weather": "Snow",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 5227.142076733252,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.625,
+      "contactSeconds": 0.6333333333333333,
+      "courseReactionSeconds": 0.42,
+      "territory": "sandhills"
+    },
+    {
+      "seed": 11,
+      "distance": 5823.915304140684,
+      "weather": "Sleet",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 5842.915304140684,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.6166666666666667,
+      "contactSeconds": 0.625,
+      "courseReactionSeconds": 0.42,
+      "territory": "prairie"
+    },
+    {
+      "seed": 13,
+      "distance": 6591.912731664987,
+      "weather": "Sleet",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 6610.912731664987,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.6083333333333333,
+      "contactSeconds": 0.6166666666666667,
+      "courseReactionSeconds": 0.42,
+      "territory": "dakota"
+    },
+    {
+      "seed": 13,
+      "distance": 7851.116521624482,
+      "weather": "Overcast",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 7870.116521624482,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.6,
+      "contactSeconds": 0.6083333333333333,
+      "courseReactionSeconds": 0.42,
+      "territory": "manitoba"
+    },
+    {
+      "seed": 19,
+      "distance": 8783.432594879836,
+      "weather": "Morning fog",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 8802.432594879836,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.6,
+      "contactSeconds": 0.6083333333333333,
+      "courseReactionSeconds": 0.42,
+      "territory": "parklands"
+    },
+    {
+      "seed": 11,
+      "distance": 9683.435538766502,
+      "weather": "Light rain",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 9702.435538766502,
+      "puddleLane": 1,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.6,
+      "contactSeconds": 0.6083333333333333,
+      "courseReactionSeconds": 0.42,
+      "territory": "boreal"
+    },
+    {
+      "seed": 13,
+      "distance": 10098.59598439204,
+      "weather": "Light rain",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 10117.59598439204,
+      "puddleLane": 0,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.6,
+      "contactSeconds": 0.6083333333333333,
+      "courseReactionSeconds": 0.42,
+      "territory": "foothills"
+    },
+    {
+      "seed": 7,
+      "distance": 11435.687563189558,
+      "weather": "High-country snow",
+      "drawingBuffer": [
+        223,
+        397
+      ],
+      "puddle": 11454.687563189558,
+      "puddleLane": 1,
+      "approachMeters": 19,
+      "lastSafeJumpSeconds": 0.6,
+      "contactSeconds": 0.6083333333333333,
+      "courseReactionSeconds": 0.42,
+      "territory": "mountain"
+    }
+  ]
+}

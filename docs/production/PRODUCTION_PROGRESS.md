@@ -2,9 +2,9 @@
 
 ## Resume here
 
-- Operation Clarity is on `codex/retriever-run-clarity`, based on merged Southern Flyway `d5c64d989b9811da2208eca757742dcc533a5559`. Published RC.3 is `3205d74`. The configured RC.3.1 candidate is `368a0bd`. [Clarity report](CLARITY_REPORT.md) · [Draft PR #42](https://github.com/bladunk/Retriever-Run/pull/42)
-- The owner rejected RC.3 on iPhone Safari. RC.3.1 separates first-hunt initialization from Auto's sustained quality decisions, preserves scene and sign clarity, and replaces detached leaf cards on Delta and Flooded Timber trees with attached crowns. Both courses and saves retain their existing contracts.
-- Resume with the physical iPhone checklist in the Clarity report after an approved preview. The competitive gate remains closed. Heartland follows owner acceptance of the correction. [Roadmap](PRODUCTION_ROADMAP.md) · [Southern Flyway report](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md)
+- Heartland starts at merged Clarity `c4a29e579120c80552a7ee45eb201305bf06a93f`. The owner accepted the corrected RC.3.1 visual baseline and reported 60 FPS in Safari on build `368a0bd`. [Clarity report](CLARITY_REPORT.md) · [Merged PR #42](https://github.com/bladunk/Retriever-Run/pull/42)
+- RC.4 candidate `a524eac` develops territories 6–10 and corrects puddle visibility along the full trail. The change keeps the existing deterministic courses and introduces a permanent obstacle readability review. [Draft PR #43](https://github.com/bladunk/Retriever-Run/pull/43) · [Heartland report](WILDERNESS_HEARTLAND_REPORT.md) · [Player-first charter](PLAYER_FIRST_CHARTER.md)
+- Use the Heartland native checklist after owner approval of a preview. The published production build and competition remain in their existing state. Northern Frontier follows Heartland. [Roadmap](PRODUCTION_ROADMAP.md)
 
 ## Implemented in Phase 01
 

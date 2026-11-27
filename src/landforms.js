@@ -46,29 +46,42 @@ export function shoreHeight(region, distance, x) {
       return [-.64 + ripple * .64 - bendWater + shelf + ridge * spans, width * (1.07 + inside * .36)]
     }
     case 'field': {
-      const drainage = .66 * dome((edge - 6.2 - bend * .45) / 1.18)
-      return [.19 + .15 * bend + .052 * reach - drainage - .36 * dome((edge - 16) / 4), width * 1.12]
+      const wide = saturate((edge-8)/23)
+      const shoulder = .42 + 1.3*wide + wide*(1.14*Math.sin(distance*.021+x*.087) + .70*bend)
+      const ditch = 1.19*dome((edge-6.7-bend*1.17)/1.41)
+      const farmPond = 2.33*dome((edge - 27 - 4*bend)/7.1)*dome(Math.sin(distance*.014+side)*1.85)
+      return [shoulder - ditch - farmPond + .34*outer, width * 1.26]
     }
     case 'braids': {
-      const meander = 4.2 * Math.sin(distance * .044 + side)
-      const channel = Math.sin((edge + meander) * .39 + .42 * Math.sin(distance * .076))
-      const bar = .63 * dome((edge - 28 + 1.3 * meander) / 8.6)
-      return [low + .43 + Math.sign(channel) * Math.abs(channel) ** 1.4 * .50 + bar + outer * .11, width * .83]
+      const bendRun = Math.sin(distance*.018+side)
+      const channel = 11.3 + 4.6*bendRun + 1.61*Math.sin(distance*.048-side)
+      const branch = 26.4 + 6.8*Math.sin(distance*.014+side*.52)
+      const banks = .86*saturate((edge-32)/33) + .52*dome((edge-5.5)/2.5)
+      const mainWidth = 4.4 + 1.6*Math.sin(distance*.015+side)
+      const braid = .69*dome((edge-channel)/mainWidth) + .58*dome((edge-branch)/6.4)
+      const midbar = .36*dome((edge-(channel+branch)*.5)/5.6)*(.65+.35*Math.sin(distance*.063+side))
+      const slip = .41*dome((edge-channel-1.37)/2.37)*dome(1.48*Math.sin(distance*.024+side))
+      const bar = midbar + slip
+      return [-.42 + banks - braid + bar + ripple*.48, width * .91]
     }
     case 'dunes': {
-      const dune = Math.sin(edge * .176 + side + distance * .034) + .63 * Math.cos(edge * .29 - distance * .027)
-      const grassRidge = 1.78 * Math.max(-.46, dune) * saturate(reach / 12)
-      const meadow = 1.40 * dome((edge - 13 + bend * 6) / 8) * Math.max(0, bend + .23)
-      return [.24 + grassRidge + outer * (.94 + .94 * Math.sin(distance * .019 + side)) - meadow, width * 1.65]
+      const crest = .5+.5*Math.sin(edge*.107+side+distance*.018+.53*Math.sin(distance*.037))
+      const farCrest = .5+.5*Math.cos(x*.059-distance*.013+1.32*bend)
+      const grassRidge = 7.8*crest**1.65*saturate((edge-7)/21) + 7.4*outer*farCrest
+      const wetMeadow = 1.52*dome((edge-12.2+5.5*bend)/5.7) * (.65+.35*Math.sin(distance*.034+side))
+      return [.27 + grassRidge + outer*1.2 - wetMeadow + ripple*.45, width * 1.86]
     }
     case 'pothole': {
-      const basins = Math.cos(distance * .096 + side) * Math.sin(edge * .220 - distance * .037)
-      const prairie = .51 + .64 * Math.sin(edge * .123 + distance * .041 + side) + outer * 1.22
-      return [prairie + ripple - Math.max(0, basins) ** 1.25 * 1.54, width * 1.23]
+      const nearer = dome((edge-12.1-2.8*bend)/5.9)*dome(1.26*Math.sin(distance*.028+side))
+      const farther = dome((edge-32-6.1*Math.sin(distance*.019+side))/9.9)*dome(1.39*Math.sin(distance*.021-side))
+      const prairie = .37+.52*bend + outer*(2.42+.86*Math.sin(x*.106-distance*.024))
+      return [prairie+ripple-2.05*nearer-2.48*farther, width * 1.31]
     }
     case 'slough': {
-      const glacial = .48 * Math.sin(edge * .178 + distance * .036 + side)
-      return [low + .24 + glacial + outer * (1.82 + bend * .63), width * 1.2]
+      const ribbon = 15.5+5.8*Math.sin(distance*.014+side)
+      const open = dome((edge-ribbon)/10.2)
+      const spit = .56*dome((edge-18.9-5.1*bend)/3.3)*dome(Math.sin(distance*.043)*1.83)
+      return [.04 + ripple*.65 - 1.26*open + spit + outer*(2.40+.89*bend), width * 1.34]
     }
     case 'lacustrine':
       return [low + .53 * dome((edge - 12 - bend * 3) / 3.8) + .27 * Math.sin(edge * .20 + distance * .04) + outer * .52, width]
