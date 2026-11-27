@@ -565,6 +565,7 @@ function initialize() {
       if (inspecting && studio.take === 'Dog') {
         const pace = studio.playback === 'Late run' ? 18.2 : 12
         trailPose.stride = studioTime * pace
+        trailPose.height = getHeight(display)
         trailPose.speed = studio.playback === 'Late run' ? 21 : 11
         trailPose.idle = studio.playback === 'Idle' || studio.playback === 'Sit'
         trailPose.sit = studio.playback === 'Sit'

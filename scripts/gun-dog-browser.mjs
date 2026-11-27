@@ -53,7 +53,7 @@ try {
     })
     async function open(query) {
       await page.goto(origin + '/' + version + '/' + query, { waitUntil:'domcontentloaded' })
-      if (await page.locator('#content-screen').isVisible()) await page.locator('#content-online').tap()
+      if (await page.locator('#content-screen').isVisible()) await page.locator('#content-download').tap()
       await page.locator('.kennel-stage canvas').waitFor()
       await page.waitForFunction(() => window.retrieverInspectDog?.ready(), null, { timeout:45000 })
     }
