@@ -506,7 +506,8 @@ function initialize() {
       }
       landing *= Math.exp(-12 * dt)
       const height = getHeight(display)
-      const weather = atmosphere.update(display.elapsed, visualTime, reduceMotion() ? .34 : preset.weather, distance)
+      const weather = atmosphere.update(display.elapsed, visualTime, reduceMotion() ? .34 : preset.weather, distance,
+        inspecting ? studio.lighting : 'route')
       if (idle) titleWeather = weather
       setRockWeather(weather)
       trailPose = {

@@ -12,28 +12,38 @@ export function shoreHeight(region, distance, x) {
   const outer = saturate((edge - 14) / 45)
   switch (region.kind) {
     case 'tidal': {
-      const channels = Math.sin(edge * .65 + 1.55 * Math.sin(distance * .069 + side))
-      const marsh = .32 * Math.sin(edge * .193 - distance * .031) + .21 * Math.cos(distance * .110 + side)
-      return [low + channels * .31 + marsh * .62 + .42, width * .94]
+      const creek = 9.8 + 3.7 * Math.sin(distance * .026 + side) + 1.25 * Math.sin(distance * .089 - side)
+      const backwater = 28 + 6.5 * Math.sin(distance * .036 + side * 1.51)
+      const flat = -.32 + ripple * .81 + .19 * Math.sin(x * .36 + distance * .052)
+      const fingers = dome((edge - 19 - 4.1 * bend) / 6.6) * (.34 + .26 * Math.sin(distance * .033 - side))
+      return [flat + fingers - .96 * dome((edge - creek) / 3.5) - .68 * dome((edge - backwater) / 5.5), width * .84]
     }
     case 'swamp': {
       const hummock = dome((edge - 12 - bend * 5) / 3.6) * (1 + .18 * bend)
-      return [low + hummock * .70 + outer * .65 + .08 * Math.sin(x * .48 + distance * .205), width * .78]
+      const bay = dome((edge - 24 - bend * 7.1) / 8.5)
+      return [low + hummock * .82 - bay * .19 + outer * .76 + .17 * Math.sin(x * .48 + distance * .205), width * .78]
     }
     case 'levee': {
-      const top = 1.12 * dome((edge - 8 - bend * 1.9) / 2.5)
-      const bar = .71 * dome((edge - 27 + 6 * bend) / (5.8 + .8 * bend))
-      return [low + top + bar + outer * 1.24, width * 1.5]
+      const levee = 1.33 * dome((edge - 6.9 - bend * 1.1) / 2.12)
+      const drainage = .83 * dome((edge - 13.3 - bend * 2) / 2.9)
+      const contour = edge + 2.0 * Math.sin(distance * .019 + side) + .94 * Math.sin(distance * .079)
+      const bunds = .39 * Math.max(0, Math.cos(contour * .39)) ** 5
+      const dry = .25 + .39 * Math.sin(distance * .028 + side)
+      return [-.57 + dry + levee - drainage + bunds + ripple * .44 + outer * .50, width * 1.18]
     }
     case 'hardwood': {
-      const roots = .24 * Math.sin(edge * .38 + bend) * Math.cos(distance * .048 - side)
-      const bank = .62 * dome((edge - 17 - 3.7 * bend) / 6.7)
-      return [low + roots + bank + outer * .24 + .19, width * 1.04]
+      const roots = .25 * Math.sin(edge * .38 + bend) * Math.cos(distance * .048 - side)
+      const bank = .73 * dome((edge - 15 - 4.3 * bend) / 6.2)
+      return [low + roots + bank + outer * .39 + .11, width * 1.02]
     }
     case 'limestone': {
-      const slope = 3.1 * saturate((edge - 11) / 15) * (1.12 + .43 * bend)
-      const shelf = Math.floor(slope * 2.2) / 2.2
-      return [low + slope * .47 + shelf * .53 + outer * (2.4 + 1.40 * bend), width * 1.15]
+      const inside = .5 + .5 * Math.sin(distance * .039 + (x < 0 ? 0 : Math.PI))
+      const run = 9.4 + 4.2 * inside + 1.3 * bend
+      const bendWater = .73 * dome((edge - run) / (3.7 + 1.14 * inside))
+      const shelf = .83 * dome((edge - 18 + bend * 2.7) / 6)
+      const ridge = saturate((edge - 17 - inside * 6) / 33) ** .86
+      const spans = 7.6 + 4.1 * Math.cos(distance * .057 + side) + 2.2 * bend
+      return [-.64 + ripple * .64 - bendWater + shelf + ridge * spans, width * (1.07 + inside * .36)]
     }
     case 'field': {
       const drainage = .66 * dome((edge - 6.2 - bend * .45) / 1.18)

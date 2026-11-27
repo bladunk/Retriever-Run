@@ -72,6 +72,14 @@ export function createFieldMaterial() {
             float patternScale = 1. - smoothstep(.10, .32, length(fwidth(surfaceUV)));
             float ripples = sin(surfaceUV.y * 58. + sin(surfaceUV.x * 5.2) * 1.8);
             float shale = sin(surfaceUV.x * 73. - surfaceUV.y * 48.) * cos(surfaceUV.y * 92. + grain.r * 7.2);
+            float ozark = max(0., 1.-abs(vRegionalSurface.x-4.));
+            if (ozark > .001) {
+              // Rounded river gravel has mottled patches. Crossing regular
+              // bands produced moire near the low gameplay camera.
+              float pebbles = smoothstep(.22,.67,grain.g + .080*sin(surfaceUV.x*13.1+surfaceUV.y*8.4));
+              float gravel = pebbles*(.40 + .21*sin(dot(surfaceUV,vec2(4.6,-6.3)))) - .24;
+              shale = mix(shale,gravel,ozark);
+            }
             float leaves = smoothstep(.44,.82, sin(surfaceUV.x * 76. + grain.r * 18.) * cos(surfaceUV.y * 104.));
             diffuseColor.rgb *= mix(vec3(1.), vec3(1.24, 1.17, 1.02) * (1. + ripples * .094 * patternScale), sand * .82);
             diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * (1.15 + shale * .31 * patternScale), stone * .74);
@@ -82,6 +90,10 @@ export function createFieldMaterial() {
             float tracks = abs(abs(vFieldUv.x + .037 * sin(vFieldUv.y * .78)) - .42);
             float rut = (1. - smoothstep(.09,.21,tracks)) * (.28 + .30*smoothstep(-.5,.58,silt));
             float bank = smoothstep(1.26,1.75,abs(vFieldUv.x));
+            float delta = max(0., 1.-abs(vRegionalSurface.x-2.));
+            float fieldRows = .5 + .5 * sin(vFieldUv.x*6.6 + sin(vFieldUv.y*.21)*1.6 + vFieldUv.y*.30);
+            float seedBed = smoothstep(2.35,3.76,abs(vFieldUv.x))* (1.-smoothstep(.28,.70,length(fwidth(surfaceUV))));
+            diffuseColor.rgb *= 1. + delta*seedBed*(.34*fieldRows - .19);
             float tracksCountry = max(0., 1. - abs(vRegionalSurface.x - 5.) * .82);
             float damp = max(rut * (.46 + tracksCountry * .59), bank * (.30 + .22 * silt));
             damp = min(.82, damp + fieldWet * .15 * smoothstep(.10,.74,silt) * smoothstep(.62,1.54,abs(vFieldUv.x)));

@@ -9,6 +9,7 @@ const roots = new Map([
   ['before', resolve(process.env.FIELD_BASELINE ?? 'baseline')],
   ['after', resolve(process.env.FIELD_BUILD ?? 'dist')],
   ['studio', resolve(process.env.FIELD_STUDIO ?? 'dist-studio')],
+  ['studio-before', resolve(process.env.FIELD_BASELINE_STUDIO ?? 'baseline-studio')],
 ])
 const types = { '.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.json':'application/json',
   '.webmanifest':'application/manifest+json', '.webp':'image/webp', '.png':'image/png', '.glb':'model/gltf-binary',
@@ -52,7 +53,32 @@ async function open(page, url) {
 }
 
 try {
-  if (process.argv.includes('worldwide')) for (const combine of [true, false]) {
+  if (process.argv.includes('southern-studio')) for (const version of ['studio-before','studio']) {
+    const keys = ['gulf','cypress','flyway','timber','ozark']
+    for (let index = 0; index < keys.length; index++) {
+      await inspect(version,{width:320,height:568},async (page,prefix) => {
+        await page.addInitScript(() => localStorage.setItem('retriever-run.record.practice',JSON.stringify({quality:'high',masterVolume:0})))
+        await open(page,prefix+'?studio=1&perf=1&seed=7&offset=15&territory='+(index+1))
+        await page.waitForFunction(region => document.querySelector('#game').dataset.mode === 'studio' &&
+          window.retrieverPerformance().territory === region && window.retrieverPerformance().residentTiles >= 5,
+        keys[index],{timeout:75_000})
+        const original = await page.evaluate(() => localStorage.getItem('retriever-run.record'))
+        await page.screenshot({path:resolve(output,version+'-'+keys[index]+'.png')})
+        if (version === 'studio') {
+          await page.locator('#art-studio summary').click()
+          await page.getByLabel('Camera preset').selectOption('shore')
+          await page.getByLabel('Lighting').selectOption('dawn')
+          if (index === 0 || index === 4) await page.getByRole('button',{name:'Play camera'}).click()
+          await page.locator('#art-studio summary').click()
+          await page.screenshot({path:resolve(output,'shore-'+keys[index]+'.png')})
+        }
+        assert.equal(await page.evaluate(() => localStorage.getItem('retriever-run.record')),original)
+        samples.push({version,region:keys[index],seed:7,offset:15,isolated:true,
+          build:await page.evaluate(() => window.retrieverPerformance().build)})
+      })
+    }
+  }
+  else if (process.argv.includes('worldwide')) for (const combine of [true, false]) {
     await inspect('after',{width:320,height:568},async (page,prefix) => {
       const calls = []
       // No live calls. Read the public test stack's previously verified reviews.
@@ -153,7 +179,7 @@ try {
       })
     }
   }
-  if (!process.argv.some(arg => ['titles','resources','worldwide','idle'].includes(arg))) {
+  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio'].includes(arg))) {
     await inspect('studio',{width:390,height:844},async (page,prefix) => {
       await open(page,prefix+'?studio=1&perf=1&territory=13&seed=7&breed=boyd')
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio')

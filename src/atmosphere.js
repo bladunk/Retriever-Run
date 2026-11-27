@@ -3,8 +3,15 @@ import { waterProfiles } from './landscape-surfaces.js'
 import { seededRandom } from './trail.js'
 import { atmosphereBlend, blendProperty, expeditionRegions, northLevel, snowLevel } from './expedition.js'
 import { createNorthernHorizon } from './northern-horizon.js'
+import { createSouthernHorizon } from './southern-horizon.js'
 
 export const dawnDirection = new T.Vector3(-.58, .22, -.82).normalize()
+
+// Sun azimuth and elevation, diffuse lift, then shade in the existing single
+// lighting pass. Values blend on the shared atmosphere transitions.
+const flywayLight = [[-.23,.115,1.06,.03],[-.43,.255,.84,.24],[-.30,.16,.94,.08],
+  [-.42,.20,.84,.19],[-.34,.246,.98,.14]]
+const neutralLight = [-.58,.22,1,0]
 
 const states = [
   ['Autumn sunrise', 0x49728a, 0xcdb69c, 0xffd69e, .0124, .14, 0, 0, .11, 2.05],
@@ -18,6 +25,7 @@ const states = [
 ].map(([name, sky, horizon, sun, fog, cloud, rain, snow, wind, light]) => ({
   name, sky: new T.Color(sky), horizon: new T.Color(horizon), sun: new T.Color(sun), fog, cloud, rain, snow, wind, light,
 }))
+const reviewLights = { dawn: states[0], overcast: states[1], mist: states[2] }
 
 const weatherInterval = 34
 const transition = 12
@@ -61,7 +69,7 @@ const skyFragment = `
   uniform vec3 horizon;
   uniform vec3 sunColor;
   uniform float cloud;
-  uniform float clock, skyDetail;
+  uniform float clock, skyDetail, southernSky;
   uniform vec3 dawn;
   varying vec3 ray;
 
@@ -78,13 +86,21 @@ const skyFragment = `
     float toward = max(0., dot(direction, dawn));
     float tint = pow(toward, 10.) * (1. - cloud * .76);
     vec3 lowSky = mix(horizon, mix(horizon, sunColor, .39), tint);
-    vec3 color = mix(lowSky, zenith, smoothstep(.015, .59, height));
-    color += sunColor * (pow(toward, 27.) * .34 + smoothstep(.99935, .99964, toward) * 1.85) * (1. - cloud);
+    vec3 color = mix(lowSky, zenith, smoothstep(.015, mix(.59,.44,southernSky), height));
+    float sunDisc = mix(smoothstep(.99935,.99964,toward), smoothstep(.99970,.99979,toward), southernSky);
+    color += sunColor * (pow(toward, 27.) * .34 + sunDisc * 1.85) * (1. - cloud);
     vec2 p = direction.xz * vec2(4.8, 8.3) / max(.16, height + .13) + vec2(clock * .013, clock * .006);
     float billow = noise(p) * .67 + noise(p * 2.05) * .33;
     if (skyDetail > .5) billow += (noise(p * 4.06) - .5) * .14;
     float cover = smoothstep(.57-cloud*.27, .83-cloud*.19, billow);
     vec3 cloudLight = mix(horizon*.70, mix(horizon, sunColor, .49), smoothstep(.45,.81,billow) * (.42 + tint * .58));
+    if (southernSky > .001) {
+      float shear = noise(vec2(direction.x*9.5 + height*8.,height*65.) + vec2(clock*.008,0.));
+      float cloudBank = smoothstep(.40,.83,billow*.60 + shear*.4) * smoothstep(.018,.10,height);
+      float underlit = smoothstep(.41,.84,shear + tint*.25);
+      vec3 dawnCloud = mix(zenith*vec3(.78,.85,.91), horizon*vec3(1.18,.99,.85),underlit);
+      color = mix(color,dawnCloud,cloudBank*southernSky*.58);
+    }
     color = mix(color, cloudLight, cover*smoothstep(.025, .20, height) * .79);
     gl_FragColor = vec4(color, 1.);
     #include <tonemapping_fragment>
@@ -136,7 +152,8 @@ function precipitation(scene, snow) {
 export function createAtmosphere(scene) {
   const sky = new T.Mesh(new T.SphereGeometry(146, 32, 16), new T.ShaderMaterial({
     uniforms: { zenith: { value: new T.Color() }, horizon: { value: new T.Color() },
-      sunColor: { value: new T.Color() }, dawn: { value: dawnDirection }, cloud: { value: 0 }, clock: { value: 0 }, skyDetail: { value: 1 } },
+      sunColor: { value: new T.Color() }, dawn: { value: dawnDirection }, cloud: { value: 0 }, clock: { value: 0 },
+      skyDetail: { value: 1 }, southernSky:{ value:0 } },
     vertexShader: skyVertex, fragmentShader: skyFragment, side: T.BackSide, depthWrite: false,
   }))
   sky.renderOrder = -50
@@ -151,6 +168,7 @@ export function createAtmosphere(scene) {
   front.position.set(7, 6, 10)
   scene.add(sun, fill, front)
   const horizon = createNorthernHorizon(scene)
+  const southernHorizon = createSouthernHorizon(scene)
   const tone = new T.Color()
   const atmosphereWater = new T.Vector4()
   const daylight = [.06, .16, -.10, -.33, .26, .42, .35, .52, .18, .04, -.12, .17, -.27, .36, .51]
@@ -160,8 +178,9 @@ export function createAtmosphere(scene) {
   const result = { name: '', wind: 0, wet: 0, rain: 0, frost: 0, sky: new T.Color(), zenith: new T.Color(),
     light: new T.Color(), waterTint: new T.Color(), waterProfile: new T.Vector4() }
   return {
-    update(elapsed, time, budget, distance = 0) {
-      const { from, to, blend } = routeWeatherAt(elapsed)
+    update(elapsed, time, budget, distance = 0, lighting = 'route') {
+      const override = reviewLights[lighting]
+      const { from, to, blend } = override ? { from:override, to:override, blend:0 } : routeWeatherAt(elapsed)
       const lerp = (key) => T.MathUtils.lerp(from[key], to[key], blend)
       const uniforms = sky.material.uniforms
       uniforms.zenith.value.copy(from.sky).lerp(to.sky, blend)
@@ -174,6 +193,7 @@ export function createAtmosphere(scene) {
       tint(uniforms.horizon.value, 'horizon', .70)
       tint(uniforms.sunColor.value, 'sun', .64)
       result.frost = snowLevel(region)
+      southernHorizon(distance, region, uniforms.horizon.value)
       horizon(distance, northLevel(region), result.frost, uniforms.horizon.value, budget)
       const lightness = T.MathUtils.lerp(daylight[region.from.index], daylight[region.to.index], region.blend)
       uniforms.cloud.value = T.MathUtils.clamp(lerp('cloud') - lightness * .24, .05, .99)
@@ -188,17 +208,23 @@ export function createAtmosphere(scene) {
       fog.density = T.MathUtils.lerp(lerp('fog'), blendProperty(region, 'fog'), .72)
       sun.color.copy(uniforms.sunColor.value)
       sun.intensity = lerp('light') * 1.12 * (1 + lightness * .21)
-      const elevation = .22 + lightness * .23
-      dawnDirection.set(-.58, elevation, -.82).normalize()
+      const lightFrom = flywayLight[region.from.index] ?? neutralLight
+      const lightTo = flywayLight[region.to.index] ?? neutralLight
+      const azimuth = T.MathUtils.lerp(lightFrom[0], lightTo[0], region.blend)
+      const elevation = T.MathUtils.lerp(lightFrom[1], lightTo[1], region.blend) + lightness * .23
+      dawnDirection.set(azimuth, elevation, -.82 - (azimuth + .58) * .29).normalize()
       sun.position.copy(dawnDirection).multiplyScalar(28)
       const shade = (region.from.treesPerSide + (region.to.treesPerSide - region.from.treesPerSide) * region.blend) / 12
       const swamp = T.MathUtils.lerp(Number(region.from.key === 'cypress'), Number(region.to.key === 'cypress'), region.blend)
-      fill.intensity = 1.67 - lerp('cloud') * .19 - shade * .26 - swamp * .11
+      fill.intensity = (1.67 - lerp('cloud') * .19 - shade * .26 - swamp * .11) *
+        T.MathUtils.lerp(lightFrom[2], lightTo[2], region.blend)
       fill.groundColor.setHex(region.from.bank).lerp(tone.setHex(region.to.bank), region.blend).multiplyScalar(.71)
-      sun.intensity *= 1.08 - shade * .10 + swamp * .33
+      sun.intensity *= 1.08 - shade * .10 + swamp * .33 + T.MathUtils.lerp(lightFrom[3], lightTo[3], region.blend)
       result.rain = lerp('rain') * (1 - result.frost)
       result.wind = lerp('wind')
       result.wet = Math.min(1, result.rain + lerp('snow') * .24)
+      result.southern = T.MathUtils.lerp(Number(region.from.index < 5), Number(region.to.index < 5), region.blend)
+      uniforms.southernSky.value = result.southern
       result.name = blend > .5 ? to.name : from.name
       rain(result.rain, time, result.wind, budget)
       snow(Math.max(lerp('snow') * .56, result.frost * .10), time, result.wind, budget)

@@ -1,0 +1,272 @@
+[
+  {
+    "region": "gulf",
+    "index": 1,
+    "offset": 5,
+    "identical": false
+  },
+  {
+    "region": "gulf",
+    "index": 6,
+    "offset": 15,
+    "identical": false
+  },
+  {
+    "region": "gulf",
+    "index": 12,
+    "offset": 26,
+    "identical": false
+  },
+  {
+    "region": "cypress",
+    "index": 17,
+    "offset": 5,
+    "identical": false
+  },
+  {
+    "region": "cypress",
+    "index": 23,
+    "offset": 15,
+    "identical": false
+  },
+  {
+    "region": "cypress",
+    "index": 31,
+    "offset": 26,
+    "identical": false
+  },
+  {
+    "region": "flyway",
+    "index": 37,
+    "offset": 5,
+    "identical": false
+  },
+  {
+    "region": "flyway",
+    "index": 44,
+    "offset": 15,
+    "identical": false
+  },
+  {
+    "region": "flyway",
+    "index": 52,
+    "offset": 26,
+    "identical": false
+  },
+  {
+    "region": "timber",
+    "index": 59,
+    "offset": 5,
+    "identical": false
+  },
+  {
+    "region": "timber",
+    "index": 67,
+    "offset": 15,
+    "identical": false
+  },
+  {
+    "region": "timber",
+    "index": 75,
+    "offset": 26,
+    "identical": false
+  },
+  {
+    "region": "ozark",
+    "index": 83,
+    "offset": 5,
+    "identical": false
+  },
+  {
+    "region": "ozark",
+    "index": 91,
+    "offset": 15,
+    "identical": false
+  },
+  {
+    "region": "ozark",
+    "index": 100,
+    "offset": 26,
+    "identical": false
+  },
+  {
+    "region": "farm",
+    "index": 108,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "farm",
+    "index": 116,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "farm",
+    "index": 126,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "platte",
+    "index": 134,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "platte",
+    "index": 143,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "platte",
+    "index": 153,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "sandhills",
+    "index": 161,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "sandhills",
+    "index": 170,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "sandhills",
+    "index": 180,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "prairie",
+    "index": 189,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "prairie",
+    "index": 198,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "prairie",
+    "index": 208,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "dakota",
+    "index": 217,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "dakota",
+    "index": 227,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "dakota",
+    "index": 237,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "manitoba",
+    "index": 246,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "manitoba",
+    "index": 255,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "manitoba",
+    "index": 266,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "parklands",
+    "index": 275,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "parklands",
+    "index": 284,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "parklands",
+    "index": 295,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "boreal",
+    "index": 304,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "boreal",
+    "index": 313,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "boreal",
+    "index": 324,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "foothills",
+    "index": 333,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "foothills",
+    "index": 342,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "foothills",
+    "index": 353,
+    "offset": 26,
+    "identical": true
+  },
+  {
+    "region": "mountain",
+    "index": 362,
+    "offset": 5,
+    "identical": true
+  },
+  {
+    "region": "mountain",
+    "index": 371,
+    "offset": 15,
+    "identical": true
+  },
+  {
+    "region": "mountain",
+    "index": 382,
+    "offset": 26,
+    "identical": true
+  }
+]

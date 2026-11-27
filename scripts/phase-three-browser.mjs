@@ -693,6 +693,18 @@ try {
     assert.equal(samples.at(-1).hunt.id,cycles)
     assert.ok(samples.every(sample => sample.final.tiles <= 7 && sample.final.wildlife <= 2))
     await writeFile(resolve(output, 'restart-cycles.json'), JSON.stringify({ seed:7, quality, cycles, samples }, null, 2))
+  } else if (args.includes('southern-views')) {
+    const seed = 7
+    const offsets = args.includes('center-only') ? [15] : [5, 15, 27]
+    const only = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
+    const selected = only.length ? expeditionRegions.filter(region => only.includes(region.key)) : expeditionRegions.slice(0, 5)
+    for (const region of selected) {
+      for (const second of offsets) {
+        const distance = distanceAtTime(region.seconds + second)
+        await runAt(distance, seed)
+        await capture(`${region.key}-${second}`, { seed, sceneSeconds:region.seconds + second })
+      }
+    }
   } else if (args.includes('soak')) {
     const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
@@ -704,6 +716,7 @@ try {
     await page.evaluate(({ inputs, duration, fast, precise }) => {
       window.phaseThreeQA.soak = { inputs, duration, fast, precise, next: 0, nextSample: 0, samples: [] }
     }, { inputs, duration, fast: args.includes('fast'), precise })
+    const videoStart = args.includes('video') ? (performance.now() - recordingStarted) / 1000 : null
     if (precise) {
       if (args.includes('offline')) await context.setOffline(true)
       await page.locator('#primary').tap()
@@ -725,6 +738,7 @@ try {
     const endPerformance = await page.evaluate(() => window.retrieverPerformance())
     await writeFile(resolve(output, 'soak.json'), JSON.stringify({ engine: engine.name(), seed, duration,
       offline: args.includes('offline'), quality, executed: soak.next, samples: soak.samples, elapsed: soak.state.elapsed,
+      videoStart, videoEnd:videoStart === null ? null : (performance.now() - recordingStarted) / 1000,
       renderedEnd: endPerformance }, null, 2) + '\n')
     assert.equal(soak.state.mode, 'running', JSON.stringify(soak.state))
     assert.ok(soak.samples.length >= duration, 'insufficient rendered samples')

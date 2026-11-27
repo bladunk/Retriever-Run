@@ -1,0 +1,152 @@
+{
+  "engine": "chromium",
+  "samples": [
+    {
+      "build": {
+        "version": "1.0.0-rc.3",
+        "id": "3205d74"
+      },
+      "startup": {
+        "moduleRequestMs": 5906.3,
+        "moduleMs": 6397.6,
+        "rendererReadyMs": 6672.1,
+        "firstSceneSubmitMs": 7064.9,
+        "readyMs": 8752.3
+      },
+      "restart": {
+        "inputAt": 12908.600000023842,
+        "handlerAt": 12914.800000011921,
+        "before": {
+          "geometries": 25,
+          "textures": 19,
+          "programs": 14
+        },
+        "firstFrameSubmittedMs": 357.3,
+        "firstFrameCpuMs": 290.4,
+        "firstRenderMs": 278.1,
+        "after": {
+          "geometries": 42,
+          "textures": 20,
+          "programs": 19
+        },
+        "nextAnimationCallbackMs": 362.4,
+        "firstPresentationIntervalMs": 10.1
+      },
+      "capabilities": {
+        "longTasks": true,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "fernEvents": [
+        {
+          "at": 9779.600000023842,
+          "hunt": null,
+          "name": "habitat-request",
+          "detail": "ferns"
+        },
+        {
+          "at": 9906.600000023842,
+          "hunt": null,
+          "name": "habitat-ready",
+          "detail": "ferns",
+          "durationMs": 127
+        },
+        {
+          "at": 11014.699999988079,
+          "hunt": null,
+          "name": "texture-upload",
+          "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+        },
+        {
+          "at": 11014.699999988079,
+          "hunt": null,
+          "name": "texture-preparation",
+          "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+          "durationMs": 1.9
+        },
+        {
+          "at": 11474.199999988079,
+          "hunt": null,
+          "name": "texture-upload",
+          "detail": "Habitat / ferns / fern_02_nor_gl"
+        },
+        {
+          "at": 11474.300000011921,
+          "hunt": null,
+          "name": "texture-preparation",
+          "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+          "durationMs": 5.9
+        },
+        {
+          "at": 11574.399999976158,
+          "hunt": null,
+          "name": "texture-upload",
+          "detail": "Habitat / ferns / fern_02_rough"
+        },
+        {
+          "at": 11574.399999976158,
+          "hunt": null,
+          "name": "texture-preparation",
+          "detail": "Habitat / Fern 02 / fern_02_rough",
+          "durationMs": 1.9
+        },
+        {
+          "at": 12704.899999976158,
+          "hunt": null,
+          "name": "geometry-upload",
+          "detail": "Habitat / ferns"
+        },
+        {
+          "at": 12788.199999988079,
+          "hunt": null,
+          "name": "geometry-preparation",
+          "detail": "Habitat / Fern 02",
+          "durationMs": 85.7
+        },
+        {
+          "at": 12791.5,
+          "hunt": null,
+          "name": "shader-initialize",
+          "detail": "Habitat / ferns / fern_02"
+        },
+        {
+          "at": 12804.5,
+          "hunt": null,
+          "name": "shader-preparation-ready",
+          "detail": "Habitat / Fern 02",
+          "durationMs": 13.7
+        }
+      ],
+      "firstFrames": {
+        "id": 1,
+        "discarded": 0,
+        "peakTextures": 20,
+        "peakGeometries": 42,
+        "presentation": {
+          "samples": 1,
+          "maxMs": 10.100000023841858,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "averageMs": 10.1
+        },
+        "cpu": {
+          "samples": 2,
+          "maxMs": 290.39999997615814,
+          "over20": 1,
+          "over33_3": 1,
+          "over50": 1,
+          "averageMs": 147.7
+        },
+        "averageFPS": 99
+      }
+    },
+    {
+      "compressedFormats": [
+        "WEBGL_compressed_texture_astc",
+        "WEBGL_compressed_texture_etc",
+        "WEBGL_compressed_texture_s3tc"
+      ]
+    }
+  ]
+}

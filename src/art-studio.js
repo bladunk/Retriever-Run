@@ -1,6 +1,10 @@
 import { expeditionRegions } from './expedition.js'
 import { fieldSpecies } from './wildlife-catalog.js'
 
+const cameras = {
+  trail: [0,0,1], shore: [-.82,-.25,.80], grove: [.74,1.2,1.05],
+}
+
 export function openArtStudio(game, flags, api) {
   const details = document.createElement('details')
   details.id = 'art-studio'
@@ -11,6 +15,7 @@ export function openArtStudio(game, flags, api) {
   details.append(form)
   form.addEventListener('submit', event => event.preventDefault())
   const state = { moving: false, speed: 1, yaw: 0, pitch: 0, zoom: 1, take: 'Trail', playback: 'Idle' }
+  state.lighting = ['dawn','overcast','mist'].includes(flags.get('light')) ? flags.get('light') : 'route'
   const saved = new URL(location.href)
 
   function label(text, control) {
@@ -33,7 +38,7 @@ export function openArtStudio(game, flags, api) {
     const input = document.createElement('input')
     Object.assign(input, { type: 'range', min, max, step, value: initial })
     input.addEventListener('input', () => change(Number(input.value)))
-    label(text, input)
+    return label(text, input)
   }
 
   function button(text, click) {
@@ -59,6 +64,10 @@ export function openArtStudio(game, flags, api) {
   select('Graphics', ['low','balanced','high'].map((key, i) => [key, ['Battery Saver','Balanced','High'][i]]),
     api.quality, api.graphics)
   select('View', [['Trail','Territory'], ['Wildlife','Wildlife'], ['Dog','Dog']], 'Trail', value => { state.take = value; api.reset() })
+  const cameraPreset = Object.hasOwn(cameras, flags.get('camera')) ? flags.get('camera') : 'trail'
+  select('Camera preset', [['trail','Gameplay'],['shore','Shoreline'],['grove','Canopy']],cameraPreset, setCamera)
+  select('Lighting', [['route','Route weather'],['dawn','Sunrise'],['overcast','Overcast'],['mist','Morning mist']],
+    state.lighting, value => { state.lighting = value })
   const species = select('Wildlife species', Object.values(fieldSpecies).map(animal => [animal.id, animal.name]), flags.get('species') ?? 'deer',
     value => { state.species = value; api.reset() })
   state.species = species.value || 'deer'
@@ -69,9 +78,16 @@ export function openArtStudio(game, flags, api) {
   select('Dog', [['lab','Labrador'],['pointer','Pointer'],['boyd','Boyd']], api.breed, value => load('breed', value))
   select('Dog animation', ['Idle','Run','Jump','Slide','Land','Retrieve'].map(key => [key,key]), 'Idle',
     value => { state.playback = value })
-  range('Yaw', -3.14, 3.14, .04, 0, value => { state.yaw = value })
-  range('Elevation', -1, 2, .05, 0, value => { state.pitch = value })
-  range('Distance', .4, 2, .05, 1, value => { state.zoom = value })
+  const yaw = range('Yaw', -3.14, 3.14, .04, 0, value => { state.yaw = value })
+  const pitch = range('Elevation', -1, 2, .05, 0, value => { state.pitch = value })
+  const zoom = range('Distance', .4, 2, .05, 1, value => { state.zoom = value })
+  function setCamera(value) {
+    const [angle, elevation, distance] = cameras[value]
+    state.yaw = yaw.value = angle
+    state.pitch = pitch.value = elevation
+    state.zoom = zoom.value = distance
+  }
+  setCamera(cameraPreset)
   range('Playback speed', .25, 2, .25, 1, value => { state.speed = value })
   const move = button('Play camera', () => {
     state.moving = !state.moving

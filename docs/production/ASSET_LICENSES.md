@@ -121,3 +121,7 @@ Phase 08’s wind, foliage, water and insect mix and its shorter reward cues are
 
 - The 29 verified wildlife photographs have a per-file author, source, terms and transformation record. The catalog includes Creative Commons Attribution, Attribution-ShareAlike, CC0 and credited public-domain photographs. Derivatives retain the cited license, including ShareAlike on those photographs. The in-game Journal links to the author/source record and license. [Photo provenance registry](../../src/assets/journal-photos.json)
 - The field-edge saltmeadow grass, prairie bunchgrass, buttonbush, willow scrub, exposed river rock and snowy talus are original project assets authored in Blender. Source geometry and vertex pigment are reproducible, and the packed project derivatives share an existing material. [Blender source](../../art/blender/opening-day.py)
+
+## Southern Flyway RC.3
+
+Original Retriever Run scenery authored in Blender from regional field references. The source and runtime derivatives are redistributable as part of Retriever Run. No source photographs, third-party meshes or new texture files entered the game. The forest atlas and other shared materials retain their existing attributions. [Southern Flyway provenance and build steps](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md#asset-provenance-and-reproduction)
