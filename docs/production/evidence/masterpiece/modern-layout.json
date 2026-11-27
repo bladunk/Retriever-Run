@@ -1,0 +1,106 @@
+[
+  {
+    "version": "after",
+    "name": "install",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430
+    }
+  },
+  {
+    "version": "after",
+    "name": "title",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430
+    }
+  },
+  {
+    "version": "after",
+    "name": "settings",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430
+    }
+  },
+  {
+    "version": "after",
+    "name": "lodge",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430,
+      "lodgeWidth": 412,
+      "lodgeClient": 412
+    }
+  },
+  {
+    "version": "after",
+    "name": "migration",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430,
+      "lodgeWidth": 412,
+      "lodgeClient": 412
+    }
+  },
+  {
+    "version": "after",
+    "name": "records",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430,
+      "lodgeWidth": 412,
+      "lodgeClient": 412
+    }
+  },
+  {
+    "version": "after",
+    "name": "trophies",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430,
+      "lodgeWidth": 412,
+      "lodgeClient": 412
+    }
+  },
+  {
+    "version": "after",
+    "name": "journal",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430,
+      "lodgeWidth": 412,
+      "lodgeClient": 412
+    }
+  },
+  {
+    "version": "after",
+    "name": "journal-entry",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430,
+      "lodgeWidth": 412,
+      "lodgeClient": 412
+    }
+  },
+  {
+    "version": "after",
+    "name": "worldwide",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430,
+      "lodgeWidth": 412,
+      "lodgeClient": 412
+    }
+  },
+  {
+    "version": "after",
+    "name": "kennel",
+    "layout": {
+      "width": 430,
+      "documentWidth": 430,
+      "lodgeWidth": 412,
+      "lodgeClient": 412
+    }
+  }
+]

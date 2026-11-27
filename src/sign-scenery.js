@@ -23,8 +23,7 @@ function paint(ctx, sign, seed) {
   ctx.fillRect(0, 0, width, height)
   const wash = ctx.createLinearGradient(0, 0, 0, height)
   wash.addColorStop(0, wood)
-  wash.addColorStop(.48, shadow)
-  wash.addColorStop(.51, wood)
+  wash.addColorStop(.54, wood)
   wash.addColorStop(1, shadow)
   ctx.fillStyle = wash
   ctx.fillRect(4, 4, width - 8, height - 8)
@@ -39,10 +38,13 @@ function paint(ctx, sign, seed) {
     ctx.bezierCurveTo(x + 35, y - 7, x + 87, y + 6, x + 98 + random() * 130, y)
     ctx.stroke()
   }
-  ctx.globalAlpha = .79
+  ctx.globalAlpha = .70
   ctx.strokeStyle = trim
   ctx.lineWidth = sign.style === 'posted' ? 4 : 2
   ctx.strokeRect(10, 10, width - 20, height - 20)
+  ctx.globalAlpha = .26
+  ctx.lineWidth = 1
+  ctx.strokeRect(15, 15, width - 30, height - 30)
   ctx.globalAlpha = 1
   for (const x of [19, width - 19]) for (const y of [21, height - 21]) {
     ctx.fillStyle = '#302820'

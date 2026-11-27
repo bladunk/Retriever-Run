@@ -785,7 +785,9 @@ try {
     }
   } else if (args.includes('southern-views')) {
     const seed = 7
-    const offsets = args.includes('center-only') ? [15] : [5, 15, 27]
+    const offset = args.find(arg => arg.startsWith('scene-offset='))
+    const offsets = offset ? [Number(offset.slice('scene-offset='.length))] : args.includes('center-only') ? [15] : [5, 15, 27]
+    assert.ok(offsets.every(value => Number.isFinite(value) && value > 0 && value < 29))
     const only = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
     const selected = only.length ? expeditionRegions.filter(region => only.includes(region.key)) : expeditionRegions.slice(0, 5)
     for (const region of selected) {

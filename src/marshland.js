@@ -1,4 +1,4 @@
-// Marshland Run: 32 bars of 4/4 with a guitar hook and adaptive rhythm layers.
+// Marshland Run: an original 32-bar theme with arrangements for the changing journey.
 export const beatSeconds = 60 / 120
 export const loopBeats = 128
 
@@ -38,22 +38,41 @@ const bridge = [
 ]
 
 const stages = [
-  // Guitar, bass, percussion, banjo, offbeat rhythm, harmonica, driving rhythm, fingerpicking
-  [1, .62, .40, 0, 0, 0, 0, 0],
-  [1, .77, .57, .37, .34, 0, 0, 0],
-  [1, .88, .69, .62, .63, .55, 0, 0],
-  [1, .97, .82, .78, .80, .64, .53, 0],
-  [1, 1, .91, .90, .93, .74, 1, 0],
+  // Lead, bass, drum, banjo, offbeats, reed, picked pulse, thumb guitar, airy tremolo.
+  [0,   [.66,.44,.19,.00,.08,.04,.00,.66,.15]],
+  [90,  [.75,.55,.30,.22,.16,.12,.10,.40,.21]],
+  [175, [.83,.65,.48,.43,.34,.22,.16,.31,.32]],
+  [260, [.72,.69,.45,.36,.30,.28,.26,.34,.47]],
+  [340, [.45,.64,.24,.14,.16,.31,.18,.41,.86]],
+  [410, [.65,.77,.45,.21,.22,.34,.39,.28,.91]],
+  [450, [.79,.86,.60,.41,.44,.34,.69,.20,.79]],
+  [570, [.86,.92,.67,.49,.54,.37,.89,.15,.68]],
 ]
 
 const indoors = {
-  title: [.38, .31, 0, .13, 0, .17, 0, .79],
-  lodge: [.14, .22, 0, 0, 0, .24, 0, .92],
-  over: [.12, .18, 0, 0, 0, 0, 0, .65],
+  title: [.28,.22,.00,.05,.00,.16,.00,.92,.32],
+  lodge: [.11,.19,.00,.00,.00,.09,.00,.86,.38],
+  kennel:[.17,.15,.00,.00,.00,.05,.00,.78,.24],
+  over:  [.13,.17,.00,.00,.00,.00,.00,.60,.15],
 }
 
+// Cache by whole elapsed second. Audio ramps crossfade arrangements on the
+// existing transport, which never drops the beat or restarts a territory.
+let lastSecond = -1
+let lastMix
 export function musicIntensity(seconds) {
-  return stages[Math.min(stages.length - 1, Math.floor(Math.max(0, seconds) / 30))]
+  const second = Math.floor(Math.max(0, Number.isFinite(seconds) ? seconds : 0))
+  if (second === lastSecond) return lastMix
+  lastSecond = second
+  const index = stages.findIndex(([begin]) => begin > second)
+  if (index === -1) return (lastMix = stages.at(-1)[1])
+  const [begin, start] = stages[index - 1]
+  const [end, finish] = stages[index]
+  // Hold the regional arrangement, then move into the next one over 20s.
+  const handoff = Math.max(begin, end - 20)
+  const amount = Math.max(0, (second - handoff) / (end - handoff))
+  const fade = amount * amount * (3 - 2 * amount)
+  return (lastMix = start.map((level, i) => level + (finish[i] - level) * fade))
 }
 
 export function musicMix(mode, seconds) {
@@ -131,5 +150,11 @@ export function composeBar(index) {
   add(6, 'guitar', chord[4], 2.79, .32, .059, -.24)
   add(6, 'shake', 0, 3.81, .31, .034, .24)
 
+  // Long, softly re-picked open intervals answer the hook. These sit high
+  // in the stereo field while the warm bass and heel rhythm remain centered.
+  for (const [beat,pitch] of [[.12,chord[4] + 12],[1.19,chord[3] + 12],[2.19,chord[5] + 7],[3.22,chord[4] + 12]]) {
+    add(8,'guitar',pitch,beat,1.51,.067,beat < 2 ? -.45 : .31)
+    if (bar % 4 === 3) add(8,'guitar',pitch-12,beat+.17,1.27,.029,.40)
+  }
   return events.sort((a, b) => a.beat - b.beat)
 }

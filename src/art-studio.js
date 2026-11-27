@@ -1,6 +1,7 @@
 import { createLegacyPreview } from './legacy-preview.js'
 import { defaultGear, kennelCatalog } from './kennel-catalog.js'
 import { expeditionRegions } from './expedition.js'
+import { pawSounds } from './field-foley.js'
 import { fieldSpecies } from './wildlife-catalog.js'
 
 const cameras = {
@@ -146,19 +147,88 @@ export function openArtStudio(game, flags, api) {
       api.renderer().textures + ' textures',
     ].join(' · ')
   })
+  const audioChoices = [
+    ['title','Music · title'], ['early','Music · opening'], ['middle','Music · Heartland'],
+    ['north','Music · northern wilderness'], ['endless','Music · Endless'],
+    ...expeditionRegions.map(region => ['region:' + region.index, region.name + ' ambience']),
+    ...Object.keys(pawSounds).map(key => ['paw:' + key, 'Footsteps · ' + key]),
+    ['bird:crane','Sandhill crane call'], ['bird:pheasant','Pheasant flush'],
+    ['bird:goose','Canada goose call'], ['bird:mallard','Mallard call'], ['bird:eagle','Bald eagle call'],
+    ['lodge','Lodge music and room tone'], ['kennel','Kennel music and room tone'],
+    ['cue:interface','Navigation cue'], ['cue:retrieve','Retrieve cue'],
+  ]
+  if (flags.get('view') === 'audio') details.open = true
+  const selectedAudio = audioChoices.some(([key]) => key === flags.get('sound')) ? flags.get('sound') : 'title'
+  const soundChoice = select('Sound preview', audioChoices, selectedAudio, () => {})
+  let stopAudio = () => {}
+  const stopButton = button('Stop sound', () => stopAudio())
+  const listen = button('Play sound', async () => {
+    stopAudio()
+    const { sound } = api
+    const [key, value] = soundChoice.value.split(':')
+    const musicTime = { early: 10, middle: 190, north: 365, endless: 570 }
+    const isField = Object.hasOwn(musicTime,key) || key === 'region'
+    const seconds = key === 'region' ? Number(value) * 30 + 15 : musicTime[key]
+    const scene = isField || key === 'bird' ? 'running' : ['title','lodge','kennel'].includes(key) ? key : 'studio'
+    sound.selectScene(scene, { gesture: true, restart: isField, quietMusic: key === 'region' || key === 'bird' })
+    const tasks = new Set()
+    let playing = true
+    stopAudio = () => {
+      playing = false
+      tasks.forEach(clearTimeout)
+      tasks.clear()
+      sound.suspend()
+      stopButton.hidden = true
+    }
+    stopButton.hidden = false
+    const later = (fn, time) => {
+      const handle = setTimeout(() => {
+        tasks.delete(handle)
+        if (playing) fn()
+      }, time)
+      tasks.add(handle)
+    }
+    if (isField) {
+      for (let tick = 0; tick < 54; tick++) later(() =>
+        sound.ambience({ wind: .7, rain: 0 }, seconds + tick * .20, true, false), tick * 200)
+    }
+    if (key === 'paw') {
+      for (let step = 0; step < 9; step++) later(() => sound.footstep(value), 170 + step * 275)
+    }
+    if (key === 'bird') {
+      await sound.prepareWildlife(value)
+      if (!playing) return
+      later(() => sound.bird(value, { distance: 8, x: -3.5, wings: value === 'pheasant' }), 250)
+    }
+    if (key === 'cue') later(() => sound.play(value), 350)
+    later(stopAudio, 11000)
+  })
+  stopButton.hidden = true
+  if (flags.get('view') === 'audio') queueMicrotask(() => listen.scrollIntoView({ block:'nearest' }))
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopAudio() })
+
   const tiers = ['Hunting Shack','Retriever’s Cabin','Waterfowl Lodge','Flyway Estate','Master Hunter’s Lodge']
   const requested = Math.min(5,Math.max(1,Math.floor(Number(flags.get('tier'))) || 1))
   const tier = select('Lodge tier',tiers.map((name,index) => [String(index+1),name]),String(requested),() => {})
   const rooms = { overview:'Cabin', collection:'Trophies', migration:'Great Migration', history:'Career timeline',
-    records:'Lifetime records', career:'Ranks and Boyd' }
-  const destination = Object.hasOwn(rooms,flags.get('room')) ? flags.get('room') : 'overview'
+    records:'Lifetime records', career:'Ranks and Boyd', journal:'Field Journal' }
+  const destination = flags.get('view') === 'journal' ? 'journal' : flags.get('view') === 'map' ? 'migration' :
+    Object.hasOwn(rooms,flags.get('room')) ? flags.get('room') : 'overview'
   const room = select('Lodge room',Object.entries(rooms),destination,() => {})
   function preview(trigger) {
     const synthetic = createLegacyPreview(Number(tier.value))
     api.lodge(trigger,room.value,flags.get('exhibit') ?? undefined,synthetic)
   }
   const legacy = button('Open Lodge preview',event => preview(event.currentTarget))
-  if (flags.get('view') === 'lodge') queueMicrotask(() => preview(legacy))
+  if (flags.get('view') === 'lodge' || flags.get('view') === 'journal' || flags.get('view') === 'map') queueMicrotask(() => preview(legacy))
+  const report = button('Hunt Over example', () => api.report({
+    nickname: 'Example hunt · Art Studio', duration: 448.2, distance: 11532,
+    retrieves: 22, score: 36219, territory: 15, hazard: 'boulder', treats: 371,
+    logs: 43, slidesCleared: 27, geese: 2, improved: ['score'], earned: [], placements: {},
+    newWildlife: ['crane','moose'], newHonors: [{ name: 'Migration Field Honor', tier: 'Platinum' }],
+    gear: [{ name: 'Marsh Vest' }], lodge: { upgrades: [], tier: true }, preview: true,
+  }))
+  if (flags.get('view') === 'report') queueMicrotask(() => report.click())
   const stats = document.createElement('output')
   stats.hidden = true
   form.append(stats)

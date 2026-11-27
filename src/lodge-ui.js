@@ -1,5 +1,5 @@
 import { rewardGroups } from './hunt-presentation.js'
-import { collectionSearch, collectionSelect, matchesCollection, primaryRoom, roomGroups } from './collection-browser.js'
+import { collectionSearch, matchesCollection, primaryRoom, roomGroups } from './collection-browser.js'
 import { encounterTiers, fieldSpecies, habitatEncounters } from './wildlife-catalog.js'
 import { journalFieldMarks } from './journal-field-marks.js'
 import { environmentalDiscoveries } from './environment-discoveries.js'
@@ -17,7 +17,7 @@ import { careerLine, careerRoom, nearbyHonor } from './career-ui.js'
 import { kennelRoom } from './kennel-ui.js'
 import { courseRuleset, legacyMigrationRuleset, localCourseRuleset } from './ruleset.js'
 import { fieldHonorsRoom } from './honor-ui.js'
-import { checkLabel, localHonors, waterfowlSpecies } from './field-honors.js'
+import { checkLabel, localHonors } from './field-honors.js'
 import { kennelItems } from './kennel-catalog.js'
 import { progressionMetrics } from './progression.js'
 
@@ -121,11 +121,26 @@ function journal(player) {
     archive.push(node('h3', 'Earlier ten-territory course', 'section-title section-break'), ten)
   }
   const search = collectionSearch('Search wildlife')
-  const category = collectionSelect('Wildlife group', { all: 'All wildlife', waterfowl: 'Waterfowl', upland: 'Upland birds',
-    birds: 'Other birds', mammals: 'Mammals', reptiles: 'Reptiles' })
-  const filters = node('div', null, 'collection-tools')
-  filters.append(search, category)
-  const results = node('p', null, 'room-note')
+  const categories = node('div', null, 'journal-categories')
+  categories.setAttribute('role', 'group')
+  categories.setAttribute('aria-label', 'Wildlife group')
+  const groups = { all: 'All wildlife', waterfowl: 'Waterfowl', upland: 'Upland birds',
+    birds: 'Other birds', mammals: 'Mammals', reptiles: 'Reptiles' }
+  let group = 'all'
+  for (const [key, name] of Object.entries(groups)) {
+    const button = node('button', name)
+    button.type = 'button'
+    button.setAttribute('aria-pressed', String(key === group))
+    button.addEventListener('click', () => {
+      group = key
+      for (const choice of categories.children) choice.setAttribute('aria-pressed', String(choice === button))
+      filter()
+    })
+    categories.append(button)
+  }
+  const filters = node('div', null, 'journal-tools')
+  filters.append(search, categories)
+  const results = node('p', null, 'room-note journal-results')
   results.setAttribute('aria-live', 'polite')
   const guide = node('div', null, 'wildlife-guide')
   let known = 0
@@ -156,24 +171,30 @@ function journal(player) {
     image.width = 100
     image.height = 70
     image.loading = 'lazy'
-    const details = node('div')
-    const where = expeditionRegions.find(region => region.key === observation?.territory)?.name
-    details.append(node('strong', animal.name), node('p', animal.habitat),
-      node('p', seen ? number(observation.seen) + ' observations · ' + (where ?? 'First territory unavailable') : 'Unobserved'))
+    const details = node('div', null, 'journal-species-copy')
+    details.append(node('strong', animal.name))
     if (scientific[animal.id]) details.append(node('i', scientific[animal.id]))
-    if (seen && observation.first) details.append(node('p', 'First seen ' + observation.first.slice(0,10)))
-    if (observation?.rare || observation?.retrieves) details.append(node('p',
-      [observation.rare ? number(observation.rare) + ' rare sightings' : '',
-        observation.retrieves ? number(observation.retrieves) + ' retrieves' : ''].filter(Boolean).join(' · ')))
+    details.append(node('p', seen ? number(observation.seen) + (observation.seen === 1 ? ' sighting' : ' sightings') : 'Unobserved',
+      'journal-observation'))
     const notes = node('details')
-    notes.append(node('summary', 'Field marks, range and honors'))
+    const summary = node('summary', 'Field notes')
+    summary.setAttribute('aria-label', 'Field notes for ' + animal.name)
+    notes.append(summary)
+    const where = expeditionRegions.find(region => region.key === observation?.territory)?.name
+    const observations = node('p', [
+      seen && where ? 'First observed in ' + where : '',
+      observation?.first ? observation.first.slice(0,10) : '',
+      observation?.rare ? number(observation.rare) + ' rare sightings' : '',
+      observation?.retrieves ? number(observation.retrieves) + ' retrieves' : '',
+    ].filter(Boolean).join(' · '), 'journal-observation')
     const photo = speciesArtwork[animal.id].photo
     const full = node('img', null, 'journal-photo-detail')
     full.alt = animal.name
     full.width = 840
     full.height = 588
     full.decoding = 'async'
-    notes.append(full, node('p', journalFieldMarks[animal.id]))
+    notes.append(full, node('p', animal.habitat), node('p', journalFieldMarks[animal.id]))
+    if (observations.textContent) notes.append(observations)
     notes.addEventListener('toggle', () => {
       if (notes.open && !full.hasAttribute('src')) full.src = './' + photo.detail
     })
@@ -214,14 +235,13 @@ function journal(player) {
     let count = 0
     for (const row of guide.children) {
       const id = row.dataset.species
-      row.hidden = (category.value !== 'all' && row.dataset.category !== category.value) ||
+      row.hidden = (group !== 'all' && row.dataset.category !== group) ||
         !matchesCollection(search.value, fieldSpecies[id].name, scientific[id], fieldSpecies[id].habitat)
       if (!row.hidden) count++
     }
     results.textContent = count ? '' : 'No species match this search.'
   }
   search.addEventListener('input', filter)
-  category.addEventListener('change', filter)
   const values = progressionMetrics(player)
   const collections = node('details', null, 'career-ledger')
   collections.append(node('summary', 'Regional wildlife collections'))
@@ -234,23 +254,48 @@ function journal(player) {
     node('h3', 'The Great Migration · territory time', 'section-title section-break'), migration, ...archive,
     node('h3', 'Field breakdown', 'section-title section-break'), breakdown)
   const discoveries = Object.entries(player.discoveries?.entries ?? {})
-  const fieldNotes = []
+  const notes = node('section', null, 'journal-environment')
+  notes.setAttribute('aria-label','Environmental discoveries')
+  notes.id = 'journal-environment'
+  notes.hidden = true
   if (discoveries.length) {
-    const notes = node('details',null,'career-ledger')
-    notes.append(node('summary','Environmental discoveries'))
     for (const [id,first] of discoveries) {
       const feature = environmentalDiscoveries[id]
-      const section = node('section',null,'room-note')
+      if (!feature) continue
+      const section = node('section',null,'room-note journal-discovery')
       section.append(node('strong',feature.name),node('p',feature.note),
         node('p',expeditionRegions.find(region=>region.key===feature.territory).name + ' · ' + first.slice(0,10)))
       notes.append(section)
     }
-    fieldNotes.push(notes)
+  } else notes.append(node('p','No environmental discoveries recorded.','room-note'))
+  const intro = node('div', null, 'journal-guide-intro')
+  const total = Object.keys(fieldSpecies).length
+  const progressMeter = node('progress')
+  progressMeter.max = total
+  progressMeter.value = known
+  progressMeter.setAttribute('aria-label', 'Wildlife observed')
+  intro.append(node('h3', 'Wildlife field guide'), node('span', known + ' of ' + total + ' observed'), progressMeter)
+  const select = node('div', null, 'journal-categories journal-sections')
+  select.setAttribute('role','group')
+  select.setAttribute('aria-label','Journal sections')
+  const wildlife = node('div')
+  wildlife.id = 'journal-wildlife'
+  wildlife.append(intro, filters, results, guide, collections)
+  const btnGuide = node('button','Wildlife')
+  const btnNotes = node('button','Discoveries' + (discoveries.length ? ' · ' + discoveries.length : ''))
+  btnGuide.setAttribute('aria-controls',wildlife.id)
+  btnNotes.setAttribute('aria-controls',notes.id)
+  const setSection = showNotes => {
+    wildlife.hidden = showNotes
+    notes.hidden = !showNotes
+    btnGuide.setAttribute('aria-pressed',String(!showNotes))
+    btnNotes.setAttribute('aria-pressed',String(showNotes))
   }
-  return [...fieldNotes,node('h3', 'Wildlife · ' + known + ' of ' + Object.keys(fieldSpecies).length + ' observed', 'section-title'),
-    node('p', 'Waterfowl · ' + values.get('waterfowl-count') + ' of ' + waterfowlSpecies.length + ' observed', 'room-note'), collections,
-    filters, results, guide, lifetime]
-
+  btnGuide.addEventListener('click',() => setSection(false))
+  btnNotes.addEventListener('click',() => setSection(true))
+  select.append(btnGuide,btnNotes)
+  setSection(false)
+  return [select, wildlife, notes, lifetime]
 }
 
 function leaderboard(lodge, metric, selectMetric) {
@@ -384,7 +429,7 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
   }))
 }
 
-export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, onClose, onKennel, onAppearance,
+export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, onClose, onKennel, onAppearance, onDestination,
   onStart, onJoin, onErase, inspectDogs }) {
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
@@ -427,6 +472,10 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
     const reading = demo ?? lodge
     const player = reading.current()
     const group = primaryRoom(room)
+    if (dialog.dataset.destination !== group) {
+      dialog.dataset.destination = group
+      onDestination?.(group)
+    }
     const title = ui['lodge-title']
     if (group === 'overview') title.replaceChildren('The ', node('em', 'Lodge'))
     else title.textContent = { kennel: 'Kennel', journal: 'Field Journal', worldwide: 'Worldwide', board: 'Camp' }[group]

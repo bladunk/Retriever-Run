@@ -1,3 +1,6 @@
+import fontLicense from './assets/fonts/SOURCE-SERIF-OFL.txt?url'
+import { addDestinationIcons } from './field-icons.js'
+import { pawSurface } from './field-foley.js'
 import { hapticFeedback, rewardGroups } from './hunt-presentation.js'
 import * as T from 'three'
 import { createHazard, createPickup, prepareWashout } from './art.js'
@@ -56,8 +59,11 @@ import './lodge.css'
 import './experience.css'
 import './ranked-camp.css'
 import './top-dog.css'
+import './masterpiece.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
+addDestinationIcons(ui)
+ui['font-license'].href = fontLicense
 const volumeKeys = Object.keys(audioDefaults)
 const systemMotion = matchMedia('(prefers-reduced-motion: reduce)')
 const reduceMotion = () => systemMotion.matches || profile.motion
@@ -102,7 +108,7 @@ const localPerformance = flags.get('perf') === '1'
 const performanceProbe = localPerformance ? createPerformanceProbe(undefined, flags.get('resources') !== '0') : null
 const sound = createSound(background, performanceProbe)
 if (performanceProbe) {
-  const readPerformance = () => ({ ...performanceProbe.read(), build: runningBuild })
+  const readPerformance = () => ({ ...performanceProbe.read(), audio: sound.resources(), build: runningBuild })
   window.retrieverPerformance = readPerformance
   const controls = document.createElement('details')
   const label = document.createElement('summary')
@@ -183,6 +189,7 @@ let stride = 0
 let foot = 0
 let landing = 0
 let splashUntil = 0
+let pawWeather = { wet: 0, frost: 0 }
 let layout = cameraLayout(1)
 const follow = newCameraState()
 const adapt = adaptiveQuality(decision => performanceProbe?.operation('auto-quality-decision', decision))
@@ -233,6 +240,7 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   onOpen() { engageMusic() },
   onClose() { sound.selectScene(mode) },
   onKennel(stage) { showKennel?.(stage) },
+  onDestination(destination) { sound.selectScene(destination === 'kennel' ? 'kennel' : 'lodge') },
   onAppearance(equipment) { dog?.appearance(equipment) },
   onStart(ticket) {
     if (!contextReady || !trailReady || productionSession.locked() ||
@@ -250,6 +258,11 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   onErase(player) { lodge.enroll(player.id, player.nickname, 'guest') },
 })
 const onboarding = createOnboarding(ui, lodge, camp, showTitleRecord, start)
+ui.lodge.addEventListener('click', event => {
+  if (event.target.closest('.lodge-tabs button, .legacy-room-nav button, .journal-categories button, .wildlife-card summary')) {
+    sound.play('interface')
+  }
+})
 ui['custom-camp'].addEventListener('click', () => { ui.preferences.close(); onboarding.open() })
 ui['open-lodge'].addEventListener('click', event => lodgeUI.open(event.currentTarget))
 for (const button of ui['title-rooms'].querySelectorAll('[data-entry]'))
@@ -386,6 +399,8 @@ function initialize() {
       kennel: button => lodgeUI.open(button, 'kennel'),
       lodge: (button, room, exhibit, preview) => lodgeUI.open(button,room,exhibit,preview),
       renderer: () => renderer.info.memory,
+      report: exampleReport => setMode('over', { exampleReport }),
+      sound,
     })
     restartStudio()
   })
@@ -612,6 +627,7 @@ function initialize() {
       wildlife(visualTime, distance, inspecting && studio.fallback ? 0 : preset.detail, mode, encounters, camera, observeWildlife,
         inspecting ? !studio.fallback && preset.detail > 0 : profile.quality !== 'low', migration)
       if (!idle && !frozen && !inspecting) {
+        pawWeather = weather
         updateConditions(weather.name)
         sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
       }
@@ -798,7 +814,7 @@ function step(dt) {
   const nextFoot = Math.floor(stride / Math.PI)
   if (!run.jump && (nextFoot !== foot || wasAirborne) && !run.slide) {
     const surface = runningSurface()
-    sound.footstep(surface, wasAirborne)
+    sound.footstep(pawSurface(regionAt(run.elapsed), pawWeather.wet, pawWeather.frost, surface === 'splash'), wasAirborne)
     if (surface === 'mud' || surface === 'splash') spray.step(run.distance, run.x, run.elapsed, surface === 'splash', preset.detail)
     if (wasAirborne) landing = 1
   }
@@ -1004,7 +1020,8 @@ function updateMusicButton() {
 function engageMusic() {
   audioGesture = true
   updateMusicButton()
-  sound.selectScene(ui.lodge.open ? 'lodge' : mode, { gesture: true })
+  const room = ui.lodge.dataset.destination === 'kennel' ? 'kennel' : 'lodge'
+  sound.selectScene(ui.lodge.open ? room : mode, { gesture: true })
 }
 
 function background() {
@@ -1041,7 +1058,11 @@ function setMode(value, options = {}) {
   const paused = value === 'paused'
   let newRecord = false
   let rewardCue
-  if (over && oldMode !== 'over') {
+  const example = studioRequested && options.exampleReport
+  if (over && example) {
+    fillReport(ui, example, { heckle: 'Gulf to the Rockies, with a good dog along for the whole ride.' })
+    ui['report-career'].hidden = true
+  } else if (over && oldMode !== 'over') {
     const runner = lodge.current()
     const previousBest = runner.profile.best
     const priorRuns = runner.stats.runs
@@ -1073,6 +1094,9 @@ function setMode(value, options = {}) {
   }
   ui.menu.hidden = running || over || value === 'studio'
   ui['field-report'].hidden = !over
+  ui['run-again'].textContent = example ? 'Back to Art Studio' : 'Play Again'
+  ui['report-lodge'].hidden = Boolean(example)
+  ui['main-menu'].hidden = Boolean(example)
   ui.game.inert = over
   ui.hud.hidden = !running
   ui.controls.hidden = !running
@@ -1269,7 +1293,10 @@ function bindInput() {
   window.visualViewport?.addEventListener('resize', fitReport)
   window.visualViewport?.addEventListener('scroll', fitReport)
   ui.primary.addEventListener('click', event => mode === 'paused' ? pause() : start(null, event.timeStamp))
-  ui['run-again'].addEventListener('click', event => start(null, event.timeStamp))
+  ui['run-again'].addEventListener('click', event => {
+    if (studioRequested) setMode('studio')
+    else start(null, event.timeStamp)
+  })
   ui['main-menu'].addEventListener('click', mainMenu)
   ui['pause-settings'].addEventListener('click', openSettings)
   ui['pause-menu'].addEventListener('click', mainMenu)

@@ -149,3 +149,14 @@ The vest construction, textile shading, camouflage fields, collar details, banda
 `public/lodge/interior-1.webp` through `interior-5.webp` are original ImageGen room compositions commissioned by Retriever Run. They were cropped to portrait, optimized from 1024 × 1536 to 960 × 1120 and encoded as WebP. Material and architecture references are listed in the art notes. No product logos or reference photographs are distributed with the room plates. [Art direction and derivative workflow](../../art/LEGACY_ART.md)
 
 `bronze-flight.webp`, `skill-form.webp` and `certificate.webp` are original Blender renders by Retriever Run. The source models and their scene settings are in `art/blender/legacy-trophies.py`. `aurora-frame.webp` crops the project’s own in-game Northern Frontier renderer evidence. The existing Boyd imagery and Wildlife Journal photos retain their prior author and license entries.
+
+## RC.9 · Masterpiece
+
+| Asset | Source and author | License | Shipped form |
+| --- | --- | --- | --- |
+| Source Serif 4 | Adobe and contributors, designed by Frank Grießhammer. [Font source](https://github.com/adobe-fonts/source-serif) | SIL Open Font License 1.1 | Google Fonts Latin variable WOFF2, weights 400–700, 50,936 bytes. Original distributed binary, with offline [license text](../../src/assets/fonts/SOURCE-SERIF-OFL.txt). |
+| Navigation line art | Original Retriever Run SVG paths | Repository terms | Inlined in the game JavaScript. |
+| Marshland Run arrangements and synthesized foley | Original Retriever Run arrangement and synthesis | Repository terms | Uses the existing sample bank under the credits in [AUDIO.md](../../AUDIO.md). New sound beds and paw layers use generated PCM. |
+| Field Journal photos, room plates, and wildlife calls | Existing photo, Legacy and Living World sources above | Existing licenses | Reused without replacing, modifying or re-encoding the underlying media. |
+
+The review captures are documentation and add zero install bytes. RC.9 adds no source recordings, meshes or textures.

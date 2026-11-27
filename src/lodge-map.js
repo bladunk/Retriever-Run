@@ -23,13 +23,13 @@ export function migrationMap(scale = 2) {
   ctx.scale(scale, scale)
   return { canvas, draw(player, selected) {
     const fill = ctx.createLinearGradient(0, 0, width, height)
-    fill.addColorStop(0, '#f4dfad')
-    fill.addColorStop(1, '#c3a074')
+    fill.addColorStop(0, '#f0e2c5')
+    fill.addColorStop(1, '#bfa888')
     ctx.fillStyle = fill
     ctx.fillRect(0, 0, width, height)
     const land = ctx.createLinearGradient(0, 0, width, height)
-    land.addColorStop(0, '#9b9f75')
-    land.addColorStop(1, '#d5bb84')
+    land.addColorStop(0, '#8d9b82')
+    land.addColorStop(1, '#d3be92')
     ctx.fillStyle = land
     ctx.strokeStyle = '#796447'
     ctx.lineWidth = 1
@@ -62,10 +62,17 @@ export function migrationMap(scale = 2) {
     }
     ctx.fillStyle = '#514835'
     ctx.font = '10px Georgia'
-    ctx.fillText('THE NORTHERN RANGES', 135, 24)
+    ctx.fillText('CANADIAN ROCKIES', 129, 24)
     ctx.fillText('GULF OF MEXICO', 229, 329)
     ctx.fillText('N', 22, 133)
-    ctx.fillText('↑', 23, 147)
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(26,160)
+    ctx.lineTo(26,138)
+    ctx.lineTo(23,145)
+    ctx.moveTo(26,138)
+    ctx.lineTo(29,145)
+    ctx.stroke()
     ctx.lineWidth = 4
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -78,7 +85,10 @@ export function migrationMap(scale = 2) {
     }
     strokeRoute(stops.length, '#6a594a80', [4,7])
     const reached = player.migration.farthest
-    strokeRoute(reached, '#344c36', [])
+    const complete = expeditionRegions.filter((_, index) =>
+      player.migration.duration >= (expeditionRegions[index + 1]?.seconds ?? expeditionRegions.length * 30)).length
+    strokeRoute(reached, '#8a6644', [])
+    strokeRoute(complete, '#344c36', [])
     stops.forEach(([x,y], i) => {
       const next = expeditionRegions[i+1]?.seconds ?? expeditionRegions.length * 30
       ctx.beginPath()
@@ -88,6 +98,13 @@ export function migrationMap(scale = 2) {
       ctx.arc(x,y,i === selected ? 9 : 6,0,Math.PI*2)
       ctx.fill()
       ctx.stroke()
+      if (i === selected || i === 0 || i === stops.length - 1) {
+        ctx.fillStyle = i < reached ? '#fff4d7' : '#362b20'
+        ctx.font = 'bold 8px Georgia'
+        ctx.textAlign = 'center'
+        ctx.fillText(String(i+1), x, y+3)
+        ctx.textAlign = 'start'
+      }
     })
   } }
 }

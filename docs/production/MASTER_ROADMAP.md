@@ -54,27 +54,27 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 26 | Believable automatic cabin evolution | Implemented in RC.8 draft · artistic review pending | Five Lodge tiers and original unlock rules | Make the relationship between hunting and the evolving cabin immediately understandable. Keep every upgrade automatic. |
-| 27 | Distinct trophies and regional memorabilia | Implemented in RC.8 draft · catalogue audit | Honors, wildlife, migration and Lodge | Represent awards with sculptures, decoys, engraved plaques, photographs, maps and furnishings that reflect actual accomplishments. |
+| 26 | Believable automatic cabin evolution | Implemented in merged RC.8 · artistic review pending | Five Lodge tiers and original unlock rules | Make the relationship between hunting and the evolving cabin immediately understandable. Keep every upgrade automatic. |
+| 27 | Distinct trophies and regional memorabilia | Implemented in merged RC.8 · catalogue audit | Honors, wildlife, migration and Lodge | Represent awards with sculptures, decoys, engraved plaques, photographs, maps and furnishings that reflect actual accomplishments. |
 | 28 | Personal hunting career timeline | Implemented · known and dated milestones separated | Existing verified local history | Make milestones discoverable with dates even on migrated saves, and omit dates the save never recorded. |
 | 29 | Detailed lifetime statistics | Implemented · tracked totals and records separated | Career and verified field statistics | Expose informative totals with consistent units and no invented historical metrics. |
 | 30 | Career rank celebrations | Partial · rank insignia and dated milestones; animated celebrations remain RC.10 | Hunt Over and replay | Give major ranks an optional memorable presentation with instant access to a new hunt. |
 | 31 | Selected decorations and favorite trophies | Implemented · owned displays and finishes, local persistence | Lodge favorite IDs and display eligibility | Allow decorating owned spots and toggling earned displays. Preserve stable IDs and existing savestate. |
 | 32 | Display wildlife and environmental discoveries | Implemented · Journal-owned observations and environmental discoveries | RC.5 sightings and RC.6 wildlife | Show verified catalogue entries and provenance in the cabin. Keep observations distinct from retrieves. |
-| 33 | Exceptional accomplishments, Great Migration and Boyd | Implemented in RC.8 draft · owner artistic review pending | Master Hunter qualification, prestige and completion records | Build distinct long-term rewards, a migration celebration, and Boyd’s special tribute without loosening any qualifications. |
+| 33 | Exceptional accomplishments, Great Migration and Boyd | Implemented in merged RC.8 · owner artistic review pending | Master Hunter qualification, prestige and completion records | Build distinct long-term rewards, a migration celebration, and Boyd’s special tribute without loosening any qualifications. |
 
 ## RC.9 · Masterpiece
 
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 34 | Distinct regional soundscapes | Partial | Regional mixer, independent volume and cleared audio | Build recognizable territory sound layers. Test licensed recordings and mobile suspension. |
-| 35 | Evolving hunt music | Prototype | Existing music control and audio lifecycle | Score the journey with restrained transitions and guest-safe mobile starts. File license for each cue. |
-| 36 | Terrain-specific dog footsteps | Partial | Current surface events and sound effects | Make variations recognizable across gravel, mud, snow and water, with responsive timing. |
-| 37 | Satisfying retrieve feedback | Partial | Existing retrieve event and mix | Tune and vary cues without relying on sound alone for an important outcome. |
+| 34 | Distinct regional soundscapes | RC.9 draft · 15 mixes, device review pending | Regional mixer, independent volume and cleared audio | Build recognizable territory sound layers. Test licensed recordings and mobile suspension. |
+| 35 | Evolving hunt music | RC.9 draft · full migration and Endless cueing | Existing music control and audio lifecycle | Score the journey with restrained transitions and guest-safe mobile starts. File license for each cue. |
+| 36 | Terrain-specific dog footsteps | RC.9 draft · nine foley treatments | Current surface events and sound effects | Make variations recognizable across gravel, mud, snow and water, with responsive timing. |
+| 37 | Satisfying retrieve feedback | RC.9 audio foundation · gameplay and escalation remain RC.10 | Existing retrieve event and mix | Tune and vary cues without relying on sound alone for an important outcome. |
 | 38 | Intuitive controls without lengthy instructions | Implemented, playtest pending | Practice, gesture controls and replay | An uncoached new player can start and steer a hunt with brief optional help. |
-| 39 | Premium typography, icons and navigation | Partial | Existing visual identity and accessible paths | Readable small-portrait menu flow with appropriate type, clear destinations and distinct affordances. |
-| 40 | Improved transitions and Journal imagery | Partial | Indexed photographic Journal and asset delivery | Polish navigation transitions and media presentation with motion preferences and offline availability preserved. |
-| 41 | Polished career, equipment and trophy presentation | Partial | RC.7 and RC.8 | Use coherent grading and distinctive rewards. Confirm the main screens feel like one outdoor game. |
+| 39 | Premium typography, icons and navigation | RC.9 draft · shared styles and destination icons | Existing visual identity and accessible paths | Readable small-portrait menu flow with appropriate type, clear destinations and distinct affordances. |
+| 40 | Improved transitions and Journal imagery | RC.9 draft · offline guide and restrained motion | Indexed photographic Journal and asset delivery | Polish navigation transitions and media presentation with motion preferences and offline availability preserved. |
+| 41 | Polished career, equipment and trophy presentation | RC.9 shared styles · owner artistic review pending | RC.7 and RC.8 | Use coherent grading and distinctive rewards. Confirm the main screens feel like one outdoor game. |
 
 ## RC.10 · One More Hunt
 
@@ -85,7 +85,7 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 | 44 | Jump and slide animation | Partial | Dog rigs and established collision timings | Improve anticipation and follow-through without changing timing or what the player can clear. |
 | 45 | Swipe responsiveness | Implemented, playtest pending | Existing input buffering and settings | Match touch intent without unexpected gestures on varied phones and refresh rates. |
 | 46 | Water splashes, mud and impact effects | Prototype | Terrain, colliders and effects budget | Use responsive splash and mud effects, subtle camera motion and readable feedback. Respect reduced motion. |
-| 47 | Exceptional-hunt celebrations and interactive Hunt Over | Partial | Hunt Over and verified personal bests | Animate score and statistics, fill XP across every level earned, show achievement progress meters and next accomplishment, celebrate records, reveal equipment and trophies, show Lodge upgrades and offer interactive reward previews. Keep Play Again available immediately and apply authoritative rewards exactly once without a claim sequence. |
+| 47 | Exceptional-hunt celebrations and interactive Hunt Over | Partial | Hunt Over and verified personal bests | Animate score and statistics, fill XP across every level earned, show achievement progress meters and next accomplishment, celebrate records, reveal equipment and trophies, show Lodge upgrades and offer interactive reward previews. Keep Play Again available immediately, including during animations, and apply authoritative rewards exactly once without a claim sequence. Ordinary hunts conclude quickly. Use stronger optional celebrations for exceptional hunts. Skipping must neither lose nor duplicate an earned reward. |
 | 48 | Optional slow-motion death replay | Planned | Replay input history and camera | Show enough context to explain the collision. Keep optional, skippable and entirely off the immediate replay path. |
 | 49 | Optional haptics and one-tap replay | Implemented with platform limits | Feature detection and lifecycle | Keep replay immediately available. Verify supported haptics gracefully no-op on unsupported devices. |
 | 93 | Infinite Endless difficulty progression | Approved for RC.10 · future ruleset and owner approval before activation | Deterministic simulation, reachability proofs, signed replay compatibility, human survival distributions | Continue increasing sustained survival pressure after the Great Migration. Validate fair paths at 10, 15, 20, 30 and 60 minutes. See the full acceptance requirements below. |
@@ -109,7 +109,7 @@ Provisional targets for human calibration.
 | 15–20 minutes | Exceptional skill required |
 | Beyond 20 minutes | Relentless survival |
 
-These bands are balancing proposals. Establish actual survival distributions with independent human playtesting across skill levels and device capabilities. Extend deterministic simulations to 10, 15, 20, 30 and 60 minutes and verify reachable safe paths through generated sequences. Version incompatible competition rules, retain historical signed replay verification and obtain owner approval before production activation. RC.8 preserves both existing courses.
+These bands are balancing proposals. Establish actual survival distributions with independent human playtesting across skill levels and device capabilities. Extend deterministic simulations to 10, 15, 20, 30 and 60 minutes and verify reachable safe paths through generated sequences. Version incompatible competition rules, retain historical signed replay verification and obtain owner approval before production activation. RC.9 preserves both existing courses.
 
 ## RC.11 · Developer Command Center
 

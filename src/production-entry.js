@@ -4,6 +4,7 @@ import { createContentStore, loadContentManifest } from './content-store.js'
 import { createFieldNotes } from './field-notes.js'
 import { productionSession } from './production-session.js'
 import './production.css'
+import './field-identity.css'
 
 const screen = document.querySelector('#content-screen')
 const game = document.querySelector('#game')

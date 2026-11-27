@@ -189,6 +189,10 @@ export const marshWater = new T.ShaderMaterial({
       float creek = smoothstep(.18, .65, depth) * (1. - crossing);
       color += creek * graze * waterProfile.z * (.018 + .025*wave*fade) * mix(waterSky, waterHorizon, .32)
         * (1. - .72 * foliage) * (1. - .58 * swamp);
+      // Sediment stays visible in sunlit, shallow gravel and braid channels.
+      float shoal = rim * fade * (1. - crossing) * (1. - .65 * foliage);
+      color += shoal * (.024 * braid + .019 * alpine + .011 * waterProfile.y) *
+        mix(vec3(.84,.70,.53),vec3(.67,.76,.72),alpine);
       color += crossing * rim * vec3(.021,.019,.012);
       if (waterDetail > .5 && crossing < .5) {
         float moving = smoothstep(.55,.90,crossWave + broad*.29);
