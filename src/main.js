@@ -1,3 +1,5 @@
+import { addDestinationIcons } from './field-icons.js'
+import { pawSurface } from './field-foley.js'
 import { hapticFeedback, rewardGroups } from './hunt-presentation.js'
 import * as T from 'three'
 import { createHazard, createPickup, prepareWashout } from './art.js'
@@ -56,8 +58,10 @@ import './lodge.css'
 import './experience.css'
 import './ranked-camp.css'
 import './top-dog.css'
+import './masterpiece.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
+addDestinationIcons(ui)
 const volumeKeys = Object.keys(audioDefaults)
 const systemMotion = matchMedia('(prefers-reduced-motion: reduce)')
 const reduceMotion = () => systemMotion.matches || profile.motion
@@ -183,6 +187,7 @@ let stride = 0
 let foot = 0
 let landing = 0
 let splashUntil = 0
+let pawWeather = { wet: 0, frost: 0 }
 let layout = cameraLayout(1)
 const follow = newCameraState()
 const adapt = adaptiveQuality(decision => performanceProbe?.operation('auto-quality-decision', decision))
@@ -232,7 +237,10 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   },
   onOpen() { engageMusic() },
   onClose() { sound.selectScene(mode) },
-  onKennel(stage) { showKennel?.(stage) },
+  onKennel(stage) {
+    showKennel?.(stage)
+    if (ui.lodge.open) sound.selectScene(stage ? 'kennel' : 'lodge')
+  },
   onAppearance(equipment) { dog?.appearance(equipment) },
   onStart(ticket) {
     if (!contextReady || !trailReady || productionSession.locked() ||
@@ -612,6 +620,7 @@ function initialize() {
       wildlife(visualTime, distance, inspecting && studio.fallback ? 0 : preset.detail, mode, encounters, camera, observeWildlife,
         inspecting ? !studio.fallback && preset.detail > 0 : profile.quality !== 'low', migration)
       if (!idle && !frozen && !inspecting) {
+        pawWeather = weather
         updateConditions(weather.name)
         sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
       }
@@ -798,7 +807,7 @@ function step(dt) {
   const nextFoot = Math.floor(stride / Math.PI)
   if (!run.jump && (nextFoot !== foot || wasAirborne) && !run.slide) {
     const surface = runningSurface()
-    sound.footstep(surface, wasAirborne)
+    sound.footstep(pawSurface(regionAt(run.elapsed), pawWeather.wet, pawWeather.frost, surface === 'splash'), wasAirborne)
     if (surface === 'mud' || surface === 'splash') spray.step(run.distance, run.x, run.elapsed, surface === 'splash', preset.detail)
     if (wasAirborne) landing = 1
   }

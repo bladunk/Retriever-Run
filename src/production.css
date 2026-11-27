@@ -48,3 +48,8 @@
 @media (max-height: 460px) {
   .content-card { margin-top: 0; }
 }
+
+#content-screen .content-card { background: #203127; border-color: var(--field-rule); color: var(--field-cream); }
+#content-screen h1 { font-family: var(--field-display); color: var(--field-cream); }
+#content-screen .content-primary { background: #d8bc88; color: #243025; }
+#content-screen progress { accent-color: var(--field-brass); }

@@ -1,0 +1,134 @@
+#game, #lodge, #preferences { font-family: var(--field-type); }
+:where(#menu, #lodge, #preferences, #field-report, #onboarding, #tutorial) :focus-visible {
+  outline: 2px solid #f3dca6;
+  outline-offset: 2px;
+}
+#menu .eyebrow, .lodge-kicker { color: var(--field-brass); letter-spacing: .16em; }
+#menu .control-hint, #menu .title-career, .lodge-scroll .room-note { color: var(--field-muted-type); }
+#menu #menu-title { font-family: var(--field-display); }
+#menu :is(.title-rooms, .title-tools) button { min-block-size: 44px; }
+#menu .title-rooms button,
+#lodge .lodge-tabs button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; line-height: 1.12; }
+#menu .title-rooms button {
+  background: linear-gradient(180deg, #23362deb, #182821ec);
+  border: 1px solid var(--field-rule);
+  box-shadow: 0 1px 4px #040d09a0;
+  padding: 4px 2px;
+}
+.field-icon { inline-size: 1.17rem; block-size: 1.17rem; color: var(--field-brass); pointer-events: none; flex: none; }
+#menu .primary, #field-report .primary, #lodge .primary, #preferences .primary {
+  background: linear-gradient(180deg, #e1c597, #c4a068);
+  color: #1e251b;
+  border: 1px solid #f1d3a477;
+}
+#menu :is(.primary, .title-rooms button):active,
+#lodge button:active, #preferences button:active, #field-report button:active { filter: brightness(.87); }
+#lodge { background: var(--field-pine); color: var(--field-cream); border-color: var(--field-rule); }
+#lodge .lodge-heading { background: linear-gradient(119deg, #25392e, #182822); border-color: var(--field-rule); }
+#lodge .lodge-heading :is(h2,em), #preferences h2, #field-report h2,
+#lodge :is(.section-title,.legacy-hero-title,.kennel-identity h3,.trophy-inspection h3),
+#lodge .journal-guide-intro h3 {
+  font-family: var(--field-display);
+  color: var(--field-cream);
+  font-weight: 600;
+  letter-spacing: -.017em;
+}
+#lodge .lodge-tabs { background: #18271f; border-color: var(--field-rule); gap: 2px; padding-inline: 4px; }
+#lodge .lodge-tabs button { background: transparent; border-color: transparent; padding: 4px 0; }
+#lodge .lodge-tabs button[aria-current="page"] {
+  box-shadow: inset 0 -2px var(--field-brass);
+  background: #334638;
+  color: var(--field-cream);
+}
+#lodge .camp-profile { border-color: var(--field-rule); }
+#lodge .lodge-panel { padding-inline: clamp(10px, 3.5vw, 20px); }
+#lodge .kennel-stage { border: 1px solid var(--field-rule); }
+#lodge .kennel-fitting button[aria-pressed="true"] { outline: 1px solid var(--field-brass); }
+#lodge button[aria-pressed="true"] { font-weight: 700; }
+#lodge :is(.record-grid,.legacy-stats) > :is(.record-card,.legacy-stat) { border-color: #79725566; }
+#lodge .worldwide-table :is(thead, th) { color: var(--field-cream); background-color: var(--field-spruce); }
+#lodge :is(.ranked-overview,.ranked-confirmation,.career-ledger) { border-color: var(--field-rule); }
+.journal-guide-intro {
+  margin-block: 0 14px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: end;
+  gap: 6px 18px;
+  border-bottom: 1px solid var(--field-rule);
+  padding-block: 7px 12px;
+}
+.journal-guide-intro h3 { margin: 0; font-size: clamp(1.48rem,6.5vw,2.05rem); line-height: 1.05; }
+.journal-guide-intro span { color: var(--field-muted-type); font-size: .76rem; }
+.journal-guide-intro progress { grid-column: 1/-1; width: 100%; block-size: 4px; accent-color: var(--field-brass); }
+.journal-tools { display: grid; gap: 9px; margin-block: 10px; }
+.journal-categories { display: flex; flex-wrap: wrap; gap: 5px; }
+.journal-categories button {
+  min-block-size: 44px;
+  padding: 4px 9px;
+  color: var(--field-cream);
+  background: var(--field-pine);
+  border: 1px solid var(--field-rule);
+  border-radius: 5px;
+  font-size: .78rem;
+}
+.journal-categories button[aria-pressed="true"] { background: #d7bd8c; color: #212a20; }
+.journal-tools input { width: 100%; min-block-size: 44px; font-size: 1rem; }
+.journal-results:empty { display: none; }
+#lodge .wildlife-guide { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+#lodge .wildlife-guide .wildlife-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 0;
+  gap: 0;
+  padding: 0;
+  background: #25372c;
+  border: 1px solid #99876756;
+  border-radius: 7px;
+  overflow: hidden;
+}
+#lodge .wildlife-guide .wildlife-card[hidden] { display: none; }
+#lodge .wildlife-card > img { width: 100%; height: auto; aspect-ratio: 1.54; object-fit: cover; border-radius: 0; }
+#lodge .wildlife-card:has(details[open]) { grid-column: 1 / -1; }
+#lodge .wildlife-card:has(details[open]) > img { display: none; }
+#lodge .wildlife-card .journal-species-copy { padding: 9px 9px 3px; }
+.journal-species-copy strong { font: 600 1.08rem/1.12 var(--field-display); display: block; }
+.journal-species-copy i { display: block; color: var(--field-muted-type); font-size: .73rem; margin-top: 3px; }
+#lodge .journal-observation { font-size: .72rem; color: #e5cb93; margin: .42rem 0 0; }
+#lodge .wildlife-card > details { padding-inline: 9px; min-width: 0; }
+#lodge .wildlife-card > details summary { display: list-item; align-content: center; min-height: 44px; color: var(--field-cream); }
+#lodge .wildlife-card .journal-photo-detail { margin: 0; width: 100%; height: auto; max-height: none; }
+#lodge .journal-discovery { border-block-start: 1px solid var(--field-rule); margin: 0; padding: 10px 3px; }
+.journal-discovery strong { color: var(--field-cream); font: 600 1.1rem var(--field-display); }
+#hud { font-variant-numeric: tabular-nums; background: #13231de8; border-color: #9c906377; }
+#hud dt { color: #ecdac0; letter-spacing: .03em; }
+#hud dd { color: #fff3d8; }
+#conditions { color: #fff2dc; }
+#preferences { background: var(--field-pine); color: var(--field-cream); }
+#preferences .settings-group { border-color: var(--field-rule); background: #26372d; }
+#preferences .settings-group summary { color: var(--field-cream); }
+#preferences input[type="range"], #preferences input[type="checkbox"] { accent-color: #c6a570; }
+#field-report .report-intro { background: radial-gradient(ellipse at 5% 0%,#4a3a2a,#1a2c23 70%); }
+#field-report #report-title { font-size: clamp(2rem, 10.1vw, 3.9rem); }
+#field-report #report-headline { grid-template-columns: 1fr 1fr; gap: 0 12px; margin-block: .45rem; }
+#field-report #report-headline .record-card {
+  border: 0;
+  border-bottom: 1px solid var(--field-rule);
+  background: none;
+  padding: 4px 0 6px;
+  min-height: 42px;
+  font-variant-numeric: tabular-nums;
+}
+#field-report #report-headline .record-card:first-child { grid-column: 1/-1; padding: 0 0 6px; }
+#field-report #report-headline .record-card:first-child strong {
+  color: var(--field-cream);
+  font: 600 clamp(2.7rem, 12vw, 4rem)/1 var(--field-display);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+#field-report #report-headline .record-card span { color: var(--field-muted-type); }
+#field-report .report-actions { border-color: var(--field-rule); background: #1c2e24; }
+#field-report .report-comparison { line-height: 1.45; }
+@media (prefers-reduced-motion: no-preference) {
+  :where(#menu, #lodge, #preferences, #field-report) button { transition: filter 100ms ease, background-color 120ms ease; }
+}
+:root[data-motion="reduced"] :where(#menu, #lodge, #preferences, #field-report) button { transition: none; }

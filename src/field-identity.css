@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "Field Serif";
+  src: url("./assets/fonts/source-serif-4-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  --field-display: "Field Serif", Georgia, serif;
+  --field-type: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --field-pine: #192821;
+  --field-spruce: #25372b;
+  --field-walnut: #3c2a20;
+  --field-cream: #f5e9d2;
+  --field-brass: #d3b178;
+  --field-muted-type: #cebfa5;
+  --field-rule: #c9ab7860;
+}

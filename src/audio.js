@@ -1,4 +1,5 @@
 import { instrumentSample, sampleUrls } from './audio-samples.js'
+import { pawSounds } from './field-foley.js'
 import { ambienceMix } from './field-soundscapes.js'
 import { beatSeconds, musicMix } from './marshland.js'
 import { createMusicTransport } from './music-transport.js'
@@ -6,15 +7,6 @@ import { audioDefaults } from './profile.js'
 
 const clamp = (value, low, high) => Math.min(high, Math.max(low, value))
 const vary = (low, high) => low + Math.random() * (high - low)
-const footsteps = {
-  mud: [315, .043, .107, 'lowpass'],
-  grass: [690, .025, .091, 'lowpass'],
-  dirt: [310, .032, .077, 'lowpass'],
-  wood: [590, .035, .073, 'lowpass'],
-  splash: [1090, .048, .169, 'bandpass'],
-  snow: [1280, .030, .102, 'bandpass'],
-}
-
 const rewards = {
   treat: [62, 69],
   combo: [62, 66, 74],
@@ -41,6 +33,8 @@ export function createSound(onInterruption, probe) {
   let rain
   let reeds
   let insects
+  let roomTone
+  let bank
   let decodeQueue = Promise.resolve()
   let levels = { ...audioDefaults }
   let playing = false
@@ -80,9 +74,12 @@ export function createSound(onInterruption, probe) {
     filter.frequency.value = frequency
     source.buffer = noise
     source.loop = true
-    source.connect(filter).connect(volume)
-    source.start()
-    return volume.gain
+    const stereo = context.createStereoPanner?.()
+    source.connect(filter)
+    if (stereo) filter.connect(stereo).connect(volume)
+    else filter.connect(volume)
+    source.start(0, vary(.05, 1.85))
+    return { level: volume.gain, cutoff: filter.frequency, pan: stereo?.pan }
   }
 
   function initialize(Audio) {
@@ -118,6 +115,8 @@ export function createSound(onInterruption, probe) {
     rain = noiseBed(1810, 'highpass')
     reeds = noiseBed(1390, 'bandpass')
     insects = noiseBed(3250, 'bandpass')
+    bank = noiseBed(390, 'lowpass')
+    roomTone = noiseBed(495, 'bandpass')
     context.addEventListener('statechange', () => {
       if (!playing) return
       if (context.state === 'running') {
@@ -288,7 +287,12 @@ export function createSound(onInterruption, probe) {
       ramp(flightGate.gain, 1, .21)
       flight = undefined
       ramp(trail.gain, scene === 'running' ? 1 : 0, .15)
-      ramp(terrainBed.gain, scene === 'running' ? 1 : 0, .15)
+      const room = scene === 'lodge' || scene === 'kennel'
+      ramp(terrainBed.gain, scene === 'running' || room ? 1 : 0, .15)
+      for (const layer of [wind, water, rain, reeds, insects, bank]) ramp(layer.level, 0, .22)
+      ramp(roomTone.level, room ? scene === 'lodge' ? .012 : .014 : 0, .24)
+      ramp(roomTone.cutoff, scene === 'lodge' ? 420 : 680, .24)
+      lastEnvironment = -Infinity
       const arrivingAtReport = scene === 'over' && previousScene === 'running'
       const bed = scene === 'running' ? 1 : scene === 'title' ? .69 : scene === 'lodge' ? .54 : .46
       ramp(musicBed.gain, arrivingAtReport ? .15 : bed, scene === 'running' ? .16 : .21)
@@ -350,6 +354,11 @@ export function createSound(onInterruption, probe) {
   const api = {
     selectScene,
     suspend,
+    resources() {
+      return { voices: voices.size, buffers: buffers.size, beds: context ? 7 : 0,
+        decodedBytes: (noise?.length ?? 0) * 4 + [...buffers.values()]
+          .reduce((bytes, buffer) => bytes + buffer.length * buffer.numberOfChannels * 4, 0) }
+    },
     preload() {
       if (!buffers.has('instruments')) void download('instruments').then(bytes => {
         if (!bytes && !pending.has('instruments')) downloads.delete('instruments')
@@ -379,12 +388,18 @@ export function createSound(onInterruption, probe) {
       if (elapsed - lastEnvironment < .15) return
       lastEnvironment = elapsed
       const breeze = .77 + .23 * Math.sin(elapsed * .66)
-      const [air, current, foliage, insect, creek] = ambienceMix(elapsed)
-      ramp(wind, (.012 + weather.wind * .070) * air * breeze, .34)
-      ramp(water, current * (wetland ? .023 : .006) * (.86 + .14 * Math.sin(elapsed * 1.1)), .42)
-      ramp(rain, weather.rain * .053, .34)
-      ramp(reeds, foliage * (.007 + weather.wind * .016) * breeze, .43)
-      ramp(insects, insect * .010 * (1 - weather.rain) * (.75 + .25 * Math.sin(elapsed * .88)), .54)
+      const [air, current, foliage, insect, creek, windHz, waterHz, foliageHz, width, resonance] = ambienceMix(elapsed)
+      ramp(wind.cutoff, windHz + weather.wind * 125, .45)
+      ramp(water.cutoff, waterHz, .46)
+      ramp(reeds.cutoff, foliageHz, .43)
+      ramp(bank.level, resonance * (.004 + current * .011), .54)
+      if (water.pan) ramp(water.pan, width * Math.sin(elapsed * .29), .54)
+      if (reeds.pan) ramp(reeds.pan, -.40 * width + .07 * Math.sin(elapsed * .57), .54)
+      ramp(wind.level, (.012 + weather.wind * .070) * air * breeze, .34)
+      ramp(water.level, current * (wetland ? .027 : .012) * (.86 + .14 * Math.sin(elapsed * 1.1)), .42)
+      ramp(rain.level, weather.rain * .053, .34)
+      ramp(reeds.level, foliage * (.007 + weather.wind * .016) * breeze, .43)
+      ramp(insects.level, insect * .010 * (1 - weather.rain) * (.75 + .25 * Math.sin(elapsed * .88)), .54)
       if (elapsed >= nextCreek && creek > .15 && canPlay('ambientVolume')) {
         nextCreek = elapsed + vary(11, 22)
         voice({ buffer: buffers.get('creek'), destination: terrainBed, start: context.currentTime,
@@ -399,20 +414,24 @@ export function createSound(onInterruption, probe) {
     },
     footstep(surface, landing = false) {
       if (!canPlay('effectsVolume')) return
-      const [frequency, level, length, kind] = footsteps[surface] ?? footsteps.dirt
+      const [level, frequency, length, kind, detail, detailGain] = pawSounds[surface] ?? pawSounds.dirt
+      const gain = vary(.78, 1.15) * (landing ? 1.42 : 1)
+      const pan = vary(-.16, .16)
       const bus = buses.effectsVolume
-      rustle(bus, kind, frequency * vary(.83, 1.15), level * vary(.77, 1.19) * (landing ? 1.50 : 1),
-        length * vary(.82, 1.2), 0, vary(-.10, .10), 0, .008)
-      if (surface === 'wood') instrument('wood', 0, context.currentTime + .004, .10, level * .56, 0, bus)
-      if (surface === 'splash') rustle(bus, 'bandpass', vary(1360, 1670), .023, landing ? .19 : .14, .028, .09)
-      if (landing && surface === 'mud') rustle(bus, 'bandpass', vary(645, 790), .019, .11, .016)
-      if (surface === 'snow') rustle(bus, 'highpass', 1460, .009, .055, .024)
+      rustle(bus, kind, frequency * vary(.85, 1.15), level * gain, length * vary(.86, 1.12), 0, pan, 0, .006)
+      rustle(bus, 'bandpass', detail * vary(.87, 1.13), detailGain * gain, length * .72, .018, pan, 0, .009)
+      if (surface === 'wood') instrument('wood', 0, context.currentTime + .004, .10, level * .56, pan, bus)
     },
     play(effect, surface = 'dirt') {
       if (!canPlay('effectsVolume')) return
       const bus = buses.effectsVolume
+      if (effect === 'interface') {
+        instrument('wood', 0, context.currentTime + .004, .06, .026, 0, bus)
+        rustle(bus, 'lowpass', 620, .014, .045, 0, 0, 0, .004)
+      }
       if (effect === 'jump') rustle(bus, 'lowpass', surface === 'snow' ? 940 : 440, .024, .092)
-      if (effect === 'retrieve') rustle(bus, 'bandpass', 860, .022, .11, 0, -.04, 0, .024)
+      if (effect === 'retrieve' || effect === 'treat') rustle(bus, 'bandpass',
+        effect === 'treat' ? 1250 : 860, .024, .075, 0, -.04, 0, .006)
       if (effect === 'slide') {
         rustle(bus, 'bandpass', surface === 'mud' ? 485 : 720, .049, .36, 0, -.08, .07, .044)
         rustle(bus, 'lowpass', 360, .024, .39, .08, -.04, .12, .036)
