@@ -90,7 +90,7 @@ export function legacyInterior(player, context) {
   title.append(node('div', 'Tier ' + tier.numeral + ' · Level ' + standing.level, 'legacy-eyebrow'), node('h3', displayedName))
   if (preview) title.append(node('span', 'Art Studio · simulated career', 'legacy-preview-label'))
   const room = node('div', null, 'legacy-interior')
-  const backdrop = photo('./lodge/tier-' + (tierIndex + 1) + '.webp', 960, 1120, tier.description)
+  const backdrop = photo('./lodge/interior-' + (tierIndex + 1) + '.webp', 960, 1120, tier.description)
   backdrop.fetchPriority = 'high'
   backdrop.className = 'legacy-interior-art'
   const dog = dogDisplayName(player.kennel)

@@ -40,6 +40,7 @@ try {
       ...(process.argv.includes('video') && edition === 'after' ? {recordVideo:{dir:resolve(output,'video'),size:viewport}} : {}) })
     await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort())
     const page = await context.newPage()
+    page.setDefaultTimeout(100_000)
     const errors = []
     page.on('pageerror', error => errors.push(error.message))
     const profiles = studioOnly ? [] : Array.from({length:5},(_,i) => createLegacyPreview(i+1).exportSave())
@@ -64,6 +65,8 @@ try {
       },null,{timeout:60_000})
       if (await page.locator('#content-screen').isVisible()) await page.locator('#content-download').tap()
       if (!studioOnly) {
+        await page.waitForFunction(() => !document.querySelector('#primary').disabled && !document.querySelector('#game').hidden,
+          null,{timeout:120_000})
         await page.locator('#open-lodge').tap()
       }
       const stage = page.locator('[data-tier]').first()

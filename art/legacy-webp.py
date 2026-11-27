@@ -13,7 +13,7 @@ output = Path("public/lodge")
 for index, key in enumerate(("shack", "cabin", "waterfowl", "estate", "legendary"), 1):
     with Image.open(plates / (key + ".png")) as image:
         crop = ImageOps.fit(image.convert("RGB"), (960,1120), centering=(.5,.57), method=Image.Resampling.LANCZOS)
-        crop.save(output / f"tier-{index}.webp", quality=88, method=6)
+        crop.save(output / f"interior-{index}.webp", quality=88, method=6)
 for key in ("bronze-flight", "skill-form", "certificate"):
     with Image.open(props / (key + ".png")) as image:
         x1,y1,x2,y2 = image.getbbox()
