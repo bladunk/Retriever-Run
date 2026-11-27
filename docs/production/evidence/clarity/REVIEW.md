@@ -22,3 +22,13 @@ The final dense woodland comparison uses WebKit at Balanced with `368a0bd`. Look
 These frames were captured during a continuous 95-second scripted run on the accelerated gameplay clock, on build `973bc49`.
 
 [Gulf Coast](moving-gulf.webp) · [Cypress](moving-cypress.webp) · [Delta](moving-delta.webp) · [Flooded Timber](moving-timber.webp)
+
+## Reproduce a view
+
+With Playwright browsers installed, point `FIELD_BUILD` at a verified build and repeat for the other build. Replace `balanced` with `low` or `high` for each fixed preset.
+
+```sh
+FIELD_BUILD=/path/to/build FIELD_QA_OUTPUT=/tmp/clarity-views \
+  node scripts/phase-three-browser.mjs chromium small retina css-shots balanced fast precise raptor \
+  clarity-views woodland only=opening only=notice-approach only=delta-handoff
+```

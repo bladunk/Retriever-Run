@@ -6,12 +6,12 @@
   "interruptedAsset": "labrador.glb",
   "injectedNetworkErrors": 0,
   "interruption": "The download stopped. Retry to resume from your verified files.",
-  "coldReadyMsIncludingRetry": 13120,
+  "coldReadyMsIncludingRetry": 10211,
   "corruptFileRepaired": true,
   "lodgeUpdateVeto": true,
   "updateVersions": [
     "0648724a507b20c64814",
-    "5d71d7b11fdff0150ec3"
+    "e66178643922f5bd4132"
   ],
   "update": {
     "busyHuntProtected": true,
