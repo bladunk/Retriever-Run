@@ -52,7 +52,7 @@ The Cypress views use the same gameplay camera and seed with different presets. 
 
 ## The Great Migration
 
-Seed 7, Low graphics and the small portrait viewport. Each still uses the production gameplay camera with the same territory midpoint. These checkpoints supplement the continuous offline run.
+Seed 7, Low graphics and the small portrait viewport. Each pair uses the production gameplay camera and the same location. The mountain pair starts five seconds into the territory to avoid a collision at the midpoint in the Legacy fixture. These checkpoints supplement the continuous offline run.
 
 | Territory | RC.8 | RC.9 |
 | --- | --- | --- |
@@ -70,4 +70,4 @@ Seed 7, Low graphics and the small portrait viewport. Each still uses the produc
 | Saskatchewan Parklands | [Before](route/before-parklands.jpg) | [After](route/after-parklands.jpg) |
 | Canadian Boreal Forest | [Before](route/before-boreal.jpg) | [After](route/after-boreal.jpg) |
 | Canadian Rocky Mountain Foothills | [Before](route/before-foothills.jpg) | [After](route/after-foothills.jpg) |
-| Canadian Mountain Wilderness | Capture timed out | [After](route/after-mountain.jpg) |
+| Canadian Mountain Wilderness | [Before](route/before-mountain.jpg) | [After](route/after-mountain.jpg) |
