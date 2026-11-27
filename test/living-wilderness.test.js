@@ -34,15 +34,17 @@ test('every territory only draws from its own tier and all catalog species are r
 })
 
 test('bank and flight routes stay off the trail and the pheasant rises only after the flush distance', () => {
-  const event = { seed: 17, lateral: -6, height: .04, kind: 'cover' }
+  const event = { seed: 17, lateral: -6, height: .04, distance:3400, kind: 'cover' }
   const pose = {}
-  encounterPose(event, fieldSpecies.pheasant, 46, 4, 0, pose)
-  assert.equal(pose.draw,false)
-  const first = encounterPose(event, fieldSpecies.pheasant, 21, 5, 0, {}).height
-  const later = encounterPose(event, fieldSpecies.pheasant, 11, 6, 0, {}).height
+  encounterPose(event, fieldSpecies.pheasant, 48, 4, 0, pose)
+  assert.equal(pose.state,'rest')
+  assert.equal(pose.fold,1)
+  assert.equal(pose.along,0)
+  const first = encounterPose(event, fieldSpecies.pheasant, 38, 154, 0, {}).height
+  const later = encounterPose(event, fieldSpecies.pheasant, 31, 154, 0, {}).height
   assert.ok(later > first)
-  assert.equal(encounterPose(event, fieldSpecies.mallard, 36, 4, 0, {}).rig,'Idle')
-  assert.equal(encounterPose(event, fieldSpecies.mallard, 16, 5, 0, {}).rig,'Fly')
+  assert.equal(encounterPose({ ...event,kind:'water' }, fieldSpecies.mallard, 36, 4, 0, {}).rig,'Idle')
+  assert.equal(encounterPose({ ...event,kind:'water' }, fieldSpecies.mallard, 16, 5, 0, {}).rig,'Fly')
   assert.ok(encounterPose(event, fieldSpecies.crane, 25, 5, 0, {}).height > event.height + 2)
   for (const animal of Object.values(fieldSpecies)) for (const ahead of [41,30,20,10,0,-5]) {
     const pose = encounterPose(event,animal,ahead,8,4,{})
@@ -100,11 +102,10 @@ test('pooled animal geometry releases only local buffers', () => {
   const first = createEncounterArt(fieldSpecies.crane)
   const second = createEncounterArt(fieldSpecies.moose)
   let released = 0, other = 0
-  first.body.addEventListener('dispose',()=>released++)
-  first.appendage.addEventListener('dispose',()=>released++)
-  second.body.addEventListener('dispose',()=>other++)
+  for (const mesh of [first.bodyMesh,first.wingMesh,first.tipMesh]) mesh.geometry.addEventListener('dispose',()=>released++)
+  second.bodyMesh.geometry.addEventListener('dispose',()=>other++)
   first.dispose()
-  assert.equal(released,2)
+  assert.equal(released,3)
   assert.equal(other,0)
   second.dispose()
 })

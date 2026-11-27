@@ -164,6 +164,51 @@ try {
     samples.push({region,event,quality,build:perf.build,isolated:true,
       drawingBuffer:perf.drawingBuffer,textures:perf.textures,geometries:perf.geometries,programs:perf.programs})
   },2)
+  else if (process.argv.includes('living-studio-baseline')) await inspect('studio-before',{width:320,height:568},async(page,prefix)=>{
+    await open(page,prefix+'?studio=1&perf=1&territory=6&offset=26&seed=6&species=pheasant&light=dawn&quality=high')
+    await page.waitForFunction(()=>document.querySelector('#game').dataset.mode === 'studio')
+    await page.locator('#art-studio summary').click()
+    await page.getByLabel('View',{exact:true}).selectOption('Wildlife')
+    await page.getByLabel('Wildlife motion').selectOption('Action')
+    await page.locator('#art-studio summary').click()
+    await page.waitForFunction(()=>{
+      const perf=window.retrieverPerformance?.()
+      return perf?.wildlife>0 && perf.wildlifeModels.models.some(model=>model.id==='pheasant' &&
+        model.prepared.geometries>0 && model.prepared.geometries===model.prepared.geometryTotal)
+    },null,{timeout:90000})
+    await page.screenshot({path:resolve(output,'pheasant-old-rig.jpg'),type:'jpeg',quality:86})
+    samples.push({build:await page.evaluate(()=>window.retrieverPerformance().build),state:'Resident imported pheasant in Art Studio'})
+  },2)
+  else if (process.argv.includes('living-studio')) for (const [territory, offset, species, motion, model] of [
+    [6,26,'pheasant','Action','auto'],
+    [6,26,'pheasant','Action','fallback'],
+    [1,12,'mallard','Action','auto'],
+    [7,12,'crane','Flock','auto'],
+    [13,16,'moose','Action','auto'],
+    [14,14,'eagle','Glide','auto'],
+    [15,13,'goldeneye','Flight','auto'],
+  ]) await inspect('studio',{width:320,height:568},async (page,prefix) => {
+    const before = '{"fixture":"living world practice leaves the ordinary profile alone"}'
+    await page.addInitScript(value=>localStorage.setItem('retriever-run.record',value),before)
+    await open(page,prefix+'?studio=1&perf=1&seed=6&quality=high&view=wildlife&territory='+territory+
+      '&offset='+offset+'&species='+species+'&motion='+motion+'&model='+model+(species === 'pheasant' ? '&light=dawn' : species === 'moose' ? '&camera=shore' : ''))
+    await page.waitForFunction(mode=>{
+      const p = window.retrieverPerformance?.()
+      return document.querySelector('#game').dataset.mode === 'studio' && p?.residentTiles >= 5 &&
+        (mode === 'Flock' ? p.migrationFlight?.drawn === 39 : p.wildlife > 0)
+    },motion,{timeout:75000})
+    await page.screenshot({path:resolve(output,species+'-'+model+'.jpg'),type:'jpeg',quality:85})
+    await page.locator('#art-studio summary').click()
+    assert.equal(await page.getByLabel('Wildlife motion').inputValue(),motion)
+    await page.getByLabel('Wildlife framing').selectOption('trail')
+    await page.getByRole('button',{name:'Play camera'}).click()
+    await page.getByRole('button',{name:'Stop camera'}).waitFor()
+    assert.equal(await page.evaluate(()=>localStorage.getItem('retriever-run.record')),before)
+    const perf = await page.evaluate(()=>window.retrieverPerformance())
+    samples.push({species,motion,model,territory,build:perf.build,isolated:true,draws:perf.draws,
+      triangles:perf.triangles,textures:perf.textures,geometries:perf.geometries,migration:perf.migrationFlight,
+      rig:perf.wildlifeModels.models.map(({id})=>id)})
+  },2)
   else if (process.argv.includes('worldwide')) for (const combine of [true, false]) {
     await inspect('after',{width:320,height:568},async (page,prefix) => {
       const calls = []
@@ -265,7 +310,7 @@ try {
       })
     }
   }
-  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio','heartland-studio','northern-studio','clarity-startup'].includes(arg))) {
+  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio','heartland-studio','northern-studio','living-studio','living-studio-baseline','clarity-startup'].includes(arg))) {
     await inspect('studio',{width:390,height:844},async (page,prefix) => {
       await open(page,prefix+'?studio=1&perf=1&territory=13&seed=7&breed=boyd')
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio')

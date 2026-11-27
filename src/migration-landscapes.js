@@ -15,7 +15,7 @@ const landscapes = [
   ['manitoba', 'Manitoba Marshlands', 'lacustrine', 'marsh-dock', ['willow', 'aspen'], 0, ['freshwater-marsh', 'reed-beds', 'open-water']],
   ['parklands', 'Saskatchewan Parklands', 'parkland', 'aspen-cabin', ['aspen', 'birch'], 2, ['aspen-grove', 'tall-grass', 'prairie-ponds']],
   ['boreal', 'Canadian Boreal Forest', 'boreal', 'snag', ['spruce', 'fir'], 1, ['boreal-forest', 'rocky-shore', 'northern-lake']],
-  ['foothills', 'Rocky Mountain Foothills', 'foothills', 'forestry-cabin', ['jackPine', 'fir'], 2, ['forested-slopes', 'rocky-river', 'snow-forest']],
+  ['foothills', 'Canadian Rocky Mountain Foothills', 'foothills', 'forestry-cabin', ['jackPine', 'fir'], 2, ['forested-slopes', 'rocky-river', 'snow-forest']],
   ['mountain', 'Canadian Mountain Wilderness', 'alpine', 'cairn', ['fir', 'snowPine'], 2, ['subalpine-forest', 'mountain-lake', 'snow-forest']],
 ]
 const palettes = [

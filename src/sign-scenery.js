@@ -56,7 +56,7 @@ function paint(ctx, sign, seed) {
   ctx.font = font + '100px Arial, sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  const { lines, size, lineHeight, scale } = fitSignLettering(sign.line, line => ctx.measureText(line).width)
+  const { lines, size, lineHeight, scale } = fitSignLettering(sign.line, line => ctx.measureText(line).width, sign.maxLines)
   ctx.font = font + size + 'px Arial, sans-serif'
   ctx.strokeStyle = '#261e14'
   ctx.lineWidth = Math.max(2.4, size * .054)

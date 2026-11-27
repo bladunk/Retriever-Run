@@ -167,7 +167,7 @@ try {
   const page = await context.newPage()
   const recordingStarted = performance.now()
   const errors = []
-  page.on('pageerror', error => errors.push(error.message))
+  page.on('pageerror', error => { errors.push(error.message); console.error(error.stack) })
   page.on('console', msg => { if (msg.type() === 'error' && /shader error|THREE.WebGLProgram/i.test(msg.text())) errors.push(msg.text()) })
   page.on('console', msg => {
     if (args.includes('wildlife-breaks') && msg.type() === 'error' && /Couldn't load texture/.test(msg.text())) console.error(msg.text())
@@ -801,7 +801,7 @@ try {
     const ticksPerCallback = args.includes('fast-long') ? 27 : 15
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
     assert.ok(Number.isInteger(from) && from >= 0 && from <= duration-15)
-    const seed = 7
+    const seed = Number(args.find(arg => arg.startsWith('seed='))?.slice(5) ?? 7)
     const start = distanceAtTime(from)
     const inputs = guidedInputs(seed, duration, start)
     const precise = args.includes('precise')
@@ -975,12 +975,13 @@ try {
   } else if (args.includes('living')) {
     const { planEncounter } = await fromSource('wildlife-encounters')
     const defaults = [['mallard','gulf'],['pheasant','farm'],['deer','farm'],['crane','platte'],
-      ['canada-goose','sandhills'],['moose','boreal'],['eagle','foothills'],['alligator','cypress']]
+      ['canada-goose','sandhills'],['moose','boreal'],['eagle','foothills'],['alligator','cypress'],['goldeneye','mountain']]
     const selected = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
     for (const [id, territory] of defaults) {
       if (selected.length && !selected.includes(id)) continue
       const region = expeditionRegions.find(row => row.key === territory)
-      const first = Math.max(4, Math.ceil(region.marker / 120) * 4)
+      const earliest = id === 'pheasant' && args.includes('late-field') ? distanceAtTime(region.seconds+21) : region.marker
+      const first = Math.max(4, Math.ceil(earliest / 120) * 4)
       const last = Math.floor(distanceAtTime(region.seconds + 29) / 30)
       let fixture
       for (let tile = first; tile <= last && !fixture; tile += 4) {
@@ -989,8 +990,8 @@ try {
           if (planEncounter(sample, seed)?.species !== id) continue
           const event = planEncounter(buildTile(tile, tile < 3 ? 0 : seed), seed)
           if (event?.species !== id || event.distance < region.marker + 45) continue
-          const start = Math.max(0, event.distance - 43)
-          const end = event.distance - (id === 'pheasant' ? 16 : 21)
+          const start = Math.max(0, event.distance - (id === 'pheasant' && args.includes('late-field') ? 52 : 43))
+          const end = args.includes('encounter-motion') ? event.distance + 9 : event.distance - (id === 'pheasant' ? 16 : 21)
           let left = 0, right = region.seconds + 35
           for (let n = 0; n < 30; n++) {
             const middle = (left + right) * .5
@@ -1012,6 +1013,14 @@ try {
       assert.ok(fixture,id)
       const { seed, event, start, end } = fixture
       await runAt(start,seed)
+      if (args.includes('encounter-motion')) {
+        const total = args.includes('short-motion') ? 12 : 24
+        for (let frame = 0; frame < total; frame++) {
+          await stepTo(start + 1.15 + frame * (end - start - 2) / (total-1))
+          await capture(id + '-' + String(frame).padStart(2, '0'), { seed, planned: event })
+        }
+        continue
+      }
       await stepTo(Math.max(start+1, event.distance-27))
       await capture(id+'-approach',{ seed, planned: event })
       await stepTo(end)

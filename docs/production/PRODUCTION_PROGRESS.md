@@ -2,9 +2,9 @@
 
 ## Resume here
 
-- Heartland PR #43 merged at `76c9a1c39b12eb4eac1bbfb7374211a91433aa1a`. The public build was verified at `1.0.0-rc.4 · a524eac` when RC.5 began. The latest documented owner device baseline is RC.3.1. [Heartland report](WILDERNESS_HEARTLAND_REPORT.md) · [Merged PR #43](https://github.com/bladunk/Retriever-Run/pull/43)
-- Northern Frontier draft PR #44 adds the northern environmental overhaul, isolated scenic events and per-profile discovery records. Its report has the exact build, visual captures, reproduction commands and remaining device tests. [Northern Frontier report](WILDERNESS_NORTHERN_FRONTIER_REPORT.md) · [Draft PR #44](https://github.com/bladunk/Retriever-Run/pull/44)
-- The owner’s 92 approved features and commitments now live in the master roadmap. Living World follows Northern Frontier review. Treat merge, deployment, ranked activation and any production reset as separate decisions. [Master roadmap](MASTER_ROADMAP.md) · [Permanent acceptance checklist](RELEASE_CHECKLIST.md#permanent-release-acceptance)
+- Northern Frontier PR #44 merged at `0d21b72e0f744d157bd841fd95fb52855d9901c3`. The public Pages manifest reported `1.0.0-rc.5 · 41f414c` at the Living World handoff. [Northern Frontier report](WILDERNESS_NORTHERN_FRONTIER_REPORT.md) · [Merged PR #44](https://github.com/bladunk/Retriever-Run/pull/44)
+- Living World RC.6 reworks animal movement, adds the Platte crane passage to the existing discovery ledger and adopts Canadian Rocky Mountain Foothills as the official display name. [Living World report](LIVING_WORLD_REPORT.md) · [Visual evidence](evidence/living/REVIEW.md)
+- Gun Dog follows Living World review. The 92-item master roadmap remains the reference for approved release scope. [Master roadmap](MASTER_ROADMAP.md) · [Acceptance and rollback](RELEASE_CHECKLIST.md)
 
 ## Implemented in Phase 01
 

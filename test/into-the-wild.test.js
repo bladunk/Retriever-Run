@@ -63,7 +63,7 @@ test('all 280 notices remain reachable without short repeats and fit in three li
       assert.ok(!recent.includes(sign.line), sign.line)
       recent.push(sign.line)
       if (recent.length > 19) recent.shift()
-      reached.add(sign.line)
+      if (sign.category !== 'arrival') reached.add(sign.line)
       if (ordinal < 21) {
         const group = categories[sign.region]
         group[sign.category] = (group[sign.category] ?? 0) + 1

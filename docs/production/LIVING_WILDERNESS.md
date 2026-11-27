@@ -10,14 +10,14 @@ The terrain and territory registry controls habitat suitability and distribution
 | Arkansas Flooded Timber | Mallard, Wood Duck, Gadwall | Hooded Merganser, Great Blue Heron, White-tailed Deer | Green-winged Teal, Ring-necked Duck | Bald Eagle |
 | Ozark River Country | Mallard, Wood Duck, Great Blue Heron | Hooded Merganser, Common Merganser, White-tailed Deer | Common Goldeneye, Bald Eagle | Bufflehead |
 | Midwest Farm Country | White-tailed Deer, Canada Goose, Ring-necked Pheasant | Mallard, American Wigeon, Northern Pintail | Snow Goose, Greater White-fronted Goose | Bald Eagle |
-| Platte River Valley | Canada Goose, Mallard, Northern Pintail | Ring-necked Pheasant, American Wigeon, Cackling Goose | Sandhill Crane, Snow Goose | Ross’s Goose |
+| Platte River Valley | Canada Goose, Mallard, Northern Pintail | Ring-necked Pheasant, American Wigeon, Cackling Goose | Sandhill Crane, Snow Goose | Ross’s Goose. The separate Platte crane passage has its own route-seed draw. |
 | Nebraska Sandhills | Ring-necked Pheasant, Blue-winged Teal, Canada Goose | American Wigeon, Northern Shoveler, White-tailed Deer | Northern Pintail, Sandhill Crane | Cackling Goose |
 | Dakota Prairie Potholes | Mallard, Blue-winged Teal, Northern Shoveler, Gadwall | Ring-necked Pheasant, Redhead, Northern Pintail | Canvasback, Snow Goose | Ross’s Goose |
 | Northern Dakota Wetlands | Gadwall, Canada Goose, Northern Pintail, Blue-winged Teal | Ring-necked Pheasant, Canvasback, Lesser Scaup | Redhead, Cackling Goose, Snow Goose | Ross’s Goose |
 | Manitoba Marshlands | Mallard, Canada Goose, Ring-necked Duck, Lesser Scaup | Bufflehead, Canvasback, Redhead | Snow Goose, Moose | Bald Eagle |
 | Saskatchewan Parklands | Mallard, White-tailed Deer, Bufflehead, American Wigeon | Northern Pintail, Common Goldeneye, Ring-necked Duck, Cackling Goose | Ross’s Goose, Moose | Bald Eagle |
 | Canadian Boreal Forest | Lesser Scaup, Common Goldeneye, Ring-necked Duck, Bufflehead | Common Merganser, Canada Goose | Moose, Bald Eagle | Snow Goose |
-| Rocky Mountain Foothills | Canada Goose, Common Goldeneye, White-tailed Deer | Common Merganser, Mallard, Bufflehead | Moose, Bald Eagle | Sandhill Crane |
+| Canadian Rocky Mountain Foothills | Canada Goose, Common Goldeneye, White-tailed Deer | Common Merganser, Mallard, Bufflehead | Moose, Bald Eagle | Sandhill Crane |
 | Canadian Mountain Wilderness | Common Goldeneye, Common Merganser, Canada Goose | Bufflehead, Lesser Scaup | Bald Eagle, Moose | Cackling Goose |
 
 ## Spawn and journal contracts
@@ -26,13 +26,13 @@ The engine proposes an encounter every fourth terrain tile. It classifies candid
 
 The first Gulf encounter is a Mallard. Subsequent draws allocate 65% common, 24% uncommon, 9% rare and 2% exceptional proposals. Terrain can reject a proposal based on available habitat. These are game frequencies, separate from conservation status.
 
-Pheasants wait in cover and move upward and outward as the dog closes to 23 m. Flocks vary formation and wingbeat phase. A distant crane group contains up to nine birds, with four in Battery Saver. Other animals stay off the trail. All graphics presets share the same lead animal and sighting criteria.
+The RC.6 pheasant begins on terrain with folded wings, then launches when the dog is 40 m from the anchor. Its motion, bank and nose follow the world-space path, with a short glide after powered flight. Mallards, teal, diving ducks, geese, other waterfowl and raptors use individual or family cadences. Canada Goose families use staggered longitudinal and lateral formation slots. Waders prefer a real shallow bank. Moose and deer sample the terrain under their moving position.
 
-The journal credits the lead animal after roughly 0.22 seconds in the central camera frustum and 5–36 m ahead. This conservative screen and distance check estimates visibility. It does not read the depth buffer or detect full occlusion by scenery.
+The ordinary Journal checks the central camera frustum from 5–42 m for roughly 0.22 seconds. The Platte passage checks prominent flock members through 112 m for at least 0.55 seconds and records one event per hunt. These screen and distance checks approximate visibility. Art Studio uses the same renderer with progression disabled; browser QA can use the separate sight probe for representative occlusion checks.
 
-Each player has a separate wildlife schema, currently version 1. Entries hold observations, rare observations, retrieves, first observation date and territory. Existing Mallard and Pheasant totals seed retrieve counts only. Hunt Over commits the ledger once per run ID. Practice saves stay isolated. The wildlife-observed event supports future awards and grants no points, XP or equipment here.
+Each player has a separate wildlife schema, currently version 1. Entries hold observations, rare observations, retrieves, first observation date and territory. Existing Mallard and Pheasant totals seed retrieve counts only. Hunt Over commits the ledger once per run ID. Practice saves stay isolated. The wildlife-observed event can contribute to existing observation achievements. The crane passage additionally saves its first date through the RC.5 discovery ledger. It does not alter the authoritative course score.
 
-The Lodge displays original illustrations, species habitats, first sightings and lifetime totals. Hunt Over lists newly observed wildlife without interrupting the hunt.
+The Field Journal displays species artwork, habitats, first sightings and lifetime totals. Hunt Over lists newly observed wildlife without interrupting the hunt.
 
 ## Species and sources
 

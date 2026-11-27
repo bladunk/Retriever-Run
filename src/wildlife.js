@@ -129,7 +129,8 @@ function animateBird() {
     body.scale.setScalar(scale)
     body.updateMatrix()
     bodies.setMatrixAt(n, body.matrix)
-    const phase = time * (goose ? 13.5 : 23.0) + wingCycle * .71
+    const frequency = goose ? 3.2 : info.name === 'teal' ? 7.9 : 5.5
+    const phase = time*2*Math.PI*frequency*(1+.052*Math.sin(wingCycle*8.37)) + wingCycle*1.87
     const inGlide = goose ? T.MathUtils.smoothstep(Math.sin(time * .74 + wingCycle * .06), .58, .89) * .83 : .06
     const flap = Math.sin(phase) * (1 - inGlide) * (goose ? .60 : .83)
     for (const side of [-1, 1]) {
