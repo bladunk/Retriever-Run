@@ -801,7 +801,7 @@ try {
     const ticksPerCallback = args.includes('fast-long') ? 27 : 15
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
     assert.ok(Number.isInteger(from) && from >= 0 && from <= duration-15)
-    const seed = 7
+    const seed = Number(args.find(arg => arg.startsWith('seed='))?.slice(5) ?? 7)
     const start = distanceAtTime(from)
     const inputs = guidedInputs(seed, duration, start)
     const precise = args.includes('precise')

@@ -191,7 +191,7 @@ try {
     const before = '{"fixture":"living world practice leaves the ordinary profile alone"}'
     await page.addInitScript(value=>localStorage.setItem('retriever-run.record',value),before)
     await open(page,prefix+'?studio=1&perf=1&seed=6&quality=high&view=wildlife&territory='+territory+
-      '&offset='+offset+'&species='+species+'&motion='+motion+'&model='+model+(species === 'pheasant' ? '&light=dawn' : ''))
+      '&offset='+offset+'&species='+species+'&motion='+motion+'&model='+model+(species === 'pheasant' ? '&light=dawn' : species === 'moose' ? '&camera=shore' : ''))
     await page.waitForFunction(mode=>{
       const p = window.retrieverPerformance?.()
       return document.querySelector('#game').dataset.mode === 'studio' && p?.residentTiles >= 5 &&

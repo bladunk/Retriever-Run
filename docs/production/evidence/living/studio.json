@@ -1,0 +1,146 @@
+{
+  "engine": "webkit",
+  "samples": [
+    {
+      "species": "pheasant",
+      "motion": "Action",
+      "model": "auto",
+      "territory": 6,
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "bcdd0c0"
+      },
+      "isolated": true,
+      "draws": 74,
+      "triangles": 206843,
+      "textures": 23,
+      "geometries": 71,
+      "migration": null,
+      "rig": [
+        "mallard",
+        "deer"
+      ]
+    },
+    {
+      "species": "pheasant",
+      "motion": "Action",
+      "model": "fallback",
+      "territory": 6,
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "bcdd0c0"
+      },
+      "isolated": true,
+      "draws": 75,
+      "triangles": 206652,
+      "textures": 10,
+      "geometries": 56,
+      "migration": null,
+      "rig": []
+    },
+    {
+      "species": "mallard",
+      "motion": "Action",
+      "model": "auto",
+      "territory": 1,
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "bcdd0c0"
+      },
+      "isolated": true,
+      "draws": 73,
+      "triangles": 199888,
+      "textures": 23,
+      "geometries": 62,
+      "migration": null,
+      "rig": [
+        "mallard",
+        "deer"
+      ]
+    },
+    {
+      "species": "crane",
+      "motion": "Flock",
+      "model": "auto",
+      "territory": 7,
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "bcdd0c0"
+      },
+      "isolated": true,
+      "draws": 69,
+      "triangles": 185006,
+      "textures": 24,
+      "geometries": 71,
+      "migration": {
+        "drawn": 39,
+        "visible": false,
+        "recorded": false
+      },
+      "rig": [
+        "mallard",
+        "deer"
+      ]
+    },
+    {
+      "species": "moose",
+      "motion": "Action",
+      "model": "auto",
+      "territory": 13,
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "bcdd0c0"
+      },
+      "isolated": true,
+      "draws": 62,
+      "triangles": 250390,
+      "textures": 22,
+      "geometries": 64,
+      "migration": null,
+      "rig": [
+        "mallard",
+        "deer"
+      ]
+    },
+    {
+      "species": "eagle",
+      "motion": "Glide",
+      "model": "auto",
+      "territory": 14,
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "bcdd0c0"
+      },
+      "isolated": true,
+      "draws": 69,
+      "triangles": 234271,
+      "textures": 27,
+      "geometries": 69,
+      "migration": null,
+      "rig": [
+        "eagle",
+        "mallard"
+      ]
+    },
+    {
+      "species": "goldeneye",
+      "motion": "Flight",
+      "model": "auto",
+      "territory": 15,
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "bcdd0c0"
+      },
+      "isolated": true,
+      "draws": 61,
+      "triangles": 175316,
+      "textures": 22,
+      "geometries": 67,
+      "migration": null,
+      "rig": [
+        "mallard",
+        "deer"
+      ]
+    }
+  ]
+}

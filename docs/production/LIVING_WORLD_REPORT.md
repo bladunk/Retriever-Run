@@ -8,7 +8,7 @@ Ring-necked pheasants now begin grounded, break out of cover on powerful strokes
 | --- | --- |
 | Merged starting point | `0d21b72e0f744d157bd841fd95fb52855d9901c3`, PR #44 |
 | Verified Pages and reconstructed baseline | `1.0.0-rc.5 · 41f414c`, manifest `cc08abc84d200dc5c39a` |
-| Configured review build | `1.0.0-rc.6 · bcdd0c0`, manifest `bff2de8acc03f6b98507`, runtime commit `be9bfd1` |
+| Configured review build | `1.0.0-rc.6 · 7d3c626`, manifest `73a422bd53296d2a9c69`, runtime commit `afd1320` |
 
 No native RC.5 trace was provided with this release brief. Historical owner evidence for RC.4 covers 47,678 frames from three normal hunts, 60 average FPS, 98.19% of intervals within 20 ms, 2.76 ms average CPU and two intervals over 50 ms. In the separate recorded hunt, 21,406 frames averaged 59.2 FPS with 97.23% within 20 ms, 2.71 ms average CPU and no intervals over 50 ms. Both owner traces reported zero discarded simulation samples. The software comparisons in this report use merged RC.5. [Northern Frontier baseline and limitations](WILDERNESS_NORTHERN_FRONTIER_REPORT.md)
 
@@ -37,7 +37,7 @@ The new model has a red face patch, pale neck ring, copper-colored body, dark ma
 
 - Mallards rise from a wet anchor into powered flight. Divers take a longer run along the water. Teal and small divers flap faster than Canada geese. Waders prefer shallow banks, and bald eagles bank during long stretches of extended-wing flight. Full landing sequences and water-contact wakes remain open.
 - Canada Goose flocks stagger spacing, wing cadence, altitude and intermittent glides. The hostile goose uses new wing timing over its original dive position and warning envelope. [Canada Goose references](https://www.allaboutbirds.org/guide/Canada_Goose/id)
-- Seeded Platte passages come in roughly 29% of routes that reach the vicinity of 3:12–3:17. Three groups layer up to 39 long-necked cranes with trailing legs, varied wing strokes and spatial calls. Balanced displays up to 33 and Battery Saver 26. The player can encounter it in any real-world month. [Central Platte staging and habitat](https://www.fws.gov/refuge/rainwater-basin-wetland-management-district/species) · [Sandhill Crane behavior](https://www.fws.gov/species/sandhill-crane-grus-canadensis)
+- A seeded draw schedules the passage on roughly 29% of routes. The anchor is at 3:12–3:17, with the groups already visible on approach. Three groups layer up to 39 long-necked cranes with trailing legs, varied wing strokes and spatial calls. Balanced displays up to 33 and Battery Saver 26. The player can encounter it in any real-world month. [Central Platte staging and habitat](https://www.fws.gov/refuge/rainwater-basin-wetland-management-district/species) · [Sandhill Crane behavior](https://www.fws.gov/species/sandhill-crane-grus-canadensis)
 - Deer accelerate from a grazing pose and align to movement on both banks. The doe’s skinned gallop and the compact leg poses follow speed instead of the camera clock. Moose have longer legs, a heavier shoulder, sweeping antlers and a slower gait. Ground contact is sampled and the stance compensation is approximate. There is no full-body terrain IK or general obstacle avoidance. [White-tailed deer habitat](https://mdc.mo.gov/discover-nature/field-guide/white-tailed-deer) · [Moose habitat](https://www.nps.gov/romo/learn/nature/moose.htm)
 
 ## Discoveries, saves and competitive integrity
@@ -50,11 +50,41 @@ Both courses match SHA-256 fingerprints generated independently from the exact m
 
 | Configured build | RC.5 | RC.6 |
 | --- | ---: | ---: |
-| Total file bytes | 17,939,825 | 17,451,492 |
-| Required offline bytes | 17,853,008 | 17,365,309 |
+| Total file bytes | 17,939,825 | 17,451,545 |
+| Required offline bytes | 17,853,008 | 17,365,362 |
 | Required file entries | 122 | 121 |
 
 The 494,560-byte imported pheasant drops out of the runtime bundle. New fauna uses original vertex-colored geometry, so it adds no decoded texture allocations. Existing texture origins and obligations remain with the retained rigs. As compressed transfers, local package bytes and decoded or GPU memory describe different costs, the table is based on verified files only. [Source, authors, licenses, texture resolutions and optimization counts](ASSET_LICENSES.md#phase-04-living-wilderness) · [RC.6 additions](ASSET_LICENSES.md#rc6-living-world)
+
+## Testing and performance
+
+The complete suite passed **223 tests**. New tests cover grounded starts, takeoff acceleration, heading and foot tuck, water departures, wingbeat and glide variation, flock spacing, discovery idempotency and signed-course fingerprints. The tuned course passed 3,000 generated viability windows through all 30 stages and Endless. Three long signed replays of 54,203, 72,196 and 103,455 ticks reproduced the RC.5 score, distance, duration, retrieves and combo. Production content and hashes passed verification.
+
+### Cold launch, cached launch and replay
+
+The paired WebKit runs used a 320 × 568 CSS viewport, DPR 2 and the same test seed. These are single software-browser observations on the occupied development machine. Times are milliseconds.
+
+| Metric | RC.5 fresh | RC.6 preview fresh | RC.5 cached offline | RC.6 preview cached offline |
+| --- | ---: | ---: | ---: | ---: |
+| Module request / ready | 12,694 / 13,376 | 9,920 / 10,812 | 712 / 991 | 1,000 / 1,464 |
+| Startup ready | 26,444 | 22,963 | 16,389 | 13,084 |
+| Hunt input to scene submission | 1,577 | 2,877 | 1,120 | 882 |
+| First CPU / renderer submission | 331 / 315 | 1,004 / 887 | 795 / 707 | 605 / 597 |
+| Next rAF callback / first presentation interval | 2,952 / 1,518 | 4,211 / 1,716 | 1,880 / 871 | 1,310 / 518 |
+
+Fresh first-frame pacing was slower in this run, and cached was faster. The RC.6 timing preview `bcdd0c0` precedes the final pheasant and crane staging adjustments. These traces measure CPU and renderer submission. They cannot isolate shader, driver or GPU execution time, or explain the historical 112 ms Boreal interruption. Fern 02’s warm hold and the grass and tree preparation policies remain in use. Their timing and reuse across warm hunts need native review.
+
+Six offline Battery Saver Chromium replays on that preview settled at 46 geometries, 12 textures, 18 shader programs and seven tiles each. The WebKit update rehearsal recovered from a partial Labrador transfer, repaired a corrupt cached file and preserved two hunts from RC.5. An active hunt and pending Lodge edit protected the old version, and unchanged audio transferred once. The scripted Auto test recovered to High with the full atlas. Both hosted public standings RPCs returned closed empty boards.
+
+### Continuous offline play and flock rendering
+
+Final build `7d3c626` completed a continuous offline WebKit run through all **15 territories and 30 stages** and into Endless at **461.02 simulated seconds**. It peaked at seven terrain tiles, two packs, 12 textures and 126 geometries. The 102 × 181 Battery Saver buffer keeps the accelerated fixed-step harness practical. The probe reported 8.1 software FPS, 76.87 ms average CPU, a 1,517 ms worst presentation interval, and 1,998 / 1,996 / 1,915 intervals over 20 / 33.3 / 50 ms. It flagged 1,664 synthetic wall-clock samples over its threshold. The presentation distribution keeps the slow intervals. The result verifies route coverage and bounded resources independently of native pacing.
+
+The exact release’s Balanced Chromium segment rendered the rare passage offline from 188 to 205.22 seconds. It reported 2.7 software FPS, 86.92 ms average CPU, 20 peak textures and 78 peak geometries on the occupied host. Matching WebKit views of the 33-bird flight peaked at 68 draws, 176,245 triangles, 19 textures, 61 geometries and 23 shader programs for the entire scene. The flock adds three instanced draws, with no new texture or skeleton. Typed attributes and instance matrices total about 123.5 KiB for a 39-bird batch, and 379 KiB detailed or 245 KiB compact for a pheasant. These are buffer estimates before driver or runtime overhead.
+
+The rig pool still holds up to two models. In the full Battery Saver run, all 16 eligible skinned sightings used compact art as expected. In the staged Balanced segment, three eligible sightings used fallback while the two resident models were preparing. The Studio verified prepared model loading in a controlled context. Removing the old pheasant from the imported-rig set also changes the denominator for the owner’s historical 81.4% and 77.1% rates. Ordinary native readiness and pacing remain open.
+
+[Matched captures and presentation notes](evidence/living/REVIEW.md) · [Machine-readable performance and verification results](evidence/living/qa.json)
 
 ## Art Studio and native review
 
@@ -69,7 +99,7 @@ Each path below follows `http://COMPUTER-LAN-IP:5173/`.
 | Mallard departure | `?studio=1&perf=1&view=wildlife&territory=1&offset=12&species=mallard&motion=Action` |
 | Platte crane passage | `?studio=1&perf=1&view=wildlife&territory=7&offset=12&species=crane&motion=Flock&framing=trail` |
 | Canada Goose flock | `?studio=1&perf=1&view=wildlife&territory=8&offset=15&species=canada-goose&motion=Flight` |
-| Boreal moose | `?studio=1&perf=1&view=wildlife&territory=13&offset=16&species=moose&motion=Action` |
+| Boreal moose | `?studio=1&perf=1&view=wildlife&territory=13&offset=16&species=moose&motion=Action&camera=shore` |
 | Foothills Bald Eagle | `?studio=1&perf=1&view=wildlife&territory=14&offset=14&species=eagle&motion=Glide` |
 | Mountain goldeneye | `?studio=1&perf=1&view=wildlife&territory=15&offset=13&species=goldeneye&motion=Flight` |
 
@@ -78,6 +108,10 @@ Each path below follows `http://COMPUTER-LAN-IP:5173/`.
 3. Compare Battery Saver, Balanced and High with normal obstacle tracking. Watch the bird’s direction, glide, foot position, palette and silhouette. Check whether cranes leave trail hazards and warnings readable.
 4. Check the renamed territory’s HUD and first sign in portrait. Complete one eligible discovery in a normal hunt, then reload offline and inspect the Journal. Confirm the preview never changes that Journal.
 5. Record subjective impressions alongside diagnostics and recordings. Treat recorded frame pacing as its own sample. Physical iPhone acceptance remains pending.
+
+## Remaining artistic limits
+
+Several species still rely on stylized procedural anatomy. Full landing, water disturbance and exact ground contacts remain open, and the existing frustum check can count some partially occluded views. The initial Boreal close-up encountered a trunk in the path of the camera, and weather can make the pheasant tough to recognize in some gameplay frames. The review includes those examples alongside the clearer moving shots. The environment remains in scope for validation on a physical phone, particularly the northern habitats and the new flock against moving obstacle cues. [Gallery](evidence/living/REVIEW.md) · [Draft PR #45](https://github.com/bladunk/Retriever-Run/pull/45)
 
 ## Rollback
 
