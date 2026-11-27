@@ -1,0 +1,44 @@
+#field-report .report-intro .campfire-card { margin: .3rem 0 .45rem; }
+#field-report .report-intro .campfire-card blockquote {
+  font-family: var(--field-display);
+  font-weight: 400;
+  line-height: 1.22;
+}
+#field-report #report-outcome { color: #ecd2a6; font-weight: 600; }
+#field-report[data-exceptional] .report-intro {
+  background: radial-gradient(ellipse at 18% -25%, #674c2c, #1c3026 76%);
+  box-shadow: inset 0 2px #c6a56e;
+}
+.report-journey, .report-earned { margin: .55rem clamp(12px, 4vw, 24px); }
+.report-journey > section {
+  border-block-end: 1px solid var(--field-rule);
+  padding: .65rem 0 .8rem;
+}
+.report-journey h3, .report-earned h3 { margin: 0 0 .45rem; color: #f6e9d2; font: 600 1.16rem var(--field-display); }
+.report-journey progress { block-size: 7px; border-radius: 2px; }
+.report-journey :is(p, .result-values) { margin: .35rem 0; font-size: .83rem; }
+.report-journey .result-values { color: #ddbc87; font-variant-numeric: tabular-nums; }
+.result-honors label { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .3rem .45rem; margin-block: .6rem; font-size: .82rem; }
+.result-honors progress { grid-column: 1/-1; grid-row: 2; }
+.result-honors small { grid-column: 2; grid-row: 1; color: #ddbc87; align-self: end; }
+.earned-card { margin-block: .35rem; background: #26382d; border: 1px solid #8c79534e; border-radius: 6px; }
+.earned-card summary { min-block-size: 49px; display: flex; gap: .65rem; align-items: center; cursor: pointer; padding: 5px 9px; }
+.earned-card summary > span { display: grid; gap: 2px; min-inline-size: 0; }
+.earned-card summary::after { content: '+'; margin-inline-start: auto; color: var(--field-brass); }
+.earned-card[open] summary::after { content: '−'; }
+.earned-card :is(small, p) { color: var(--field-muted-type); }
+.earned-card img { width: 63px; height: 43px; object-fit: cover; border-radius: 3px; }
+.earned-card > :is(p, button) { margin: .45rem .7rem; }
+.earned-card > p { font-size: .85rem; }
+.earned-card button { min-block-size: 44px; }
+#field-report #report-skip { min-height: 44px; }
+#replay-exit {
+  position: absolute;
+  z-index: 10;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(10px, env(safe-area-inset-right));
+  min-height: 44px;
+  padding-inline: .85rem;
+  color: var(--field-cream);
+  background: #20332b;
+}

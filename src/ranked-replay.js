@@ -1,7 +1,7 @@
 import { firstContact } from './collision.js'
 import { diveAge, diveExit } from './dive.js'
 import { act, advance, collect, createCourse, newRun, score, touchesPickup } from './runner.js'
-import { courseRuleset } from './ruleset.js'
+import { courseRuleset, masteryCourseRuleset } from './ruleset.js'
 import { masteryDirector } from './difficulty.js'
 import { createMasteryCourse } from './mastery-course.js'
 import { collectMastery, createSkillTracker, sweptPickup } from './mastery-events.js'
@@ -34,11 +34,13 @@ export function validRankedTrace(trace) {
   return validTrace(trace, lastRankedTick, maxRankedActions, 17)
 }
 
+export const masteryReplayVersion = 'one-more-hunt-1'
 export const maxMasteryTicks = 120 * 60 * 60
 export const maxMasteryActions = 8192
 
 export function validMasteryTrace(trace) {
-  return validTrace(trace, maxMasteryTicks, maxMasteryActions, 2)
+  return trace?.course === masteryCourseRuleset && trace.season === masteryReplayVersion &&
+    validTrace(trace, maxMasteryTicks, maxMasteryActions, 2)
 }
 
 function validTrace(trace, maxTicks, maxActions, simultaneous) {

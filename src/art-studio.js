@@ -1,3 +1,7 @@
+import { careerStanding, xpAt } from './career.js'
+import { honorById } from './field-honors.js'
+import { kennelItems } from './kennel-catalog.js'
+import { lodgeTiers } from './lodge-progress.js'
 import { createLegacyPreview } from './legacy-preview.js'
 import { defaultGear, kennelCatalog } from './kennel-catalog.js'
 import { expeditionRegions } from './expedition.js'
@@ -221,14 +225,36 @@ export function openArtStudio(game, flags, api) {
   }
   const legacy = button('Open Lodge preview',event => preview(event.currentTarget))
   if (flags.get('view') === 'lodge' || flags.get('view') === 'journal' || flags.get('view') === 'map') queueMicrotask(() => preview(legacy))
-  const report = button('Hunt Over example', () => api.report({
-    nickname: 'Example hunt · Art Studio', duration: 448.2, distance: 11532,
-    retrieves: 22, score: 36219, territory: 15, hazard: 'boulder', treats: 371,
-    logs: 43, slidesCleared: 27, geese: 2, improved: ['score'], earned: [], placements: {},
-    newWildlife: ['crane','moose'], newHonors: [{ name: 'Migration Field Honor', tier: 'Platinum' }],
-    gear: [{ name: 'Marsh Vest' }], lodge: { upgrades: [], tier: true }, preview: true,
-  }))
+  button('Run isolated practice', api.practice)
+  const fixtures = ['ordinary','record','partial','level','multi','rank','equipment','trophy','lodge','rare','migration','master']
+  const requestedResult = fixtures.includes(flags.get('result')) ? flags.get('result') : 'multi'
+  const outcome = select('Hunt Over example', fixtures.map(key => [key,key]), requestedResult, () => {})
+  const report = button('See example results', () => {
+    const key = outcome.value
+    const xp = {
+      ordinary:[20,65], partial:[35,82], level:[91,xpAt(2)],
+      multi:[83,xpAt(4)+125], rank:[xpAt(11)-30,xpAt(11)+525],
+      equipment:[57,140], trophy:[58,136], lodge:[xpAt(11)-52,xpAt(11)+728],
+      rare:[0,80], migration:[xpAt(9)-13,xpAt(9)+252], master:[xpAt(100)-700,xpAt(100)+129],
+    }[key] ?? [37,84]
+    const demoHonor = honorById.get('mallard-retrieve-1')
+    const gear = kennelItems.find(item => item.id === 'blaze-vest')
+    api.report({
+      nickname: 'Example hunt · Art Studio', duration: key === 'migration' ? 452 : 105.8,
+      distance: key === 'migration' ? 11532 : 2140, retrieves: 7, score: key === 'record' ? 10273 : 3249,
+      territory: key === 'migration' ? 15 : 4, hazard: 'rock', treats: 71,
+      logs: 8, slidesCleared: 7, geese: 1, improved: key === 'record' ? ['score','retrieves'] : [],
+      earned: [], placements: {}, newWildlife: key === 'rare' ? ['crane','moose'] : [],
+      newHonors: key === 'trophy' ? [demoHonor] : [], gear: key === 'equipment' && gear ? [gear] : [],
+      lodge: { upgrades: [], tier: key === 'lodge' ? lodgeTiers[1] : null }, boyd: key === 'master',
+      career: { before: careerStanding({xp:xp[0]}), after: careerStanding({xp:xp[1]}), earned: xp[1]-xp[0] },
+      presentation: { previousRecords:{score:9000,retrieves:6}, migrationCompleted:key === 'migration',
+        achievements: [{name:demoHonor.name,from:0,to:key === 'trophy' ? 1 : 0,target:1,completed:key === 'trophy'}] },
+      preview: true,
+    })
+  })
   if (flags.get('view') === 'report') queueMicrotask(() => report.click())
+  if (flags.get('view') === 'endless') state.moving = true
   const stats = document.createElement('output')
   stats.hidden = true
   form.append(stats)

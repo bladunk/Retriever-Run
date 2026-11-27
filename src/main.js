@@ -1,3 +1,5 @@
+import { createHuntRecap } from './hunt-recap.js'
+import { renderHuntResults } from './hunt-results.js'
 import fontLicense from './assets/fonts/SOURCE-SERIF-OFL.txt?url'
 import { addDestinationIcons } from './field-icons.js'
 import { pawSurface } from './field-foley.js'
@@ -43,7 +45,7 @@ import { courseStages, director, distanceAtTime, localDirector, masteryDirector,
 import { localCourseRuleset, masteryCourseRuleset } from './ruleset.js'
 import { createMasteryCourse } from './mastery-course.js'
 import { collectMastery, createSkillTracker, sweptPickup } from './mastery-events.js'
-import { masteryStart } from './mastery-pace.js'
+import { endlessPressure, masteryStart } from './mastery-pace.js'
 import { placeOnTrail, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createTrailSigns } from './sign-scenery.js'
@@ -63,6 +65,7 @@ import './experience.css'
 import './ranked-camp.css'
 import './top-dog.css'
 import './masterpiece.css'
+import './mastery.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
 addDestinationIcons(ui)
@@ -104,14 +107,28 @@ let debug
 let viewWidth = 390
 let previousStride = 0
 let frozen = false
+let finishResults
+let completionNeedsSave = false
+let playback
+const recap = createHuntRecap()
 let calloutAnimation
 
 const flags = new URLSearchParams(location.search)
 const localPerformance = flags.get('perf') === '1'
 const performanceProbe = localPerformance ? createPerformanceProbe(undefined, flags.get('resources') !== '0') : null
 const sound = createSound(background, performanceProbe)
+const acceptedInputs = []
+const pendingInputTimes = new Map()
 if (performanceProbe) {
-  const readPerformance = () => ({ ...performanceProbe.read(), audio: sound.resources(), build: runningBuild })
+  const readPerformance = () => ({
+    ...performanceProbe.read(), audio: sound.resources(), build: runningBuild,
+    fairness: { ruleset: runCourse, seed: signSeed, elapsed: run.elapsed, speed: run.speed, lane: run.lane,
+      movement: { x:run.x, jump:run.jump, slide:run.slide }, pressure: run.mastery ? endlessPressure(run.elapsed) : null,
+      recentInputs: acceptedInputs.map(input => ({ ...input })),
+      fatal: mode === 'over' && ticks ? { ...contact } : null,
+      nearbyHazards: entities.filter(item => item.hazard).slice(0,12).map(({type,lane,distance,pattern,rowId}) =>
+        ({type,lane,ahead:distance-run.distance,pattern,rowId})) },
+  })
   window.retrieverPerformance = readPerformance
   const controls = document.createElement('details')
   const label = document.createElement('summary')
@@ -135,9 +152,11 @@ if (performanceProbe) {
 const wakeLock = createWakeLock(navigator.wakeLock && (() => navigator.wakeLock.request('screen')), () => !document.hidden)
 const studioRequested = flags.get('studio') === '1' && (import.meta.env.DEV || import.meta.env.MODE === 'art-studio')
 const studioSeed = Number(flags.get('seed') ?? 7) >>> 0
-const previewRegion = studioRequested ? expeditionRegions[Number(flags.get('territory')) - 1] ?? expeditionRegions[0]
+const studioMinute = studioRequested && [5,10,15,20,30].includes(Number(flags.get('minute'))) ? Number(flags.get('minute')) : 0
+const previewRegion = studioRequested ? studioMinute ? regionAt(studioMinute * 60) :
+  expeditionRegions[Number(flags.get('territory')) - 1] ?? expeditionRegions[0]
   : (import.meta.env.DEV || import.meta.env.MODE === 'migration-qa') ? expeditionRegions[Number(flags.get('preview')) - 1] : undefined
-const previewElapsed = previewRegion ? previewRegion.seconds + Math.max(0,
+const previewElapsed = studioMinute ? studioMinute * 60 : previewRegion ? previewRegion.seconds + Math.max(0,
   Math.min(previewRegion === expeditionRegions.at(-1) ? 180 : 29.95, Number(flags.get('offset') ?? (studioRequested ? 6 : 0)) || 0)) : 0
 const collisionRequested = flags.get('debug') === 'collision' &&
   (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
@@ -319,6 +338,7 @@ function initialize() {
   if (diagnosticsRequested && navigator.onLine) {
     // The collision overlay is an optional download. A verified offline
     // edition can still inspect a dog when that developer chunk is absent.
+    window.retrieverSimulationState = () => ({ ticks, mode, elapsed: run.elapsed, distance: run.distance })
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
       .catch(error => { if (navigator.onLine) console.error(error) })
   }
@@ -398,6 +418,7 @@ function initialize() {
     resize()
   }
 
+  if (studioRequested) runCourse = masteryCourseRuleset
   if (studioRequested) import('./art-studio.js').then(({ openArtStudio }) => {
     studio = openArtStudio(ui.game, flags, {
       seed: studioSeed, region: previewRegion.index, breed,
@@ -408,6 +429,7 @@ function initialize() {
       kennel: button => lodgeUI.open(button, 'kennel'),
       lodge: (button, room, exhibit, preview) => lodgeUI.open(button,room,exhibit,preview),
       renderer: () => renderer.info.memory,
+      practice: () => start(null, performance.now()),
       report: exampleReport => setMode('over', { exampleReport }),
       sound,
     })
@@ -464,6 +486,11 @@ function initialize() {
     const wall = previousTime === undefined ? 0 : (ms - previousTime) / 1000
     previousTime = ms
     if (!contextReady) return
+    const replaying = Boolean(playback)
+    if (replaying && !document.hidden) {
+      playback.time += Math.min(.10, Math.max(0, wall)) * .48
+      if (playback.time > playback.history.at(-1).elapsed + .32) closeRecap()
+    }
     let titleSceneUpdated = false
     if (dog.installPrepared()) needsRedraw = true
     if (ui.lodge.open) {
@@ -510,7 +537,7 @@ function initialize() {
       studioTime += Math.min(.10, Math.max(0, wall)) * studio.speed
       if (studio.moving && terrain.readyAt(run.distance)) {
         run.elapsed = Math.min(previewElapsed + 18, run.elapsed + Math.max(0, Math.min(.20, wall)) * studio.speed)
-        run.distance = distanceAtTime(run.elapsed)
+        run.distance = distanceAtTime(run.elapsed, runRules)
         for (let i = entities.length - 1; i >= 0; i--) {
           if (entities[i].distance < run.distance - 14) release(entities.splice(i, 1)[0])
         }
@@ -519,14 +546,25 @@ function initialize() {
     if (mode === 'title' || mode === 'running' || frozen || inspecting && (studio.take !== 'Trail' || !studio.hazard)) populate()
     const autoLow = mode === 'running' && profile.quality === 'auto' && autoPreset === 'low'
     const batterySaver = mode === 'running' && profile.quality === 'low'
-    if (!present(ms, wall, autoLow, batterySaver) && !needsRedraw) return
+    if (!replaying && !present(ms, wall, autoLow, batterySaver) && !needsRedraw) return
     const dt = Math.min(.10, Math.max(0, (ms - (lastRenderMs ?? ms)) / 1000))
     lastRenderMs = ms
-    const animate = mode === 'title' || mode === 'running' || inspecting || frozen
+    const animate = mode === 'title' || mode === 'running' || inspecting || frozen || replaying
     if (animate) {
       const idle = mode === 'title'
       if (idle) visualTime += dt
       samplePose(display, previous, run, frozen || idle || inspecting ? 1 : alpha)
+      let replayStride
+      if (playback) {
+        const { history, time } = playback
+        const after = history.findIndex(pose => pose.elapsed > time)
+        const index = after === -1 ? history.length - 1 : after
+        const end = history[index]
+        const start = history[Math.max(0, index - 1)]
+        const fraction = end.elapsed === start.elapsed ? 1 : Math.max(0, Math.min(1, (time - start.elapsed) / (end.elapsed - start.elapsed)))
+        samplePose(display, start, end, fraction)
+        replayStride = start.stride + (end.stride - start.stride) * fraction
+      }
       if (!idle) visualTime = inspecting ? studioTime : display.elapsed
       const distance = display.distance
       const turn = display.lane * laneWidth - display.x
@@ -543,7 +581,8 @@ function initialize() {
         }
       } else {
         updateFollow(follow, layout, distance, display.x, dt, comfort)
-        camera.position.set(follow.x, follow.y, follow.z)
+        const impact = run.mastery && !comfort ? Math.min(.035, landing * .035) : 0
+        camera.position.set(follow.x, follow.y - impact, follow.z)
         camera.lookAt(follow.tx, follow.ty, follow.tz)
       }
       if (inspecting) {
@@ -582,8 +621,8 @@ function initialize() {
       if (idle) titleWeather = weather
       setRockWeather(weather)
       trailPose = {
-        x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
-        time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing, wet: weather.wet,
+        x: body.x, z: body.z, height, ground, sliding: body.depth, stride: replayStride ?? previousStride + (stride - previousStride) * alpha,
+        time: visualTime, heading: idle ? -2.10 : body.angle - (run.mastery ? Math.max(-.14,Math.min(.14,display.lateralSpeed * .021)) : 0), turn, dt, idle, landing, wet: weather.wet,
         speed: display.speed, lateralSpeed: display.lateralSpeed, retrieve: carriedBird, sinceRetrieve: visualTime - lastRetrieve,
         airborne: display.jump > 0, jumpPhase: display.jump > 0 ? 1 - display.jump / jumpDuration : 1,
       }
@@ -635,19 +674,20 @@ function initialize() {
       const migration = inspecting ? (studioEvent?.migration ? studioEvent : undefined) : wildlifeDiscovery
       wildlife(visualTime, distance, inspecting && studio.fallback ? 0 : preset.detail, mode, encounters, camera, observeWildlife,
         inspecting ? !studio.fallback && preset.detail > 0 : profile.quality !== 'low', migration)
-      if (!idle && !frozen && !inspecting) {
+      if (!idle && !frozen && !inspecting && !replaying) {
         pawWeather = weather
         updateConditions(weather.name)
         sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
       }
       spray.update(distance, visualTime)
-      positionEntities(visualTime, distance)
-      diving(entities, distance, visualTime, preset.detail === 0)
+      const visibleEntities = playback?.hazards ?? entities
+      positionEntities(visualTime, distance, visibleEntities)
+      diving(visibleEntities, distance, visualTime, preset.detail === 0)
       frozen = false
     }
     if (mode === 'running' && !document.hidden && !navigator.scheduling?.isInputPending?.())
       terrain.prepareFerns(renderer, camera, false, preset.detail, run.distance)
-    if (mode === 'title' || mode === 'running' || inspecting || needsRedraw) {
+    if (mode === 'title' || mode === 'running' || inspecting || replaying || needsRedraw) {
       debug?.draw(mode === 'title' ? run : display, entities, mode, {
         ticks, drawCalls: renderer.info.render.calls, geometries: renderer.info.memory.geometries, tiles: terrain.count(), world: terrain.stamps, wildlife: wildlife.stamp,
       }, camera, signs)
@@ -670,6 +710,10 @@ function initialize() {
         const beforeDraw = performanceProbe && { textures:memory.textures, geometries:memory.geometries,
           programs:programs?.length ?? 0 }
         renderer.render(scene, camera)
+        if (mode === 'running' && performanceProbe) {
+          const submitted = performanceProbe.stamp()
+          for (const input of acceptedInputs) input.submittedAt ??= submitted
+        }
         if ((mode === 'running' || inspecting) && performanceProbe) {
           const end = performanceProbe.stamp()
           performanceProbe.graphics(profile.quality, preset.detail)
@@ -750,13 +794,14 @@ function populate() {
     for (const entity of row.entities) {
       if (entity.type !== 'goose' && (entity.type !== 'washout' || entity.span)) entity.model = acquire(entity)
       entities.push(entity)
+      if (mode === 'running' && entity.hazard) recap.hazard(entity, run.distance)
     }
     row = nextRow()
   }
 }
 
-function positionEntities(time, distance) {
-  for (const entity of entities) {
+function positionEntities(time, distance, visibleEntities) {
+  for (const entity of visibleEntities) {
     if (!entity.model) continue
     entity.model.visible = entity.distance <= distance + 80
     if (!entity.model.visible) continue
@@ -769,7 +814,7 @@ function positionEntities(time, distance) {
       if (entity.type !== 'treat') entity.model.scale.setScalar(1.18)
     }
   }
-  for (const effect of effects) {
+  for (const effect of playback ? [] : effects) {
     placeOnTrail(effect.model.position, effect.distance, effect.lane * laneWidth, distance)
     effect.model.position.y = .70 + (1 - effect.remaining / effect.duration) * 1.24
     effect.model.rotation.y += .09
@@ -785,16 +830,24 @@ function runningSurface() {
 }
 
 function onAction(move) {
+  if (performanceProbe) {
+    if (acceptedInputs.length === 24) acceptedInputs.shift()
+    acceptedInputs.push({ move, tick:ticks, elapsed:run.elapsed,
+      queuedAt:pendingInputTimes.get(move), acceptedAt:performanceProbe.stamp() })
+    pendingInputTimes.delete(move)
+  }
   runTrace?.add(ticks, move)
   runStatistics.action(move)
   if (move === 'left' || move === 'right') {
     lastShift = run.elapsed
     return
   }
-  sound.play(move, runningSurface())
+  const surface = runningSurface()
+  sound.play(move, run.mastery ? pawSurface(regionAt(run.elapsed), pawWeather.wet, pawWeather.frost, surface === 'splash') : surface)
 }
 
 function step(dt) {
+  if (collisionRequested) window.retrieverTestTick?.(ticks)
   controls.apply(run, onAction)
   const wasAirborne = run.jump > 0
   samplePose(previous, run, run, 1)
@@ -808,6 +861,7 @@ function step(dt) {
     for (const entity of entities) {
       if (entity.hazard && entity !== impacted) runStatistics.passed(previous, run, entity)
     }
+    recap.record(run, stride)
     contact.seed = signSeed
     contact.ruleset = runCourse
     contact.territory = regionAt(contact.elapsed).key
@@ -824,10 +878,14 @@ function step(dt) {
   if (!run.jump && (nextFoot !== foot || wasAirborne) && !run.slide) {
     const surface = runningSurface()
     sound.footstep(pawSurface(regionAt(run.elapsed), pawWeather.wet, pawWeather.frost, surface === 'splash'), wasAirborne)
-    if (surface === 'mud' || surface === 'splash') spray.step(run.distance, run.x, run.elapsed, surface === 'splash', preset.detail)
+    if (surface === 'mud' || surface === 'splash' || run.mastery && !reduceMotion() && (wasAirborne || nextFoot % 4 === 0)) {
+      spray.step(run.distance, run.x, run.elapsed, surface === 'splash', preset.detail,
+        pawSurface(regionAt(run.elapsed), pawWeather.wet, pawWeather.frost, surface === 'splash'))
+    }
     if (wasAirborne) landing = 1
   }
   foot = nextFoot
+  if (ticks % 4 === 0) recap.record(run, stride)
   if (Math.floor(previous.distance / 150) < Math.floor(run.distance / 150)) {
     const distance = Math.floor(run.distance / 150) * 150
     announce(distance + ' m · Distance milestone', 2)
@@ -898,12 +956,17 @@ function step(dt) {
       entity.remaining = entity.duration
       const combo = run.mastery ? result.milestone : treat && run.streak <= 15 && run.streak % 5 === 0
       if (retrieve || combo && run.mastery) hapticFeedback(navigator, profile.haptics, 'retrieve')
-      sound.play(retrieve ? 'retrieve' : result.activated ? 'power' : combo ? 'combo' : treat ? 'treat' : 'bonus')
+      sound.play(retrieve ? 'retrieve' : result.activated ? 'power' : combo ? 'combo' : treat ? 'treat' : 'bonus',
+        undefined, run.mastery ? run.streak : 0)
       if (retrieve && result.activated) announce(pickupNames[entity.type] + '  +' + result.points + ' · Good Boy bonus', 3)
       else if (result.activated) announce('Good Boy!  ·  Double pickup points', 3)
       else if (!treat) announce(pickupNames[entity.type] + '  +' + result.points, 3)
-      else announce('+' + result.points + (multiplier(run.streak) > 1 ? '  ·  ' + multiplier(run.streak) + '× streak' : ''), 1)
-      if (treat && run.mastery || retrieve && dog.canCarry()) release(entity)
+      else announce('+' + result.points + (run.mastery ? combo ? ' · ' + run.streak + ' in a row' : '' :
+        multiplier(run.streak) > 1 ? ' · ' + multiplier(run.streak) + '× streak' : ''), combo ? 2 : 1)
+      if (treat && run.mastery) {
+        if (!reduceMotion()) spray.pickup(entity.distance, entity.lane * laneWidth, run.elapsed)
+        release(entity)
+      } else if (retrieve && dog.canCarry()) release(entity)
       else effects.push(entity)
       entities.splice(index--, 1)
     } else if (ahead < (entity.type === 'treat' ? -1 : -8 - (entity.span ?? 0) * .5)) {
@@ -992,7 +1055,8 @@ function updateHud() {
   if (hudCache.charge !== charge) ui.charge.value = charge
   if (hudCache.streak !== run.streak) {
     ui.combo.hidden = run.streak < 5
-    if (!ui.combo.hidden) ui.combo.textContent = run.streak + ' treats · ' + multiplier(run.streak) + '× combo'
+    if (!ui.combo.hidden) ui.combo.textContent = run.streak + ' treats · ' +
+      (run.mastery ? 6 + 2 * (multiplier(run.streak) - 1) + ' pts each' : multiplier(run.streak) + '× combo')
   }
   const powered = run.power > 0
   if (hudCache.powered !== powered) {
@@ -1039,6 +1103,9 @@ function engageMusic() {
 }
 
 function background() {
+  retryHuntSave()
+  if (playback) closeRecap()
+  finishResults?.()
   audioGesture = false
   updateMusicButton()
   if (mode === 'running') setMode('paused', { immediate: true })
@@ -1069,6 +1136,10 @@ function setMode(value, options = {}) {
   void wakeLock.set(running && profile.keepAwake)
   const title = value === 'title'
   const over = value === 'over'
+  if (!over && oldMode === 'over') {
+    finishResults?.()
+    finishResults = undefined
+  }
   const paused = value === 'paused'
   let newRecord = false
   let rewardCue
@@ -1076,6 +1147,7 @@ function setMode(value, options = {}) {
   if (over && example) {
     fillReport(ui, example, { heckle: 'Gulf to the Rockies, with a good dog along for the whole ride.' })
     ui['report-career'].hidden = true
+    finishResults = renderHuntResults(ui, example, { motion: !reduceMotion() })
   } else if (over && oldMode !== 'over') {
     const runner = lodge.current()
     const previousBest = run.mastery ? runner.masteryBest : runner.profile.best
@@ -1086,6 +1158,7 @@ function setMode(value, options = {}) {
         improved: [], earned: [], placements: {}, gear: [], preview: true }
       : lodge.finalize(runPlayer, runStatistics, run, contact.type)
     if (report) {
+      completionNeedsSave = report.saved === false
       profile = lodge.current().profile
       const { line } = campfire.choose({
         hazard: report.hazard, duration: report.duration, score: report.score, previousBest, priorRuns,
@@ -1100,6 +1173,8 @@ function setMode(value, options = {}) {
       const player = previewRegion ? undefined : lodge.players().find(player => player.id === runPlayer)
       fillReport(ui, report, { heckle: line, previousBest: report.previousBest ?? previousBest, player })
       fillCareerReport(ui, report, player, (button, id) => lodgeUI.open(button, 'kennel', id), button => lodgeUI.open(button))
+      finishResults = renderHuntResults(ui, report, { player, motion: !reduceMotion(),
+        openRoom: (button, room, id) => lodgeUI.open(button, room, id) })
       reportRankedResult()
       newRecord = report.improved.includes('score') || report.improved.includes('distance')
       rewardCue = rewardGroups(report)[0]?.type
@@ -1109,6 +1184,7 @@ function setMode(value, options = {}) {
   ui.menu.hidden = running || over || value === 'studio'
   ui['field-report'].hidden = !over
   ui['run-again'].textContent = example ? 'Back to Art Studio' : 'Play Again'
+  ui['report-watch'].hidden = !over || Boolean(example) || !recap.canWatch()
   ui['report-lodge'].hidden = Boolean(example)
   ui['main-menu'].hidden = Boolean(example)
   ui.game.inert = over
@@ -1170,6 +1246,9 @@ function resetTrail(seed) {
   runRules = runCourse === masteryCourseRuleset ? masteryDirector : runCourse === courseRuleset ? director : localDirector
   run = newRun(runRules)
   skill = run.mastery ? createSkillTracker() : undefined
+  recap.reset()
+  acceptedInputs.length = 0
+  pendingInputTimes.clear()
   discoveriesPlan = planDiscoveries(seed)
   wildlifeDiscovery = planWildlifeDiscovery(seed)
   lastDiscovery = undefined
@@ -1183,7 +1262,8 @@ function resetTrail(seed) {
     run.distance = distanceAtTime(run.elapsed, runRules)
     run.speed = speedAtTime(run.elapsed, runRules)
   } else debug?.depart(run, runRules)
-  while ((row.end ?? row.at) < run.distance - 2) row = nextRow()
+  const firstPlayable = studioMinute ? run.distance + 28 : run.distance - 2
+  while ((row.end ?? row.at) < firstPlayable) row = nextRow()
   stride = previousStride = 0
   ticks = 0
   samplePose(previous, run, run, 1)
@@ -1209,6 +1289,8 @@ function resetTrail(seed) {
 function start(ticket, inputAt) {
   if (productionSession.locked() || ui['content-screen'].open || mode === 'running' || !trailReady || !contextReady ||
       ui.onboarding.open || ui.tutorial.open) return
+  if (playback) closeRecap()
+  retryHuntSave()
   performanceProbe?.restart(inputAt, renderer.info)
   const profileStart = performanceProbe?.stamp()
   if (!lodge.current().enrollment && !diagnosticsRequested) {
@@ -1245,7 +1327,8 @@ function mainMenu() {
 }
 
 function move(direction) {
-  if (mode === 'running') controls.enqueue(direction)
+  if (mode === 'running' && controls.enqueue(direction) && performanceProbe)
+    pendingInputTimes.set(direction, performanceProbe.stamp())
 }
 
 function pause() {
@@ -1307,7 +1390,41 @@ function openSettings() {
   ui.preferences.showModal()
 }
 
+function watchRecap() {
+  if (mode !== 'over' || playback || !recap.canWatch()) return
+  finishResults?.()
+  const { history, hazards } = recap.snapshot()
+  for (const item of hazards) {
+    if (item.type !== 'goose' && (item.type !== 'washout' || item.span)) item.model = acquire(item)
+  }
+  for (const item of [...entities, ...effects]) if (item.model) item.model.visible = false
+  playback = { history, hazards, time: history[0].elapsed }
+  ui.game.inert = false
+  ui['field-report'].hidden = true
+  ui['replay-exit'].hidden = false
+  ui['replay-exit'].focus({ preventScroll: true })
+  needsRedraw = true
+}
+
+function closeRecap() {
+  if (!playback) return
+  for (const item of playback.hazards) release(item)
+  playback = undefined
+  ui['replay-exit'].hidden = true
+  ui['field-report'].hidden = false
+  ui.game.inert = true
+  ui['report-watch'].focus({ preventScroll: true })
+  frozen = needsRedraw = true
+}
+
+function retryHuntSave() {
+  if (completionNeedsSave && lodge.commit()) completionNeedsSave = false
+}
+
 function bindInput() {
+  window.addEventListener('pagehide', retryHuntSave)
+  ui['report-watch'].addEventListener('click', watchRecap)
+  ui['replay-exit'].addEventListener('click', closeRecap)
   window.visualViewport?.addEventListener('resize', fitReport)
   window.visualViewport?.addEventListener('scroll', fitReport)
   ui.primary.addEventListener('click', event => mode === 'paused' ? pause() : start(null, event.timeStamp))
@@ -1414,7 +1531,8 @@ function bindInput() {
       if (!event.repeat) move(keys[key])
     } else if (!event.repeat && ['p', 'escape'].includes(key)) {
       event.preventDefault()
-      pause()
+      if (playback) closeRecap()
+      else pause()
     } else if (!event.repeat && ['enter', ' '].includes(key) && mode !== 'running' && !(event.target instanceof HTMLButtonElement)) {
       event.preventDefault()
       if (mode === 'over') ui['run-again'].click()

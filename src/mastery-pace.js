@@ -7,12 +7,12 @@ export function endlessPressure(seconds) {
   const pressure = age / (age + approachSeconds)
   return {
     pressure,
-    decisionGap: 1.26 - .34 * pressure,
-    gateGap: 1.67 - .26 * pressure,
-    stringLength: 2 + Math.floor(pressure * 8),
-    relief: 1.65 - 1.16 * pressure,
+    decisionGap: 1.04 - .18 * pressure,
+    gateGap: 1.53 - .15 * pressure,
+    stringLength: 4 + Math.floor(pressure * 9),
+    relief: .88 - .59 * pressure,
     repeatChangeChance: .34 + .60 * pressure,
-    secondGateChance: .18 + .55 * pressure,
+    secondGateChance: .22 + .58 * pressure,
   }
 }
 

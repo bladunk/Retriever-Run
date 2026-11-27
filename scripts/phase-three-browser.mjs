@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url'
 import { chromium, devices, webkit } from 'playwright'
 
 const args = process.argv.slice(2)
+const mastery = args.includes('mastery')
 
 function checkTextureReplays(samples, reuse) {
   const first = samples[0].retired
@@ -188,6 +189,12 @@ try {
       document.dispatchEvent(new Event('visibilitychange'))
     }
     qa.landmarkFrames = []
+    if (initial.mastery) window.retrieverTestTick = tick => {
+      const replay = qa.soak
+      while (Math.round(replay?.inputs[replay.next]?.at * 120) === tick)
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
+    }
+
     window.requestAnimationFrame = callback => native(ms => {
       // A single display clock is shared by the game and other rAF callers.
       // Advancing it on both callbacks would double the scripted cadence.
@@ -195,7 +202,7 @@ try {
         if (autoNativeAt === ms) return callback(stamp)
         autoNativeAt = ms
       }
-      const state = window.retrieverDebug
+      const state = initial.mastery && qa.soak && window.retrieverSimulationState ? window.retrieverSimulationState() : window.retrieverDebug
       if (stamp === undefined) stamp = ms
       if (qa.natural) {
         const take = qa.natural
@@ -206,7 +213,8 @@ try {
       } else if (state?.mode !== 'running') stamp += 40
       else if (qa.soak && state.elapsed < qa.soak.duration) {
         const replay = qa.soak
-        if (replay.precise) {
+        if (initial.mastery) stamp += replay.ticksPerCallback * (1000 / 120)
+        else if (replay.precise) {
           // Deliver the scripted input on its original simulation tick.
           // The number of ticks between frames can vary while tiles stream.
           const nextTick = () => replay.next < replay.inputs.length ?
@@ -259,11 +267,11 @@ try {
         qa.rendered++
       }
     })
-  }, { quality, vest: args.includes('vest') })
+  }, { quality, mastery, vest: args.includes('vest') })
 
   async function openAt(distance, seed, sceneQuality = quality) {
     const breed = args.includes('boyd') ? 'boyd' : args.includes('pointer') ? 'pointer' : 'lab'
-    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + '&course=' + (args.includes('raptor') ? 'raptor' : 'phase05') + '&breed=' + breed + (args.includes('sight') ? '&sight=1' : '') + (args.includes('resources') ? '&resources=1' : ''),
+    await page.goto(origin + prefix + '?perf=1&debug=collision&volumes=off&scenery=on&seed=' + seed + '&at=' + distance + '&qaview=' + sceneQuality + '&course=' + (mastery ? 'mastery' : args.includes('raptor') ? 'raptor' : 'phase05') + '&breed=' + breed + (args.includes('sight') ? '&sight=1' : '') + (args.includes('resources') ? '&resources=1' : ''),
       { waitUntil: 'domcontentloaded' })
     if (await page.locator('#content-screen').isVisible()) {
       if (args.includes('offline')) {
@@ -801,11 +809,20 @@ try {
     const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
     const from = Number(args.find(arg => arg.startsWith('from-seconds='))?.slice(13) ?? 0)
     const ticksPerCallback = args.includes('fast-long') ? 27 : 15
-    assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
+    assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= (mastery ? 3600 : 480))
     assert.ok(Number.isInteger(from) && from >= 0 && from <= duration-15)
     const seed = Number(args.find(arg => arg.startsWith('seed='))?.slice(5) ?? 7)
     const start = distanceAtTime(from)
-    const inputs = guidedInputs(seed, duration, start)
+    let inputs
+    if (mastery) {
+      assert.equal(from, 0, 'the Mastery reference replay starts at the Gulf')
+      const { simulateMastery } = await import('./mastery-survey.mjs')
+      const reference = simulateMastery(seed, duration + 1)
+      assert.equal(reference.contact, null, JSON.stringify(reference.contact))
+      inputs = reference.trace.actions.map(action => ({
+        at: Math.floor(action / 4) * tickSeconds, key: ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'][action % 4],
+      }))
+    } else inputs = guidedInputs(seed,duration,start)
     const precise = args.includes('precise')
     const autoTest = args.includes('clarity-auto')
     if (autoTest) assert.ok(precise && quality === 'auto' && duration >= 18)

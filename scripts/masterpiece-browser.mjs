@@ -35,7 +35,7 @@ const modern = process.argv.includes('large')
 async function review(version, callback) {
   const viewport = modern ? {width:430,height:932} : {width:320,height:568}
   const options = { ...devices['iPhone 13'], viewport, deviceScaleFactor: 1 }
-  if (version === 'after' && process.argv.includes('video')) options.recordVideo = { dir:output, size:viewport }
+  if (version !== 'before' && process.argv.includes('video')) options.recordVideo = { dir:output, size:viewport }
   const context = await browser.newContext(options)
   const page = await context.newPage()
   page.setDefaultTimeout(50000)
@@ -97,7 +97,7 @@ function recordAudio(page, milliseconds) {
 }
 
 try {
-  const audition = process.argv.includes('audio-only') || process.argv.includes('studio-only') || process.argv.includes('gameplay-audio')
+  const audition = ['audio-only','studio-only','gameplay-audio','mastery-hunt','mastery-fixtures'].some(mode => process.argv.includes(mode))
   const editions = process.argv.includes('after-only') ? ['after'] : ['before','after']
   for (const version of audition ? [] : editions) await review(version, async ({page,url,shot,context}) => {
     if (process.argv.includes('report-only')) {
@@ -171,6 +171,84 @@ try {
     assert.ok(clip.length > 800)
     await writeFile(resolve(output,'gameplay.webm'),Buffer.from(clip))
     await shot('gameplay')
+  })
+  if (process.argv.includes('mastery-hunt')) await review('after',async ({page,url,context,shot}) => {
+    await page.addInitScript(() => {
+      Math.random = () => 7 / 0x100000000
+      const key = 'retriever-run.record'
+      if (!localStorage.getItem(key)) localStorage.setItem(key,JSON.stringify({version:6,active:1,players:[
+        {id:1,nickname:'Field Test',career:{xp:108},profile:{quality:'low',masterVolume:0}},
+        {id:2,nickname:'Archive',profile:{best:1703}},
+      ]}))
+    })
+    await page.goto(url+'?perf=1')
+    await page.locator('#content-download').click()
+    await page.waitForFunction(() => !document.querySelector('#primary').disabled)
+    await context.setOffline(true)
+    await page.locator('#primary').click()
+    await page.locator('#run-again').waitFor({timeout:150000})
+    const watch = page.locator('#report-watch')
+    const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), saveKey)
+    const initial = await saved()
+    assert.equal(initial.players[0].stats.runs,1)
+    assert.equal(initial.players[1].profile.best,1703)
+    assert.ok(initial.players[0].career.xp > 110)
+    assert.ok(initial.players[0].masteryBest > 0)
+    await shot('ordinary-result')
+    await watch.click()
+    await page.locator('#replay-exit').waitFor()
+    await shot('watch-final-moments')
+    await page.locator('#replay-exit').click()
+    assert.deepEqual(await saved(),initial)
+    await page.locator('#run-again').click()
+    await page.locator('#hud').waitFor()
+    await page.locator('#run-again').waitFor({timeout:150000})
+    // Take the primary action while the results transition is still available.
+    await page.locator('#run-again').click()
+    await page.locator('#hud').waitFor()
+    const current = await saved()
+    assert.equal(current.players[0].stats.runs,2)
+    assert.equal(current.players[1].stats.runs,0)
+    assert.equal(current.players[1].profile.best,1703)
+    await page.waitForFunction(() => window.retrieverPerformance().restartTrace?.firstPresentationIntervalMs > 0)
+    results.push({version:'after',offline:true,completed:2,retainedProfiles:2,
+      replay:await page.evaluate(() => window.retrieverPerformance().restartTrace)})
+  })
+  if (process.argv.includes('mastery-fixtures')) await review('studio',async ({page,url,context,shot}) => {
+    await page.addInitScript(() => {
+      if (new URLSearchParams(location.search).get('result') !== 'multi') return
+      const request = requestAnimationFrame.bind(window)
+      window.requestAnimationFrame = callback => callback.name === 'tick' ? 0 : request(callback)
+    })
+    const cases = ['ordinary','record','partial','level','multi','rank','equipment','trophy','lodge','rare','migration','master']
+    const build = key => url+'?studio=1&view=report&quality=low&result='+key
+    await page.goto(build(cases[0]))
+    await page.locator('#content-download').click()
+    const saved = await page.evaluate(key => localStorage.getItem(key),saveKey)
+    for (const key of cases) {
+      if (key !== cases[0]) await page.goto(build(key))
+      await page.getByRole('button',{name:'Back to Art Studio',exact:true}).waitFor()
+      await page.locator('.result-career progress').waitFor()
+      if (key === 'multi' && await page.locator('#report-skip').isVisible()) {
+        await page.locator('#report-skip').evaluate(button => button.click())
+        assert.match(await page.locator('.result-level').textContent(),/Level 4/)
+        const expected = await page.locator('.result-career progress').evaluate(node => node.value)
+        assert.equal(expected,125)
+      }
+      await page.waitForFunction(() => document.querySelector('#report-skip').hidden)
+      if (['equipment','trophy','lodge','rare','migration','master'].includes(key)) {
+        const card = page.locator('.earned-card').first()
+        await card.locator('summary').click()
+        await card.scrollIntoViewIfNeeded()
+      }
+      await shot(key)
+      assert.equal(await page.evaluate(key => localStorage.getItem(key),saveKey),saved)
+    }
+    await context.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto(build('multi'))
+    await page.locator('.result-career progress').waitFor()
+    assert.equal(await page.locator('#report-skip').isHidden(),true)
+    assert.equal(await page.locator('.result-career progress').evaluate(node => node.value),125)
   })
   if (process.argv.includes('studio-only')) await review('studio',async ({page,url,shot}) => {
     await page.goto(url+'?studio=1&view=report&quality=low')

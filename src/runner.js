@@ -112,7 +112,10 @@ export function collect(run, type) {
     run.bestStreak = Math.max(run.bestStreak, run.streak)
   }
   if (type === 'mallard' || type === 'pheasant') run.retrieves++
-  const points = (treat ? 10 * multiplier(run.streak) : 75) * (run.power ? 2 : 1)
+  const base = run.mastery
+    ? treat ? 6 + 2 * (multiplier(run.streak) - 1) : 48
+    : treat ? 10 * multiplier(run.streak) : 75
+  const points = base * (run.power ? 2 : 1)
   run.scoreBonus += points
   if (run.power) return { points, activated: false }
   run.meter += treat ? 10 : 35

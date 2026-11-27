@@ -424,7 +424,7 @@ export function createSound(onInterruption, probe) {
       rustle(bus, 'bandpass', detail * vary(.87, 1.13), detailGain * gain, length * .72, .018, pan, 0, .009)
       if (surface === 'wood') instrument('wood', 0, context.currentTime + .004, .10, level * .56, pan, bus)
     },
-    play(effect, surface = 'dirt') {
+    play(effect, surface = 'dirt', streak = 0) {
       if (!canPlay('effectsVolume')) return
       const bus = buses.effectsVolume
       if (effect === 'interface') {
@@ -443,7 +443,8 @@ export function createSound(onInterruption, probe) {
         if (surface === 'splash') rustle(bus, 'bandpass', 1090, .061, .22, .006)
         else rustle(bus, 'lowpass', 365, .062, .15)
       }
-      const notes = rewards[effect]
+      const notes = effect === 'combo' && streak >= 15
+        ? [57,62,66,74,streak >= 25 ? 78 : 76] : rewards[effect]
       if (notes) {
         if (!buffers.has('instruments')) rustle(bus, 'bandpass', effect === 'combo' ? 950 : 780, .039, .090)
         notes.forEach((pitch, index) => instrument('guitar', pitch,
