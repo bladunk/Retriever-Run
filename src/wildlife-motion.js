@@ -36,8 +36,8 @@ const current = {}, next = {}
 const interval = .035
 
 function pheasant(time, path) {
-  path.along = .7*time + move(time,11.9,.29)
-  path.side = move(time,4.2,.47) + .60*smooth(time,.12,.71)
+  path.along = .7*time + move(time,17.3,.36)
+  path.side = -.85*smooth(time,.02,.62) + move(Math.max(0,time-.65),5.1,.43)
   path.lift = .06*Math.sin(time*9)*Math.exp(-4*time) +
     2.18*(1-Math.exp(-time*3.4)) + .70*Math.min(time,1.28) - .31*Math.max(0,time-1.48)
 }
@@ -99,7 +99,7 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     }
     heading(event,out,side,current,next)
     out.pitch = Math.min(.72,Math.atan2(next.lift-current.lift,Math.max(.085,Math.hypot(next.along-current.along,next.side-current.side))))
-    out.roll = side*.25*smooth(t,.31,.61)*(1-smooth(t,.76,1.24))
+    out.roll = side*(-.22*smooth(t,.12,.36)*(1-smooth(t,.49,.76)) + .26*smooth(t,.69,.96)*(1-smooth(t,1.2,1.63)))
     const glide = smooth(t,.99,1.19)*(1-smooth(t,1.81,2.06))
     const phase = tau*(6.15*t+.35*(1-Math.exp(-3.7*t)))
     out.wing = (.11 + .97*Math.sin(phase))*(1-glide) + glide*.06

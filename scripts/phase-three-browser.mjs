@@ -167,7 +167,7 @@ try {
   const page = await context.newPage()
   const recordingStarted = performance.now()
   const errors = []
-  page.on('pageerror', error => errors.push(error.message))
+  page.on('pageerror', error => { errors.push(error.message); console.error(error.stack) })
   page.on('console', msg => { if (msg.type() === 'error' && /shader error|THREE.WebGLProgram/i.test(msg.text())) errors.push(msg.text()) })
   page.on('console', msg => {
     if (args.includes('wildlife-breaks') && msg.type() === 'error' && /Couldn't load texture/.test(msg.text())) console.error(msg.text())
@@ -980,7 +980,8 @@ try {
     for (const [id, territory] of defaults) {
       if (selected.length && !selected.includes(id)) continue
       const region = expeditionRegions.find(row => row.key === territory)
-      const first = Math.max(4, Math.ceil(region.marker / 120) * 4)
+      const earliest = id === 'pheasant' && args.includes('late-field') ? distanceAtTime(region.seconds+21) : region.marker
+      const first = Math.max(4, Math.ceil(earliest / 120) * 4)
       const last = Math.floor(distanceAtTime(region.seconds + 29) / 30)
       let fixture
       for (let tile = first; tile <= last && !fixture; tile += 4) {
