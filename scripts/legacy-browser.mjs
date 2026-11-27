@@ -135,6 +135,8 @@ try {
       await enter(1)
       await image('before-earning')
       await page.locator('.legacy-hunt').tap()
+      await page.locator('#field-report').waitFor({timeout:120_000})
+      await page.locator('#report-details-toggle').tap()
       const link = page.getByRole('button',{name:'See the Lodge',exact:true})
       await link.waitFor({timeout:180_000})
       await image('earned-announcement',page.locator('.report-lodge-award'))
