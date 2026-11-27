@@ -399,6 +399,7 @@ function initialize() {
       kennel: button => lodgeUI.open(button, 'kennel'),
       lodge: (button, room, exhibit, preview) => lodgeUI.open(button,room,exhibit,preview),
       renderer: () => renderer.info.memory,
+      report: exampleReport => setMode('over', { exampleReport }),
       sound,
     })
     restartStudio()
@@ -1057,7 +1058,11 @@ function setMode(value, options = {}) {
   const paused = value === 'paused'
   let newRecord = false
   let rewardCue
-  if (over && oldMode !== 'over') {
+  const example = studioRequested && options.exampleReport
+  if (over && example) {
+    fillReport(ui, example, { heckle: 'Gulf to the Rockies, with a good dog along for the whole ride.' })
+    ui['report-career'].hidden = true
+  } else if (over && oldMode !== 'over') {
     const runner = lodge.current()
     const previousBest = runner.profile.best
     const priorRuns = runner.stats.runs
@@ -1089,6 +1094,9 @@ function setMode(value, options = {}) {
   }
   ui.menu.hidden = running || over || value === 'studio'
   ui['field-report'].hidden = !over
+  ui['run-again'].textContent = example ? 'Back to Art Studio' : 'Play Again'
+  ui['report-lodge'].hidden = Boolean(example)
+  ui['main-menu'].hidden = Boolean(example)
   ui.game.inert = over
   ui.hud.hidden = !running
   ui.controls.hidden = !running
@@ -1285,7 +1293,10 @@ function bindInput() {
   window.visualViewport?.addEventListener('resize', fitReport)
   window.visualViewport?.addEventListener('scroll', fitReport)
   ui.primary.addEventListener('click', event => mode === 'paused' ? pause() : start(null, event.timeStamp))
-  ui['run-again'].addEventListener('click', event => start(null, event.timeStamp))
+  ui['run-again'].addEventListener('click', event => {
+    if (studioRequested) setMode('studio')
+    else start(null, event.timeStamp)
+  })
   ui['main-menu'].addEventListener('click', mainMenu)
   ui['pause-settings'].addEventListener('click', openSettings)
   ui['pause-menu'].addEventListener('click', mainMenu)

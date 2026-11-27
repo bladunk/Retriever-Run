@@ -221,6 +221,14 @@ export function openArtStudio(game, flags, api) {
   }
   const legacy = button('Open Lodge preview',event => preview(event.currentTarget))
   if (flags.get('view') === 'lodge' || flags.get('view') === 'journal' || flags.get('view') === 'map') queueMicrotask(() => preview(legacy))
+  const report = button('Hunt Over example', () => api.report({
+    nickname: 'Example hunt · Art Studio', duration: 448.2, distance: 11532,
+    retrieves: 22, score: 36219, territory: 15, hazard: 'boulder', treats: 371,
+    logs: 43, slidesCleared: 27, geese: 2, improved: ['score'], earned: [], placements: {},
+    newWildlife: ['crane','moose'], newHonors: [{ name: 'Migration Field Honor', tier: 'Platinum' }],
+    gear: [{ name: 'Marsh Vest' }], lodge: { upgrades: [], tier: true }, preview: true,
+  }))
+  if (flags.get('view') === 'report') queueMicrotask(() => report.click())
   const stats = document.createElement('output')
   stats.hidden = true
   form.append(stats)
