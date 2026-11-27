@@ -26,7 +26,7 @@ The standard for future dog art is to keep the rear and three-quarter silhouette
 
 ## Pheasant follow-up
 
-The first upward wing strokes now stay slightly closer to the inside edge of their chosen bank. The existing flight direction is derived from the revised trajectory, and its grounded start, release distance, climb, stroke timing and departure are preserved. The move is cosmetic and the bird remains outside the trail. The adjustment cannot guarantee a clear sightline through every rain and vegetation combination. Review wet-weather visibility on iPhone alongside the original Living World comparison. No owl, goose or crane distribution or flight changes are part of this release.
+The first upward wing strokes now stay slightly closer to the inside edge of their chosen bank. The existing flight direction is derived from the revised trajectory, and its grounded start, release distance, climb, stroke timing and departure are preserved. The move is cosmetic and the bird remains outside the trail. The matched rainy trail-camera fixture still makes the bird difficult to follow. Visibility in wet weather remains open for further staging and native review. [Rainy comparison](evidence/gun-dog/rainy-pheasant.jpg) No owl, goose or crane distribution or flight changes are part of this release.
 
 ## Assets and resource ownership
 
@@ -47,6 +47,12 @@ Configured production build `c09511a` contains **17,525,040 bytes** total, of wh
 - The signed course, obstacle generator, simulation, hit volumes and scoring modules are unchanged. Three long local signed replays reproduced RC.6’s previous scores of **38,067**, **45,850** and **66,583** at 54,203, 72,196 and 103,455 authoritative ticks. Distance, duration, retrieves and combo match the RC.6 records. Existing fingerprint fixtures verify both deterministic courses. No server or competition changes were needed.
 - Both hosted public leaderboard endpoints responded to read-only checks with HTTP 200, `open: false` and zero records for `great-migration-1`. No ranked games were submitted.
 - The Northern Frontier and Living World route timing, Canadian Rocky Mountain Foothills name, wildlife collection, rare discovery, career and Lodge paths still use the existing implementations. Tests and the continuous offline journey exercise the shared route. Specific visual acceptance remains a separate activity.
+
+The exact RC.7 build ran **461.04 continuous simulated seconds offline in WebKit**, covering all 15 territories, all 30 stages and Endless in one render session. The seeded script executed 408 actions. It kept at most seven resident tiles, two packs, 129 geometries and 12 textures. Peak sampled scene load reached 77 draws and 201,080 triangles. The accelerated Battery Saver test uses a 102 × 181 software buffer. Its 4.2 average software FPS and 1,616 wall samples flagged by the fixed-clock probe measure the fixture and host. This verifies route coverage under offline conditions. [Continuous offline route evidence](evidence/gun-dog/offline-journey.jpg)
+
+The WebKit interrupted-download rehearsal deliberately returned HTTP 503 for the Labrador GLB. The retry activated the exact RC.7 manifest from RC.6, preserved two local hunts, respected a paused hunt in another tab and fetched unchanged audio once. The separate partial-byte WebKit attempt emitted browser access-control errors. A concurrent Chromium update attempt reached the paused-tab protection check and timed out while waiting for that hunt’s result. Partial-byte update behavior remains a native acceptance check. The portrait WebKit naming test successfully persisted and reloaded the chosen name offline.
+
+Six Chromium offline Battery Saver restarts settled at 48 geometries, 12 textures, 19 shader programs and seven tiles every time. Three-mesh geometry growth in the Kennel and two more whole-trail geometries reflect the applicable gear and are bounded in these tests. The separate Auto fixture restored High from Battery Saver through Balanced after scripted pressure and recovery windows, retaining the full atlas. These are functional checks using a scripted timing fixture. They do not establish the graphics level at which a physical phone can sustain the release.
 
 ## Software performance comparison
 

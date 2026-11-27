@@ -14,7 +14,7 @@ RC.6 baseline is on the left in clips and in the first image column. RC.7 is on 
 | Gulf Coast and early gallop | [Gameplay](before-run-2.jpg) | [Gameplay](after-run-2.jpg) | [Paired moving hunt](gameplay-2.mp4) |
 | Canadian Mountain Wilderness and late gallop | [Gameplay](before-run-426.jpg) | [Gameplay](after-run-426.jpg) | [Paired moving hunt](gameplay-426.mp4) |
 | Kennel idle and sit | [Kennel](before-kennel.jpg) | [Kennel](after-kennel.jpg) · [Sitting](after-sitting.jpg) | [Paired standing idle](kennel-idle.mp4) |
-| Lane shift | | | [Visual lane shift preview](lane-change.mp4) |
+| Lane shift | | | [Paired lane changes at gameplay speed](gameplay-426.mp4) · [Inspection](lane-change.mp4) |
 | Jump and slide | | | [Jump](jump.mp4) · [Slide](slide.mp4) |
 | Landing and retrieve | | | [Landing](land.mp4) · [Retrieve](retrieve.mp4) |
 
@@ -35,6 +35,12 @@ RC.6 baseline is on the left in clips and in the first image column. RC.7 is on 
 | Private optional dog name | | [Naming](after-naming.jpg) |
 
 The Kennel captures use a 390 × 844 portrait viewport with a 2× device scale setting. Idle footage uses the compact 320 × 568 viewport. The Art Studio verifies the production meshes and animation code in an isolated preview. On-device acceptance includes face, paws, silhouette, fast lateral transfer and garment stability. RC.7’s lane-change preset has no RC.6 equivalent. The old Studio jump moved joints without raising the rig. Both editions retain the authoritative hunt arc.
+
+## Route and pheasant checks
+
+- [Continuous offline route contact sheet](offline-journey.jpg), ordered from Gulf Coast Marsh to Canadian Mountain Wilderness. All 15 captures came from the same run.
+- [Rainy pheasant trail camera](rainy-pheasant.jpg), three frames of each build. RC.6 is the top row and RC.7 is the bottom row. Grass and contrast still make the bird difficult to follow in this view.
+- [Diagnostic exports and sampled resources](qa.json)
 
 ## Reproduction
 
