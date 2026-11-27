@@ -1,6 +1,7 @@
 import { hapticFeedback, rewardGroups } from './hunt-presentation.js'
 import * as T from 'three'
 import { createHazard, createPickup, prepareWashout } from './art.js'
+import { preparePuddle } from './puddle-art.js'
 import { createAtmosphere } from './atmosphere.js'
 import { createSound } from './audio.js'
 import { cameraLayout, newCameraState, updateFollow } from './camera.js'
@@ -273,6 +274,7 @@ function initialize() {
   performanceProbe?.watch(() => ({
     residentTiles: terrain.count(), residentPacks: terrain.packCount(), surfaces: terrain.landscapeResidency(),
     openingTerrain: terrain.openingMetrics(),
+    fernResidency: terrain.fernResidency(),
     dogBreed: dog?.activeBreed() ?? 'loading',
     adaptiveQuality: adapt.read(),
     drawingBuffer: { width:ui.trail.width, height:ui.trail.height, scale:renderer.getPixelRatio(), devicePixelRatio,
@@ -382,6 +384,11 @@ function initialize() {
     resetTrail(studioSeed)
     studioEvent = undefined
     studioEvents.length = 0
+    if (studio.take === 'Trail' && studio.hazard) {
+      const entity = { hazard:true, type:studio.hazard, lane:studio.hazardLane, distance:run.distance + 17 }
+      entity.model = acquire(entity)
+      entities.push(entity)
+    }
     if (studio.take === 'Wildlife') {
       const animal = fieldSpecies[studio.species]
       const flock = ['goose', 'crane'].includes(animal.family)
@@ -467,7 +474,7 @@ function initialize() {
         }
       }
     }
-    if (mode === 'title' || mode === 'running' || inspecting || frozen) populate()
+    if (mode === 'title' || mode === 'running' || frozen || inspecting && (studio.take !== 'Trail' || !studio.hazard)) populate()
     const autoLow = mode === 'running' && profile.quality === 'auto' && autoPreset === 'low'
     const batterySaver = mode === 'running' && profile.quality === 'low'
     if (!present(ms, wall, autoLow, batterySaver) && !needsRedraw) return
@@ -645,6 +652,7 @@ function acquire(entity) {
     scenery.add(object)
   }
   if (entity.span) prepareWashout(object, entity)
+  if (entity.type === 'puddle') preparePuddle(object.children[0], entity)
   return object
 }
 
@@ -657,9 +665,8 @@ function release(entity) {
   const available = pool.get(key)
   const limit = entity.type === 'treat' ? 32 : entity.span ? 2 : 6
   if (available.length < limit) available.push(entity.model)
-  // The bent ribbon belongs exclusively to this object. All standard
-  // hazards and pickups reference shared art kept by their source modules.
-  else if (entity.span) entity.model.children[0]?.geometry.dispose()
+  // Ground-conforming water belongs to its pooled object.
+  else if (entity.span || entity.type === 'puddle') entity.model.children[0]?.geometry.dispose()
 }
 
 function populate() {

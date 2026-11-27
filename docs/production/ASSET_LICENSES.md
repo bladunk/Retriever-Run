@@ -125,3 +125,7 @@ Phase 08’s wind, foliage, water and insect mix and its shorter reward cues are
 ## Southern Flyway RC.3
 
 Original Retriever Run scenery authored in Blender from regional field references. The source and runtime derivatives are redistributable as part of Retriever Run. No source photographs, third-party meshes or new texture files entered the game. The forest atlas and other shared materials retain their existing attributions. [Southern Flyway provenance and build steps](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md#asset-provenance-and-reproduction)
+
+### Heartland RC.4
+
+The PrairieSeedheads and WetlandRushes meshes are original Retriever Run assets. Source is in `art/blender/heartland.py`. The existing glTF Transform and Meshopt packer outputs `src/assets/environment/heartland-meshes.js` with 255 and 227 indexed triangles respectively. Regional photographs and survey imagery served as visual references. Runtime artwork uses original geometry, existing cleared materials and the existing terrain atlas. No reference photographs or author GLBs are distributed. Rebuild with `blender -b -t 2 --python art/blender/heartland.py -- <scratch>` and `node scripts/art/pack-gulf.mjs <scratch> <gltf-tooling> heartland`.

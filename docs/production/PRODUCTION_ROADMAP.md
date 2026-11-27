@@ -42,7 +42,7 @@ Record these alongside the upcoming art, encounters and course work. Phase 05 re
 | Candidate | Scope |
 | --- | --- |
 | RC.3 · Southern Flyway | Gulf Coast, Cypress, Mississippi Delta, Arkansas Flooded Timber and Ozark River Country. [Southern Flyway report](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md) |
-| RC.4 · Heartland | Midwest Farm Country, Platte River Valley, Nebraska Sandhills, Dakota Prairie Potholes and Northern Dakota Wetlands |
+| RC.4 · Heartland | Midwest Farm Country, Platte River Valley, Nebraska Sandhills, Dakota Prairie Potholes and Northern Dakota Wetlands. Trail puddles and the obstacle readability standard apply to all 15 territories. [Heartland report](WILDERNESS_HEARTLAND_REPORT.md) |
 | RC.5 · Northern Frontier | Manitoba Marshlands, Saskatchewan Parklands, Canadian Boreal Forest, Rocky Mountain Foothills and Canadian Mountain Wilderness |
 | RC.6 · Living World | Wildlife realism, gait and flight, flock spacing and wingbeats, banking, takeoff and landing, plus canine movement |
 | RC.7 · Gun Dog | Desirable neoprene and waxed canvas vests, proper triangular bandanas, better collars/coats, anatomy and a visual Kennel |

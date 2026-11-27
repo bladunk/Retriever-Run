@@ -10,7 +10,8 @@ export const dawnDirection = new T.Vector3(-.58, .22, -.82).normalize()
 // Sun azimuth and elevation, diffuse lift, then shade in the existing single
 // lighting pass. Values blend on the shared atmosphere transitions.
 const flywayLight = [[-.23,.115,1.06,.03],[-.43,.255,.84,.24],[-.30,.16,.94,.08],
-  [-.42,.20,.84,.19],[-.34,.246,.98,.14]]
+  [-.42,.20,.84,.19],[-.34,.246,.98,.14],[-.61,.36,1.04,.03],[-.26,.16,1.06,.10],
+  [-.59,.31,1.10,.09],[-.45,.26,1.03,.04],[-.31,.20,1.09,-.02]]
 const neutralLight = [-.58,.22,1,0]
 
 const states = [
@@ -25,7 +26,7 @@ const states = [
 ].map(([name, sky, horizon, sun, fog, cloud, rain, snow, wind, light]) => ({
   name, sky: new T.Color(sky), horizon: new T.Color(horizon), sun: new T.Color(sun), fog, cloud, rain, snow, wind, light,
 }))
-const reviewLights = { dawn: states[0], overcast: states[1], mist: states[2] }
+const reviewLights = { dawn: states[0], overcast: states[1], mist: states[2], rain: states[4] }
 
 const weatherInterval = 34
 const transition = 12

@@ -191,6 +191,11 @@ export function buildTile(index, seed = 0) {
       const bankBand = edgeFade * Math.max(0, 1 - Math.abs(y - waterline - .11) / .38)
       const shadowBand = bankBand * (.12 + .09 * Math.cos(distance * .24 - x * 1.9))
       tint.multiplyScalar(1 - shadowBand)
+      const braid = T.MathUtils.lerp(Number(zone.from.kind === 'braids'),Number(zone.to.kind === 'braids'),zone.blend)
+      if (braid && edge > 5) {
+        const bar = Math.max(0,1-Math.abs(y-waterline-.23)/.54)
+        tint.lerp(otherTint.setHex(0xc7ad81),braid*bar*.62)
+      }
       const drifts = .5 + .24 * Math.sin(distance * .34 + x * 1.9) + .24 * Math.cos(distance * .087 - x * .58)
       tint.lerp(snowTint, snow * (.10 + .65 * edgeFade + (.18 + edgeFade * .10) * drifts))
       const farmland = T.MathUtils.lerp(Number(zone.from.kind === 'field'), Number(zone.to.kind === 'field'), zone.blend)
@@ -247,7 +252,7 @@ export function buildTile(index, seed = 0) {
 
   for (const side of [-1, 1]) {
     for (let i = 0; i < 29; i++) {
-      const x = side * between(3.06, 6.2)
+      const x = side * between(3.64, 6.2)
       const z = between(-29.7, -.3)
       const y = earth(start - z, x)
       add(stone, i % 2 ? colors.bank : 0x6d6454, x, y, z, between(.035, .24), between(.018, .19), between(.08, .32))
@@ -274,15 +279,19 @@ export function buildTile(index, seed = 0) {
     }
 
     for (let i = 0; i < 9; i++) {
-      add(stone, i % 3 ? 0x655345 : 0x9a6638, side * between(.2, 3.03), -.005,
-        between(-29.6, -.4), between(.035, .085), .014, between(.043, .10), 0, i)
+      const x = side * between(.2, 3.03)
+      const z = between(-29.6, -.4)
+      add(stone, i % 3 ? 0x655345 : 0x9a6638, x, trailHeight(start - z, x) - .013,
+        z, between(.035, .085), .014, between(.043, .10), 0, i)
     }
     // Repeatable groves sample off-trail pockets. Cypress and flooded
     // hardwood take shallow water, while upland species need a dry root.
     for (let i = 0; i < colors.treesPerSide; i++) {
       const z = between(-29.12, -.86)
       const nearBank = i < Math.ceil(colors.treesPerSide * .58)
-      const x = side * (key === 'flyway' ? between(15.7, 41) : nearBank ? between(5.7, 14.0) : between(16, 51))
+      const x = side * (key === 'flyway' ? between(15.7, 41) : key === 'sandhills' ? between(36, 64)
+        : key === 'farm' ? between(17, 48) : key === 'platte' ? nearBank ? between(14, 23) : between(29, 43)
+        : nearBank ? between(5.7, 14.0) : between(16, 51))
       const at = start - z
       const ground = earth(at, x)
       const wetRoots = ['swamp', 'hardwood'].includes(colors.kind)
@@ -310,12 +319,12 @@ export function buildTile(index, seed = 0) {
   }
 
   const crops = []
-  const harvested = key === 'dakota' || (index + (seed >>> 4)) % 8 > 4
+  const harvested = key === 'dakota' || (index + (seed >>> 4)) % (colors.heartland ? 11 : 8) > (colors.heartland ? 7 : 4)
   if (key === 'farm' || key === 'platte' && index % 3 === 1 || key === 'dakota' && index % 5 === 1) {
     const side = Math.floor(index / 5) % 2 ? -1 : 1
     for (let plant = 0; plant < 16; plant++) {
       for (let row = 0; row < 7; row++) {
-        const x = side * (7.4 + row * 1.14 + between(-.12, .12))
+        const x = side * (8.1 + row * 1.15 + .72*Math.sin(start*.013+plant*.11) + between(-.12, .12))
         const at = start + .68 + plant * 1.82 + between(-.21, .21)
         const y = earth(at, x)
         if (y < waterline + .17) continue
@@ -553,6 +562,27 @@ export function buildTile(index, seed = 0) {
           const heading = headingAt(at)
           shoreGrass.push(centerAt(at) - base + Math.cos(heading) * x, y - .025,
             start - at - Math.sin(heading) * x, .94 + bank() * .38)
+        }
+      }
+    }
+  } else if (colors.heartland) {
+    const plants = seededRandom(Math.imul(index + 267, 0x7b825e7) ^ seed)
+    for (const side of [-1,1]) {
+      for (let patch = 0; patch < 5; patch++) {
+        const at = start + 3 + patch*5.6
+        const shore = 5.0 + 12.8*plants()**1.65
+        for (let stem = 0; stem < 3; stem++) {
+          const distance = at + (plants()-.5)*4.2
+          const x = side*(shore + (plants()-.5)*2.2)
+          const y = earth(distance,x)
+          const rush = key === 'prairie' || key === 'dakota'
+          if (y < waterline - .27 || rush && y > .56 ||
+            sign && Math.abs(distance-sign.distance) < 4 && Math.sign(sign.width) === side ||
+            landmark && Math.abs(distance-landmark.distance) < 4 && Math.abs(x-landmark.x) < 3.6) continue
+          const heading = headingAt(distance)
+          const scale = (.66 + plants()*.81)*(key === 'sandhills' ? .78 : 1)
+          shoreGrass.push(centerAt(distance)-base+Math.cos(heading)*x,y-.025,
+            start-distance-Math.sin(heading)*x,scale)
         }
       }
     }

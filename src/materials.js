@@ -95,6 +95,16 @@ export function createFieldMaterial() {
             float seedBed = smoothstep(2.35,3.76,abs(vFieldUv.x))* (1.-smoothstep(.28,.70,length(fwidth(surfaceUV))));
             diffuseColor.rgb *= 1. + delta*seedBed*(.34*fieldRows - .19);
             float tracksCountry = max(0., 1. - abs(vRegionalSurface.x - 5.) * .82);
+            float headland = smoothstep(2.44,3.76,abs(vFieldUv.x)+silt*.31);
+            float furrows = sin(vFieldUv.x*13.62+vFieldUv.y*.57+sin(vFieldUv.y*.16)*1.22);
+            float residue = .83 + .32*smoothstep(-.63,.64,furrows)*patternScale;
+            vec3 oatSoil = mix(vec3(1.20,1.12,.86),vec3(1.35,1.27,1.07),.5+.5*silt);
+            diffuseColor.rgb *= mix(vec3(1.),oatSoil*residue,headland*tracksCountry);
+            float sandhills = max(0.,1.-abs(vRegionalSurface.x-7.));
+            float pasture = smoothstep(-.73,.78,sin(vFieldUv.x*.38+vFieldUv.y*.112) +
+              .49*sin(vFieldUv.y*.75-vFieldUv.x*.31));
+            diffuseColor.rgb *= mix(vec3(1.),mix(vec3(.78,.85,.64),vec3(1.34,1.22,.89),pasture),
+              sandhills*smoothstep(1.07,4.7,abs(vFieldUv.x)));
             float damp = max(rut * (.46 + tracksCountry * .59), bank * (.30 + .22 * silt));
             damp = min(.82, damp + fieldWet * .15 * smoothstep(.10,.74,silt) * smoothstep(.62,1.54,abs(vFieldUv.x)));
             diffuseColor.rgb *= mix(vec3(1.15,1.13,1.10), vec3(.56,.66,.67), damp);

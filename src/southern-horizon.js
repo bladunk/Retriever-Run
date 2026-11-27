@@ -1,11 +1,13 @@
 import * as T from 'three'
 import { centerAt } from './trail.js'
 
-// Relative land height and canopy for open marsh, cypress, rice country,
-// bottomland hardwood and the Ozark ridges. Only two distant draws.
+// Relative land height and canopy from the coast through the northern plains.
+// Both flyways share the same two distant draws.
 const silhouettes = [
   [0x707c62, 2.7, .53, .75], [0x4d6256, 9.3, 3.9, .28], [0x77785a, 3, 1.25, .33],
   [0x5d6c56, 10, 4.9, .53], [0x637e6d, 18.8, 13.2, .62],
+  [0x838457, 8.2, 1.9, .54], [0x77836c, 3.7, 1.5, .57], [0x8c8453, 23.5, .46, .72],
+  [0x81845e, 10.3, .85, .45], [0x768480, 5.6, .69, .19],
 ].map(([hex, ...contour]) => ({ tint:new T.Color(hex), contour:new T.Vector3(...contour) }))
 const none = { tint:new T.Color(0), contour:new T.Vector3() }
 const profile = region => silhouettes[region.index] ?? none

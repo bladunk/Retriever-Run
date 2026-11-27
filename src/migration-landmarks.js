@@ -160,7 +160,21 @@ export function dressMigrationLandmark({ add, region, index, earth, waterline, r
     }
   }
 
-  if (role === 'fish-shack') {
+  if (role === 'farm') {
+    lodge(6.1,5.15,3.25,0x876252,0x52554c)
+    for (const [n, bin] of [[0,x+6.3],[1,x+8.8]]) {
+      const at = z-1.85-n*.75
+      const pad = earth(-at,bin)
+      const height = 3.5+n*.64
+      add(fillPad,0x92867a,bin,pad-.13,at,2.13,.3,2.13,0,0,0,false,6)
+      add(tank,0x9c9b89,bin,pad+height*.5,at,2.18,height,2.18,0,0,0,false,5)
+      for (let rib=0; rib<6; rib++) {
+        add(tank,0x8b9086,bin,pad+.30+rib*height/6,at,2.20,.037,2.20,0,0,0,false,5)
+      }
+      add(pole,0x828b83,bin,pad+height+.38,at,2.22,.81,2.22,0,0,0,false,5)
+      put(0x575b52,bin,pad+height+.82,at,.37,.22,.36,0,5)
+    }
+  } else if (role === 'fish-shack') {
     const deck = Math.max(waterline + .31, ground + .08)
     for (const name of ['CampWood', 'CampRoof', 'CampRecess']) {
       const geometry = gulfGeometry(name)
