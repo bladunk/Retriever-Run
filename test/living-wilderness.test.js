@@ -36,7 +36,7 @@ test('every territory only draws from its own tier and all catalog species are r
 test('bank and flight routes stay off the trail and the pheasant rises only after the flush distance', () => {
   const event = { seed: 17, lateral: -6, height: .04, distance:3400, kind: 'cover' }
   const pose = {}
-  encounterPose(event, fieldSpecies.pheasant, 46, 4, 0, pose)
+  encounterPose(event, fieldSpecies.pheasant, 48, 4, 0, pose)
   assert.equal(pose.state,'rest')
   assert.equal(pose.fold,1)
   assert.equal(pose.along,0)

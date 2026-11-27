@@ -26,7 +26,7 @@ The engine proposes an encounter every fourth terrain tile. It classifies candid
 
 The first Gulf encounter is a Mallard. Subsequent draws allocate 65% common, 24% uncommon, 9% rare and 2% exceptional proposals. Terrain can reject a proposal based on available habitat. These are game frequencies, separate from conservation status.
 
-The RC.6 pheasant begins on terrain with folded wings, then launches when the dog is 31 m from the anchor. Its motion, bank and nose follow the world-space path, with a short glide after powered flight. Mallards, teal, diving ducks, geese, other waterfowl and raptors use individual or family cadences. Canada Goose families use staggered longitudinal and lateral formation slots. Waders prefer a real shallow bank. Moose and deer sample the terrain under their moving position.
+The RC.6 pheasant begins on terrain with folded wings, then launches when the dog is 40 m from the anchor. Its motion, bank and nose follow the world-space path, with a short glide after powered flight. Mallards, teal, diving ducks, geese, other waterfowl and raptors use individual or family cadences. Canada Goose families use staggered longitudinal and lateral formation slots. Waders prefer a real shallow bank. Moose and deer sample the terrain under their moving position.
 
 The ordinary Journal checks the central camera frustum from 5–42 m for roughly 0.22 seconds. The Platte passage checks prominent flock members through 112 m for at least 0.55 seconds and records one event per hunt. These screen and distance checks approximate visibility. Art Studio uses the same renderer with progression disabled; browser QA can use the separate sight probe for representative occlusion checks.
 

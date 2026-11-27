@@ -403,7 +403,8 @@ function initialize() {
       const flock = ['goose','crane'].includes(animal.family)
       const flying = flock || animal.family === 'raptor'
       const grounded = ['pheasant','deer','moose','alligator'].includes(animal.family)
-      const ahead = { Approach:42, Action:31, Flight:17, Glide:7, Flock:68 }[studio.wildlifeAction]
+      const ahead = (animal.family === 'pheasant' ? { Approach:50, Action:39, Flight:26, Glide:9, Flock:68 } :
+        { Approach:42, Action:31, Flight:17, Glide:7, Flock:68 })[studio.wildlifeAction]
       studioEvent = studio.wildlifeAction === 'Flock' ? cranePassage(studioSeed,run.distance+ahead) :
         { id:'studio:'+animal.id+':'+Number(studio.fallback), species:animal.id, seed:studioSeed,
           distance:run.distance+ahead,lateral:-5.6,height:flying ? 4 : 0,count:flock ? 5 : 1,

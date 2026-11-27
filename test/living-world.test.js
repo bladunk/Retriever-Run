@@ -21,7 +21,7 @@ const pose = (id, event, ahead, elapsed = 163, individual = 0) =>
 
 test('pheasant stands on the bank, accelerates into a powered flush and tucks in flight', () => {
   const runSpeed = speedAtTime(163)
-  const at = time => pose('pheasant',farm,31-time*runSpeed)
+  const at = time => pose('pheasant',farm,40-time*runSpeed)
   assert.ok(Math.abs(at(-.35).height - terrainElevation(farm.distance,farm.lateral)-fieldSpecies.pheasant.size*.25)<.001)
   assert.equal(at(-.35).fold,1)
   assert.equal(at(.12).state,'takeoff')

@@ -990,7 +990,7 @@ try {
           if (planEncounter(sample, seed)?.species !== id) continue
           const event = planEncounter(buildTile(tile, tile < 3 ? 0 : seed), seed)
           if (event?.species !== id || event.distance < region.marker + 45) continue
-          const start = Math.max(0, event.distance - 43)
+          const start = Math.max(0, event.distance - (id === 'pheasant' && args.includes('late-field') ? 52 : 43))
           const end = args.includes('encounter-motion') ? event.distance + 9 : event.distance - (id === 'pheasant' ? 16 : 21)
           let left = 0, right = region.seconds + 35
           for (let n = 0; n < 30; n++) {

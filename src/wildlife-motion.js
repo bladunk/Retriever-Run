@@ -81,7 +81,7 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
   out.draw = true
 
   if (family === 'pheasant') {
-    const age = (31-ahead)/speed
+    const age = (40-ahead)/speed
     const t = Math.max(0,age)
     pheasant(t,current)
     pheasant(t+interval,next)
