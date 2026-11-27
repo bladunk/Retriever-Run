@@ -158,7 +158,7 @@ try {
     let hidden = false
     Object.defineProperty(document, 'hidden', { get: () => hidden })
     const native = window.requestAnimationFrame.bind(window)
-    let stamp
+    let stamp, autoNativeAt
     const qa = window.phaseThreeQA = { limit: -1, elapsed: [], rendered: 0 }
     qa.setBackground = value => {
       hidden = value
@@ -166,6 +166,12 @@ try {
     }
     qa.landmarkFrames = []
     window.requestAnimationFrame = callback => native(ms => {
+      // A single display clock is shared by the game and other rAF callers.
+      // Advancing it on both callbacks would double the scripted cadence.
+      if (qa.soak?.autoTest) {
+        if (autoNativeAt === ms) return callback(stamp)
+        autoNativeAt = ms
+      }
       const state = window.retrieverDebug
       if (stamp === undefined) stamp = ms
       if (qa.natural) {
@@ -745,6 +751,12 @@ try {
     for (let checkpoint = Math.min(15, duration);; checkpoint = Math.min(checkpoint + 15, duration)) {
       await page.waitForFunction(value => ['over', 'paused'].includes(window.retrieverDebug?.mode) ||
         window.retrieverDebug?.elapsed >= value, checkpoint, { timeout: 240_000 })
+        .catch(async error => {
+          if (autoTest) console.error(await page.evaluate(() => ({ elapsed:window.retrieverDebug?.elapsed,
+            ticks:window.retrieverDebug?.ticks, input:window.phaseThreeQA.soak.next,
+            quality:window.retrieverPerformance()?.adaptiveQuality })))
+          throw error
+        })
       const state = await page.evaluate(() => window.retrieverDebug)
       console.log(`Rendered ${state.elapsed.toFixed(2)} seconds (${state.mode})`)
       await writeFile(resolve(output, 'soak-checkpoint.json'), JSON.stringify({ elapsed: state.elapsed, stage: stageAt(state.elapsed).level,
