@@ -56,8 +56,9 @@ function airborne(time, path, speed, bend, seed) {
 }
 
 function heading(event, out, side, path, future) {
+  const lateral = out.lateral+side*(future.side-path.side)
   out.yaw = motionYaw(event.distance+out.along,out.lateral,future.along-path.along,
-    bankLimit(side,out.lateral+side*(future.side-path.side)))
+    event.migration ? lateral : bankLimit(side,lateral))
 }
 
 export function encounterPose(event, animal, ahead, elapsed, unit, out) {
@@ -143,8 +144,8 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
   if (event.migration) {
     const flock = Math.floor(unit/13)
     const member = unit%13
-    out.along = flock*16 - Math.ceil(member/2)*(2.1+flock*.14) + .81*Math.sin(unit*4.2)
-    out.lateral = event.lateral + (member % 2 ? -1:1)*Math.ceil(member/2)*1.32 + flock*8.3 + 1.6*Math.sin(unit*1.7)
+    out.along = flock*19 - 12 - Math.ceil(member/2)*(2.1+flock*.14) + .81*Math.sin(unit*4.2)
+    out.lateral = event.lateral + (member % 2 ? -1:1)*Math.ceil(member/2)*1.32 + flock*5.6 + 1.6*Math.sin(unit*1.7)
     out.height += flock*3.75 + Math.sin(unit*1.41)*.73
   }
   if (fromWater) {
@@ -160,7 +161,7 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
       return out
     }
   } else {
-    const bend = event.migration ? -3.2 : family === 'raptor' ? 3.9 : family === 'goose' ? 1.13 : 1.76
+    const bend = event.migration ? -4.7 : family === 'raptor' ? 3.9 : family === 'goose' ? 1.13 : 1.76
     airborne(age,current,velocity,bend,seed*.09)
     airborne(age+interval,next,velocity,bend,seed*.09)
     out.height += current.lift + (family === 'raptor' ? 4.1 : family === 'crane' && !event.migration ? 3.3 : 0)
@@ -169,7 +170,8 @@ export function encounterPose(event, animal, ahead, elapsed, unit, out) {
     out.gait = 1
   }
   out.along += current.along
-  out.lateral = bankLimit(side,out.lateral+side*current.side)
+  out.lateral += side*current.side
+  if (!event.migration) out.lateral = bankLimit(side,out.lateral)
   heading(event,out,side,current,next)
   out.roll = side*(family === 'raptor' ? .38 : .17)*Math.sin(t*.77 + unit*.028)
   out.pitch = Math.atan2(next.lift-current.lift,Math.max(.14,next.along-current.along))*.64

@@ -40,8 +40,8 @@ test('bank and flight routes stay off the trail and the pheasant rises only afte
   assert.equal(pose.state,'rest')
   assert.equal(pose.fold,1)
   assert.equal(pose.along,0)
-  const first = encounterPose(event, fieldSpecies.pheasant, 21, 5, 0, {}).height
-  const later = encounterPose(event, fieldSpecies.pheasant, 11, 6, 0, {}).height
+  const first = encounterPose(event, fieldSpecies.pheasant, 38, 154, 0, {}).height
+  const later = encounterPose(event, fieldSpecies.pheasant, 31, 154, 0, {}).height
   assert.ok(later > first)
   assert.equal(encounterPose({ ...event,kind:'water' }, fieldSpecies.mallard, 36, 4, 0, {}).rig,'Idle')
   assert.equal(encounterPose({ ...event,kind:'water' }, fieldSpecies.mallard, 16, 5, 0, {}).rig,'Fly')

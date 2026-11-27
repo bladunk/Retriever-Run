@@ -46,7 +46,7 @@ export function planEncounter(packet, seed) {
 
 export function cranePassage(seed, distance) {
   return { id:'platte-crane-passage', discovery:'platte-crane-passage', species:'crane', territory:'platte',
-    rarity:'exceptional', migration:true, count:39, seed, kind:'open', distance, lateral:18.6, height:9.8 }
+    rarity:'exceptional', migration:true, count:39, seed, kind:'open', distance, lateral:10.4, height:9.4 }
 }
 
 export function planWildlifeDiscovery(seed) {

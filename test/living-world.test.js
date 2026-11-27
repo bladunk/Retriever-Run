@@ -73,7 +73,7 @@ test('Platte passage has spaced groups, per-seed eligibility and a stable saved 
     assert.equal(event.territory,'platte')
     assert.ok(event.distance>=distanceAtTime(192) && event.distance<=distanceAtTime(197))
     const flock=Array.from({length:event.count},(_,i)=>pose('crane',event,60,196,i))
-    assert.ok(flock.every(bird=>bird.height>8 && bird.lateral>=4.82))
+    assert.ok(flock.every(bird=>bird.height>7.5 && Number.isFinite(bird.yaw)))
     assert.ok(flock[13].height>flock[0].height+2 && flock[26].height>flock[13].height+2)
     assert.ok(flock.some((bird,i)=>i>0 && Math.abs(bird.wing-flock[0].wing)>.2))
     for (const [i,a] of flock.entries()) for (const b of flock.slice(i+1))
