@@ -46,7 +46,9 @@ export function legacyTimeline(player, standing, retained) {
   }
   const saved = player.legacyHistory.milestones
   const first = retained.find(run => run.id === 1)
-  if (player.stats.runs) add('first-hunt', milestones.get('first-hunt'), saved['first-hunt'] ?? first?.date, 'Career')
+  if (player.stats.runs || player.profile.best || player.profile.farthest)
+    add('first-hunt', !saved['first-hunt'] && first?.date ? 'First retained hunt' : milestones.get('first-hunt'),
+      saved['first-hunt'] ?? first?.date, 'Career')
   // A retained complete run proves a completion. Without a saved first
   // milestone it cannot prove this was the player's first completion.
   if (completeMigrations(player)) {

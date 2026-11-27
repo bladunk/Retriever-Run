@@ -356,7 +356,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       if (!result) return null
       save.nextRun = Math.max(save.nextRun, runId + 1)
       const date = now().toISOString()
-      const firstHunt = !player.stats.runs
+      const firstHunt = !player.stats.runs && !player.profile.best && !player.profile.farthest && !player.profile.retrieves
       const hadMigration = completeMigrations(player)
       const previousBest = player.profile.best
       const previousStanding = careerStanding(player.career)

@@ -90,3 +90,16 @@ test('rank and cabin dates are recorded at the real threshold once and retained 
   assert.equal(archive.dated.find(event => event.id === 'first-hunt'),undefined)
   assert.deepEqual(normalizeLegacyHistory({version:1,milestones:{ migration:'invalid', 'not-a-milestone': date }}).milestones,{})
 })
+
+test('a newly tracked run cannot date a known earlier hunt from a migrated profile', () => {
+  const seed = lodgeFixture()
+  seed.players[0].profile = { best:8400, farthest:1200, retrieves:9 }
+  const { load } = open(seed)
+  const store = load()
+  const id = store.current().id
+  assert.ok(store.finalize(id,store.beginRun(),{ ...newRun(), elapsed:12, distance:152 },'log'))
+  const player = load().current()
+  assert.equal(player.legacyHistory.milestones['first-hunt'],undefined)
+  const timeline = legacyTimeline(player,careerStanding(player.career),[])
+  assert.ok(timeline.undated.some(event => event.id === 'first-hunt'))
+})

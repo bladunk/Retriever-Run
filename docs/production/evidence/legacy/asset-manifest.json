@@ -1,0 +1,128 @@
+[
+  {
+    "tier": 1,
+    "source": "shack",
+    "author": "Retriever Run with ImageGen",
+    "originalBytes": 2785016,
+    "originalSha256": "e17c00f0f5570fa4f65f9e9f64ddb11b04a84cea23b077852e7e205ee1807b57",
+    "productionBytes": 197260,
+    "productionSha256": "bac6a5cce6a2f62e4ff321d5e46e773c29594436d59ce2bf0ec15773c11b3cef",
+    "resolution": [
+      960,
+      1120
+    ],
+    "decodedRgbaBytes": 4300800
+  },
+  {
+    "tier": 2,
+    "source": "cabin",
+    "author": "Retriever Run with ImageGen",
+    "originalBytes": 2891323,
+    "originalSha256": "9b9b12574dccfbbea3b5d9570d4e22df8a422bcfc53205aaa6ff3cdf0afe1f05",
+    "productionBytes": 258136,
+    "productionSha256": "fe1659ada99a0895e8ddf56b27da7d4213caf44974d60316be210dde2f111bb9",
+    "resolution": [
+      960,
+      1120
+    ],
+    "decodedRgbaBytes": 4300800
+  },
+  {
+    "tier": 3,
+    "source": "waterfowl",
+    "author": "Retriever Run with ImageGen",
+    "originalBytes": 2848168,
+    "originalSha256": "28629d1ba1eb195b53185d01acd8776cb4aee751657e77269d046956ccfdcbc5",
+    "productionBytes": 233526,
+    "productionSha256": "524820c521c430f784c5e9e417894e4d8d0cf238b771519e27ba271795fd0f70",
+    "resolution": [
+      960,
+      1120
+    ],
+    "decodedRgbaBytes": 4300800
+  },
+  {
+    "tier": 4,
+    "source": "estate",
+    "author": "Retriever Run with ImageGen",
+    "originalBytes": 2928802,
+    "originalSha256": "dcc9b04573aa1d787e8cf7e7fd1609d8d270a283c4ee1206cc1a4b6400aedbb3",
+    "productionBytes": 275906,
+    "productionSha256": "c2b6ca859062080d3b111c00c4ad2d427e8f6781d57a0584763e79fb6238d72c",
+    "resolution": [
+      960,
+      1120
+    ],
+    "decodedRgbaBytes": 4300800
+  },
+  {
+    "tier": 5,
+    "source": "legendary",
+    "author": "Retriever Run with ImageGen",
+    "originalBytes": 2903530,
+    "originalSha256": "dfaf6c7e179684d9bfa2d83a6d2f1517b87aaa8aaa9eb433736ef44193022283",
+    "productionBytes": 234260,
+    "productionSha256": "f19c6595cec6526707f4465cacc7fb6f53086f9261269b6a276bae6bff62559e",
+    "resolution": [
+      960,
+      1120
+    ],
+    "decodedRgbaBytes": 4300800
+  },
+  {
+    "asset": "bronze-flight",
+    "author": "Retriever Run",
+    "source": "Original Blender geometry",
+    "originalBytes": 138271,
+    "originalSha256": "0b58594ab9c3af9532171fb0317acd52fe3a9793ab46bfd9a3bb84444cf9f540",
+    "productionBytes": 11054,
+    "productionSha256": "25863ec6d5a055581d6bbc35c5f76aee320e22864b48c4b9c1d335053ede0401",
+    "resolution": [
+      301,
+      263
+    ],
+    "decodedRgbaBytes": 316652
+  },
+  {
+    "asset": "skill-form",
+    "author": "Retriever Run",
+    "source": "Original Blender geometry",
+    "originalBytes": 128516,
+    "originalSha256": "8eecfcb2d250c3700ad68a45f44ee5502f343e1cbfe657ffe8175933dbb6afa3",
+    "productionBytes": 10346,
+    "productionSha256": "dc51a658a6866089754f7a49461b730f5b08653e1b58af6aa43269473a32a1ca",
+    "resolution": [
+      271,
+      231
+    ],
+    "decodedRgbaBytes": 250404
+  },
+  {
+    "asset": "certificate",
+    "author": "Retriever Run",
+    "source": "Original Blender geometry",
+    "originalBytes": 134640,
+    "originalSha256": "167d35b20cc819310dd729f2e6841aaf0c85c7cbcd28d1cceb48a67d153ea41f",
+    "productionBytes": 7896,
+    "productionSha256": "94afea2fa73e076a69fa5aea87bccaad6d8fcc42b149e42fbbd5b6dda324d8fa",
+    "resolution": [
+      228,
+      217
+    ],
+    "decodedRgbaBytes": 197904
+  },
+  {
+    "asset": "aurora-frame",
+    "author": "Retriever Run",
+    "source": "Northern Frontier production renderer",
+    "originalBytes": 359539,
+    "originalSha256": "701bb5d5f943aa0ef3f720f6a5a952ab51fd44da11a9fb02c4716c4d40f1a0f8",
+    "productionBytes": 4992,
+    "productionSha256": "4d82bac754233c94cb1cb3e6db51c38b80cc4eba9b77351b0af79557e4ef9e91",
+    "resolution": [
+      205,
+      132
+    ],
+    "decodedRgbaBytes": 108240
+  }
+]

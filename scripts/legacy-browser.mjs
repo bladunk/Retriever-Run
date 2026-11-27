@@ -43,34 +43,44 @@ try {
     page.setDefaultTimeout(100_000)
     const errors = []
     page.on('pageerror', error => errors.push(error.message))
-    const profiles = studioOnly ? [] : Array.from({length:5},(_,i) => createLegacyPreview(i+1).exportSave())
-    await page.addInitScript(profiles => {
-      const tier = Number(new URLSearchParams(location.search).get('fixture'))
+    const saved = studioOnly ? [] : Array.from({length:5},(_,i) => JSON.parse(createLegacyPreview(i+1).exportSave()))
+    const combined = studioOnly ? null : {
+      ...saved[0], players:saved.flatMap(save => save.players), entries:saved.flatMap(save => save.entries),
+      nextPlayer:20, nextRun:Math.max(...saved.map(save => save.nextRun)),
+    }
+    const ids = saved.map(save => save.active)
+    await page.addInitScript(combined => {
       const key = 'retriever-run.record'
-      if (!profiles.length) {
-        localStorage.setItem(key,'{"legacySentinel":true}')
-      } else if (profiles[tier-1] && sessionStorage.getItem('qa-applied') !== String(tier)) {
-        localStorage.setItem(key,profiles[tier-1])
-        sessionStorage.setItem('qa-applied',String(tier))
-      }
-    },profiles)
-    async function enter(tier) {
-      await page.goto(origin + '/' + edition + '/?perf=1&' + (studioOnly
-        ? 'studio=1&view=lodge&tier=' + tier
-        : 'fixture=' + tier),{waitUntil:'domcontentloaded'})
+      if (combined) {
+        if (!localStorage.getItem(key)) localStorage.setItem(key,JSON.stringify(combined))
+      } else if (!localStorage.getItem(key)) localStorage.setItem(key,'{"legacySentinel":true}')
+    },combined)
+    async function load(tier) {
+      await page.goto(origin + '/' + edition + '/?perf=1' + (studioOnly
+        ? '&studio=1&view=lodge&tier=' + tier : ''),{waitUntil:'domcontentloaded'})
       await page.waitForFunction(() => {
         const gate = document.querySelector('#content-screen')
         const download = document.querySelector('#content-download')
         return gate?.open && !download.disabled || !document.querySelector('#game').hidden && !gate?.open
-      },null,{timeout:60_000})
+      },null,{timeout:100_000})
       if (await page.locator('#content-screen').isVisible()) await page.locator('#content-download').tap()
+    }
+    async function enter(tier) {
       if (!studioOnly) {
         await page.waitForFunction(() => !document.querySelector('#primary').disabled && !document.querySelector('#game').hidden,
           null,{timeout:120_000})
-        await page.locator('#open-lodge').tap()
+        if (!await page.locator('#lodge').isVisible()) await page.locator('#open-lodge').tap()
+        const profile = page.locator('#camp-profile')
+        if (await profile.locator('#local-player').inputValue() !== String(ids[tier-1])) {
+          if (await profile.getAttribute('open') === null) await profile.locator('summary').tap()
+          await profile.locator('#local-player').selectOption(String(ids[tier-1]))
+          if (await profile.getAttribute('open') !== null) await profile.locator('summary').tap()
+        }
+        await page.locator('#tab-overview').tap()
       }
-      const stage = page.locator('[data-tier]').first()
-      await stage.waitFor({timeout:45_000})
+      const tierKey = ['shack','cabin','waterfowl','estate','legendary'][tier-1]
+      const stage = page.locator('[data-tier="'+tierKey+'"]').first()
+      await stage.waitFor({timeout:55_000})
       const art = stage.locator(edition === 'before' ? '.lodge-interior-art' : '.legacy-interior-art')
       await art.evaluate(image => image.decode())
       const overflow = await page.locator('#lodge-panel').evaluate(el => el.scrollWidth > el.clientWidth+3)
@@ -81,6 +91,7 @@ try {
       await target.screenshot({path:resolve(output,edition+'-'+name+'.jpg'),type:'jpeg',quality:86,scale:'css'})
       captures.push(edition+'-'+name+'.jpg')
     }
+    await load(studioOnly ? 5 : 1)
     if (studioOnly) {
       await enter(5)
       await image('qualified')
@@ -148,6 +159,7 @@ try {
     await image('decor',page.locator('.legacy-decor'))
     await page.locator('#close-lodge').tap()
     await context.setOffline(true)
+    await load(5)
     await enter(5)
     assert.equal(await page.locator('.legacy-cabin').getAttribute('data-finish'),'slate')
     assert.ok(await page.locator('[data-exhibit="'+key+'"]').isVisible())

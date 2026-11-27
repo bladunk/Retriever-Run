@@ -88,7 +88,6 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 | 47 | Exceptional-hunt celebrations and interactive Hunt Over | Partial | Hunt Over and verified personal bests | Animate score and statistics, fill XP across every level earned, show achievement progress meters and next accomplishment, celebrate records, reveal equipment and trophies, show Lodge upgrades and offer interactive reward previews. Keep Play Again available immediately and apply authoritative rewards exactly once without a claim sequence. |
 | 48 | Optional slow-motion death replay | Planned | Replay input history and camera | Show enough context to explain the collision. Keep optional, skippable and entirely off the immediate replay path. |
 | 49 | Optional haptics and one-tap replay | Implemented with platform limits | Feature detection and lifecycle | Keep replay immediately available. Verify supported haptics gracefully no-op on unsupported devices. |
-
 | 93 | Infinite Endless difficulty progression | Approved for RC.10 · future ruleset and owner approval before activation | Deterministic simulation, reachability proofs, signed replay compatibility, human survival distributions | Continue increasing sustained survival pressure after the Great Migration. Validate fair paths at 10, 15, 20, 30 and 60 minutes. See the full acceptance requirements below. |
 
 ### Infinite Endless difficulty progression
