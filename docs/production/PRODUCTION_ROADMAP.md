@@ -45,8 +45,8 @@ The [master roadmap](MASTER_ROADMAP.md) is the canonical register of approved sc
 | --- | --- |
 | RC.3 · Southern Flyway | Gulf Coast, Cypress, Mississippi Delta, Arkansas Flooded Timber and Ozark River Country. [Southern Flyway report](WILDERNESS_SOUTHERN_FLYWAY_REPORT.md) |
 | RC.4 · Heartland | Midwest Farm Country, Platte River Valley, Nebraska Sandhills, Dakota Prairie Potholes and Northern Dakota Wetlands. Trail puddles and the obstacle readability standard apply to all 15 territories. [Heartland report](WILDERNESS_HEARTLAND_REPORT.md) |
-| RC.5 · Northern Frontier | Manitoba Marshlands, Saskatchewan Parklands, Canadian Boreal Forest, Rocky Mountain Foothills and Canadian Mountain Wilderness |
-| RC.6 · Living World | Wildlife realism, gait and flight, flock spacing and wingbeats, banking, takeoff and landing, plus canine movement |
+| RC.5 · Northern Frontier | Manitoba Marshlands, Saskatchewan Parklands, Canadian Boreal Forest, Canadian Rocky Mountain Foothills and Canadian Mountain Wilderness |
+| RC.6 · Living World | Wildlife anatomy, locomotion, flushes and flight, flock spacing, the Platte crane passage, first-sighting records and isolated previews. [Living World report](LIVING_WORLD_REPORT.md) |
 | RC.7 · Gun Dog | Desirable neoprene and waxed canvas vests, proper triangular bandanas, better collars/coats, anatomy and a visual Kennel |
 | RC.8 · Legacy | Believable evolving cabins, readable career progression, carved decoys, sculptures, photographs, engravings and maps |
 | RC.9 · Masterpiece | Cohesive typography, interface, sound, transitions and Journal presentation |

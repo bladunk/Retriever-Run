@@ -24,14 +24,14 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 10 | Rare wildlife encounters and territory exclusives | Prototype | Existing habitat roster and RC.5 schedule | Natural opportunities, independent of normal progression. Expand the registry after verifying habitats and rarity. |
-| 11 | Large sandhill crane migrations | Prototype | Existing crane encounter and flock pipeline | Provide a recognizable migration event with natural grouping and enough sight time through the running camera. |
-| 12 | Realistic, identifiable wildlife models | Partial | Current species registry and asset pipeline | Use appropriate anatomy and region-appropriate silhouettes. Replace weak fallback representations within measured GPU budgets. |
-| 13 | Natural deer locomotion | Partial | Raptor heading correction and rig conventions | Correct ground contact, stride and momentum from moving angles. Verify deer through the full approach and escape. |
-| 14 | Flock formation and individual wingbeats | Prototype | Shared bird animator | Space and stagger individuals naturally. Check flocks from trail camera through long shots and near passes. |
-| 15 | Banking and acceleration | Planned | Species movement definitions and rig controls | Show believable heading, banking and speed changes without altering signed hazards. |
-| 16 | Takeoff and landing | Planned | Flight animation, terrain and water contacts | Show species-appropriate departures and arrivals without floating or sudden position snaps. |
-| 17 | Species-specific movement and environmental interaction | Partial | Existing habitat behavior and Living World rigs | Ground contacts, perch/water behavior and vegetation occlusion work in each relevant habitat. Improve coordinated canine timing where visible. |
+| 10 | Rare wildlife encounters and territory exclusives | Partial · RC.6 draft | RC.5 discoveries, habitat roster and stable encounter seeds | The Platte passage is implemented and optional. Further exceptional moose, bear or eagle events need separate authored behavior and verification. |
+| 11 | Large sandhill crane migrations | RC.6 draft | Existing Platte terrain, instancing and cleared calls | Three independently moving groups and a first-sighting record. Inspect actual scale, legibility and frame pacing on iPhone. |
+| 12 | Realistic, identifiable wildlife models | Partial · RC.6 draft | Original geometry, prior licensed rigs and supported GPU budgets | New detailed and compact pheasant, crane flight silhouette and heavier moose form. Other species still include stylized geometry. |
+| 13 | Natural deer locomotion | Partial · RC.6 draft | Raptor heading correction, ground sampling and licensed doe rig | The doe accelerates, faces world travel and retimes the gallop. Stride and uneven-ground foot contact need artistic device review. |
+| 14 | Flock formation and individual wingbeats | RC.6 draft | Species flight profiles and instance buffers | Group spacing and different wing phases are in the running renderer. Check recognizable flock shape in motion across presets. |
+| 15 | Banking and acceleration | RC.6 draft | Species-specific flight and shared motion path | The pheasant accelerates and banks through a short glide. Raptor and goose profiles add restrained bank and glide phases. |
+| 16 | Takeoff and landing | Partial · RC.6 draft | Wet habitat anchors and wing joints | Ground flushes and water departures are implemented. Purpose-built landing, water-contact wakes and foot extension remain open. |
+| 17 | Species-specific movement and environmental interaction | Partial · RC.6 draft | Existing habitat behavior, rigs and terrain contacts | Grounded mammals, shallow-bank waders and species-specific flight are implemented. Believable landings and more exact environmental avoidance remain open. |
 
 ## RC.7 · Gun Dog
 
@@ -77,11 +77,11 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
 | 42 | Near-miss bonuses and consecutive clean passes | Planned, ruleset approval required | Deterministic simulation, replay and explicit owner activation | Verify genuine skill, stable replays, safe avoidability and defenses against score abuse. Version the incompatible rules. |
-| 43 | Progressively rewarding retrieve combos | Partial | Existing scoring and verified replays | Improve feedback and distinguish any proposed scoring change. Apply the same separate ruleset and approval gate. |
+| 43 | Progressively rewarding retrieve combos and crisper treat feedback | Partial | Existing scoring and verified replays | Make take and treat confirmation accurate and immediate. Improve feedback and distinguish any proposed scoring change. Apply the same separate ruleset and approval gate. |
 | 44 | Jump and slide animation | Partial | Dog rigs and established collision timings | Improve anticipation and follow-through without changing timing or what the player can clear. |
 | 45 | Swipe responsiveness | Implemented, playtest pending | Existing input buffering and settings | Match touch intent without unexpected gestures on varied phones and refresh rates. |
 | 46 | Water splashes, mud and impact effects | Prototype | Terrain, colliders and effects budget | Use responsive splash and mud effects, subtle camera motion and readable feedback. Respect reduced motion. |
-| 47 | Exceptional-hunt celebrations | Partial | Hunt Over and verified personal bests | Celebrate real achievements without blocking replay. |
+| 47 | Exceptional-hunt celebrations and interactive Hunt Over | Partial | Hunt Over and verified personal bests | Celebrate real achievements, show animated XP and achievement progress, and keep replay available. |
 | 48 | Optional slow-motion death replay | Planned | Replay input history and camera | Show enough context to explain the collision. Keep optional, skippable and entirely off the immediate replay path. |
 | 49 | Optional haptics and one-tap replay | Implemented with platform limits | Feature detection and lifecycle | Keep replay immediately available. Verify supported haptics gracefully no-op on unsupported devices. |
 
