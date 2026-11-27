@@ -48,6 +48,7 @@ import { createDivingFlocks } from './wildlife.js'
 import { fieldSpecies } from './wildlife-catalog.js'
 import { createLivingWilderness } from './living-wilderness.js'
 import { encounterPose } from './wildlife-motion.js'
+import { cranePassage, planWildlifeDiscovery } from './wildlife-encounters.js'
 import { createWildlifeSightProbe } from './wildlife-sight-probe.js'
 import { diveAge, diveExit, diveWarning } from './dive.js'
 import './style.css'
@@ -149,6 +150,7 @@ setMotionPreference()
 let runPlayer
 let runStatistics
 let discoveriesPlan = []
+let wildlifeDiscovery
 let lastDiscovery
 let discoverySince = 0
 let runPermit
@@ -279,7 +281,7 @@ function initialize() {
     residentTiles: terrain.count(), residentPacks: terrain.packCount(), surfaces: terrain.landscapeResidency(),
     openingTerrain: terrain.openingMetrics(),
     fernResidency: terrain.fernResidency(),
-    dogBreed: dog?.activeBreed() ?? 'loading',
+    dogBreed: dog?.activeBreed() ?? 'loading', migrationFlight:wildlife.migration(),
     adaptiveQuality: adapt.read(),
     drawingBuffer: { width:ui.trail.width, height:ui.trail.height, scale:renderer.getPixelRatio(), devicePixelRatio,
       preset:profile.quality === 'auto' ? autoPreset : profile.quality },
@@ -287,7 +289,10 @@ function initialize() {
     tileTimings: terrain.measurements(), wildlife: wildlife.active(), wildlifeModels: wildlife.metrics(),
     trailPool: { keys: pool.size, idle: [...pool.values()].reduce((sum, bucket) => sum + bucket.length, 0) },
   }))
-  const observeWildlife = event => runStatistics?.observe(event)
+  const observeWildlife = event => {
+    runStatistics?.observe(event)
+    if (event.discovery && !diagnosticsRequested) runStatistics?.observeEnvironment(event.discovery)
+  }
   const diving = createDivingFlocks(scene)
   if (diagnosticsRequested && navigator.onLine) {
     // The collision overlay is an optional download. A verified offline
@@ -395,11 +400,16 @@ function initialize() {
     }
     if (studio.take === 'Wildlife') {
       const animal = fieldSpecies[studio.species]
-      const flock = ['goose', 'crane'].includes(animal.family)
-      const flight = flock || animal.family === 'raptor'
-      studioEvent = { id: 'studio:' + animal.id + ':' + Number(studio.fallback), species: animal.id, seed: studioSeed,
-        distance: run.distance + (studio.wildlifeAction ? 11 : 34), lateral: -5.6,
-        height: flight ? 3.9 : 0, count: flock ? 5 : 1 }
+      const flock = ['goose','crane'].includes(animal.family)
+      const flying = flock || animal.family === 'raptor'
+      const grounded = ['pheasant','deer','moose','alligator'].includes(animal.family)
+      const ahead = { Approach:42, Action:31, Flight:17, Glide:7, Flock:68 }[studio.wildlifeAction]
+      studioEvent = studio.wildlifeAction === 'Flock' ? cranePassage(studioSeed,run.distance+ahead) :
+        { id:'studio:'+animal.id+':'+Number(studio.fallback), species:animal.id, seed:studioSeed,
+          distance:run.distance+ahead,lateral:-5.6,height:flying ? 4 : 0,count:flock ? 5 : 1,
+          kind:grounded ? 'studio' : flying ? 'open' : 'water' }
+      studioEvent.previewElapsed = previewElapsed
+      studioEvent.previewClock = 0
       studioEvents.push(studioEvent)
     }
     setMode('studio')
@@ -510,7 +520,8 @@ function initialize() {
         camera.lookAt(follow.tx, follow.ty, follow.tz)
       }
       if (inspecting) {
-        if (studioEvent) {
+        if (studioEvent) studioEvent.previewClock = studio.moving ? 0 : studioTime % 3.5
+        if (studioEvent && studio.framing === 'animal' && !studioEvent.migration) {
           const animal = fieldSpecies[studioEvent.species]
           encounterPose(studioEvent, animal, studioEvent.distance - distance, visualTime, 0, studioAnimalPose)
           placeOnTrail(studioTarget, studioEvent.distance + studioAnimalPose.along, studioAnimalPose.lateral, distance)
@@ -520,7 +531,8 @@ function initialize() {
           studioTarget.y = ground + .75
           studioTarget.z = body.z
         }
-        if (studio.take !== 'Trail' || studio.yaw || studio.pitch || studio.zoom !== 1) {
+        if ((studio.take === 'Dog' || studioEvent && studio.framing === 'animal' && !studioEvent.migration) ||
+            studio.yaw || studio.pitch || studio.zoom !== 1) {
           const radius = (studio.take === 'Dog' ? 3.8 : studioEvent ? 4.8 : 6.6) * studio.zoom
           const { x, y, z } = studioTarget
           camera.position.set(x + Math.sin(studio.yaw) * radius, y + 1.25 + studio.pitch, z + Math.cos(studio.yaw) * radius)
@@ -581,9 +593,10 @@ function initialize() {
         }
         if (visible && display.elapsed-discoverySince >= .7) runStatistics?.observeEnvironment(visible)
       }
-      const encounters = inspecting && studioEvent ? studioEvents : terrain.encounters()
+      const encounters = inspecting && studioEvent ? (studioEvent.migration ? [] : studioEvents) : terrain.encounters()
+      const migration = inspecting ? (studioEvent?.migration ? studioEvent : undefined) : wildlifeDiscovery
       wildlife(visualTime, distance, inspecting && studio.fallback ? 0 : preset.detail, mode, encounters, camera, observeWildlife,
-        inspecting ? !studio.fallback && preset.detail > 0 : profile.quality !== 'low')
+        inspecting ? !studio.fallback && preset.detail > 0 : profile.quality !== 'low', migration)
       if (!idle && !frozen && !inspecting) {
         updateConditions(weather.name)
         sound.ambience(weather, visualTime, runningSurface() === 'mud', !display.jump && !display.slide)
@@ -1104,6 +1117,7 @@ function resetTrail(seed) {
   effects.length = 0
   run = newRun()
   discoveriesPlan = planDiscoveries(seed)
+  wildlifeDiscovery = planWildlifeDiscovery(seed)
   lastDiscovery = undefined
   signSeed = seed
   setTerrainSeed(seed)

@@ -3,7 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { createLeafSpray } from './marsh-plants.js'
 import { surfaceOrder } from './landscape-surfaces.js'
 import { expeditionBlend, regionAtDistance, snowLevel } from './expedition.js'
-import { shoreHeight, vegetationPocket } from './landforms.js'
+import { terrainElevation, vegetationPocket } from './landforms.js'
 import { dressMigrationLandmark } from './migration-landmarks.js'
 import { gulfGeometry } from './gulf-models.js'
 import { cypressStand } from './cypress-stands.js'
@@ -143,19 +143,7 @@ export function buildTile(index, seed = 0) {
     const ragged = 2.97 + .28*Math.sin(distance*.091 + (x < 0 ? 1.3 : 4.7)) + .14*Math.sin(distance*.51 + x*.83)
     return T.MathUtils.lerp(ordinary, ragged, amount)
   }
-  function earth(distance, x, zone = expeditionBlend(distance)) {
-    const edge = Math.abs(x)
-    const floor = trailHeight(distance, x) - .008
-    if (edge <= 3.08) return floor
-    let [basin, width] = shoreHeight(zone.from, distance, x)
-    if (zone.from !== zone.to) {
-      const [to, toWidth] = shoreHeight(zone.to, distance, x)
-      basin = T.MathUtils.lerp(basin, to, zone.blend)
-      width = T.MathUtils.lerp(width, toWidth, zone.blend)
-    }
-    const amount = T.MathUtils.smoothstep(edge, 3.08, 3.08 + width)
-    return floor + (basin - floor) * amount
-  }
+  const earth = terrainElevation
   const sign = signAnchor(index, earth)
   const soil = new T.Color()
   const olive = new T.Color()

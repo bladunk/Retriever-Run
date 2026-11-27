@@ -340,9 +340,9 @@ export function createSound(onInterruption, probe) {
         frequency: clamp(5500 - distance * 78, 850, 5450), attack: .032, release: .13 })
     }
     if (wings) {
-      for (let beat = 0; beat < (near ? 3 : 2); beat++) {
-        rustle(trail, 'bandpass', vary(780, 1280), .083 * attenuation, .15,
-          .026 + beat * (type === 'goose' ? .158 : .109), pan, panTo, .032)
+      for (let beat = 0; beat < (type === 'pheasant' ? 4 : near ? 3 : 2); beat++) {
+        rustle(trail, 'bandpass', vary(780, 1280), .083 * attenuation * (type === 'pheasant' && beat === 0 ? 1.34 : 1), .15,
+          .021 + beat * (type === 'goose' ? .158 : type === 'pheasant' ? .125 : .109), pan, panTo, .032)
       }
     }
   }
@@ -363,6 +363,7 @@ export function createSound(onInterruption, probe) {
     },
     bird,
     prepareWildlife(id) {
+      if (id === 'canada-goose') id = 'goose'
       if (context && Object.hasOwn(sampleUrls, id) && !buffers.has(id)) void load(id)
     },
     settings(profile) {

@@ -14,11 +14,14 @@ export function openArtStudio(game, flags, api) {
   const form = document.createElement('form')
   details.append(form)
   form.addEventListener('submit', event => event.preventDefault())
-  const state = { moving: false, speed: 1, yaw: 0, pitch: 0, zoom: 1, take: 'Trail', playback: 'Idle' }
+  const state = { moving: false, speed: 1, yaw: 0, pitch: 0, zoom: 1, take: flags.get('view') === 'wildlife' ? 'Wildlife' : 'Trail', playback: 'Idle' }
   state.lighting = ['dawn','overcast','mist','rain','snow'].includes(flags.get('light')) ? flags.get('light') : 'route'
   state.nature = ['aurora','sunbreak'].includes(flags.get('nature')) ? flags.get('nature') : ''
   state.hazard = flags.get('hazard') === 'puddle' ? 'puddle' : ''
   state.hazardLane = Math.max(-1, Math.min(1, Number.parseInt(flags.get('lane'), 10) || 0))
+  state.wildlifeAction = ['Action','Flight','Glide','Flock'].includes(flags.get('motion')) ? flags.get('motion') : 'Approach'
+  state.fallback = flags.get('model') === 'fallback'
+  state.framing = flags.get('framing') === 'trail' ? 'trail' : 'animal'
   const saved = new URL(location.href)
 
   function label(text, control) {
@@ -68,7 +71,7 @@ export function openArtStudio(game, flags, api) {
   const graphics = presets.includes(flags.get('quality')) ? flags.get('quality') : api.quality
   select('Graphics', presets.map((key, i) => [key, ['Battery Saver','Balanced','High'][i]]), graphics, api.graphics)
   if (graphics !== api.quality) api.graphics(graphics)
-  select('View', [['Trail','Territory'], ['Wildlife','Wildlife'], ['Dog','Dog']], 'Trail', value => { state.take = value; api.reset() })
+  select('View', [['Trail','Territory'], ['Wildlife','Wildlife'], ['Dog','Dog']], state.take, value => { state.take = value; api.reset() })
   select('Trail hazard', [['','Course as played'],['puddle','Isolated puddle']],state.hazard,
     value => { state.hazard = value; api.reset() })
   select('Hazard lane', [[-1,'Left'],[0,'Middle'],[1,'Right']],String(state.hazardLane),
@@ -82,9 +85,12 @@ export function openArtStudio(game, flags, api) {
   const species = select('Wildlife species', Object.values(fieldSpecies).map(animal => [animal.id, animal.name]), flags.get('species') ?? 'deer',
     value => { state.species = value; api.reset() })
   state.species = species.value || 'deer'
-  select('Wildlife motion', [['Approach','Approach'],['Action','Flush, flight or gallop']], 'Approach',
-    value => { state.wildlifeAction = value === 'Action'; api.reset() })
-  select('Wildlife model', [['auto','Rig when available'],['fallback','Fallback']], 'auto',
+  select('Wildlife motion', [['Approach','Rest or approach'],['Action','Takeoff or ground movement'],
+    ['Flight','Powered flight'],['Glide','Glide or sustained flight'],['Flock','Platte crane migration']],state.wildlifeAction,
+    value => { state.wildlifeAction = value; api.reset() })
+  select('Wildlife framing', [['animal','Follow animal'],['trail','Gameplay camera']],state.framing,
+    value => { state.framing = value })
+  select('Wildlife model', [['auto','Default detail'],['fallback','Compact / unskinned']], state.fallback ? 'fallback' : 'auto',
     value => { state.fallback = value === 'fallback'; api.reset() })
   select('Dog', [['lab','Labrador'],['pointer','Pointer'],['boyd','Boyd']], api.breed, value => load('breed', value))
   select('Dog animation', ['Idle','Run','Jump','Slide','Land','Retrieve'].map(key => [key,key]), 'Idle',

@@ -1,3 +1,6 @@
+import { expeditionBlend } from './expedition.js'
+import { trailHeight } from './trail.js'
+
 const saturate = value => Math.min(1, Math.max(0, value))
 const dome = value => Math.exp(-value * value)
 
@@ -127,4 +130,19 @@ export function vegetationPocket(kind, distance, x) {
   const patch = .55 * Math.sin(distance * .085 + x * .021 + seed) + .38 * Math.cos(distance * .047 - x * .27)
   const grove = ['swamp', 'hardwood', 'parkland', 'boreal', 'foothills', 'alpine'].includes(kind)
   return grove ? patch + .20 : patch
+}
+
+
+export function terrainElevation(distance, x, zone = expeditionBlend(distance)) {
+  const edge = Math.abs(x)
+  const floor = trailHeight(distance, x) - .008
+  if (edge <= 3.08) return floor
+  let [basin, width] = shoreHeight(zone.from, distance, x)
+  if (zone.from !== zone.to) {
+    const [to, toWidth] = shoreHeight(zone.to, distance, x)
+    basin += (to - basin) * zone.blend
+    width += (toWidth - width) * zone.blend
+  }
+  const t = saturate((edge - 3.08) / ((3.08 + width) - 3.08))
+  return floor + (basin - floor) * t*t*(3 - 2*t)
 }

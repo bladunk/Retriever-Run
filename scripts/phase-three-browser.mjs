@@ -975,7 +975,7 @@ try {
   } else if (args.includes('living')) {
     const { planEncounter } = await fromSource('wildlife-encounters')
     const defaults = [['mallard','gulf'],['pheasant','farm'],['deer','farm'],['crane','platte'],
-      ['canada-goose','sandhills'],['moose','boreal'],['eagle','foothills'],['alligator','cypress']]
+      ['canada-goose','sandhills'],['moose','boreal'],['eagle','foothills'],['alligator','cypress'],['goldeneye','mountain']]
     const selected = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
     for (const [id, territory] of defaults) {
       if (selected.length && !selected.includes(id)) continue
@@ -990,7 +990,7 @@ try {
           const event = planEncounter(buildTile(tile, tile < 3 ? 0 : seed), seed)
           if (event?.species !== id || event.distance < region.marker + 45) continue
           const start = Math.max(0, event.distance - 43)
-          const end = event.distance - (id === 'pheasant' ? 16 : 21)
+          const end = args.includes('encounter-motion') ? event.distance + 9 : event.distance - (id === 'pheasant' ? 16 : 21)
           let left = 0, right = region.seconds + 35
           for (let n = 0; n < 30; n++) {
             const middle = (left + right) * .5
@@ -1012,6 +1012,14 @@ try {
       assert.ok(fixture,id)
       const { seed, event, start, end } = fixture
       await runAt(start,seed)
+      if (args.includes('encounter-motion')) {
+        const total = args.includes('short-motion') ? 12 : 24
+        for (let frame = 0; frame < total; frame++) {
+          await stepTo(start + 1.15 + frame * (end - start - 2) / (total-1))
+          await capture(id + '-' + String(frame).padStart(2, '0'), { seed, planned: event })
+        }
+        continue
+      }
       await stepTo(Math.max(start+1, event.distance-27))
       await capture(id+'-approach',{ seed, planned: event })
       await stepTo(end)

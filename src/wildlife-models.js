@@ -5,7 +5,6 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
 
 export const livingModels = {
-  pheasant: { url: new URL('./assets/wildlife/living-pheasant.glb', import.meta.url).href, face: 0, scaleAxis: 'z' },
   mallard: { url: new URL('./assets/wildlife/living-mallard.glb', import.meta.url).href, face: Math.PI, scaleAxis: 'z' },
   eagle: { url: new URL('./assets/wildlife/living-eagle.glb', import.meta.url).href, face: Math.PI, scaleAxis: 'z' },
   deer: { url: new URL('./assets/wildlife/living-deer.glb', import.meta.url).href, face: Math.PI, scaleAxis: 'z' },
@@ -66,8 +65,16 @@ export function createWildlifeModels(probe, loadModel = url => loader.loadAsync(
       scene.rotation.y = desc.face
       root.add(scene)
       const mix = new T.AnimationMixer(root)
+      // The encounter path supplies translation. Keep vertical rig motion
+      // while preventing authored clips from also pulling along the ground.
+      for (const clip of animations) for (const track of clip.tracks) {
+        if (track.name !== (id === 'deer' ? 'Main.position' : 'Root.position')) continue
+        for (let key=3; key<track.values.length; key+=3) {
+          track.values[key] = track.values[0]
+          track.values[key+2] = track.values[2]
+        }
+      }
       const actions = Object.fromEntries(animations.map(clip => [clip.name, mix.clipAction(clip)]))
-      if (id === 'pheasant') actions.Fly = actions['Take 001']
       const model = { root, mix, scale, actions }
       model.warmup = preparation(model)
       if (probe) for (const mesh of model.warmup.shades) {

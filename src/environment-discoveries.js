@@ -11,6 +11,10 @@ export const environmentalDiscoveries = {
     name: 'Sunbreak on the Eastern Slopes', territory: 'foothills', effect: 'sunbreak',
     note: 'Low sun caught the river and exposed rock below a breaking cloud bank.',
   },
+  'platte-crane-passage': {
+    name: 'Sandhill Cranes over the Platte', territory: 'platte',
+    note: 'Successive flocks passed over the river, their calls carrying across the sandbars.',
+  },
   'divide-aurora': {
     name: 'Aurora over the Divide', territory: 'mountain', effect: 'aurora',
     note: 'Green curtains crossed the snowy skyline after the last light faded.',

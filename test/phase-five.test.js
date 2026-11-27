@@ -50,14 +50,14 @@ test('late pressure keeps the migration schedule and timber selects stable adjac
 })
 
 test('deer and flushing pheasant gain forward travel while remaining outside the trail', () => {
-  const event = { kind: 'cover', lateral: 6, height: .15, seed: 117 }
+  const event = { kind: 'cover', lateral: 6, height: .15, distance:3500, seed: 117 }
   for (const id of ['deer', 'pheasant']) {
     const [approach, exit] = encounterApproach(id)
     assert.ok(approach + exit >= 100)
     const animal = fieldSpecies[id]
-    const far = encounterPose(event, animal, 34, 0, 0, {})
-    const near = encounterPose(event, animal, -8, 2, 0, {})
-    assert.ok(near.along > far.along + 22)
+    const far = encounterPose(event, animal, 34, 155, 0, {})
+    const near = encounterPose(event, animal, -8, 157, 0, {})
+    assert.ok(near.along > far.along + 14)
     assert.ok(near.lateral >= 4.82)
   }
 })

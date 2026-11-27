@@ -51,9 +51,12 @@ function occurrencesOf(category, plan, phase, length) {
 }
 
 export function trailSign(anchor, seed, messages = shortSignMessages) {
-  const region = regionAtDistance(anchor.distance).index
+  const territory = regionAtDistance(anchor.distance)
+  const region = territory.index
   const plan = plans[region]
   const local = anchor.ordinal - starts[region]
+  if (territory.key === 'foothills' && local === 0)
+    return { line:territory.name.toUpperCase(), category:'arrival', style:'north', region, maxLines:3 }
   const phase = regionalPhase(region, seed)
   const category = plan[(local + phase) % plan.length]
   let occurrences = occurrencesOf(category, plan, phase, local)

@@ -1,4 +1,5 @@
 import { fieldSpecies, encounterTiers, habitatEncounters } from './wildlife-catalog.js'
+import { distanceAtTime } from './difficulty.js'
 import { seededRandom, segmentLength } from './trail.js'
 
 const groundFamilies = new Set(['deer','moose','alligator','pheasant'])
@@ -25,6 +26,8 @@ export function planEncounter(packet, seed) {
     const animal = fieldSpecies[group[(start + offset) % group.length]]
     const preferred = habitatFor(animal)
     let candidates = anchors.filter(anchor => anchor.kind === preferred)
+    if (animal.family === 'wader' && anchors.some(anchor => anchor.kind === 'bank'))
+      candidates = anchors.filter(anchor => anchor.kind === 'bank')
     if (!candidates.length && preferred === 'water') candidates = anchors.filter(anchor => anchor.kind === 'flyover')
     if (!candidates.length) continue
     // Prefer near-bank habitat so a normal portrait camera has time to see
@@ -41,8 +44,21 @@ export function planEncounter(packet, seed) {
   return null
 }
 
-export function encounterVisible(ahead, projectedX, projectedY, projectedDepth, rendered) {
-  return rendered && ahead >= 5 && ahead <= 42 && Math.abs(projectedX) <= .88 &&
+export function cranePassage(seed, distance) {
+  return { id:'platte-crane-passage', discovery:'platte-crane-passage', species:'crane', territory:'platte',
+    rarity:'exceptional', migration:true, count:39, seed, kind:'open', distance, lateral:18.6, height:9.8 }
+}
+
+export function planWildlifeDiscovery(seed) {
+  // Version 1 of the wildlife schedule is independent of the course and
+  // independent of existing environmental events on the same route seed.
+  const random = seededRandom(Math.imul(seed ^ 0x64be91d7,0xa1d5327f))
+  const eligible = random() < .29
+  if (eligible) return cranePassage(seed,distanceAtTime(192+random()*5))
+}
+
+export function encounterVisible(ahead, projectedX, projectedY, projectedDepth, rendered, migration = false) {
+  return rendered && ahead >= 5 && ahead <= (migration ? 112 : 42) && Math.abs(projectedX) <= .88 &&
     Math.abs(projectedY) <= .88 && Math.abs(projectedDepth) <= 1
 }
 
