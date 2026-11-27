@@ -45,8 +45,37 @@ Configured production build `c09511a` contains **17,525,040 bytes** total, of wh
 
 - The complete automated suite passed **227 tests**. New assertions cover name validation, save migration, multiple local profiles, practice isolation, failed writes, garment geometry and finite transforms, full-catalog reuse and disposal. Swept collision, first contact, rapid jump/slide and body clearances remain covered. Production verification passed.
 - The signed course, obstacle generator, simulation, hit volumes and scoring modules are unchanged. Three long local signed replays reproduced RC.6’s previous scores of **38,067**, **45,850** and **66,583** at 54,203, 72,196 and 103,455 authoritative ticks. Distance, duration, retrieves and combo match the RC.6 records. Existing fingerprint fixtures verify both deterministic courses. No server or competition changes were needed.
-- Both hosted public leaderboard endpoints responded to read-only checks with HTTP 200 and zero records. No ranked games were submitted.
+- Both hosted public leaderboard endpoints responded to read-only checks with HTTP 200, `open: false` and zero records for `great-migration-1`. No ranked games were submitted.
 - The Northern Frontier and Living World route timing, Canadian Rocky Mountain Foothills name, wildlife collection, rare discovery, career and Lodge paths still use the existing implementations. Tests and the continuous offline journey exercise the shared route. Specific visual acceptance remains a separate activity.
+
+## Software performance comparison
+
+Real browser frame clock, seed 7, Battery Saver, 320 × 568 portrait, no recording, same trained input fixture through the opening 10 seconds, with other work sharing the software-rendering host. Numbers are reported as observed. They are too noisy to establish a mobile performance change.
+
+| Measured | RC.6 `7d3c626` | RC.7 `c09511a` |
+| --- | ---: | ---: |
+| FPS average | 1.6 | 1.8 |
+| Mean presentation interval | 618.28 ms | 553.56 ms |
+| Presentation intervals over 20 / 33.3 / 50 ms | 43 / 43 / 43 | 43 / 43 / 43 |
+| Worst presentation interval | 4,681 ms | 4,501 ms |
+| Mean / maximum CPU workload | 359.64 / 2,790 ms | 348.64 / 4,913 ms |
+| Wall samples flagged as discarded | 21 | 16 |
+| Final whole scene draws | 59 | 61 |
+| Final whole scene triangles | 119,445 | 122,547 |
+| Final shader programs | 20 | 21 |
+
+A matched WebKit startup sample used the same CSS dimensions, DPR 2, configured builds and seeded titles. One run was collected per installation state and build. The release timing sample used RC.7 review build `309d0c3`; the final runtime only changes the isolated Studio jump elevation.
+
+| Time in ms | RC.6 fresh | RC.7 fresh | RC.6 cached offline | RC.7 cached offline |
+| --- | ---: | ---: | ---: | ---: |
+| Startup ready | 34,037 | 32,736 | 22,809 | 31,079 |
+| Hunt input to first submission | 4,235 | 2,730 | 1,359 | 1,311 |
+| First CPU / renderer submission | 1,523 / 1,513 | 835 / 718 | 971 / 920 | 813 / 698 |
+| Next animation callback / first presentation interval | 6,480 / 2,562 | 4,624 / 2,062 | 1,690 / 686 | 1,772 / 701 |
+
+Fresh startup was quicker in the RC.7 software sample and cached readiness was slower. RC.7’s fresh trace also records Fern 02 shader initialization. Its cached trace records a texture upload and 104 ms of CPU texture preparation near first submission. The host was under substantial load, and those operations do not isolate any native presentation cause. The first-frame and vegetation preparation policies from RC.6 still apply. [Raw collected diagnostics](evidence/gun-dog/qa.json)
+
+The compact and modern WebKit Kennels kept renderer textures at **15** across four rounds of equipment changes. RC.6 settled at **21 geometries**, RC.7 at **24**, consistent with the added gear construction. The clip reuses the same skeletal and attachment resources. The outfit geometry test also verifies disposal and exercises all 154 entries including defaults. Repeated native rendering, energy and thermal performance remain owner checks.
 
 ## Art Studio and owner iPhone review
 
