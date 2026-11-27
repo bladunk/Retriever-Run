@@ -143,3 +143,9 @@ The compact and detailed Ring-necked Pheasant meshes, crane flight silhouette, a
 The signature Labrador is a further CC BY 4.0 sculpt of the game’s licensed working dog by kenchoo and all of life via 3DPets. Quaternius CC0 locomotion remains retargeted to the existing skeleton. The RC.6 runtime mesh was 893,212 bytes and the RC.7 runtime mesh is 953,856 bytes. Both use a 1536 × 1536 embedded coat. The material revision uses original anatomical pigment and short-fur shading. The Pointer and Boyd geometry, title and approved portrait derivatives retain their existing entries. [Model and motion sources](../../PORTRAIT.md#asset-credits)
 
 The vest construction, textile shading, camouflage fields, collar details, bandana mesh and Kennel illustrations are original project work. Design reference photos and branded textile patterns are absent from the assets. These additions are generated from code and have no separately downloaded image, audio or mesh file. [Asset sizes and reference links](GUN_DOG_REPORT.md)
+
+## RC.8 · Legacy interiors and exhibits
+
+`public/lodge/interior-1.webp` through `interior-5.webp` are original ImageGen room compositions commissioned by Retriever Run. They were cropped to portrait, optimized from 1024 × 1536 to 960 × 1120 and encoded as WebP. Material and architecture references are listed in the art notes. No product logos or reference photographs are distributed with the room plates. [Art direction and derivative workflow](../../art/LEGACY_ART.md)
+
+`bronze-flight.webp`, `skill-form.webp` and `certificate.webp` are original Blender renders by Retriever Run. The source models and their scene settings are in `art/blender/legacy-trophies.py`. `aurora-frame.webp` crops the project’s own in-game Northern Frontier renderer evidence. The existing Boyd imagery and Wildlife Journal photos retain their prior author and license entries.

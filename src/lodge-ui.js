@@ -391,13 +391,19 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
   const scroll = dialog.querySelector('.lodge-scroll')
   const tabs = [...dialog.querySelectorAll('[data-room]')]
   const picker = ui['lodge-room']
+  const rooms = node('nav', null, 'legacy-room-nav')
+  rooms.setAttribute('aria-label','Lodge rooms')
+  panel.before(rooms)
+  const lodgeRooms = { overview:'Cabin', collection:'Trophies', history:'Timeline', records:'Records',
+    migration:'Migration', career:'Ranks', trophies:'Honors', shame:'Camp humor' }
+  let demo
   const labels = { overview: 'Lodge overview', collection: 'Trophy room', trophies: 'Field Honors', career: 'Career and Master Hunter',
-    records: 'Personal records', migration: 'Great Migration', shame: 'Hall of Shame',
+    history: 'Career timeline', records: 'Personal records', migration: 'Great Migration', shame: 'Hall of Shame',
     kennel: 'Kennel', equipment: 'Equipment room', board: 'Local records', worldwide: 'Worldwide rankings', friends: 'Friends',
     'private-camps': 'Private Camps', 'camp-profile': 'Competitive profile', 'camp-archives': 'Archived standings' }
   const positions = new Map()
   const views = new Map()
-  const galleryRooms = new Set(['overview','collection','migration','equipment','shame','records'])
+  const galleryRooms = new Set(['overview','collection','migration','equipment','shame','records','history'])
   let room = 'overview'
   let target
   let request = 0
@@ -418,10 +424,11 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
   function renderRoom() {
     const intent = ++request
     onKennel(null)
-    const player = lodge.current()
+    const reading = demo ?? lodge
+    const player = reading.current()
     const group = primaryRoom(room)
     const title = ui['lodge-title']
-    if (group === 'overview') title.replaceChildren('The Outfitter’s ', node('em', 'Lodge'))
+    if (group === 'overview') title.replaceChildren('The ', node('em', 'Lodge'))
     else title.textContent = { kennel: 'Kennel', journal: 'Field Journal', worldwide: 'Worldwide', board: 'Camp' }[group]
     ui['close-lodge'].setAttribute('aria-label', 'Close ' + title.textContent)
     panel.setAttribute('aria-labelledby', 'tab-' + group)
@@ -429,7 +436,19 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
       if (tab.dataset.room === group) tab.setAttribute('aria-current', 'page')
       else tab.removeAttribute('aria-current')
     }
-    ui['room-picker'].hidden = room === 'worldwide' || roomGroups[group].length < 2
+    rooms.hidden = group !== 'overview'
+    rooms.replaceChildren(...Object.entries(lodgeRooms).map(([key,label]) => {
+      const button = node('button',label)
+      button.type = 'button'
+      button.dataset.lodgeRoom = key
+      if (key === room) button.setAttribute('aria-current','page')
+      button.addEventListener('click',() => {
+        selectRoom(key)
+        rooms.querySelector('[data-lodge-room="'+key+'"]')?.focus({ preventScroll:true })
+      })
+      return button
+    }))
+    ui['room-picker'].hidden = group === 'overview' || room === 'worldwide' || roomGroups[group].length < 2
     picker.replaceChildren(...roomGroups[group].map(key => {
       const option = node('option', labels[key])
       option.value = key
@@ -460,9 +479,9 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
     } else if (group === 'board' || group === 'worldwide') {
       content = [rankedRoom(room, rankedCamp, camp, player, { start: onStart, navigate: selectRoom, onJoin, onErase })]
     } else if (room === 'kennel') {
-      ({ content, stage } = kennelRoom(lodge, onAppearance, inspectDogs, breed => {
-        if (!lodge.selectBreed(breed)) return
-        onPlayer()
+      ({ content, stage } = kennelRoom(reading, onAppearance, inspectDogs, breed => {
+        if (!reading.selectBreed(breed)) return
+        if (!demo) onPlayer()
         renderRoom()
         panel.querySelector('.kennel-breeds').open = true
       }, target))
@@ -484,7 +503,10 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
         })
         return
       }
-      content = gallery(room, player, { lodge, target, competitive: rankedCamp.honors(player.id), navigate(value, detail) {
+      content = gallery(room, player, { lodge: reading, target, preview: Boolean(demo),
+        competitive: demo ? [] : rankedCamp.honors(player.id),
+        hunt: () => { if (demo || !onStart()) dialog.close() },
+        navigate(value, detail) {
         views.delete('overview')
         selectRoom(value, detail)
         tabs.find(tab => tab.dataset.room === primaryRoom(value))?.focus({ preventScroll: true })
@@ -499,11 +521,12 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
   function renderPlayers() {
     positions.clear()
     views.clear()
-    const player = lodge.current()
+    const reading = demo ?? lodge
+    const player = reading.current()
     ui['active-nickname'].textContent = 'Playing as ' + player.nickname
     ui.nickname.value = player.nickname
     const select = ui['local-player']
-    select.replaceChildren(...lodge.players().map(item => {
+    select.replaceChildren(...reading.players().map(item => {
       const option = node('option', item.nickname)
       option.value = item.id
       return option
@@ -513,12 +536,14 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
   }
 
   ui['local-player'].addEventListener('change', event => {
+    if (demo) return
     lodge.select(Number(event.currentTarget.value))
     onPlayer()
     renderPlayers()
   })
   ui['nickname-form'].addEventListener('submit', event => {
     event.preventDefault()
+    if (demo) return
     if (event.submitter?.value === 'new') {
       const name = ui.nickname.value.trim()
       lodge.newPlayer(name === lodge.current().nickname ? '' : name)
@@ -549,6 +574,8 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
   ui['close-lodge'].addEventListener('click', () => dialog.close())
   dialog.addEventListener('close', () => {
     request++
+    demo = undefined
+    dialog.removeAttribute('data-demo-lodge')
     views.clear()
     positions.clear()
     onKennel(null)
@@ -557,7 +584,9 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
     trigger?.focus({ preventScroll: true })
   })
   return {
-    open(button, targetRoom = 'overview', detail) {
+    open(button, targetRoom = 'overview', detail, demonstration) {
+      demo = demonstration
+      dialog.toggleAttribute('data-demo-lodge',Boolean(demo))
       trigger = button
       room = targetRoom
       target = detail

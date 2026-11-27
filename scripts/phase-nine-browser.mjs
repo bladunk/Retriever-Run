@@ -125,7 +125,11 @@ try {
   const panel = page.locator('#lodge-panel')
   const shot = name => page.screenshot({ path:resolve(output,name+'.png'),animations:'disabled',
     mask:[page.getByRole('textbox',{name:'Your friend code'}),page.getByRole('textbox',{name:'Camp invitation code'})], maskColor:'#304239' })
-  const room = name => page.locator('#lodge-room').selectOption(name)
+  const room = async name => {
+    const shortcut = page.locator('[data-lodge-room="'+name+'"]')
+    if (await shortcut.isVisible()) return shortcut.tap()
+    return page.locator('#lodge-room').selectOption(name)
+  }
   const openWorld = () => page.locator('#open-worldwide').tap()
   const waitText = text => panel.getByText(text,{ exact:false }).first().waitFor()
 
@@ -237,7 +241,7 @@ try {
   await waitText('Verified · Gold')
   await shot('competitive-honors')
   await room('collection')
-  await panel.getByLabel('Trophy category').selectOption('competitive')
+  await panel.getByRole('searchbox',{name:'Search trophies'}).fill('First Verified Hunt')
   await waitText('First Verified Hunt')
   await shot('competitive-trophy')
   await context.setOffline(true)

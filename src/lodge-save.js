@@ -10,7 +10,8 @@ import { migrationCourse } from './ruleset.js'
 import { validatedDogName } from './dog-name.js'
 import { defaultGear, kennelCatalog, legacyGear, ownedGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 import { advanceFieldwork, awardFieldHonors, masterHunterChecks, normalizeProgression, qualifyBoyd } from './progression.js'
-import { lodgeChanges, lodgeProgress, normalizeLodgeDisplay, recordLodgeGear, trophyFor, trophyLimit } from './lodge-progress.js'
+import { normalizeLegacyHistory, recordLegacyMilestones } from './legacy-history.js'
+import { availableFinish, completeMigrations, lodgeChanges, lodgeProgress, normalizeLodgeDisplay, recordLodgeGear, trophyFor, trophyLimit } from './lodge-progress.js'
 import { normalizeDiscoveries, recordDiscoveries } from './environment-discoveries.js'
 
 export const saveKey = 'retriever-run.record'
@@ -100,6 +101,7 @@ function normalizePlayer(raw, id, schema, practice) {
     player.progression.boyd = null
   player.kennel = normalizeKennel(legacy ? raw?.kennel ?? legacyGear(player.profile) : raw?.kennel,
     careerStanding(player.career), player.progression, previousStanding, priorLevel)
+  player.legacyHistory = normalizeLegacyHistory(practice ? null : raw?.legacyHistory)
   player.lodgeDisplay = normalizeLodgeDisplay(raw?.lodgeDisplay, player, practice)
   return player
 }
@@ -243,15 +245,29 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
     nameFor: id => save.players.find(player => player.id === id)?.nickname ?? 'Marsh Runner',
     board: (metric, course) => rankRuns(course ? save.entries.filter(run => (run.course ?? 'legacy-10') === course) : save.entries, metric),
     personalEntries: id => save.entries.filter(run => run.player === id),
-    toggleTrophy(id, key) {
+    setLodgeFinish(id, finish) {
+      if (practice || futureSave) return false
+      refresh()
+      const player = current()
+      if (id !== player.id || !availableFinish(finish, player)) return false
+      const prior = player.lodgeDisplay.finish
+      player.lodgeDisplay.finish = finish
+      if (commit()) return true
+      if (prior) player.lodgeDisplay.finish = prior
+      else delete player.lodgeDisplay.finish
+      return false
+    },
+    toggleTrophy(id, key, replace = null) {
       if (practice || futureSave) return false
       refresh()
       const player = save.players.find(player => player.id === id)
       if (!player || !trophyFor(player, key)) return false
       const prior = player.lodgeDisplay.pins
       const included = prior.includes(key)
-      if (!included && prior.length >= trophyLimit) return false
-      player.lodgeDisplay.pins = included ? prior.filter(pin => pin !== key) : [...prior, key]
+      if (replace !== null && (included || !prior.includes(replace))) return false
+      if (!included && replace === null && prior.length >= trophyLimit) return false
+      player.lodgeDisplay.pins = included ? prior.filter(pin => pin !== key)
+        : replace !== null ? prior.map(pin => pin === replace ? key : pin) : [...prior, key]
       if (commit()) return true
       player.lodgeDisplay.pins = prior
       return false
@@ -340,6 +356,8 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       if (!result) return null
       save.nextRun = Math.max(save.nextRun, runId + 1)
       const date = now().toISOString()
+      const firstHunt = !player.stats.runs && !player.profile.best && !player.profile.farthest && !player.profile.retrieves
+      const hadMigration = completeMigrations(player)
       const previousBest = player.profile.best
       const previousStanding = careerStanding(player.career)
       const oldGear = practice ? [] : ownedGear(player, previousStanding)
@@ -391,6 +409,9 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const currentGear = career ? ownedGear(player, career.after) : oldGear
       const gear = currentGear.filter(item => !previous.has(item.id))
       const lodge = !practice && plausible ? lodgeChanges(previousLodge, lodgeProgress(player, career.after, currentGear)) : null
+      if (!practice && plausible)
+        recordLegacyMilestones(player, previousStanding, career.after, lodge, firstHunt,
+          !hadMigration && completeMigrations(player), boyd, date)
       if (gear.length) recordLodgeGear(player.lodgeDisplay, gear)
       const entry = { ...result, id: runId, player: id, date }
       delete entry.wildlife

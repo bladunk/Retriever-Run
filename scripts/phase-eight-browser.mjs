@@ -59,7 +59,11 @@ try {
   const shot = name => page.screenshot({ path: outputFile(name), animations: 'disabled' })
   const panel = page.locator('#lodge-panel')
   const rooms = page.locator('#lodge-room')
-  const room = value => rooms.selectOption(value)
+  const room = async value => {
+    const shortcut = page.locator('[data-lodge-room="'+value+'"]')
+    if (await shortcut.isVisible()) return shortcut.tap()
+    return rooms.selectOption(value)
+  }
   const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), saveKey)
   const ready = () => page.waitForFunction(() => !document.querySelector('#game').hidden && !document.querySelector('#primary').disabled)
   const state = wanted => page.waitForFunction(value => document.querySelector('#game').dataset.mode === value, wanted)
@@ -188,7 +192,7 @@ try {
     await search.fill('cranE')
     assert.ok(await panel.locator('.lodge-trophy-list [data-trophy="observe:crane"]').count())
     assert.ok(await panel.locator('.lodge-trophy').count() <= 10)
-    await panel.getByLabel('Trophy category').selectOption('wildlife')
+    await panel.getByRole('button',{name:'Field finds',exact:true}).tap()
     await shot('collection-search')
     await page.locator('#tab-journal').tap()
     await panel.getByLabel('Wildlife group').selectOption('reptiles')

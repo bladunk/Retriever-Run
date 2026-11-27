@@ -1,3 +1,4 @@
+import { createLegacyPreview } from './legacy-preview.js'
 import { defaultGear, kennelCatalog } from './kennel-catalog.js'
 import { expeditionRegions } from './expedition.js'
 import { fieldSpecies } from './wildlife-catalog.js'
@@ -145,6 +146,19 @@ export function openArtStudio(game, flags, api) {
       api.renderer().textures + ' textures',
     ].join(' · ')
   })
+  const tiers = ['Hunting Shack','Retriever’s Cabin','Waterfowl Lodge','Flyway Estate','Master Hunter’s Lodge']
+  const requested = Math.min(5,Math.max(1,Math.floor(Number(flags.get('tier'))) || 1))
+  const tier = select('Lodge tier',tiers.map((name,index) => [String(index+1),name]),String(requested),() => {})
+  const rooms = { overview:'Cabin', collection:'Trophies', migration:'Great Migration', history:'Career timeline',
+    records:'Lifetime records', career:'Ranks and Boyd' }
+  const destination = Object.hasOwn(rooms,flags.get('room')) ? flags.get('room') : 'overview'
+  const room = select('Lodge room',Object.entries(rooms),destination,() => {})
+  function preview(trigger) {
+    const synthetic = createLegacyPreview(Number(tier.value))
+    api.lodge(trigger,room.value,flags.get('exhibit') ?? undefined,synthetic)
+  }
+  const legacy = button('Open Lodge preview',event => preview(event.currentTarget))
+  if (flags.get('view') === 'lodge') queueMicrotask(() => preview(legacy))
   const stats = document.createElement('output')
   stats.hidden = true
   form.append(stats)

@@ -8,8 +8,8 @@ import { createContentManifest, installation } from '../src/content-manifest.js'
 
 const worker = readFileSync(new URL('./offline-runtime.js', import.meta.url), 'utf8')
 const publicShell = ['manifest.webmanifest', 'icons/boyd-heritage-48.png', 'branding/boyd-install.webp']
-const lodgeArt = ['tier-1','tier-2','tier-3','tier-4','tier-5','decoy','pheasant','equipment','journal',
-  'legend','map','medal','observation','record','shame'].map(name => 'lodge/' + name + '.webp')
+const lodgeArt = ['interior-1','interior-2','interior-3','interior-4','interior-5','decoy','pheasant','equipment','journal',
+  'legend','map','medal','observation','record','shame','bronze-flight','skill-form','certificate','aurora-frame'].map(name => 'lodge/' + name + '.webp')
 const publicFiles = [...publicShell, ...lodgeArt, ...speciesPhotoFiles, 'icons/boyd-heritage-192.png', 'icons/boyd-heritage-512.png',
   'icons/boyd-heritage-maskable-512.png', 'icons/boyd-heritage-180.png', 'branding/boyd-portrait.webp', 'branding/boyd-menu.webp',
   'branding/master-hunter.png']

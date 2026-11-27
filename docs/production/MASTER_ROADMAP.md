@@ -39,27 +39,29 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 18 | Desirable waterfowl vests | Implemented in RC.7 draft · owner fit review pending | Existing cosmetics and fitting rig | Model authentic neoprene and waxed canvas with reinforced panels, recognizable stitching, seams and buckles. Keep equipment cosmetic. |
-| 19 | Camouflage and visibility fabrics | Implemented in RC.7 draft · native lighting review pending | Vest UVs and materials | Produce distinctive traditional duck and marsh camouflage plus practical blaze orange. Verify on dog under gameplay lighting. |
-| 20 | Triangular fabric bandanas and improved collars | Implemented in RC.7 draft · native motion review pending | Dog rigs and equipment slots | Use genuine neck drape and triangular fabric geometry. Keep collars legible, fitted and separate. |
+| 18 | Desirable waterfowl vests | Implemented in merged RC.7 · owner fit review pending | Existing cosmetics and fitting rig | Model authentic neoprene and waxed canvas with reinforced panels, recognizable stitching, seams and buckles. Keep equipment cosmetic. |
+| 19 | Camouflage and visibility fabrics | Implemented in merged RC.7 · native lighting review pending | Vest UVs and materials | Produce distinctive traditional duck and marsh camouflage plus practical blaze orange. Verify on dog under gameplay lighting. |
+| 20 | Triangular fabric bandanas and improved collars | Implemented in merged RC.7 · native motion review pending | Dog rigs and equipment slots | Use genuine neck drape and triangular fabric geometry. Keep collars legible, fitted and separate. |
 | 21 | Dog naming | Implemented · local and offline verification | Per-profile saves and Kennel | Let players name their dog with private, reversible, validated local storage. |
 | 22 | Natural reactions and personality | Partial · posture, breathing and movement implemented | Dog animation and sound mixer | Use restrained contextual reactions through transitions and encounters. Never interrupt input. |
-| 23 | Canine anatomy and coat rendering | Implemented in RC.7 draft · owner artistic review pending | Labrador, Pointer and approved Boyd asset | Improve rear and three-quarter anatomy and coat distinction. Preserve Boyd and keep existing reference photo protections. |
+| 23 | Canine anatomy and coat rendering | Implemented in merged RC.7 · owner artistic review pending | Labrador, Pointer and approved Boyd asset | Improve rear and three-quarter anatomy and coat distinction. Preserve Boyd and keep existing reference photo protections. |
 | 24 | Equipment fitting across dogs | Partial · catalog and pose checks pass | Existing breed rigs and slots | Verify equipment across body shapes and animations. Fix clipping and reproduce owned items on save reload. |
-| 25 | Visual Kennel | Implemented in RC.7 draft · physical-device review pending | Equipment ownership and pagination | Use game-style visual item cards and equipped/owned/locked states. Remove native spreadsheet-style selection flows. |
+| 25 | Visual Kennel | Implemented in merged RC.7 · physical-device review pending | Equipment ownership and pagination | Use game-style visual item cards and equipped/owned/locked states. Remove native spreadsheet-style selection flows. |
 
 ## RC.8 · Legacy
 
+[RC.8 Lodge and progression review](LEGACY_REPORT.md).
+
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 26 | Believable automatic cabin evolution | Prototype | Five Lodge tiers and original unlock rules | Make the relationship between hunting and the evolving cabin immediately understandable. Keep every upgrade automatic. |
-| 27 | Distinct trophies and regional memorabilia | Prototype | Honors, wildlife, migration and Lodge | Represent awards with sculptures, decoys, engraved plaques, photographs, maps and furnishings that reflect actual accomplishments. |
-| 28 | Personal hunting career timeline | Planned | Existing verified local history | Make milestones discoverable with dates even on migrated saves, and omit dates the save never recorded. |
-| 29 | Detailed lifetime statistics | Partial | Career and verified field statistics | Expose informative totals with consistent units and no invented historical metrics. |
-| 30 | Career rank celebrations | Partial | Hunt Over and replay | Give major ranks an optional memorable presentation with instant access to a new hunt. |
-| 31 | Selected decorations and favorite trophies | Partial | Lodge favorite IDs and display eligibility | Allow decorating owned spots and toggling earned displays. Preserve stable IDs and existing savestate. |
-| 32 | Display wildlife and environmental discoveries | Planned | RC.5 sightings and RC.6 wildlife | Show verified catalogue entries and provenance in the cabin. Keep observations distinct from retrieves. |
-| 33 | Exceptional accomplishments, Great Migration and Boyd | Partial | Master Hunter qualification, prestige and completion records | Build distinct long-term rewards, a migration celebration, and Boyd’s special tribute without loosening any qualifications. |
+| 26 | Believable automatic cabin evolution | Implemented in RC.8 draft · artistic review pending | Five Lodge tiers and original unlock rules | Make the relationship between hunting and the evolving cabin immediately understandable. Keep every upgrade automatic. |
+| 27 | Distinct trophies and regional memorabilia | Implemented in RC.8 draft · catalogue audit | Honors, wildlife, migration and Lodge | Represent awards with sculptures, decoys, engraved plaques, photographs, maps and furnishings that reflect actual accomplishments. |
+| 28 | Personal hunting career timeline | Implemented · known and dated milestones separated | Existing verified local history | Make milestones discoverable with dates even on migrated saves, and omit dates the save never recorded. |
+| 29 | Detailed lifetime statistics | Implemented · tracked totals and records separated | Career and verified field statistics | Expose informative totals with consistent units and no invented historical metrics. |
+| 30 | Career rank celebrations | Partial · rank insignia and dated milestones; animated celebrations remain RC.10 | Hunt Over and replay | Give major ranks an optional memorable presentation with instant access to a new hunt. |
+| 31 | Selected decorations and favorite trophies | Implemented · owned displays and finishes, local persistence | Lodge favorite IDs and display eligibility | Allow decorating owned spots and toggling earned displays. Preserve stable IDs and existing savestate. |
+| 32 | Display wildlife and environmental discoveries | Implemented · Journal-owned observations and environmental discoveries | RC.5 sightings and RC.6 wildlife | Show verified catalogue entries and provenance in the cabin. Keep observations distinct from retrieves. |
+| 33 | Exceptional accomplishments, Great Migration and Boyd | Implemented in RC.8 draft · owner artistic review pending | Master Hunter qualification, prestige and completion records | Build distinct long-term rewards, a migration celebration, and Boyd’s special tribute without loosening any qualifications. |
 
 ## RC.9 · Masterpiece
 
@@ -83,9 +85,31 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 | 44 | Jump and slide animation | Partial | Dog rigs and established collision timings | Improve anticipation and follow-through without changing timing or what the player can clear. |
 | 45 | Swipe responsiveness | Implemented, playtest pending | Existing input buffering and settings | Match touch intent without unexpected gestures on varied phones and refresh rates. |
 | 46 | Water splashes, mud and impact effects | Prototype | Terrain, colliders and effects budget | Use responsive splash and mud effects, subtle camera motion and readable feedback. Respect reduced motion. |
-| 47 | Exceptional-hunt celebrations and interactive Hunt Over | Partial | Hunt Over and verified personal bests | Animate score and statistics, fill XP across every level earned, show achievement progress meters, celebrate records and reveal rewards. Keep Play Again available immediately with no claim sequence. |
+| 47 | Exceptional-hunt celebrations and interactive Hunt Over | Partial | Hunt Over and verified personal bests | Animate score and statistics, fill XP across every level earned, show achievement progress meters and next accomplishment, celebrate records, reveal equipment and trophies, show Lodge upgrades and offer interactive reward previews. Keep Play Again available immediately and apply authoritative rewards exactly once without a claim sequence. |
 | 48 | Optional slow-motion death replay | Planned | Replay input history and camera | Show enough context to explain the collision. Keep optional, skippable and entirely off the immediate replay path. |
 | 49 | Optional haptics and one-tap replay | Implemented with platform limits | Feature detection and lifecycle | Keep replay immediately available. Verify supported haptics gracefully no-op on unsupported devices. |
+| 93 | Infinite Endless difficulty progression | Approved for RC.10 · future ruleset and owner approval before activation | Deterministic simulation, reachability proofs, signed replay compatibility, human survival distributions | Continue increasing sustained survival pressure after the Great Migration. Validate fair paths at 10, 15, 20, 30 and 60 minutes. See the full acceptance requirements below. |
+
+### Infinite Endless difficulty progression
+
+After the Great Migration, progressively combine harder obstacle sequences, reduce recovery opportunities, require longer chains of precise lane changes, jumps and slides, and ask for sustained concentration. Speed approaches a safe ceiling. Later escalation comes through complexity, timing precision and sustained execution. The intended result is an increasingly demanding survival competition whose leading results reflect exceptional skill.
+
+Every generated sequence must preserve reachable safe paths and physically achievable reaction windows. Hazards and collision boundaries remain visible and representative. Exclude arbitrary deaths, impossible sequences, unreachable lanes, unavoidable wildlife attacks and deliberate input delays. A finite set of fair mechanics limits instantaneous difficulty. Use that limit to design escalating pressure over time.
+
+Provisional targets for human calibration.
+
+| Total hunt time | Intended pressure |
+| --- | --- |
+| 0–2 minutes | Accessible |
+| 2–4 minutes | Challenging |
+| 4–6 minutes | Difficult |
+| 6–7:30 minutes | Expert |
+| 7:30–10 minutes | Elite |
+| 10–15 minutes | Extremely difficult |
+| 15–20 minutes | Exceptional skill required |
+| Beyond 20 minutes | Relentless survival |
+
+These bands are balancing proposals. Establish actual survival distributions with independent human playtesting across skill levels and device capabilities. Extend deterministic simulations to 10, 15, 20, 30 and 60 minutes and verify reachable safe paths through generated sequences. Version incompatible competition rules, retain historical signed replay verification and obtain owner approval before production activation. RC.8 preserves both existing courses.
 
 ## RC.11 · Developer Command Center
 
