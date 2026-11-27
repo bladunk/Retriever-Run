@@ -1,0 +1,260 @@
+{
+  "opening": {
+    "low": [
+      {
+        "seed": 7,
+        "distance": 57.75,
+        "buffer": [
+          275,
+          488
+        ],
+        "atlas": "compact",
+        "draws": 49,
+        "triangles": 120010,
+        "textures": 12,
+        "geometries": 43
+      },
+      {
+        "seed": 7,
+        "distance": 57.75,
+        "buffer": [
+          336,
+          596
+        ],
+        "atlas": "compact",
+        "draws": 49,
+        "triangles": 120010,
+        "textures": 12,
+        "geometries": 43
+      }
+    ],
+    "balanced": [
+      {
+        "seed": 7,
+        "distance": 57.75,
+        "buffer": [
+          390,
+          692
+        ],
+        "atlas": "full",
+        "draws": 56,
+        "triangles": 157771,
+        "textures": 23,
+        "geometries": 47
+      },
+      {
+        "seed": 7,
+        "distance": 57.75,
+        "buffer": [
+          416,
+          738
+        ],
+        "atlas": "full",
+        "draws": 55,
+        "triangles": 154641,
+        "textures": 23,
+        "geometries": 46
+      }
+    ],
+    "high": [
+      {
+        "seed": 7,
+        "distance": 57.75,
+        "buffer": [
+          502,
+          891
+        ],
+        "atlas": "full",
+        "draws": 55,
+        "triangles": 182102,
+        "textures": 22,
+        "geometries": 47
+      },
+      {
+        "seed": 7,
+        "distance": 57.75,
+        "buffer": [
+          502,
+          891
+        ],
+        "atlas": "full",
+        "draws": 55,
+        "triangles": 182102,
+        "textures": 24,
+        "geometries": 47
+      }
+    ]
+  },
+  "notice-approach": {
+    "low": [
+      {
+        "seed": 7,
+        "distance": 210.98,
+        "buffer": [
+          275,
+          488
+        ],
+        "atlas": "compact",
+        "draws": 57,
+        "triangles": 121024,
+        "textures": 13,
+        "geometries": 47
+      },
+      {
+        "seed": 7,
+        "distance": 210.98,
+        "buffer": [
+          336,
+          596
+        ],
+        "atlas": "compact",
+        "draws": 57,
+        "triangles": 121339,
+        "textures": 13,
+        "geometries": 47
+      }
+    ],
+    "balanced": [
+      {
+        "seed": 7,
+        "distance": 210.98,
+        "buffer": [
+          390,
+          692
+        ],
+        "atlas": "full",
+        "draws": 62,
+        "triangles": 162113,
+        "textures": 24,
+        "geometries": 52
+      },
+      {
+        "seed": 7,
+        "distance": 210.98,
+        "buffer": [
+          416,
+          738
+        ],
+        "atlas": "full",
+        "draws": 62,
+        "triangles": 162428,
+        "textures": 25,
+        "geometries": 52
+      }
+    ],
+    "high": [
+      {
+        "seed": 7,
+        "distance": 210.98,
+        "buffer": [
+          502,
+          891
+        ],
+        "atlas": "full",
+        "draws": 63,
+        "triangles": 190704,
+        "textures": 23,
+        "geometries": 54
+      },
+      {
+        "seed": 7,
+        "distance": 210.98,
+        "buffer": [
+          502,
+          891
+        ],
+        "atlas": "full",
+        "draws": 63,
+        "triangles": 191112,
+        "textures": 24,
+        "geometries": 54
+      }
+    ]
+  },
+  "delta-handoff": {
+    "low": [
+      {
+        "seed": 7,
+        "distance": 1516.74,
+        "buffer": [
+          275,
+          488
+        ],
+        "atlas": "compact",
+        "draws": 54,
+        "triangles": 106572,
+        "textures": 13,
+        "geometries": 55
+      },
+      {
+        "seed": 7,
+        "distance": 1516.67,
+        "buffer": [
+          336,
+          596
+        ],
+        "atlas": "compact",
+        "draws": 58,
+        "triangles": 122486,
+        "textures": 12,
+        "geometries": 54
+      }
+    ],
+    "balanced": [
+      {
+        "seed": 7,
+        "distance": 1516.67,
+        "buffer": [
+          390,
+          692
+        ],
+        "atlas": "full",
+        "draws": 64,
+        "triangles": 141188,
+        "textures": 24,
+        "geometries": 61
+      },
+      {
+        "seed": 7,
+        "distance": 1516.67,
+        "buffer": [
+          416,
+          738
+        ],
+        "atlas": "full",
+        "draws": 67,
+        "triangles": 160029,
+        "textures": 21,
+        "geometries": 61
+      }
+    ],
+    "high": [
+      {
+        "seed": 7,
+        "distance": 1516.67,
+        "buffer": [
+          502,
+          891
+        ],
+        "atlas": "full",
+        "draws": 65,
+        "triangles": 153428,
+        "textures": 24,
+        "geometries": 61
+      },
+      {
+        "seed": 7,
+        "distance": 1516.67,
+        "buffer": [
+          502,
+          891
+        ],
+        "atlas": "full",
+        "draws": 70,
+        "triangles": 172947,
+        "textures": 24,
+        "geometries": 61
+      }
+    ]
+  }
+}

@@ -31,22 +31,26 @@ The normal `?perf=1` export enables app-owned resource names. Add `&resources=0`
 
 ## Software browser measurements
 
-Chromium, SwiftShader, 320 × 568 CSS pixels at emulated DPR 2, the same seed sequence, game profile and production boot. Each cell shows RC.3 → RC.3.1 before the final oak UV and crown correction, which does not change launch or adaptive code. The figures are wall-clock observations of individual launches on a shared host.
+Chromium, SwiftShader, 320 × 568 CSS pixels at emulated DPR 2, the same seed sequence, game profile and production boot. Each cell shows RC.3 → RC.3.1 (`368a0bd`). The figures are wall-clock observations of individual launches on a shared host.
 
 | Launch | Ready from navigation | Hunt input to first submission | First submission CPU render |
 | --- | ---: | ---: | ---: |
-| Initial verified install | 9,582 → 10,758 ms | 691 → 242 ms | 430 → 107 ms |
-| Verified offline reload | 9,989 → 7,647 ms | 423 → 392 ms | 304 → 54 ms |
+| Initial verified install | 13,938 → 12,582 ms | 1,605 → 416 ms | 1,083 → 114 ms |
+| Verified offline reload | 12,863 → 12,900 ms | 569 → 141 ms | 448 → 45 ms |
 
-A rehearsal of the intermediate candidate showed the opposite ready-time pattern. The repeatable direction across the two software comparisons was lower first-submission work. Some covered title draws themselves took over one second on SwiftShader. Total startup and any tradeoff on iPhone Safari require matched native measurements. In the final fresh run, RC.3's plotted first-frame delta of 17 textures, 35 geometries and 17 programs started from the probe's previous zero totals. Actual counters were already 16, 20 and 12 at the Hunt input. RC.3.1's in-draw sample captured zero additional textures, five geometries and two programs. The new report separately saw one texture added from input to the end of the submission. [Final raw observations](evidence/clarity/startup-final.json) · [Earlier rehearsal](evidence/clarity/startup-rehearsal.json)
+Ready times varied across rehearsals, including slower cached launches and a slower initial install on different passes. First-hunt submission work declined on every paired browser run. Some covered title draws themselves took over one second on SwiftShader. Total startup and its tradeoffs on iPhone Safari require matched native measurements. In the fresh run, RC.3's first-frame delta of 17 textures, 35 geometries and 17 programs started from the probe's previous zero totals. The renderer already had assets at Hunt input. RC.3.1's in-draw sample captured zero additional textures, five geometries and two programs. The probe reports textures added between Hunt input and scene submission separately. [Final raw observations](evidence/clarity/startup-reviewed.json) · [Earlier matched runs](evidence/clarity/startup-final.json) · [Initial rehearsal](evidence/clarity/startup-rehearsal.json)
 
-The final cached launch spent about 329 ms verifying the cache, after about 3.5 seconds before reaching the bootstrap script's first marker. That split illustrates why the original iPhone's 2,366 ms before module request cannot be attributed specifically to GPU preparation or SHA-256 alone. Network and update state for that native sample remain unresolved.
+The final cached launch spent about 265 ms verifying the cache, after about 7.8 seconds before verification began. An earlier run measured about 329 ms of verification after about 3.5 seconds to reach the shell marker. This isolates SHA-256 verification from the longer pre-module delay. Network and update state remain unresolved for the owner's original iPhone sample.
 
 The packaged build is 17,863,088 bytes. The verified required assets total 17,776,267 bytes across 122 entries. Against the exact published RC.3 manifest, the candidate requires 1,728,843 bytes of changed required digests before HTTP compression. There are no new foliage image downloads. The visual geometry is in the bundled scene modules. The dependency and production database contracts are unchanged.
 
 ## Regression coverage
 
 `npm test` passed all 211 tests. New tests exercise the RC.3 cold-stall pattern, sustained downgrade and recovery, solid Delta and timber crowns, first-frame resource accounting and wildlife fallback eligibility. The production verifier passed the configured Pages subpath build. The unit suite covers both deterministic courses, legacy saves, cache validation, competitive restrictions and Studio isolation.
+
+The rendering pass exercised all 15 territories at Low in WebKit before the final timber UV correction. The final WebKit comparison revisited the Delta handoff and Flooded Timber at Balanced. Both comparisons rendered through the production gameplay camera. The Chromium viewport series measured 275 × 488 → 336 × 596 pixels at Battery Saver, 390 × 692 → 416 × 738 at Balanced, and 502 × 891 at High in both builds. The Low Delta frame rose from about 107,000 to 122,000 submitted triangles at the matched camera. [Gameplay gallery](evidence/clarity/REVIEW.md) · [Matched frame data](evidence/clarity/matched-scenes.json)
+
+An offline rendered hunt ran 95.09 simulated seconds into Flooded Timber, with 55 scripted inputs, peaks of seven terrain tiles, three habitat packs, 23 textures and 93 geometries. Four eligible wildlife encounters fell back because their two resident rigs were still preparing. That immediate-start test provides no evidence of better rig hit rates. The production browser update interrupted the Labrador download, resumed intact files, repaired a corrupted file, kept both saved hunts and deferred activation while a hunt or Lodge was open. The rendering soak and update ran on `973bc49`, the candidate before the timber UV correction. [Update observations](evidence/clarity/update.json) · [CI checks](https://github.com/bladunk/Retriever-Run/pull/42/checks)
 
 ## Native owner checklist
 
