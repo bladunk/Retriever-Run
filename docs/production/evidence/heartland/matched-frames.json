@@ -1,0 +1,662 @@
+{
+  "farm-5": {
+    "rc3.1": {
+      "seconds": 155,
+      "weather": "Heavy rain",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 65,
+      "triangles": 160608,
+      "textures": 20,
+      "geometries": 57,
+      "programs": 23,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 155,
+      "weather": "Heavy rain",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 67,
+      "triangles": 194047,
+      "textures": 18,
+      "geometries": 56,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "farm-15": {
+    "rc3.1": {
+      "seconds": 165,
+      "weather": "Heavy rain",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 68,
+      "triangles": 141171,
+      "textures": 20,
+      "geometries": 55,
+      "programs": 24,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 165,
+      "weather": "Heavy rain",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 70,
+      "triangles": 174618,
+      "textures": 19,
+      "geometries": 52,
+      "programs": 22,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "farm-27": {
+    "rc3.1": {
+      "seconds": 177,
+      "weather": "Windy",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 74,
+      "triangles": 178941,
+      "textures": 20,
+      "geometries": 65,
+      "programs": 23,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 177,
+      "weather": "Windy",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 74,
+      "triangles": 185689,
+      "textures": 18,
+      "geometries": 62,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "platte-5": {
+    "rc3.1": {
+      "seconds": 185,
+      "weather": "Windy",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 72,
+      "triangles": 140982,
+      "textures": 17,
+      "geometries": 62,
+      "programs": 23,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 185,
+      "weather": "Windy",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 71,
+      "triangles": 167300,
+      "textures": 17,
+      "geometries": 59,
+      "programs": 19,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "platte-15": {
+    "rc3.1": {
+      "seconds": 195,
+      "weather": "Windy",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 61,
+      "triangles": 147779,
+      "textures": 20,
+      "geometries": 60,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 195,
+      "weather": "Windy",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 64,
+      "triangles": 153162,
+      "textures": 17,
+      "geometries": 57,
+      "programs": 19,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "platte-27": {
+    "rc3.1": {
+      "seconds": 207,
+      "weather": "Windy",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 72,
+      "triangles": 135765,
+      "textures": 17,
+      "geometries": 57,
+      "programs": 22,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 207,
+      "weather": "Windy",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 70,
+      "triangles": 165533,
+      "textures": 16,
+      "geometries": 56,
+      "programs": 19,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "sandhills-5": {
+    "rc3.1": {
+      "seconds": 215,
+      "weather": "Snow",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 57,
+      "triangles": 107680,
+      "textures": 21,
+      "geometries": 53,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 215,
+      "weather": "Snow",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 61,
+      "triangles": 129721,
+      "textures": 20,
+      "geometries": 54,
+      "programs": 20,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "sandhills-15": {
+    "rc3.1": {
+      "seconds": 225,
+      "weather": "Snow",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 49,
+      "triangles": 97886,
+      "textures": 18,
+      "geometries": 49,
+      "programs": 18,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 225,
+      "weather": "Snow",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 49,
+      "triangles": 114168,
+      "textures": 17,
+      "geometries": 51,
+      "programs": 17,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "sandhills-27": {
+    "rc3.1": {
+      "seconds": 237,
+      "weather": "Snow",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 60,
+      "triangles": 104290,
+      "textures": 19,
+      "geometries": 58,
+      "programs": 20,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 237,
+      "weather": "Snow",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 61,
+      "triangles": 123269,
+      "textures": 19,
+      "geometries": 56,
+      "programs": 19,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "prairie-5": {
+    "rc3.1": {
+      "seconds": 245,
+      "weather": "Sleet",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 56,
+      "triangles": 128544,
+      "textures": 20,
+      "geometries": 53,
+      "programs": 19,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 245,
+      "weather": "Sleet",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 57,
+      "triangles": 133174,
+      "textures": 17,
+      "geometries": 52,
+      "programs": 18,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "prairie-15": {
+    "rc3.1": {
+      "seconds": 255,
+      "weather": "Sleet",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 56,
+      "triangles": 115173,
+      "textures": 16,
+      "geometries": 57,
+      "programs": 19,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 255,
+      "weather": "Sleet",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 58,
+      "triangles": 122625,
+      "textures": 17,
+      "geometries": 56,
+      "programs": 18,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "prairie-27": {
+    "rc3.1": {
+      "seconds": 267,
+      "weather": "Sleet",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 58,
+      "triangles": 121022,
+      "textures": 20,
+      "geometries": 54,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 267,
+      "weather": "Sleet",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 59,
+      "triangles": 132979,
+      "textures": 18,
+      "geometries": 52,
+      "programs": 19,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "dakota-5": {
+    "rc3.1": {
+      "seconds": 275,
+      "weather": "Sleet",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 43,
+      "triangles": 96758,
+      "textures": 17,
+      "geometries": 47,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 275,
+      "weather": "Sleet",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 46,
+      "triangles": 110468,
+      "textures": 17,
+      "geometries": 45,
+      "programs": 18,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "dakota-15": {
+    "rc3.1": {
+      "seconds": 285,
+      "weather": "Autumn sunrise",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 57,
+      "triangles": 119948,
+      "textures": 20,
+      "geometries": 55,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 285,
+      "weather": "Autumn sunrise",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 63,
+      "triangles": 135331,
+      "textures": 16,
+      "geometries": 53,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  },
+  "dakota-27": {
+    "rc3.1": {
+      "seconds": 297,
+      "weather": "Autumn sunrise",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.3.1",
+        "id": "368a0bd"
+      },
+      "draws": 45,
+      "triangles": 103045,
+      "textures": 19,
+      "geometries": 47,
+      "programs": 21,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    },
+    "rc4": {
+      "seconds": 297,
+      "weather": "Autumn sunrise",
+      "seed": 7,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "draws": 51,
+      "triangles": 119903,
+      "textures": 19,
+      "geometries": 47,
+      "programs": 19,
+      "canvas": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      }
+    }
+  }
+}

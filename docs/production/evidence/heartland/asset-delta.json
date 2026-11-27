@@ -1,0 +1,45 @@
+{
+  "before": {
+    "version": "1.0.0-rc.3.1",
+    "id": "368a0bd"
+  },
+  "after": {
+    "version": "1.0.0-rc.4",
+    "id": "a524eac"
+  },
+  "bytes": 2323338,
+  "changes": [
+    {
+      "path": "assets/index-BGyMZSGR.js",
+      "bytes": 26637
+    },
+    {
+      "path": "assets/lab-TNA1jcII.js",
+      "bytes": 15714
+    },
+    {
+      "path": "assets/lodge-gallery-DOWaa98g.js",
+      "bytes": 15793
+    },
+    {
+      "path": "assets/main-YTLwJXdd.js",
+      "bytes": 1083947
+    },
+    {
+      "path": "assets/terrain-worker-D8DQh5Za.js",
+      "bytes": 599930
+    },
+    {
+      "path": "assets/three-core-Dlio5SiI.js",
+      "bytes": 240081
+    },
+    {
+      "path": "assets/three-webgl-MhpiZwWe.js",
+      "bytes": 324301
+    },
+    {
+      "path": "index.html",
+      "bytes": 16935
+    }
+  ]
+}

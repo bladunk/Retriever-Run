@@ -210,12 +210,12 @@ try {
           // Deliver the scripted input on its original simulation tick.
           // The number of ticks between frames can vary while tiles stream.
           const nextTick = () => replay.next < replay.inputs.length ?
-            Math.round(replay.inputs[replay.next].at * 120) - replay.firstTick : Infinity
+            Math.round(replay.inputs[replay.next].at * 120) - (replay.firstTick ?? 0) : Infinity
           while (nextTick() <= state.ticks) {
             window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
           }
           const autoTest = replay.autoTest
-          const budget = autoTest ? state.elapsed < 5.2 ? 4 : 2 : 15
+          const budget = autoTest ? state.elapsed < 5.2 ? 4 : 2 : replay.ticksPerCallback ?? 15
           const ticksToInput = nextTick() - state.ticks
           if (autoTest && !replay.opener && ticksToInput > 24) {
             stamp += 324
@@ -747,12 +747,12 @@ try {
   } else if (args.includes('puddle-views')) {
     const only = args.filter(arg => arg.startsWith('only=')).map(arg => arg.slice(5))
     const lookahead = Number(args.find(arg => arg.startsWith('lookahead='))?.slice(10) ?? 19)
-    const fixtures = [7,11,13,19,29,47].flatMap(seed => rowsFor(seed,490).flatMap(row =>
+    const fixtures = [7,11,13,19,29,47].flatMap(seed => rowsFor(seed,450).flatMap(row =>
       row.entities.filter(entity => entity.type === 'puddle').map(entity => ({ seed, time:row.time, entity }))))
     for (const region of expeditionRegions) {
       if (only.length && !only.includes(region.key)) continue
       const options = fixtures.filter(({ time }) => time > region.seconds + 4 &&
-        time < (expeditionRegions[region.index+1]?.seconds ?? 490) - 1)
+        time < (expeditionRegions[region.index+1]?.seconds ?? 450) - 1)
       const { seed, entity } = options.find(({ entity }) => entity.lane === 0) ?? options[0]
       const distance = entity.distance - lookahead
       await runAt(distance,seed)
@@ -778,6 +778,7 @@ try {
   } else if (args.includes('soak')) {
     const duration = Number(args.find(arg => arg.startsWith('seconds='))?.slice(8) ?? 45)
     const from = Number(args.find(arg => arg.startsWith('from-seconds='))?.slice(13) ?? 0)
+    const ticksPerCallback = args.includes('fast-long') ? 27 : 15
     assert.ok(Number.isInteger(duration) && duration >= 15 && duration <= 480)
     assert.ok(Number.isInteger(from) && from >= 0 && from <= duration-15)
     const seed = 7
@@ -788,10 +789,10 @@ try {
     if (autoTest) assert.ok(precise && quality === 'auto' && duration >= 18)
     if (precise) await openAt(start, seed)
     else await runAt(start, seed)
-    await page.evaluate(({ inputs, duration, fast, precise, autoTest, from }) => {
+    await page.evaluate(({ inputs, duration, fast, precise, autoTest, from, ticksPerCallback }) => {
       window.phaseThreeQA.soak = { inputs, duration, fast, precise, autoTest,
-        firstTick:from*120, next:0, nextSample:from, samples:[] }
-    }, { inputs, duration, fast: args.includes('fast'), precise, autoTest, from })
+        ticksPerCallback, firstTick:from*120, next:0, nextSample:from, samples:[] }
+    }, { inputs, duration, fast: args.includes('fast'), precise, autoTest, from, ticksPerCallback })
     const videoStart = args.includes('video') ? (performance.now() - recordingStarted) / 1000 : null
     if (precise) {
       if (args.includes('offline')) await context.setOffline(true)

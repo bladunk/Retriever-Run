@@ -1,6 +1,6 @@
 # Operation Wilderness | Heartland RC.4
 
-Heartland starts from merged Clarity commit `c4a29e579120c80552a7ee45eb201305bf06a93f` on `codex/retriever-run-wilderness-heartland`. The published comparison build and owner-tested iPhone baseline are `1.0.0-rc.3.1 · 368a0bd`, manifest `e66178643922f5bd4132`. The configured candidate is `1.0.0-rc.4 · a524eac`, manifest `d6a6f0cbc30f9b8a2920`.
+Heartland starts from merged Clarity commit `c4a29e579120c80552a7ee45eb201305bf06a93f` on `codex/retriever-run-wilderness-heartland`. The published comparison build and owner-tested iPhone baseline are `1.0.0-rc.3.1 · 368a0bd`, manifest `e66178643922f5bd4132`. The configured candidate is `1.0.0-rc.4 · a524eac`, manifest `d6a6f0cbc30f9b8a2920`. [Draft PR #43](https://github.com/bladunk/Retriever-Run/pull/43)
 
 The largest changes are the Sandhills' off-trail dune relief, the Platte's shallow channels and depositional bars, and the farm-to-wetland sequence. Across the entire route, trail puddles now use a ground-conforming surface and derive their waterline from the existing collision footprint. Both deterministic courses retain their existing timing, simulation, scoring, signed rules and hazard volumes.
 
@@ -28,13 +28,33 @@ The permanent charter standard requires a moving camera review across presets an
 
 ## Performance and assets
 
-The owner measured RC.3.1 at 60.0 FPS, 2.80 ms mean CPU per frame, 696 ms startup-ready, and 7 ms from the latest restart input to scene submission. The next animation callback took 41 ms, and the first presentation interval was 71 ms. The first scene submission itself used 2 ms CPU. Those markers concern different points in the frame, and they do not localize the physical restart stall.
+The owner measured RC.3.1 at 60.0 FPS, 2.80 ms mean CPU per frame, 696 ms startup-ready, and 7 ms from the latest restart input to scene submission. The next animation callback took 41 ms, and the first presentation interval was 71 ms. The first scene submission itself used 2 ms CPU. Those markers concern different points in the frame, and they do not localize the physical restart stall. [Owner's native comparison data](evidence/heartland/native-rc31-owner.json)
 
 Two of the three over-50-ms samples were associated with Fern 02 preparation. The named texture and shader calls explain the work present in those samples but do not establish browser or GPU causation. RC.4 lets one already prepared pack span a gap of at most 460 m beyond the last regional request. The extra hold does not start a load, and manual Battery Saver is ineligible for it. Existing tile references can outlive a demand boundary while their tile drains. The repeat pack's estimated cost is at most 16 MiB for three 1K RGBA8 mipmapped maps. The pack and shader preparation were already in the original startup path. Native follow-up should verify whether the repeated Gulf and Delta preparations decline and whether the longer residency affects heat or pressure.
 
-Required offline bytes are 17,806,380 across 122 entries. The complete configured build is 17,893,197 bytes. The two original grass meshes are baked from 52,248 bytes of author GLB to a 19,700-byte optimized review GLB and bundled as indexed packed data. The author and review GLBs stay in development. The full terrain atlas remains 2,560 × 2,048, an estimated 27,962,027 bytes in RGBA8 with mipmaps. The vegetation, horizon and puddles add zero textures. [Asset register](ASSET_LICENSES.md)
+Required offline bytes are 17,806,380 across 122 entries. The complete configured build is 17,893,197 bytes. The incremental change is 2,323,338 required bytes before HTTP compression, including changed chunk names and contents. The two original grass meshes compile to 22,852 bytes of packed source and approximately 35,276 bytes of shared decoded geometry. Blender produced a 52,248-byte author GLB and the packer produced a 19,700-byte optimized review GLB. Both remain in development. The full terrain atlas remains 2,560 × 2,048, an estimated 27,962,027 bytes in RGBA8 with mipmaps. The vegetation, horizon and puddles add zero textures. [Asset register](ASSET_LICENSES.md) · [Incremental digest change](evidence/heartland/asset-delta.json)
 
-The public Worldwide standings and fallback score RPCs both responded HTTP 200 with an empty list in `great-migration-1`. This pass uses the existing read paths and does not exercise the live ranked verifier.
+The public Worldwide standings and fallback score RPCs both responded HTTP 200 with an empty list and `open: false` in `great-migration-1`. This pass uses the existing read paths and does not exercise the live ranked verifier.
+
+### Matched running-camera resources
+
+Seed 7. Balanced. Chromium's software renderer at 320 × 568 CSS pixels with a 416 × 738 drawing buffer. Each observation was captured fifteen seconds into the named territory. Counts are active Three.js resources or submitted work for the pictured frame.
+
+| Scene | Draws RC.3.1 → RC.4 | Triangles | Textures | Geometries | Programs |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Farm | 68 → 70 | 141,171 → 174,618 | 20 → 19 | 55 → 52 | 24 → 22 |
+| Platte | 61 → 64 | 147,779 → 153,162 | 20 → 17 | 60 → 57 | 21 → 19 |
+| Sandhills | 49 → 49 | 97,886 → 114,168 | 18 → 17 | 49 → 51 | 18 → 17 |
+| Prairie Potholes | 56 → 58 | 115,173 → 122,625 | 16 → 17 | 57 → 56 | 19 → 18 |
+| Northern Dakota | 57 → 63 | 119,948 → 135,331 | 20 → 16 | 55 → 53 | 21 → 21 |
+
+The farm has the biggest addition at this camera, approximately 24% more triangles. It includes the rim vegetation, more standing crop and the farther grounded farm structures. Texture and geometry counts changed in both directions as the selected scenery changed. These captures cannot establish physical frame pacing or GPU memory. [15 matched gameplay comparisons](evidence/heartland/REVIEW.md) · [Frame data](evidence/heartland/matched-frames.json)
+
+## Regression results
+
+All 214 automated tests passed in GitHub Actions, including both deterministic courses, production asset integrity and all-territory terrain continuity. The new tests cover the collision-derived puddle shape, rendered-ground intersections in 45 region-and-lane combinations, and Heartland elevation and water conditions. The configured production build passed manifest and Pages subpath verification. [CI](https://github.com/bladunk/Retriever-Run/pull/43/checks)
+
+The production browser interrupted a fresh Labrador download, resumed with verified files, repaired a deliberately damaged asset, and reused the existing audio on update from RC.3.1 to RC.4. Two saved hunts persisted. Open Lodge and Hunt screens deferred activation. The independent WebKit Art Studio rehearsal changed the puddle lane, changed graphics, ran the camera and confirmed that the normal profile fixture was untouched. [Offline update](evidence/heartland/update.json) · [Studio isolation](evidence/heartland/studio.json)
 
 ## Art Studio and iPhone acceptance
 

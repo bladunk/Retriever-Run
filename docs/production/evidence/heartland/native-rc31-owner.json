@@ -1,0 +1,52 @@
+{
+  "source": "Owner-supplied physical iPhone Safari diagnostic summary",
+  "build": "1.0.0-rc.3.1 · 368a0bd",
+  "hunts": 3,
+  "frames": 20807,
+  "measuredGameplaySecondsApprox": 347,
+  "fpsAverage": 60,
+  "meanPresentationMs": 16.68,
+  "meanCpuMs": 2.80,
+  "intervalsOver20Ms": 346,
+  "intervalsOver33_3Ms": 12,
+  "intervalsOver50Ms": 3,
+  "maxPresentationMs": 71,
+  "maxCpuMs": 37,
+  "discardedSimulationSamples": 0,
+  "startupReadyMs": 696,
+  "restart": {
+    "inputToSubmitMs": 7,
+    "firstCpuMs": 2,
+    "firstRenderMs": 1,
+    "nextCallbackMs": 41,
+    "firstPresentationMs": 71
+  },
+  "reached": "Dakota Prairie Potholes",
+  "tiles": 7,
+  "peakTextures": 30,
+  "peakGeometries": 132,
+  "graphics": {
+    "preset": "auto",
+    "finalDetail": 2,
+    "scale": 1.57,
+    "deviceDpr": 3,
+    "buffer": [631, 1120],
+    "atlas": [2560, 2048],
+    "estimatedAtlasRgbaMipBytes": 27962027,
+    "sign": [1024, 448],
+    "signFilter": "trilinear mipmap",
+    "signAnisotropyRequested": 8
+  },
+  "wildlife": {
+    "rigged": 19,
+    "fallback": 5,
+    "fallbackReason": "outside resident pool",
+    "residentRigs": 2,
+    "evictions": 1,
+    "releasedBoneTextures": 1
+  },
+  "fern02Associations": [
+    {"territory": "Gulf Coast Marsh", "preparationElapsedMs": 45, "texturesMs": [12, 6, 5], "geometryMs": 0, "shaderMs": 12, "presentationMs": 57, "cpuMs": 14, "renderMs": 0},
+    {"territory": "Mississippi Delta", "preparationElapsedMs": 46, "texturesMs": [10, 6, 6], "geometryMs": 0, "shaderMs": 12, "presentationMs": 54, "cpuMs": 10, "renderMs": 0}
+  ]
+}

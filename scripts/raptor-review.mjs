@@ -3,6 +3,7 @@ import { createServer } from 'node:http'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { extname, resolve, sep } from 'node:path'
 import { chromium, devices, webkit } from 'playwright'
+import { distanceAtTime } from '../src/difficulty.js'
 
 const output = resolve(process.env.FIELD_QA_OUTPUT ?? 'qa-output/raptor')
 const roots = new Map([
@@ -103,6 +104,31 @@ try {
       })
     }
   }
+  else if (process.argv.includes('heartland-studio')) await inspect('studio',{width:320,height:568},async (page,prefix) => {
+    const center = Math.floor(distanceAtTime(195) / 30)
+    const terrainReady = (atlas) => page.waitForFunction(({ center, atlas }) => {
+      const perf = window.retrieverPerformance?.()
+      return document.querySelector('#game').dataset.mode === 'studio' && perf?.territory === 'platte' &&
+        perf.surfaces?.active === atlas && [center,center+1,center+2].every(index => perf.foliage.some(tile=>tile.index===index))
+    },{center,atlas},{timeout:65000})
+    await page.addInitScript(() => localStorage.setItem('retriever-run.record','{"fixture":"preserve normal save"}'))
+    await open(page,prefix+'?studio=1&perf=1&territory=7&seed=7&offset=15&hazard=puddle&light=rain&quality=low')
+    await terrainReady('compact')
+    await page.screenshot({path:resolve(output,'puddle-rain-low.png')})
+    await page.locator('#art-studio summary').click()
+    assert.equal(await page.getByLabel('Trail hazard').inputValue(),'puddle')
+    await page.getByLabel('Hazard lane').selectOption('1')
+    await page.getByLabel('Graphics', { exact:true }).selectOption('high')
+    await terrainReady('full')
+    await page.locator('#art-studio summary').click()
+    await page.screenshot({path:resolve(output,'puddle-rain-high.png')})
+    await page.locator('#art-studio summary').click()
+    await page.getByRole('button',{name:'Play camera'}).click()
+    await page.getByRole('button',{name:'Stop camera'}).waitFor()
+    assert.equal(await page.evaluate(() => localStorage.getItem('retriever-run.record')),'{"fixture":"preserve normal save"}')
+    samples.push({ territory:'platte', weather:'heavy rain', seed:7, isolated:true,
+      build:await page.evaluate(() => window.retrieverPerformance().build) })
+  },2)
   else if (process.argv.includes('worldwide')) for (const combine of [true, false]) {
     await inspect('after',{width:320,height:568},async (page,prefix) => {
       const calls = []
@@ -204,7 +230,7 @@ try {
       })
     }
   }
-  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio','clarity-startup'].includes(arg))) {
+  if (!process.argv.some(arg => ['titles','resources','worldwide','idle','southern-studio','heartland-studio','clarity-startup'].includes(arg))) {
     await inspect('studio',{width:390,height:844},async (page,prefix) => {
       await open(page,prefix+'?studio=1&perf=1&territory=13&seed=7&breed=boyd')
       await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio')

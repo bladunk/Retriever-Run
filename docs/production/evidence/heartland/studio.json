@@ -1,0 +1,15 @@
+{
+  "engine": "webkit",
+  "samples": [
+    {
+      "territory": "platte",
+      "weather": "heavy rain",
+      "seed": 7,
+      "isolated": true,
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      }
+    }
+  ]
+}
