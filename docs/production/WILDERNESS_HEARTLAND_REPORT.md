@@ -59,7 +59,9 @@ This paired SwiftShader run used the same small viewport, DPR 2, seed generator 
 | Fresh install | 16,787 → 17,013 ms | 864 → 530 ms | 295 → 295 ms |
 | Cached offline reload | 15,713 → 16,122 ms | 357 → 580 ms | 58 → 507 ms |
 
-The cached RC.4 sample had a 4,835 ms first reported presentation interval during concurrent software rendering checks. It also first submitted ten geometries and three program variants, compared with five and one in the cached baseline. The sample is retained. This comparison raises a cached-launch question and gives no sound estimate of the change on iPhone. Check cold, warm and offline first hunts under comparable native conditions. [Startup phases and slow-frame observations](evidence/heartland/startup.json)
+The cached RC.4 sample had a 4,835 ms first reported presentation interval during concurrent software rendering checks. It also first submitted ten geometries and three program variants, compared with five and one in the cached baseline.
+
+In a quieter repeat, fresh ready time was 5,411 → 4,666 ms and cached ready time was 3,875 → 2,807 ms. First submission was 127 → 68 ms fresh and 124 → 91 ms cached. The cached first presentation interval remained uneven at 21 → 920 ms. In the RC.4 interval the renderer call took about 5 ms of the 917 ms CPU workload. Named events include Fern 02 shader initialization, terrain readiness, the next Gulf tile's geometry uploads and audio decode completion. The earlier version also showed a long, fern-associated interval in its fresh run. The traces establish work coincident with these stalls. They cannot apportion driver and browser costs or establish a repeatable startup change on iPhone. Check cold, warm and offline first hunts under comparable native conditions. [Concurrent launch trace](evidence/heartland/startup.json) · [Quieter launch trace](evidence/heartland/startup-quieter.json)
 
 ### Matched offline motion and replay
 
@@ -78,13 +80,15 @@ The paired Chromium runs started at 180 simulated seconds and continued to 225.1
 | Worst software CPU frame work | 8,425 ms | 4,584 ms |
 | Worst measured tile integration slice | 9.1 ms | 42.4 ms |
 
-These were individual software runs with concurrent checks and substantial outliers. The large tile slice warrants a look in the native trace. Six equivalent offline Battery Saver restarts on RC.4 ended at 44 geometries, 12 textures and seven terrain tiles each, without changing the normal profile fixture. [Moving frame checks and raw samples](evidence/heartland/motion.json) · [Restart cycles](evidence/heartland/restarts.json)
+These were individual software runs with concurrent checks and substantial outliers. The large tile slice warrants a look in the native trace. A separate overloaded real-clock recording discarded 19 simulation samples in each build. The motion clip uses matching fixed-step frames to keep that host scheduling variation out of the visual comparison. Six equivalent offline Battery Saver restarts on RC.4 ended at 44 geometries, 12 textures and seven terrain tiles each, without changing the normal profile fixture. [Moving frame checks and raw samples](evidence/heartland/motion.json) · [Real-clock trace](evidence/heartland/natural-platte.json) · [Restart cycles](evidence/heartland/restarts.json)
 
 An uninterrupted offline software run reached 120.02 simulated seconds before the long render was stopped for execution time. A separate offline fixture ran from 446 to 461.04 simulated seconds through the final territory and into Endless. It used 20 scripted inputs and peaked at seven tiles, 12 textures and 73 geometries. The initial deep-start fixture briefly had only four tiles past its two-second lookahead deadline. The settled fixture waited for the relocated tiles before releasing its clock. The initial and settled samples remain available. [Endless capture](evidence/heartland/endless-approach.webp) · [Settled run](evidence/heartland/endless-approach.json) · [Direct relocation trace](evidence/heartland/endless-relocation.json)
 
 ## Regression results
 
 All 214 automated tests passed in GitHub Actions, including both deterministic courses, production asset integrity and all-territory terrain continuity. The new tests cover the collision-derived puddle shape, rendered-ground intersections in 45 region-and-lane combinations, and Heartland elevation and water conditions. The configured production build passed manifest and Pages subpath verification. [CI](https://github.com/bladunk/Retriever-Run/pull/43/checks)
+
+The controlled Chromium Auto run used a 324 ms opener, then sustained pressure and controlled recovery. The rendered preset changed from Balanced to Low at about four simulated seconds, returned to Balanced at nine and reached High at thirteen and a half. Every observed step kept the full terrain atlas. Independent WebKit checks rendered all five Heartland regions at Battery Saver and High. [Auto transitions](evidence/heartland/auto.json) · [Fixed presets](evidence/heartland/webkit-presets.webp)
 
 The production browser interrupted a fresh Labrador download, resumed with verified files, repaired a deliberately damaged asset, and reused the existing audio on update from RC.3.1 to RC.4. Two saved hunts persisted. Open Lodge and Hunt screens deferred activation. The independent WebKit Art Studio rehearsal changed the puddle lane, changed graphics, ran the camera and confirmed that the normal profile fixture was untouched. [Offline update](evidence/heartland/update.json) · [Studio isolation](evidence/heartland/studio.json)
 
