@@ -250,5 +250,5 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog, previe
     breeds.append(chooser)
   }
   breeds.append(reset)
-  return { content: [fitting, options, ...(nameDetails.children.length ? [nameDetails] : []), breeds], stage }
+  return { content: [fitting, ...(nameDetails.children.length ? [nameDetails] : []), options, breeds], stage }
 }

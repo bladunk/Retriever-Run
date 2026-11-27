@@ -6,14 +6,30 @@ const paths = {
 }
 const hex = color => '#' + color.toString(16).padStart(6, '0')
 
+let drawing
+const illustrations = new Map()
 export function gearIllustration(item, category) {
-  const canvas = document.createElement('canvas')
-  canvas.width = 112
-  canvas.height = 82
-  canvas.setAttribute('aria-hidden', 'true')
-  canvas.className = 'gear-illustration'
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return canvas
+  const image = document.createElement('img')
+  image.width = 112
+  image.height = 82
+  image.alt = ''
+  image.loading = 'lazy'
+  image.decoding = 'async'
+  image.className = 'gear-illustration'
+  drawing ??= Object.assign(document.createElement('canvas'), { width:112, height:82 })
+  if (!illustrations.has(item.id)) {
+    const context = drawing.getContext('2d')
+    if (!context) return image
+    context.save()
+    drawIllustration(context, item, category)
+    context.restore()
+    illustrations.set(item.id,drawing.toDataURL('image/webp',.82))
+  }
+  image.src = illustrations.get(item.id)
+  return image
+}
+
+function drawIllustration(ctx, item, category) {
   const shape = new Path2D(paths[category])
   const swatch = item.id === 'classic-yellow' ? 0xc8a06b : item.color ?? 0x455549
   const fill = hex(swatch)
@@ -28,7 +44,7 @@ export function gearIllustration(item, category) {
     ctx.setLineDash([3, 3])
     ctx.strokeStyle = '#c3b28f'
     ctx.stroke(shape)
-    return canvas
+    return
   }
   ctx.save()
   ctx.clip(shape, 'evenodd')
@@ -82,5 +98,4 @@ export function gearIllustration(item, category) {
     ctx.strokeStyle = '#5d493884'
     ctx.stroke(new Path2D('M51 23Q40 27 41 46 48 52 57 43L60 31'))
   }
-  return canvas
 }
