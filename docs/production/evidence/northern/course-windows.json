@@ -1,0 +1,62 @@
+{
+  "local": {
+    "scenarios": 3000,
+    "seeds": 100,
+    "ticks": 2078940,
+    "wallSeconds": 20.51,
+    "reactions": [
+      0.32,
+      0.38,
+      0.42,
+      0.45,
+      0.47
+    ],
+    "types": [
+      "branch",
+      "drift",
+      "fallen",
+      "fence",
+      "goose",
+      "leaning-tree",
+      "log",
+      "puddle",
+      "rock",
+      "root",
+      "snowmobile",
+      "stream",
+      "tractor",
+      "tree",
+      "washout"
+    ]
+  },
+  "signed": {
+    "scenarios": 3000,
+    "seeds": 100,
+    "ticks": 2074842,
+    "wallSeconds": 18.8,
+    "reactions": [
+      0.32,
+      0.38,
+      0.42,
+      0.45,
+      0.47
+    ],
+    "types": [
+      "branch",
+      "drift",
+      "fallen",
+      "fence",
+      "goose",
+      "leaning-tree",
+      "log",
+      "puddle",
+      "rock",
+      "root",
+      "snowmobile",
+      "stream",
+      "tractor",
+      "tree",
+      "washout"
+    ]
+  }
+}

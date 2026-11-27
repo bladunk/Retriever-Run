@@ -56,9 +56,67 @@ The baseline and review builds use the same 120 Hz course and colliders for sign
 
 These are local uncompressed file sizes from the production verifier. A returning client reuses matching content hashes. HTTP compression, manifest and service-worker bookkeeping are outside the incremental figure. The increase in required installed bytes is 46,628. No high-resolution textures or recordings were added. The active terrain atlas remains 2560 × 2048 on Balanced and High, estimated 27,962,027 bytes RGBA with mipmaps. Full-size signs remain 1024 × 448. Driver memory is unavailable in the software browser.
 
-The original Shader/Blender work shares the existing loaders and instancing. The two rocky shore meshes have 139 and 182 triangles. The source export is 30,932 bytes GLB and compresses to a 16,364-byte intermediate GLB. The build embeds only the generated attributes in the existing modules. Northern foliage retains the established under-1,000 compact and at-most-1,500 detailed triangles per tree template. Tiles stay bounded and release their references; the two horizon meshes and shared forest materials use the renderer’s lifetime. Terrain and wildlife replay instrumentation retains the existing Clarity code. No new dependency or paid service. [Asset register](ASSET_LICENSES.md#northern-frontier)
+The original Shader/Blender work shares the existing loaders and instancing. The two rocky shore meshes have 139 and 182 triangles. The source export is 30,932 bytes GLB and compresses to a 16,364-byte intermediate GLB. The build embeds only the generated attributes in the existing modules. The two decoded templates use about 28 KiB before worker copies and render buffers. Northern foliage retains the established under-1,000 compact and at-most-1,500 detailed triangles per tree template. Tiles stay bounded and release their references; the two horizon meshes and shared forest materials use the renderer’s lifetime. Terrain and wildlife replay instrumentation retains the existing Clarity code. No new dependency or paid service. [Asset register](ASSET_LICENSES.md#northern-frontier)
 
 Existing independent audio buses, gesture policy and background lifecycle remain in use. Regional mixes now put more emphasis on marsh water and waterfowl in Manitoba, quiet forest ambience in the Boreal, and flowing water and wind in the Rockies. Production recordings and evolving music remain on the Masterpiece roadmap.
+
+## Performance and verification
+
+### Matched gameplay views
+
+Chromium rendered three matching views per territory. It used seed 7, Balanced, route weather, the standard Labrador and a 416 × 738 buffer. These table values are the center views, 15 seconds into each territory. Draws and triangles reflect the actual submitted poses.
+
+| Territory | Draws RC.4 → RC.5 | Triangles | Textures | Geometries | Programs |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Manitoba | 37 → 43 | 102,157 → 113,964 | 18 → 18 | 45 → 48 | 18 → 18 |
+| Parklands | 63 → 62 | 166,738 → 195,908 | 26 → 22 | 55 → 53 | 24 → 21 |
+| Boreal | 60 → 68 | 148,960 → 256,414 | 23 → 21 | 53 → 59 | 22 → 21 |
+| Foothills | 72 → 74 | 177,381 → 218,640 | 21 → 21 | 59 → 63 | 24 → 23 |
+| Mountains | 57 → 65 | 104,784 → 143,091 | 18 → 17 | 53 → 59 | 22 → 21 |
+
+The Boreal view has the largest increase in visible triangles. Its fuller, structurally coherent forest costs roughly 72% more triangles in that pose. Texture residency does not increase in these center poses. The owner’s native run should include the Boreal at High and Auto before accepting the cost of the extra canopy. The paired motion comparisons include the naturally scheduled aurora on its own seed. [All 15 poses and counters](evidence/northern/matched-frames.json) · [Gallery and motion clips](evidence/northern/REVIEW.md)
+
+### Startup and first hunt
+
+The same WebKit harness measured both builds at 320 × 568 CSS pixels and DPR 2. These single observations ran on a busy software-rendering host. “Fresh” includes the content preparation flow over a loopback test server. “Cached” is a verified offline reload. Values are milliseconds.
+
+| Condition | Marker | Heartland | Northern Frontier |
+| --- | --- | ---: | ---: |
+| Fresh | Module requested / ready | 9,735 / 10,509 | 11,650 / 12,533 |
+| Fresh | Renderer / first scene / ready | 10,819 / 16,483 / 27,487 | 12,833 / 18,336 / 24,117 |
+| Fresh | Hunt tap to scene submission | 2,980 | 1,590 |
+| Fresh | First CPU / renderer | 683 / 636 | 297 / 202 |
+| Fresh | Next callback / first presentation interval | 4,994 / 2,276 | 2,486 / 1,210 |
+| Cached | Module requested / ready | 695 / 880 | 576 / 794 |
+| Cached | Renderer / first scene / ready | 950 / 3,947 / 15,399 | 965 / 5,197 / 13,990 |
+| Cached | Hunt tap to scene submission | 695 | 1,303 |
+| Cached | First CPU / renderer | 581 / 577 | 653 / 648 |
+| Cached | Next callback / first presentation interval | 1,092 / 443 | 1,488 / 400 |
+
+Warm pacing remains variable. Both builds opened with active resource preparation. The fresh RC.5 trace captured Web Audio initialization, wildlife preparation and Fern 02 geometry work near the first scene. These are named associations with CPU-side operations. The trace cannot determine their contribution to GPU execution, Safari scheduling or native heat. Heartland’s single-pack 460 m warm hold for Fern 02 is preserved, including the no-extra-load rule and Battery Saver restriction. RC.5 adds no new recurring fern work. A matched iPhone repeat is necessary before drawing a conclusion about the previously observed stalls. [Raw WebKit startup trace](evidence/northern/startup.json)
+
+### Replay and streamed terrain
+
+Six offline Chromium Battery Saver restarts finished at **44 geometries, 12 textures, 18 shader programs and seven terrain tiles** on each build. The diagnostic counted zero discarded simulation samples. Warm RC.5 input-to-first-submission varied from 127 to 2,799 ms on the occupied host, and its first submitted frame used 2.2–72.9 ms of CPU. Heartland’s comparable warm samples ranged from 1,684 to 2,593 ms and 4.2–19.5 ms of CPU. This accelerated harness verifies residency and save isolation. Its frame interval distribution is hardware- and workload-sensitive. [Heartland restarts](evidence/heartland/restarts.json) · [RC.5 restarts](evidence/northern/restarts.json)
+
+An alternating Node sample built 12 matching terrain tiles per territory on each revision, after warming one tile per build. Median typed-array packet size increased around the marshes, rocks and mountains. Boreal had the largest increase, about 128 KB per sampled packet. Median build wall time in that sample was 82 → 83 ms in the Boreal, and 75.8 → 72.4 ms in the Foothills. The worker packet includes transfer buffers, and its size does not give the renderer’s GPU residency. [Worker packet sizes and timings](evidence/northern/terrain-packets.json)
+
+### Final territory into Endless
+
+The separate offline Chromium segment started at 420 seconds and passed 461 seconds using 44 scripted inputs on the actual fixed-step route. Across 83 checkpoints, terrain reached seven tiles, geometry peaked at 85 and textures peaked at 13. The final snapshot retained 25 shader programs and the mountain territory. This fast-clock run uses a 102 × 181 Battery Saver buffer to keep the software test practical. The probe discarded 145 wall-time samples over 350 ms while retaining them in the presentation interval distribution. It is a coverage and residency result. The CPU and interval figures describe the occupied software renderer. [Endless arrival](evidence/northern/endless.webp) · [Segment trace](evidence/northern/endless.json)
+
+### Hazard readability
+
+The rendered WebKit pass inspected one real seeded puddle in each territory at 19 m in Battery Saver. It reached rain, fog and high-country snow. Timing to the last safe jump was 0.59–1.20 seconds using the existing movement rules, versus the course’s 0.42-second reaction allowance. Northern renders keep authored talus and forest trunks outside the trail. The twilight preview shows the same puddle model at two presets. The captured approach timings verify opportunity in the samples. Recognition on a moving phone in different ambient light, crowded forest approaches and high speed needs physical review. [Northern puddle sheet](evidence/northern/puddles.webp) · [All 15 approach measurements](evidence/northern/puddles.json)
+
+### Automated and hosted checks
+
+- The complete run passed **218 Node tests**. The four new tests cover distinct off-trail relief, solid compact spruce support and mesh bounds, seeded discovery isolation across both course generators, and old-save compatibility, practice isolation and offline idempotency.
+- The signed and tuned local courses each passed **3,000 independently simulated viability windows**. The run used 100 seeds across all 30 stages, with fast entries and Endless cases. [Course sample summary](evidence/northern/course-windows.json)
+- Existing built-in puddle clearance checks cover all 45 territory and lane combinations.
+- Production artifact, required asset checks and manifest verification passed. WebKit verified a partial Labrador transfer, retry, corruption repair and an interrupted Heartland-to-RC.5 update. A hunt and unsaved Lodge edit blocked activation; two prior hunts survived and an unchanged audio file transferred only once. [Update trace](evidence/northern/offline-update.json)
+- Six Art Studio cases passed in WebKit with the terrain atlas matching the selected preset and no shader compile errors. This includes Low and High with an aurora and the isolated northern puddle. The ordinary save stayed byte-for-byte identical. No Studio discovery was written.
+- Both production standings reads returned HTTP 200 with closed empty records. Hosted ranked submissions require a separate certification exercise.
 
 ## Art Studio on iPhone
 

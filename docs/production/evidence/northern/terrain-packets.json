@@ -1,0 +1,65 @@
+{
+  "node": "v24.22.3",
+  "comparison": [
+    {
+      "territory": "manitoba",
+      "samplesPerRevision": 12,
+      "rc4": {
+        "medianBuildWallMs": 178.4,
+        "medianPacketBytes": 461834
+      },
+      "rc5": {
+        "medianBuildWallMs": 168.37,
+        "medianPacketBytes": 509034
+      }
+    },
+    {
+      "territory": "parklands",
+      "samplesPerRevision": 12,
+      "rc4": {
+        "medianBuildWallMs": 103.32,
+        "medianPacketBytes": 580516
+      },
+      "rc5": {
+        "medianBuildWallMs": 86.58,
+        "medianPacketBytes": 580976
+      }
+    },
+    {
+      "territory": "boreal",
+      "samplesPerRevision": 12,
+      "rc4": {
+        "medianBuildWallMs": 81.81,
+        "medianPacketBytes": 496204
+      },
+      "rc5": {
+        "medianBuildWallMs": 83.28,
+        "medianPacketBytes": 624432
+      }
+    },
+    {
+      "territory": "foothills",
+      "samplesPerRevision": 12,
+      "rc4": {
+        "medianBuildWallMs": 75.77,
+        "medianPacketBytes": 563456
+      },
+      "rc5": {
+        "medianBuildWallMs": 72.42,
+        "medianPacketBytes": 608100
+      }
+    },
+    {
+      "territory": "mountain",
+      "samplesPerRevision": 12,
+      "rc4": {
+        "medianBuildWallMs": 100.32,
+        "medianPacketBytes": 541768
+      },
+      "rc5": {
+        "medianBuildWallMs": 86.39,
+        "medianPacketBytes": 635196
+      }
+    }
+  ]
+}

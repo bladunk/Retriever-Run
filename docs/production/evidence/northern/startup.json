@@ -1,0 +1,1064 @@
+{
+  "engine": "webkit",
+  "samples": [
+    {
+      "version": "before",
+      "launch": "fresh installation",
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "startup": {
+        "shellMs": 178,
+        "workerRequestMs": 180,
+        "workerReadyMs": 326,
+        "manifestReadyMs": 342,
+        "verificationStartMs": 377,
+        "verificationReadyMs": null,
+        "verificationMissingMs": 593,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 27,
+        "moduleRequestMs": 9735,
+        "moduleMs": 10509,
+        "rendererReadyMs": 10819,
+        "firstSceneSubmitMs": 16483,
+        "readyMs": 27487,
+        "opener": [
+          {
+            "at": 16483,
+            "durationMs": 4990,
+            "geometries": 14,
+            "textures": 6,
+            "programs": 9
+          },
+          {
+            "at": 21788,
+            "durationMs": 4089,
+            "geometries": 14,
+            "textures": 10,
+            "programs": 9
+          },
+          {
+            "at": 23517,
+            "durationMs": 1241,
+            "geometries": 17,
+            "textures": 12,
+            "programs": 11
+          },
+          {
+            "at": 26299,
+            "durationMs": 2683,
+            "geometries": 23,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 27299,
+            "durationMs": 69,
+            "geometries": 27,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 27577,
+            "durationMs": 85,
+            "geometries": 27,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 28308,
+            "durationMs": 99,
+            "geometries": 31,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 29923,
+            "durationMs": 1202,
+            "geometries": 37,
+            "textures": 13,
+            "programs": 16
+          }
+        ]
+      },
+      "restart": {
+        "inputAt": 30135,
+        "handlerAt": 30308,
+        "before": {
+          "geometries": 37,
+          "textures": 16,
+          "programs": 16
+        },
+        "firstFrameSubmittedMs": 2980,
+        "firstFrameCpuMs": 683,
+        "firstRenderMs": 636,
+        "after": {
+          "geometries": 40,
+          "textures": 16,
+          "programs": 17
+        },
+        "firstOperations": [
+          {
+            "at": 32287,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 1977
+          },
+          {
+            "at": 32310,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 32435,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 1
+          },
+          {
+            "at": 32435,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 32435,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 4994,
+        "firstPresentationIntervalMs": 2276
+      },
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "capabilities": {
+        "longTasks": false,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "ready": 27487,
+      "observations": [
+        {
+          "at": 33115,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": null,
+          "cpuMs": 683,
+          "renderMs": 636,
+          "draws": 50,
+          "triangles": 147862,
+          "textures": 16,
+          "geometries": 40,
+          "programs": 17,
+          "textureDelta": 0,
+          "geometryDelta": 3,
+          "programDelta": 1,
+          "operations": [
+            {
+              "at": 32435,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 1
+            },
+            {
+              "at": 32435,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 32435,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 33115,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            }
+          ]
+        },
+        {
+          "at": 35391,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": 2276,
+          "cpuMs": 262,
+          "renderMs": 89,
+          "draws": 48,
+          "triangles": 145058,
+          "textures": 17,
+          "geometries": 40,
+          "programs": 17,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 33115,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 34100,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "instruments",
+              "durationMs": 1790
+            },
+            {
+              "at": 34100,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "goose"
+            },
+            {
+              "at": 34321,
+              "hunt": 1,
+              "name": "terrain-main-thread-build",
+              "detail": 3,
+              "durationMs": 213
+            },
+            {
+              "at": 34978,
+              "hunt": 1,
+              "name": "habitat-ready",
+              "detail": "ferns",
+              "durationMs": 6890
+            },
+            {
+              "at": 35129,
+              "hunt": 1,
+              "name": "wildlife-load-ready",
+              "detail": "deer",
+              "durationMs": 5197
+            },
+            {
+              "at": 35136,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "gulf / ground / 3"
+            },
+            {
+              "at": 35136,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "gulf / water / 3"
+            },
+            {
+              "at": 35136,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "gulf / detail / 3"
+            },
+            {
+              "at": 35136,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "gulf / solid / 3"
+            },
+            {
+              "at": 35302,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+            },
+            {
+              "at": 35302,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+              "durationMs": 165
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "launch": "cached offline launch",
+      "build": {
+        "version": "1.0.0-rc.4",
+        "id": "a524eac"
+      },
+      "startup": {
+        "shellMs": 266,
+        "workerRequestMs": 283,
+        "workerReadyMs": 288,
+        "manifestReadyMs": 400,
+        "verificationStartMs": 402,
+        "verificationReadyMs": 693,
+        "verificationMissingMs": null,
+        "controlled": true,
+        "navigationType": "reload",
+        "responseStartMs": 4,
+        "moduleRequestMs": 695,
+        "moduleMs": 880,
+        "rendererReadyMs": 950,
+        "firstSceneSubmitMs": 3947,
+        "readyMs": 15399,
+        "opener": [
+          {
+            "at": 3946,
+            "durationMs": 2885,
+            "geometries": 14,
+            "textures": 6,
+            "programs": 9
+          },
+          {
+            "at": 10671,
+            "durationMs": 5612,
+            "geometries": 17,
+            "textures": 12,
+            "programs": 11
+          },
+          {
+            "at": 14845,
+            "durationMs": 3784,
+            "geometries": 23,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 15180,
+            "durationMs": 20,
+            "geometries": 27,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 15476,
+            "durationMs": 76,
+            "geometries": 27,
+            "textures": 12,
+            "programs": 15
+          }
+        ]
+      },
+      "restart": {
+        "inputAt": 16465,
+        "handlerAt": 16546,
+        "before": {
+          "geometries": 28,
+          "textures": 18,
+          "programs": 17
+        },
+        "firstFrameSubmittedMs": 695,
+        "firstFrameCpuMs": 581,
+        "firstRenderMs": 577,
+        "after": {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 16559,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 11
+          },
+          {
+            "at": 16570,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 16583,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 3
+          },
+          {
+            "at": 16583,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 16583,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 1092,
+        "firstPresentationIntervalMs": 443
+      },
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "capabilities": {
+        "longTasks": false,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "ready": 15399,
+      "observations": [
+        {
+          "at": 17160,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": null,
+          "cpuMs": 581,
+          "renderMs": 577,
+          "draws": 39,
+          "triangles": 92570,
+          "textures": 18,
+          "geometries": 35,
+          "programs": 18,
+          "textureDelta": 0,
+          "geometryDelta": 7,
+          "programDelta": 1,
+          "operations": [
+            {
+              "at": 16583,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 3
+            },
+            {
+              "at": 16583,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 16583,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 17160,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            }
+          ]
+        },
+        {
+          "at": 17603,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": 443,
+          "cpuMs": 46,
+          "renderMs": 42,
+          "draws": 37,
+          "triangles": 89766,
+          "textures": 18,
+          "geometries": 35,
+          "programs": 18,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 17160,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 17557,
+              "hunt": 1,
+              "name": "wildlife-load-ready",
+              "detail": "deer",
+              "durationMs": 1806
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "launch": "fresh installation",
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "startup": {
+        "shellMs": 241,
+        "workerRequestMs": 245,
+        "workerReadyMs": 436,
+        "manifestReadyMs": 505,
+        "verificationStartMs": 507,
+        "verificationReadyMs": null,
+        "verificationMissingMs": 635,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 18,
+        "moduleRequestMs": 11650,
+        "moduleMs": 12533,
+        "rendererReadyMs": 12833,
+        "firstSceneSubmitMs": 18336,
+        "readyMs": 24117,
+        "opener": [
+          {
+            "at": 18335,
+            "durationMs": 4815,
+            "geometries": 14,
+            "textures": 8,
+            "programs": 9
+          },
+          {
+            "at": 21348,
+            "durationMs": 2610,
+            "geometries": 17,
+            "textures": 12,
+            "programs": 11
+          },
+          {
+            "at": 23792,
+            "durationMs": 2294,
+            "geometries": 23,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 24051,
+            "durationMs": 22,
+            "geometries": 27,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 24139,
+            "durationMs": 21,
+            "geometries": 27,
+            "textures": 12,
+            "programs": 15
+          }
+        ]
+      },
+      "restart": {
+        "inputAt": 24903,
+        "handlerAt": 24935,
+        "before": {
+          "geometries": 27,
+          "textures": 18,
+          "programs": 15
+        },
+        "firstFrameSubmittedMs": 1590,
+        "firstFrameCpuMs": 297,
+        "firstRenderMs": 202,
+        "after": {
+          "geometries": 33,
+          "textures": 19,
+          "programs": 17
+        },
+        "firstOperations": [
+          {
+            "at": 26116,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 1178
+          },
+          {
+            "at": 26130,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 26201,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 0
+          },
+          {
+            "at": 26202,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 26202,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 26210,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "Habitat / ferns"
+          },
+          {
+            "at": 26291,
+            "hunt": 1,
+            "name": "geometry-preparation",
+            "detail": "Habitat / Fern 02",
+            "durationMs": 85
+          }
+        ],
+        "nextAnimationCallbackMs": 2486,
+        "firstPresentationIntervalMs": 1210
+      },
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "capabilities": {
+        "longTasks": false,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "ready": 24117,
+      "observations": [
+        {
+          "at": 26493,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": null,
+          "cpuMs": 297,
+          "renderMs": 202,
+          "draws": 39,
+          "triangles": 92758,
+          "textures": 19,
+          "geometries": 33,
+          "programs": 17,
+          "textureDelta": 0,
+          "geometryDelta": 5,
+          "programDelta": 1,
+          "operations": [
+            {
+              "at": 26201,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 0
+            },
+            {
+              "at": 26202,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 26202,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 26210,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "Habitat / ferns"
+            },
+            {
+              "at": 26291,
+              "hunt": 1,
+              "name": "geometry-preparation",
+              "detail": "Habitat / Fern 02",
+              "durationMs": 85
+            },
+            {
+              "at": 26494,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            }
+          ]
+        },
+        {
+          "at": 27703,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": 1210,
+          "cpuMs": 314,
+          "renderMs": 184,
+          "draws": 43,
+          "triangles": 126608,
+          "textures": 19,
+          "geometries": 37,
+          "programs": 18,
+          "textureDelta": 0,
+          "geometryDelta": 4,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 27091,
+              "hunt": 1,
+              "name": "wildlife-load-ready",
+              "detail": "deer",
+              "durationMs": 2781
+            },
+            {
+              "at": 27091,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "goose",
+              "durationMs": 165
+            },
+            {
+              "at": 27091,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "mallard"
+            },
+            {
+              "at": 27133,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "mallard",
+              "durationMs": 42
+            },
+            {
+              "at": 27134,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "creek"
+            },
+            {
+              "at": 27406,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 1,
+              "durationMs": 1
+            },
+            {
+              "at": 27417,
+              "hunt": 1,
+              "name": "shader-initialize",
+              "detail": "Habitat / ferns / fern_02"
+            },
+            {
+              "at": 27520,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / ground / 1"
+            },
+            {
+              "at": 27520,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / water / 1"
+            },
+            {
+              "at": 27520,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / detail / 1"
+            },
+            {
+              "at": 27524,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / 1"
+            },
+            {
+              "at": 27704,
+              "hunt": 1,
+              "name": "shader-preparation-ready",
+              "detail": "Habitat / Fern 02",
+              "durationMs": 293
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "launch": "cached offline launch",
+      "build": {
+        "version": "1.0.0-rc.5",
+        "id": "41f414c"
+      },
+      "startup": {
+        "shellMs": 167,
+        "workerRequestMs": 175,
+        "workerReadyMs": 177,
+        "manifestReadyMs": 187,
+        "verificationStartMs": 187,
+        "verificationReadyMs": 575,
+        "verificationMissingMs": null,
+        "controlled": true,
+        "navigationType": "reload",
+        "responseStartMs": 61,
+        "moduleRequestMs": 576,
+        "moduleMs": 794,
+        "rendererReadyMs": 965,
+        "firstSceneSubmitMs": 5197,
+        "readyMs": 13990,
+        "opener": [
+          {
+            "at": 5197,
+            "durationMs": 4107,
+            "geometries": 14,
+            "textures": 6,
+            "programs": 9
+          },
+          {
+            "at": 8487,
+            "durationMs": 2631,
+            "geometries": 14,
+            "textures": 10,
+            "programs": 9
+          },
+          {
+            "at": 10294,
+            "durationMs": 1435,
+            "geometries": 17,
+            "textures": 12,
+            "programs": 11
+          },
+          {
+            "at": 13396,
+            "durationMs": 2923,
+            "geometries": 23,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 13779,
+            "durationMs": 22,
+            "geometries": 27,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 14050,
+            "durationMs": 57,
+            "geometries": 27,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 14293,
+            "durationMs": 21,
+            "geometries": 31,
+            "textures": 12,
+            "programs": 15
+          },
+          {
+            "at": 15276,
+            "durationMs": 532,
+            "geometries": 37,
+            "textures": 15,
+            "programs": 16
+          },
+          {
+            "at": 15796,
+            "durationMs": 18,
+            "geometries": 41,
+            "textures": 18,
+            "programs": 16
+          }
+        ]
+      },
+      "restart": {
+        "inputAt": 16000,
+        "handlerAt": 16376,
+        "before": {
+          "geometries": 42,
+          "textures": 20,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 1303,
+        "firstFrameCpuMs": 653,
+        "firstRenderMs": 648,
+        "after": {
+          "geometries": 47,
+          "textures": 20,
+          "programs": 19
+        },
+        "firstOperations": [
+          {
+            "at": 16382,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 5
+          },
+          {
+            "at": 16389,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 16653,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 1
+          },
+          {
+            "at": 16653,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 16653,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 1488,
+        "firstPresentationIntervalMs": 400
+      },
+      "drawingBuffer": {
+        "width": 416,
+        "height": 738,
+        "scale": 1.3,
+        "devicePixelRatio": 2,
+        "preset": "balanced"
+      },
+      "capabilities": {
+        "longTasks": false,
+        "namedResourceHooks": true,
+        "gpuExecutionTime": null
+      },
+      "ready": 13990,
+      "observations": [
+        {
+          "at": 17303,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": null,
+          "cpuMs": 653,
+          "renderMs": 648,
+          "draws": 51,
+          "triangles": 147941,
+          "textures": 20,
+          "geometries": 47,
+          "programs": 19,
+          "textureDelta": 0,
+          "geometryDelta": 5,
+          "programDelta": 1,
+          "operations": [
+            {
+              "at": 16653,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 1
+            },
+            {
+              "at": 16653,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 16653,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 17303,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            }
+          ]
+        },
+        {
+          "at": 17703,
+          "hunt": 1,
+          "territory": "gulf",
+          "preset": "auto",
+          "detail": 1,
+          "presentationMs": 400,
+          "cpuMs": 215,
+          "renderMs": 211,
+          "draws": 49,
+          "triangles": 145137,
+          "textures": 20,
+          "geometries": 47,
+          "programs": 19,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 17303,
+              "hunt": 1,
+              "name": "territory",
+              "detail": "gulf"
+            },
+            {
+              "at": 17487,
+              "hunt": 1,
+              "name": "wildlife-load-ready",
+              "detail": "deer",
+              "durationMs": 2893
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

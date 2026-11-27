@@ -1,0 +1,90 @@
+{
+  "engine": "chromium",
+  "seed": 7,
+  "offline": true,
+  "quality": "low",
+  "from": 420,
+  "elapsed": 461.0300530728111,
+  "executed": 44,
+  "build": {
+    "version": "1.0.0-rc.5",
+    "id": "41f414c"
+  },
+  "drawingBuffer": {
+    "width": 102,
+    "height": 181,
+    "scale": 0.3199999928474426,
+    "devicePixelRatio": 0.3199999928474426,
+    "preset": "low"
+  },
+  "territory": "mountain",
+  "transitions": [
+    {
+      "territory": "mountain",
+      "wall": 0,
+      "at": 18670
+    }
+  ],
+  "hunt": {
+    "id": 1,
+    "discarded": 145,
+    "peakTextures": 13,
+    "peakGeometries": 85,
+    "presentation": {
+      "samples": 199,
+      "maxMs": 7989.400000035763,
+      "over20": 192,
+      "over33_3": 183,
+      "over50": 182,
+      "averageMs": 1121.65
+    },
+    "cpu": {
+      "samples": 200,
+      "maxMs": 5827.5,
+      "over20": 30,
+      "over33_3": 25,
+      "over50": 15,
+      "averageMs": 115.58
+    },
+    "averageFPS": 0.9
+  },
+  "draws": 63,
+  "triangles": 139323,
+  "textures": 13,
+  "geometries": 81,
+  "programs": 25,
+  "residentTiles": 7,
+  "wildlifeModels": {
+    "resident": 0,
+    "preparing": null,
+    "loadMs": 0,
+    "releasedBoneTextures": 0,
+    "hits": 0,
+    "misses": 0,
+    "evictions": 0,
+    "limit": 2,
+    "models": [],
+    "rigEncounters": 0,
+    "fallbackEncounters": 0,
+    "fallbackReasons": {}
+  },
+  "ranges": {
+    "textures": [
+      10,
+      13
+    ],
+    "geometries": [
+      31,
+      85
+    ],
+    "tiles": [
+      3,
+      7
+    ],
+    "packs": [
+      0,
+      0
+    ]
+  },
+  "sampleCount": 83
+}
