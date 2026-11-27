@@ -1,0 +1,14 @@
+[
+  {
+    "rpc": "rr_worldwide_standings",
+    "status": 200,
+    "closed": true,
+    "rows": 0
+  },
+  {
+    "rpc": "rr_ranked_board",
+    "status": 200,
+    "closed": true,
+    "rows": 0
+  }
+]

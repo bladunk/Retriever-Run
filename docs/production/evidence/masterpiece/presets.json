@@ -1,0 +1,6204 @@
+{
+  "engine": "webkit",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "quality": "balanced",
+  "offline": false,
+  "results": [
+    {
+      "label": "balanced-cypress",
+      "seed": 7,
+      "selected": "balanced",
+      "mode": "running",
+      "elapsed": 36.000001795432084,
+      "distance": 545.85528,
+      "lateral": 0,
+      "lane": 0,
+      "jump": 0,
+      "slide": 0,
+      "height": 0,
+      "ticks": 0,
+      "power": 0,
+      "flight": null,
+      "speed": 18.825760152539907,
+      "tiles": 6,
+      "drawCalls": 63,
+      "geometries": 53,
+      "entities": 16,
+      "skill": [],
+      "upcoming": "single",
+      "hazards": [
+        {
+          "type": "tree",
+          "lane": 0,
+          "distance": 548.6675449048029
+        },
+        {
+          "type": "fallen",
+          "lane": 0,
+          "distance": 575.7680632407091
+        },
+        {
+          "type": "puddle",
+          "lane": -1,
+          "distance": 575.7680632407091
+        }
+      ],
+      "world": [
+        {
+          "index": 21,
+          "landmark": null,
+          "solid": 352,
+          "solidOpaque": true,
+          "habitats": 7
+        },
+        {
+          "index": 22,
+          "landmark": null,
+          "solid": 356,
+          "solidOpaque": true,
+          "habitats": 8
+        },
+        {
+          "index": 17,
+          "landmark": null,
+          "solid": 316,
+          "solidOpaque": true,
+          "habitats": 6
+        },
+        {
+          "index": 18,
+          "landmark": null,
+          "solid": 308,
+          "solidOpaque": true,
+          "habitats": 3
+        },
+        {
+          "index": 19,
+          "landmark": null,
+          "solid": 321,
+          "solidOpaque": true,
+          "habitats": 3
+        },
+        {
+          "index": 20,
+          "landmark": null,
+          "solid": 325,
+          "solidOpaque": true,
+          "habitats": 2
+        }
+      ],
+      "wildlife": null,
+      "signs": [],
+      "rocks": [],
+      "inLaneSigns": false,
+      "perf": {
+        "ready": 2380,
+        "restart": 127,
+        "frames": 0,
+        "discarded": 0,
+        "draws": 63,
+        "triangles": 167633,
+        "textures": 23,
+        "geometries": 53,
+        "programs": 23,
+        "territory": "cypress",
+        "transitions": [
+          {
+            "territory": "cypress",
+            "wall": 0,
+            "at": 3158
+          }
+        ],
+        "adaptiveChanges": 0,
+        "preset": "balanced",
+        "detail": 1,
+        "residentTiles": 6,
+        "residentPacks": 1,
+        "surfaces": {
+          "active": "full",
+          "pending": false,
+          "lastLoadMs": 328,
+          "width": 2560,
+          "height": 2048,
+          "estimatedRgbaMipBytes": 27962027,
+          "gulfAtlas": false,
+          "gulfAtlasPending": false
+        },
+        "openingTerrain": {
+          "packets": 3,
+          "reused": 0
+        },
+        "fernResidency": {
+          "requested": true,
+          "ready": true,
+          "lastDemand": 545.85528
+        },
+        "dogBreed": "lab",
+        "migrationFlight": null,
+        "adaptiveQuality": {
+          "level": "balanced",
+          "resetReason": "hunt start",
+          "stabilizing": true,
+          "stabilizationRemainingMs": 1200,
+          "cooldownRemainingMs": 0,
+          "recoveryWindows": 0,
+          "recoveryTarget": 4,
+          "window": {
+            "samples": 0,
+            "late": 0,
+            "seconds": 0
+          }
+        },
+        "drawingBuffer": {
+          "width": 223,
+          "height": 397,
+          "scale": 0.699999988079071,
+          "devicePixelRatio": 0.699999988079071,
+          "preset": "balanced"
+        },
+        "signs": {
+          "width": 1024,
+          "height": 448,
+          "filtering": "trilinear mipmaps",
+          "requestedAnisotropy": 8,
+          "visible": []
+        },
+        "foliage": [
+          {
+            "index": 21,
+            "outer": null,
+            "groves": [
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 22,
+            "outer": null,
+            "groves": [],
+            "ferns": 0
+          },
+          {
+            "index": 17,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 18,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 19,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 20,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          }
+        ],
+        "tileTimings": [
+          {
+            "index": 21,
+            "buildMs": 73,
+            "unpackMs": 1,
+            "integrationPeakMs": 1
+          },
+          {
+            "index": 22,
+            "buildMs": 40,
+            "unpackMs": 2,
+            "integrationPeakMs": 1
+          },
+          {
+            "index": 17,
+            "buildMs": 29,
+            "unpackMs": 3,
+            "integrationPeakMs": 3
+          },
+          {
+            "index": 18,
+            "buildMs": 54,
+            "unpackMs": 6,
+            "integrationPeakMs": 5
+          },
+          {
+            "index": 19,
+            "buildMs": 45,
+            "unpackMs": 2,
+            "integrationPeakMs": 1
+          },
+          {
+            "index": 20,
+            "buildMs": 57,
+            "unpackMs": 2,
+            "integrationPeakMs": 1
+          }
+        ],
+        "wildlife": 0,
+        "wildlifeModels": {
+          "resident": 2,
+          "preparing": null,
+          "loadMs": 970,
+          "releasedBoneTextures": 0,
+          "hits": 0,
+          "misses": 2,
+          "evictions": 0,
+          "limit": 2,
+          "models": [
+            {
+              "id": "mallard",
+              "materialTextures": 7,
+              "boneTextures": 1,
+              "prepared": {
+                "textures": 7,
+                "skeletons": 1,
+                "shaders": 5,
+                "geometries": 0,
+                "geometryTotal": 8
+              }
+            },
+            {
+              "id": "deer",
+              "materialTextures": 2,
+              "boneTextures": 0,
+              "prepared": {
+                "textures": 0,
+                "skeletons": 0,
+                "shaders": 0,
+                "geometries": 0,
+                "geometryTotal": 3
+              }
+            }
+          ],
+          "rigEncounters": 0,
+          "fallbackEncounters": 0,
+          "proceduralEncounters": 0,
+          "fallbackReasons": {}
+        },
+        "trailPool": {
+          "keys": 6,
+          "idle": 6
+        },
+        "framesMs": null,
+        "cpuMs": {
+          "samples": 29,
+          "median": 54,
+          "p95": 99,
+          "p99": 107,
+          "max": 107,
+          "over16_7": 29,
+          "over20": 28,
+          "over33_3": 21,
+          "over50": 17,
+          "slow": 21,
+          "average": 54.52
+        },
+        "presentationMs": {
+          "samples": 28,
+          "median": 83,
+          "p95": 193,
+          "p99": 200,
+          "max": 200,
+          "over16_7": 28,
+          "over20": 28,
+          "over33_3": 28,
+          "over50": 24,
+          "slow": 28,
+          "average": 94.89
+        },
+        "averageFPS": 10.5,
+        "hunt": {
+          "id": 1,
+          "discarded": 0,
+          "peakTextures": 23,
+          "peakGeometries": 53,
+          "presentation": {
+            "samples": 28,
+            "maxMs": 200,
+            "over20": 28,
+            "over33_3": 28,
+            "over50": 24,
+            "averageMs": 94.89
+          },
+          "cpu": {
+            "samples": 29,
+            "maxMs": 107,
+            "over20": 28,
+            "over33_3": 21,
+            "over50": 17,
+            "averageMs": 54.52
+          },
+          "averageFPS": 10.5
+        },
+        "session": {
+          "id": null,
+          "discarded": 0,
+          "peakTextures": 23,
+          "peakGeometries": 53,
+          "presentation": {
+            "samples": 28,
+            "maxMs": 200,
+            "over20": 28,
+            "over33_3": 28,
+            "over50": 24,
+            "averageMs": 94.89
+          },
+          "cpu": {
+            "samples": 29,
+            "maxMs": 107,
+            "over20": 28,
+            "over33_3": 21,
+            "over50": 17,
+            "averageMs": 54.52
+          },
+          "averageFPS": 10.5
+        },
+        "previousHunts": [],
+        "slowFrames": [
+          {
+            "at": 3158,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": null,
+            "cpuMs": 63,
+            "renderMs": 60,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 18,
+            "geometries": 32,
+            "programs": 19,
+            "textureDelta": 1,
+            "geometryDelta": 7,
+            "programDelta": 2,
+            "operations": [
+              {
+                "at": 3057,
+                "hunt": 1,
+                "name": "hunt-trail-reset",
+                "detail": "state and replay setup",
+                "durationMs": 26
+              },
+              {
+                "at": 3069,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 11
+              },
+              {
+                "at": 3072,
+                "hunt": 1,
+                "name": "hunt-scene-entry",
+                "detail": "HUD and gesture audio",
+                "durationMs": 15
+              },
+              {
+                "at": 3074,
+                "hunt": 1,
+                "name": "hunt-opening-entities",
+                "detail": "trail entity population",
+                "durationMs": 2
+              },
+              {
+                "at": 3074,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 3097,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 3097,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 3097,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              },
+              {
+                "at": 3159,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "cypress"
+              },
+              {
+                "at": 3263,
+                "hunt": 1,
+                "name": "habitat-ready",
+                "detail": "ferns",
+                "durationMs": 871
+              }
+            ]
+          },
+          {
+            "at": 3218,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 60,
+            "cpuMs": 18,
+            "renderMs": 12,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 18,
+            "geometries": 32,
+            "programs": 19,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3159,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "cypress"
+              },
+              {
+                "at": 3263,
+                "hunt": 1,
+                "name": "habitat-ready",
+                "detail": "ferns",
+                "durationMs": 871
+              }
+            ]
+          },
+          {
+            "at": 3359,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 141,
+            "cpuMs": 96,
+            "renderMs": 8,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 19,
+            "geometries": 32,
+            "programs": 19,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3263,
+                "hunt": 1,
+                "name": "habitat-ready",
+                "detail": "ferns",
+                "durationMs": 871
+              },
+              {
+                "at": 3351,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+              },
+              {
+                "at": 3351,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+                "durationMs": 86
+              },
+              {
+                "at": 3371,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 297
+              },
+              {
+                "at": 3371,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "mallard"
+              },
+              {
+                "at": 3421,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_nor_gl"
+              },
+              {
+                "at": 3421,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+                "durationMs": 42
+              },
+              {
+                "at": 3441,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 70
+              },
+              {
+                "at": 3441,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              }
+            ]
+          },
+          {
+            "at": 3432,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 73,
+            "cpuMs": 54,
+            "renderMs": 10,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 20,
+            "geometries": 32,
+            "programs": 19,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3351,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+              },
+              {
+                "at": 3351,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+                "durationMs": 86
+              },
+              {
+                "at": 3371,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 297
+              },
+              {
+                "at": 3371,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "mallard"
+              },
+              {
+                "at": 3421,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_nor_gl"
+              },
+              {
+                "at": 3421,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+                "durationMs": 42
+              },
+              {
+                "at": 3441,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 70
+              },
+              {
+                "at": 3441,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              },
+              {
+                "at": 3491,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_rough"
+              },
+              {
+                "at": 3491,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_rough",
+                "durationMs": 39
+              }
+            ]
+          },
+          {
+            "at": 3501,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 69,
+            "cpuMs": 51,
+            "renderMs": 10,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 21,
+            "geometries": 32,
+            "programs": 19,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3421,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_nor_gl"
+              },
+              {
+                "at": 3421,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+                "durationMs": 42
+              },
+              {
+                "at": 3441,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 70
+              },
+              {
+                "at": 3441,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              },
+              {
+                "at": 3491,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_rough"
+              },
+              {
+                "at": 3491,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_rough",
+                "durationMs": 39
+              },
+              {
+                "at": 3562,
+                "hunt": 1,
+                "name": "terrain-slice",
+                "detail": 18,
+                "durationMs": 5
+              },
+              {
+                "at": 3565,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "Habitat / ferns"
+              },
+              {
+                "at": 3575,
+                "hunt": 1,
+                "name": "geometry-preparation",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 13
+              },
+              {
+                "at": 3590,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "creek",
+                "durationMs": 149
+              },
+              {
+                "at": 3590,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 3601,
+                "hunt": 1,
+                "name": "shader-initialize",
+                "detail": "Habitat / ferns / fern_02"
+              }
+            ]
+          },
+          {
+            "at": 3580,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 79,
+            "cpuMs": 30,
+            "renderMs": 5,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 22,
+            "geometries": 33,
+            "programs": 20,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3565,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "Habitat / ferns"
+              },
+              {
+                "at": 3575,
+                "hunt": 1,
+                "name": "geometry-preparation",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 13
+              },
+              {
+                "at": 3590,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "creek",
+                "durationMs": 149
+              },
+              {
+                "at": 3590,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 3601,
+                "hunt": 1,
+                "name": "shader-initialize",
+                "detail": "Habitat / ferns / fern_02"
+              },
+              {
+                "at": 3633,
+                "hunt": 1,
+                "name": "shader-preparation-ready",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 32
+              },
+              {
+                "at": 3644,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 54
+              },
+              {
+                "at": 3649,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 18,
+                "durationMs": 0
+              },
+              {
+                "at": 3650,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 18"
+              },
+              {
+                "at": 3650,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 18"
+              },
+              {
+                "at": 3651,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 18"
+              },
+              {
+                "at": 3651,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 18"
+              }
+            ]
+          },
+          {
+            "at": 3633,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 53,
+            "cpuMs": 33,
+            "renderMs": 22,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 22,
+            "geometries": 33,
+            "programs": 21,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3565,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "Habitat / ferns"
+              },
+              {
+                "at": 3575,
+                "hunt": 1,
+                "name": "geometry-preparation",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 13
+              },
+              {
+                "at": 3590,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "creek",
+                "durationMs": 149
+              },
+              {
+                "at": 3590,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 3601,
+                "hunt": 1,
+                "name": "shader-initialize",
+                "detail": "Habitat / ferns / fern_02"
+              },
+              {
+                "at": 3633,
+                "hunt": 1,
+                "name": "shader-preparation-ready",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 32
+              },
+              {
+                "at": 3644,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 54
+              },
+              {
+                "at": 3649,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 18,
+                "durationMs": 0
+              },
+              {
+                "at": 3650,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 18"
+              },
+              {
+                "at": 3650,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 18"
+              },
+              {
+                "at": 3651,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 18"
+              },
+              {
+                "at": 3651,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 18"
+              }
+            ]
+          },
+          {
+            "at": 3729,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 96,
+            "cpuMs": 81,
+            "renderMs": 79,
+            "draws": 31,
+            "triangles": 65197,
+            "textures": 23,
+            "geometries": 41,
+            "programs": 23,
+            "textureDelta": 1,
+            "geometryDelta": 8,
+            "programDelta": 2,
+            "operations": [
+              {
+                "at": 3633,
+                "hunt": 1,
+                "name": "shader-preparation-ready",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 32
+              },
+              {
+                "at": 3644,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 54
+              },
+              {
+                "at": 3649,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 18,
+                "durationMs": 0
+              },
+              {
+                "at": 3650,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 18"
+              },
+              {
+                "at": 3650,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 18"
+              },
+              {
+                "at": 3651,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 18"
+              },
+              {
+                "at": 3651,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 18"
+              }
+            ]
+          },
+          {
+            "at": 3779,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 50,
+            "cpuMs": 26,
+            "renderMs": 25,
+            "draws": 31,
+            "triangles": 65197,
+            "textures": 23,
+            "geometries": 41,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              }
+            ]
+          },
+          {
+            "at": 3836,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 57,
+            "cpuMs": 40,
+            "renderMs": 35,
+            "draws": 31,
+            "triangles": 65197,
+            "textures": 23,
+            "geometries": 41,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 3900,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 3900,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              }
+            ]
+          },
+          {
+            "at": 3879,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 43,
+            "cpuMs": 25,
+            "renderMs": 24,
+            "draws": 31,
+            "triangles": 65197,
+            "textures": 23,
+            "geometries": 41,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 3900,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 3900,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              }
+            ]
+          },
+          {
+            "at": 3950,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 71,
+            "cpuMs": 52,
+            "renderMs": 51,
+            "draws": 38,
+            "triangles": 95182,
+            "textures": 23,
+            "geometries": 46,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 5,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 3900,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 3900,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              }
+            ]
+          },
+          {
+            "at": 3997,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 47,
+            "cpuMs": 26,
+            "renderMs": 25,
+            "draws": 38,
+            "triangles": 95182,
+            "textures": 23,
+            "geometries": 46,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 3899,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 3900,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 3900,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 19,
+                "durationMs": 1
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 19"
+              }
+            ]
+          },
+          {
+            "at": 4050,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 53,
+            "cpuMs": 33,
+            "renderMs": 33,
+            "draws": 38,
+            "triangles": 95182,
+            "textures": 23,
+            "geometries": 46,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 19,
+                "durationMs": 1
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 19"
+              }
+            ]
+          },
+          {
+            "at": 4091,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 41,
+            "cpuMs": 25,
+            "renderMs": 23,
+            "draws": 38,
+            "triangles": 95182,
+            "textures": 23,
+            "geometries": 46,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 19,
+                "durationMs": 1
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 19"
+              }
+            ]
+          },
+          {
+            "at": 4182,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 91,
+            "cpuMs": 77,
+            "renderMs": 76,
+            "draws": 46,
+            "triangles": 124451,
+            "textures": 23,
+            "geometries": 50,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 4,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 19,
+                "durationMs": 1
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 19"
+              },
+              {
+                "at": 4106,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 19"
+              },
+              {
+                "at": 4255,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / -1"
+              },
+              {
+                "at": 4255,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / -1"
+              },
+              {
+                "at": 4255,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / -1"
+              },
+              {
+                "at": 4255,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / -1"
+              }
+            ]
+          },
+          {
+            "at": 4296,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 114,
+            "cpuMs": 42,
+            "renderMs": 41,
+            "draws": 46,
+            "triangles": 124451,
+            "textures": 23,
+            "geometries": 47,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4255,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / -1"
+              },
+              {
+                "at": 4255,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / -1"
+              },
+              {
+                "at": 4255,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / -1"
+              },
+              {
+                "at": 4255,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / -1"
+              }
+            ]
+          },
+          {
+            "at": 4379,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 83,
+            "cpuMs": 37,
+            "renderMs": 36,
+            "draws": 46,
+            "triangles": 124451,
+            "textures": 23,
+            "geometries": 47,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4489,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 20,
+                "durationMs": 0
+              },
+              {
+                "at": 4499,
+                "hunt": 1,
+                "name": "sign-paint",
+                "detail": 1,
+                "durationMs": 9
+              }
+            ]
+          },
+          {
+            "at": 4459,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 80,
+            "cpuMs": 55,
+            "renderMs": 54,
+            "draws": 46,
+            "triangles": 124451,
+            "textures": 23,
+            "geometries": 47,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4489,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 20,
+                "durationMs": 0
+              },
+              {
+                "at": 4499,
+                "hunt": 1,
+                "name": "sign-paint",
+                "detail": 1,
+                "durationMs": 9
+              },
+              {
+                "at": 4503,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "wood-duck",
+                "durationMs": 4
+              },
+              {
+                "at": 4504,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 20"
+              },
+              {
+                "at": 4504,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 20"
+              },
+              {
+                "at": 4504,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 20"
+              },
+              {
+                "at": 4504,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 20"
+              }
+            ]
+          },
+          {
+            "at": 4595,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 136,
+            "cpuMs": 107,
+            "renderMs": 91,
+            "draws": 53,
+            "triangles": 145421,
+            "textures": 23,
+            "geometries": 52,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 5,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4489,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 20,
+                "durationMs": 0
+              },
+              {
+                "at": 4499,
+                "hunt": 1,
+                "name": "sign-paint",
+                "detail": 1,
+                "durationMs": 9
+              },
+              {
+                "at": 4503,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "wood-duck",
+                "durationMs": 4
+              },
+              {
+                "at": 4504,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 20"
+              },
+              {
+                "at": 4504,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 20"
+              },
+              {
+                "at": 4504,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 20"
+              },
+              {
+                "at": 4504,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 20"
+              }
+            ]
+          },
+          {
+            "at": 4788,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 193,
+            "cpuMs": 57,
+            "renderMs": 56,
+            "draws": 53,
+            "triangles": 145421,
+            "textures": 23,
+            "geometries": 49,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4732,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / 0"
+              },
+              {
+                "at": 4732,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / 0"
+              },
+              {
+                "at": 4732,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / 0"
+              },
+              {
+                "at": 4732,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / 0"
+              }
+            ]
+          },
+          {
+            "at": 4901,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 113,
+            "cpuMs": 60,
+            "renderMs": 59,
+            "draws": 53,
+            "triangles": 145421,
+            "textures": 23,
+            "geometries": 49,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 5011,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 110,
+            "cpuMs": 45,
+            "renderMs": 44,
+            "draws": 53,
+            "triangles": 145421,
+            "textures": 23,
+            "geometries": 49,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 5053,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 21,
+                "durationMs": 1
+              },
+              {
+                "at": 5053,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 21"
+              },
+              {
+                "at": 5053,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 21"
+              },
+              {
+                "at": 5053,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 21"
+              },
+              {
+                "at": 5054,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 21"
+              }
+            ]
+          },
+          {
+            "at": 5151,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 140,
+            "cpuMs": 99,
+            "renderMs": 98,
+            "draws": 59,
+            "triangles": 160991,
+            "textures": 23,
+            "geometries": 53,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 4,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 5053,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 21,
+                "durationMs": 1
+              },
+              {
+                "at": 5053,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 21"
+              },
+              {
+                "at": 5053,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 21"
+              },
+              {
+                "at": 5053,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 21"
+              },
+              {
+                "at": 5054,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 21"
+              },
+              {
+                "at": 5199,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / 1"
+              },
+              {
+                "at": 5200,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / 1"
+              },
+              {
+                "at": 5200,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / 1"
+              },
+              {
+                "at": 5200,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / 1"
+              }
+            ]
+          },
+          {
+            "at": 5255,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 104,
+            "cpuMs": 56,
+            "renderMs": 55,
+            "draws": 59,
+            "triangles": 160991,
+            "textures": 23,
+            "geometries": 50,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 5199,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / 1"
+              },
+              {
+                "at": 5200,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / 1"
+              },
+              {
+                "at": 5200,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / 1"
+              },
+              {
+                "at": 5200,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / 1"
+              }
+            ]
+          },
+          {
+            "at": 5355,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 100,
+            "cpuMs": 73,
+            "renderMs": 72,
+            "draws": 59,
+            "triangles": 160991,
+            "textures": 23,
+            "geometries": 50,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 5475,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 120,
+            "cpuMs": 76,
+            "renderMs": 75,
+            "draws": 59,
+            "triangles": 160991,
+            "textures": 23,
+            "geometries": 50,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 5542,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 22,
+                "durationMs": 0
+              },
+              {
+                "at": 5543,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 22"
+              },
+              {
+                "at": 5543,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 22"
+              },
+              {
+                "at": 5543,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 22"
+              }
+            ]
+          },
+          {
+            "at": 5615,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 140,
+            "cpuMs": 73,
+            "renderMs": 72,
+            "draws": 63,
+            "triangles": 167633,
+            "textures": 23,
+            "geometries": 53,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 3,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 5542,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 22,
+                "durationMs": 0
+              },
+              {
+                "at": 5543,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 22"
+              },
+              {
+                "at": 5543,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 22"
+              },
+              {
+                "at": 5543,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 22"
+              }
+            ]
+          },
+          {
+            "at": 5815,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "balanced",
+            "detail": 1,
+            "presentationMs": 200,
+            "cpuMs": 71,
+            "renderMs": 70,
+            "draws": 63,
+            "triangles": 167633,
+            "textures": 23,
+            "geometries": 53,
+            "programs": 23,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          }
+        ],
+        "operations": [
+          {
+            "at": 3590,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "creek",
+            "durationMs": 149
+          },
+          {
+            "at": 3590,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "goose"
+          },
+          {
+            "at": 3601,
+            "hunt": 1,
+            "name": "shader-initialize",
+            "detail": "Habitat / ferns / fern_02"
+          },
+          {
+            "at": 3633,
+            "hunt": 1,
+            "name": "shader-preparation-ready",
+            "detail": "Habitat / Fern 02",
+            "durationMs": 32
+          },
+          {
+            "at": 3644,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "goose",
+            "durationMs": 54
+          },
+          {
+            "at": 3649,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 18,
+            "durationMs": 0
+          },
+          {
+            "at": 3650,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 18"
+          },
+          {
+            "at": 3650,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 18"
+          },
+          {
+            "at": 3651,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 18"
+          },
+          {
+            "at": 3651,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 18"
+          },
+          {
+            "at": 3899,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 17,
+            "durationMs": 0
+          },
+          {
+            "at": 3899,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 17"
+          },
+          {
+            "at": 3899,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 17"
+          },
+          {
+            "at": 3900,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 17"
+          },
+          {
+            "at": 3900,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 17"
+          },
+          {
+            "at": 4106,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 19,
+            "durationMs": 1
+          },
+          {
+            "at": 4106,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 19"
+          },
+          {
+            "at": 4106,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 19"
+          },
+          {
+            "at": 4106,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 19"
+          },
+          {
+            "at": 4106,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 19"
+          },
+          {
+            "at": 4255,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / ground / -1"
+          },
+          {
+            "at": 4255,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / water / -1"
+          },
+          {
+            "at": 4255,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / detail / -1"
+          },
+          {
+            "at": 4255,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / solid / -1"
+          },
+          {
+            "at": 4489,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 20,
+            "durationMs": 0
+          },
+          {
+            "at": 4499,
+            "hunt": 1,
+            "name": "sign-paint",
+            "detail": 1,
+            "durationMs": 9
+          },
+          {
+            "at": 4503,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "wood-duck",
+            "durationMs": 4
+          },
+          {
+            "at": 4504,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 20"
+          },
+          {
+            "at": 4504,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 20"
+          },
+          {
+            "at": 4504,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 20"
+          },
+          {
+            "at": 4504,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 20"
+          },
+          {
+            "at": 4732,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / ground / 0"
+          },
+          {
+            "at": 4732,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / water / 0"
+          },
+          {
+            "at": 4732,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / detail / 0"
+          },
+          {
+            "at": 4732,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 5053,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 21,
+            "durationMs": 1
+          },
+          {
+            "at": 5053,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 21"
+          },
+          {
+            "at": 5053,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 21"
+          },
+          {
+            "at": 5053,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 21"
+          },
+          {
+            "at": 5054,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 21"
+          },
+          {
+            "at": 5199,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / ground / 1"
+          },
+          {
+            "at": 5200,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / water / 1"
+          },
+          {
+            "at": 5200,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / detail / 1"
+          },
+          {
+            "at": 5200,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 5542,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 22,
+            "durationMs": 0
+          },
+          {
+            "at": 5543,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 22"
+          },
+          {
+            "at": 5543,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 22"
+          },
+          {
+            "at": 5543,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 22"
+          }
+        ],
+        "startupPhases": {
+          "shellMs": 78,
+          "workerRequestMs": null,
+          "workerReadyMs": null,
+          "manifestReadyMs": null,
+          "verificationStartMs": null,
+          "verificationReadyMs": null,
+          "verificationMissingMs": null,
+          "controlled": false,
+          "navigationType": "navigate",
+          "responseStartMs": 12,
+          "moduleRequestMs": 79,
+          "moduleMs": 300,
+          "rendererReadyMs": 417,
+          "firstSceneSubmitMs": 652,
+          "readyMs": 2380,
+          "opener": []
+        },
+        "restartTrace": {
+          "inputAt": 3030,
+          "handlerAt": 3031,
+          "before": {
+            "geometries": 25,
+            "textures": 19,
+            "programs": 17
+          },
+          "firstFrameSubmittedMs": 128,
+          "firstFrameCpuMs": 63,
+          "firstRenderMs": 60,
+          "after": {
+            "geometries": 32,
+            "textures": 18,
+            "programs": 19
+          },
+          "firstOperations": [
+            {
+              "at": 3057,
+              "hunt": 1,
+              "name": "hunt-trail-reset",
+              "detail": "state and replay setup",
+              "durationMs": 26
+            },
+            {
+              "at": 3069,
+              "hunt": 1,
+              "name": "audio-initialize",
+              "detail": "Web Audio",
+              "durationMs": 11
+            },
+            {
+              "at": 3072,
+              "hunt": 1,
+              "name": "hunt-scene-entry",
+              "detail": "HUD and gesture audio",
+              "durationMs": 15
+            },
+            {
+              "at": 3074,
+              "hunt": 1,
+              "name": "hunt-opening-entities",
+              "detail": "trail entity population",
+              "durationMs": 2
+            },
+            {
+              "at": 3074,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "instruments"
+            },
+            {
+              "at": 3097,
+              "hunt": 1,
+              "name": "texture-dispose",
+              "detail": "Gulf atlas / color"
+            },
+            {
+              "at": 3097,
+              "hunt": 1,
+              "name": "texture-dispose",
+              "detail": "Gulf atlas / properties"
+            },
+            {
+              "at": 3097,
+              "hunt": 1,
+              "name": "gulf-atlas-release",
+              "detail": "Gulf Coast Marsh"
+            }
+          ],
+          "nextAnimationCallbackMs": 170,
+          "firstPresentationIntervalMs": 60
+        },
+        "capabilities": {
+          "longTasks": false,
+          "namedResourceHooks": true,
+          "gpuExecutionTime": null
+        },
+        "longTasksSupported": false,
+        "longTasks": [],
+        "audio": {
+          "voices": 0,
+          "buffers": 4,
+          "beds": 7,
+          "decodedBytes": 10553644
+        },
+        "build": {
+          "version": "1.0.0-rc.9",
+          "id": "cb8c3dd"
+        }
+      },
+      "weather": "Autumn sunrise",
+      "hud": "Southern Cypress Swamp",
+      "stageLabel": "3 / 30"
+    },
+    {
+      "label": "high-cypress",
+      "seed": 7,
+      "selected": "high",
+      "mode": "running",
+      "elapsed": 36.000001795432084,
+      "distance": 545.85528,
+      "lateral": 0,
+      "lane": 0,
+      "jump": 0,
+      "slide": 0,
+      "height": 0,
+      "ticks": 0,
+      "power": 0,
+      "flight": null,
+      "speed": 18.825760152539907,
+      "tiles": 5,
+      "drawCalls": 60,
+      "geometries": 50,
+      "entities": 16,
+      "skill": [],
+      "upcoming": "single",
+      "hazards": [
+        {
+          "type": "tree",
+          "lane": 0,
+          "distance": 548.6675449048029
+        },
+        {
+          "type": "fallen",
+          "lane": 0,
+          "distance": 575.7680632407091
+        },
+        {
+          "type": "puddle",
+          "lane": -1,
+          "distance": 575.7680632407091
+        }
+      ],
+      "world": [
+        {
+          "index": 21,
+          "landmark": null,
+          "solid": 353,
+          "solidOpaque": true,
+          "habitats": 7
+        },
+        {
+          "index": 17,
+          "landmark": null,
+          "solid": 317,
+          "solidOpaque": true,
+          "habitats": 6
+        },
+        {
+          "index": 18,
+          "landmark": null,
+          "solid": 310,
+          "solidOpaque": true,
+          "habitats": 3
+        },
+        {
+          "index": 19,
+          "landmark": null,
+          "solid": 322,
+          "solidOpaque": true,
+          "habitats": 3
+        },
+        {
+          "index": 20,
+          "landmark": null,
+          "solid": 326,
+          "solidOpaque": true,
+          "habitats": 2
+        }
+      ],
+      "wildlife": null,
+      "signs": [],
+      "rocks": [],
+      "inLaneSigns": false,
+      "perf": {
+        "ready": 1652,
+        "restart": 124,
+        "frames": 0,
+        "discarded": 0,
+        "draws": 60,
+        "triangles": 175983,
+        "textures": 23,
+        "geometries": 50,
+        "programs": 22,
+        "territory": "cypress",
+        "transitions": [
+          {
+            "territory": "cypress",
+            "wall": 0,
+            "at": 2388
+          }
+        ],
+        "adaptiveChanges": 0,
+        "preset": "high",
+        "detail": 2,
+        "residentTiles": 5,
+        "residentPacks": 1,
+        "surfaces": {
+          "active": "full",
+          "pending": false,
+          "lastLoadMs": 327,
+          "width": 2560,
+          "height": 2048,
+          "estimatedRgbaMipBytes": 27962027,
+          "gulfAtlas": false,
+          "gulfAtlasPending": false
+        },
+        "openingTerrain": {
+          "packets": 3,
+          "reused": 0
+        },
+        "fernResidency": {
+          "requested": true,
+          "ready": true,
+          "lastDemand": 545.85528
+        },
+        "dogBreed": "lab",
+        "migrationFlight": null,
+        "adaptiveQuality": {
+          "level": "balanced",
+          "resetReason": "hunt start",
+          "stabilizing": true,
+          "stabilizationRemainingMs": 1200,
+          "cooldownRemainingMs": 0,
+          "recoveryWindows": 0,
+          "recoveryTarget": 4,
+          "window": {
+            "samples": 0,
+            "late": 0,
+            "seconds": 0
+          }
+        },
+        "drawingBuffer": {
+          "width": 223,
+          "height": 397,
+          "scale": 0.699999988079071,
+          "devicePixelRatio": 0.699999988079071,
+          "preset": "high"
+        },
+        "signs": {
+          "width": 1024,
+          "height": 448,
+          "filtering": "trilinear mipmaps",
+          "requestedAnisotropy": 8,
+          "visible": []
+        },
+        "foliage": [
+          {
+            "index": 21,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 17,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 18,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 19,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 20,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          }
+        ],
+        "tileTimings": [
+          {
+            "index": 21,
+            "buildMs": 69,
+            "unpackMs": 0,
+            "integrationPeakMs": 0
+          },
+          {
+            "index": 17,
+            "buildMs": 55,
+            "unpackMs": 3,
+            "integrationPeakMs": 3
+          },
+          {
+            "index": 18,
+            "buildMs": 51,
+            "unpackMs": 4,
+            "integrationPeakMs": 3
+          },
+          {
+            "index": 19,
+            "buildMs": 89,
+            "unpackMs": 0,
+            "integrationPeakMs": 0
+          },
+          {
+            "index": 20,
+            "buildMs": 38,
+            "unpackMs": 0,
+            "integrationPeakMs": 0
+          }
+        ],
+        "wildlife": 0,
+        "wildlifeModels": {
+          "resident": 2,
+          "preparing": null,
+          "loadMs": 118,
+          "releasedBoneTextures": 0,
+          "hits": 0,
+          "misses": 2,
+          "evictions": 0,
+          "limit": 2,
+          "models": [
+            {
+              "id": "mallard",
+              "materialTextures": 7,
+              "boneTextures": 1,
+              "prepared": {
+                "textures": 7,
+                "skeletons": 1,
+                "shaders": 3,
+                "geometries": 0,
+                "geometryTotal": 8
+              }
+            },
+            {
+              "id": "deer",
+              "materialTextures": 2,
+              "boneTextures": 0,
+              "prepared": {
+                "textures": 0,
+                "skeletons": 0,
+                "shaders": 0,
+                "geometries": 0,
+                "geometryTotal": 3
+              }
+            }
+          ],
+          "rigEncounters": 0,
+          "fallbackEncounters": 0,
+          "proceduralEncounters": 0,
+          "fallbackReasons": {}
+        },
+        "trailPool": {
+          "keys": 6,
+          "idle": 6
+        },
+        "framesMs": null,
+        "cpuMs": {
+          "samples": 26,
+          "median": 41,
+          "p95": 85,
+          "p99": 85,
+          "max": 85,
+          "over16_7": 24,
+          "over20": 21,
+          "over33_3": 18,
+          "over50": 7,
+          "slow": 18,
+          "average": 43.5
+        },
+        "presentationMs": {
+          "samples": 25,
+          "median": 87,
+          "p95": 128,
+          "p99": 197,
+          "max": 197,
+          "over16_7": 25,
+          "over20": 25,
+          "over33_3": 24,
+          "over50": 20,
+          "slow": 24,
+          "average": 84.68
+        },
+        "averageFPS": 11.8,
+        "hunt": {
+          "id": 1,
+          "discarded": 0,
+          "peakTextures": 23,
+          "peakGeometries": 53,
+          "presentation": {
+            "samples": 25,
+            "maxMs": 197,
+            "over20": 25,
+            "over33_3": 24,
+            "over50": 20,
+            "averageMs": 84.68
+          },
+          "cpu": {
+            "samples": 26,
+            "maxMs": 85,
+            "over20": 21,
+            "over33_3": 18,
+            "over50": 7,
+            "averageMs": 43.5
+          },
+          "averageFPS": 11.8
+        },
+        "session": {
+          "id": null,
+          "discarded": 0,
+          "peakTextures": 23,
+          "peakGeometries": 53,
+          "presentation": {
+            "samples": 25,
+            "maxMs": 197,
+            "over20": 25,
+            "over33_3": 24,
+            "over50": 20,
+            "averageMs": 84.68
+          },
+          "cpu": {
+            "samples": 26,
+            "maxMs": 85,
+            "over20": 21,
+            "over33_3": 18,
+            "over50": 7,
+            "averageMs": 43.5
+          },
+          "averageFPS": 11.8
+        },
+        "previousHunts": [],
+        "slowFrames": [
+          {
+            "at": 2388,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": null,
+            "cpuMs": 85,
+            "renderMs": 36,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 20,
+            "geometries": 32,
+            "programs": 18,
+            "textureDelta": 1,
+            "geometryDelta": 7,
+            "programDelta": 2,
+            "operations": [
+              {
+                "at": 2292,
+                "hunt": 1,
+                "name": "hunt-trail-reset",
+                "detail": "state and replay setup",
+                "durationMs": 28
+              },
+              {
+                "at": 2296,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 3
+              },
+              {
+                "at": 2298,
+                "hunt": 1,
+                "name": "hunt-scene-entry",
+                "detail": "HUD and gesture audio",
+                "durationMs": 6
+              },
+              {
+                "at": 2299,
+                "hunt": 1,
+                "name": "hunt-opening-entities",
+                "detail": "trail entity population",
+                "durationMs": 1
+              },
+              {
+                "at": 2299,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 2305,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 2305,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 2305,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              },
+              {
+                "at": 2352,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_nor_gl"
+              },
+              {
+                "at": 2352,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+                "durationMs": 47
+              },
+              {
+                "at": 2388,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "cypress"
+              }
+            ]
+          },
+          {
+            "at": 2516,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 128,
+            "cpuMs": 20,
+            "renderMs": 5,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 21,
+            "geometries": 32,
+            "programs": 18,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 2511,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_rough"
+              },
+              {
+                "at": 2511,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_rough",
+                "durationMs": 13
+              },
+              {
+                "at": 2531,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 232
+              },
+              {
+                "at": 2532,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "mallard"
+              },
+              {
+                "at": 2538,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "Habitat / ferns"
+              },
+              {
+                "at": 2549,
+                "hunt": 1,
+                "name": "geometry-preparation",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 12
+              },
+              {
+                "at": 2571,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 39
+              },
+              {
+                "at": 2571,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 2586,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 15
+              },
+              {
+                "at": 2586,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              },
+              {
+                "at": 2588,
+                "hunt": 1,
+                "name": "shader-initialize",
+                "detail": "Habitat / ferns / fern_02"
+              },
+              {
+                "at": 2605,
+                "hunt": 1,
+                "name": "shader-preparation-ready",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 17
+              }
+            ]
+          },
+          {
+            "at": 2555,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 39,
+            "cpuMs": 19,
+            "renderMs": 6,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 22,
+            "geometries": 33,
+            "programs": 19,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 2511,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_rough",
+                "durationMs": 13
+              },
+              {
+                "at": 2531,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 232
+              },
+              {
+                "at": 2532,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "mallard"
+              },
+              {
+                "at": 2538,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "Habitat / ferns"
+              },
+              {
+                "at": 2549,
+                "hunt": 1,
+                "name": "geometry-preparation",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 12
+              },
+              {
+                "at": 2571,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 39
+              },
+              {
+                "at": 2571,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 2586,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 15
+              },
+              {
+                "at": 2586,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              },
+              {
+                "at": 2588,
+                "hunt": 1,
+                "name": "shader-initialize",
+                "detail": "Habitat / ferns / fern_02"
+              },
+              {
+                "at": 2605,
+                "hunt": 1,
+                "name": "shader-preparation-ready",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 17
+              },
+              {
+                "at": 2667,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "creek",
+                "durationMs": 81
+              }
+            ]
+          },
+          {
+            "at": 2605,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 50,
+            "cpuMs": 18,
+            "renderMs": 5,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 22,
+            "geometries": 33,
+            "programs": 20,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 2571,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 39
+              },
+              {
+                "at": 2571,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 2586,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 15
+              },
+              {
+                "at": 2586,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              },
+              {
+                "at": 2588,
+                "hunt": 1,
+                "name": "shader-initialize",
+                "detail": "Habitat / ferns / fern_02"
+              },
+              {
+                "at": 2605,
+                "hunt": 1,
+                "name": "shader-preparation-ready",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 17
+              },
+              {
+                "at": 2667,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "creek",
+                "durationMs": 81
+              },
+              {
+                "at": 2699,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 18,
+                "durationMs": 0
+              },
+              {
+                "at": 2699,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 18"
+              },
+              {
+                "at": 2699,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 18"
+              },
+              {
+                "at": 2700,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 18"
+              },
+              {
+                "at": 2700,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 18"
+              }
+            ]
+          },
+          {
+            "at": 2783,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 105,
+            "cpuMs": 85,
+            "renderMs": 84,
+            "draws": 31,
+            "triangles": 67537,
+            "textures": 23,
+            "geometries": 41,
+            "programs": 22,
+            "textureDelta": 1,
+            "geometryDelta": 8,
+            "programDelta": 2,
+            "operations": [
+              {
+                "at": 2667,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "creek",
+                "durationMs": 81
+              },
+              {
+                "at": 2699,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 18,
+                "durationMs": 0
+              },
+              {
+                "at": 2699,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 18"
+              },
+              {
+                "at": 2699,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 18"
+              },
+              {
+                "at": 2700,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 18"
+              },
+              {
+                "at": 2700,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 18"
+              }
+            ]
+          },
+          {
+            "at": 2843,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 60,
+            "cpuMs": 37,
+            "renderMs": 36,
+            "draws": 31,
+            "triangles": 67537,
+            "textures": 23,
+            "geometries": 41,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 2959,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              }
+            ]
+          },
+          {
+            "at": 2891,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 48,
+            "cpuMs": 28,
+            "renderMs": 24,
+            "draws": 31,
+            "triangles": 67537,
+            "textures": 23,
+            "geometries": 41,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 2959,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              }
+            ]
+          },
+          {
+            "at": 2943,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 52,
+            "cpuMs": 36,
+            "renderMs": 35,
+            "draws": 31,
+            "triangles": 67537,
+            "textures": 23,
+            "geometries": 41,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 2959,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              }
+            ]
+          },
+          {
+            "at": 2999,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 56,
+            "cpuMs": 41,
+            "renderMs": 40,
+            "draws": 38,
+            "triangles": 100902,
+            "textures": 23,
+            "geometries": 46,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 5,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 2959,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 2960,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              }
+            ]
+          },
+          {
+            "at": 3090,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 91,
+            "cpuMs": 27,
+            "renderMs": 25,
+            "draws": 38,
+            "triangles": 100902,
+            "textures": 23,
+            "geometries": 46,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 3155,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 65,
+            "cpuMs": 28,
+            "renderMs": 27,
+            "draws": 38,
+            "triangles": 100902,
+            "textures": 23,
+            "geometries": 46,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3258,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 19,
+                "durationMs": 0
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 19"
+              }
+            ]
+          },
+          {
+            "at": 3242,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 87,
+            "cpuMs": 59,
+            "renderMs": 59,
+            "draws": 38,
+            "triangles": 100902,
+            "textures": 23,
+            "geometries": 46,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3258,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 19,
+                "durationMs": 0
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 19"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / -1"
+              }
+            ]
+          },
+          {
+            "at": 3299,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 57,
+            "cpuMs": 42,
+            "renderMs": 41,
+            "draws": 46,
+            "triangles": 132511,
+            "textures": 23,
+            "geometries": 50,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 4,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3258,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 19,
+                "durationMs": 0
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 19"
+              },
+              {
+                "at": 3259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 19"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / -1"
+              }
+            ]
+          },
+          {
+            "at": 3398,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 99,
+            "cpuMs": 49,
+            "renderMs": 48,
+            "draws": 46,
+            "triangles": 132511,
+            "textures": 23,
+            "geometries": 47,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / -1"
+              },
+              {
+                "at": 3350,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / -1"
+              }
+            ]
+          },
+          {
+            "at": 3485,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 87,
+            "cpuMs": 38,
+            "renderMs": 37,
+            "draws": 46,
+            "triangles": 132511,
+            "textures": 23,
+            "geometries": 47,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3599,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 20,
+                "durationMs": 0
+              },
+              {
+                "at": 3601,
+                "hunt": 1,
+                "name": "sign-paint",
+                "detail": 1,
+                "durationMs": 1
+              },
+              {
+                "at": 3603,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "wood-duck",
+                "durationMs": 2
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 20"
+              }
+            ]
+          },
+          {
+            "at": 3568,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 83,
+            "cpuMs": 37,
+            "renderMs": 36,
+            "draws": 46,
+            "triangles": 132511,
+            "textures": 23,
+            "geometries": 47,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3599,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 20,
+                "durationMs": 0
+              },
+              {
+                "at": 3601,
+                "hunt": 1,
+                "name": "sign-paint",
+                "detail": 1,
+                "durationMs": 1
+              },
+              {
+                "at": 3603,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "wood-duck",
+                "durationMs": 2
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 20"
+              }
+            ]
+          },
+          {
+            "at": 3684,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 116,
+            "cpuMs": 85,
+            "renderMs": 80,
+            "draws": 53,
+            "triangles": 153811,
+            "textures": 23,
+            "geometries": 52,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 5,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3599,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 20,
+                "durationMs": 0
+              },
+              {
+                "at": 3601,
+                "hunt": 1,
+                "name": "sign-paint",
+                "detail": 1,
+                "durationMs": 1
+              },
+              {
+                "at": 3603,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "wood-duck",
+                "durationMs": 2
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 20"
+              },
+              {
+                "at": 3604,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 20"
+              },
+              {
+                "at": 3750,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / 0"
+              },
+              {
+                "at": 3750,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / 0"
+              },
+              {
+                "at": 3750,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / 0"
+              },
+              {
+                "at": 3750,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / 0"
+              }
+            ]
+          },
+          {
+            "at": 3792,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 108,
+            "cpuMs": 43,
+            "renderMs": 42,
+            "draws": 53,
+            "triangles": 153811,
+            "textures": 23,
+            "geometries": 49,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3750,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / 0"
+              },
+              {
+                "at": 3750,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / 0"
+              },
+              {
+                "at": 3750,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / 0"
+              },
+              {
+                "at": 3750,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / 0"
+              }
+            ]
+          },
+          {
+            "at": 3899,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 107,
+            "cpuMs": 54,
+            "renderMs": 53,
+            "draws": 53,
+            "triangles": 153811,
+            "textures": 23,
+            "geometries": 49,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 3992,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 93,
+            "cpuMs": 45,
+            "renderMs": 44,
+            "draws": 53,
+            "triangles": 153811,
+            "textures": 23,
+            "geometries": 49,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4039,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 21,
+                "durationMs": 0
+              },
+              {
+                "at": 4040,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 21"
+              },
+              {
+                "at": 4040,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 21"
+              },
+              {
+                "at": 4040,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 21"
+              },
+              {
+                "at": 4040,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 21"
+              }
+            ]
+          },
+          {
+            "at": 4099,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 107,
+            "cpuMs": 61,
+            "renderMs": 59,
+            "draws": 60,
+            "triangles": 175983,
+            "textures": 23,
+            "geometries": 53,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 4,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4039,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 21,
+                "durationMs": 0
+              },
+              {
+                "at": 4040,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 21"
+              },
+              {
+                "at": 4040,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 21"
+              },
+              {
+                "at": 4040,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 21"
+              },
+              {
+                "at": 4040,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 21"
+              },
+              {
+                "at": 4153,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / 1"
+              },
+              {
+                "at": 4153,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / 1"
+              },
+              {
+                "at": 4154,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / 1"
+              },
+              {
+                "at": 4154,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / 1"
+              }
+            ]
+          },
+          {
+            "at": 4203,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 104,
+            "cpuMs": 50,
+            "renderMs": 49,
+            "draws": 60,
+            "triangles": 175983,
+            "textures": 23,
+            "geometries": 50,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 4153,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / 1"
+              },
+              {
+                "at": 4153,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / 1"
+              },
+              {
+                "at": 4154,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / 1"
+              },
+              {
+                "at": 4154,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / 1"
+              }
+            ]
+          },
+          {
+            "at": 4308,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 105,
+            "cpuMs": 49,
+            "renderMs": 48,
+            "draws": 60,
+            "triangles": 175983,
+            "textures": 23,
+            "geometries": 50,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 4505,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "high",
+            "detail": 2,
+            "presentationMs": 197,
+            "cpuMs": 78,
+            "renderMs": 77,
+            "draws": 60,
+            "triangles": 175983,
+            "textures": 23,
+            "geometries": 50,
+            "programs": 22,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          }
+        ],
+        "operations": [
+          {
+            "at": 2538,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "Habitat / ferns"
+          },
+          {
+            "at": 2549,
+            "hunt": 1,
+            "name": "geometry-preparation",
+            "detail": "Habitat / Fern 02",
+            "durationMs": 12
+          },
+          {
+            "at": 2571,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "mallard",
+            "durationMs": 39
+          },
+          {
+            "at": 2571,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "goose"
+          },
+          {
+            "at": 2586,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "goose",
+            "durationMs": 15
+          },
+          {
+            "at": 2586,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "creek"
+          },
+          {
+            "at": 2588,
+            "hunt": 1,
+            "name": "shader-initialize",
+            "detail": "Habitat / ferns / fern_02"
+          },
+          {
+            "at": 2605,
+            "hunt": 1,
+            "name": "shader-preparation-ready",
+            "detail": "Habitat / Fern 02",
+            "durationMs": 17
+          },
+          {
+            "at": 2667,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "creek",
+            "durationMs": 81
+          },
+          {
+            "at": 2699,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 18,
+            "durationMs": 0
+          },
+          {
+            "at": 2699,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 18"
+          },
+          {
+            "at": 2699,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 18"
+          },
+          {
+            "at": 2700,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 18"
+          },
+          {
+            "at": 2700,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 18"
+          },
+          {
+            "at": 2959,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 17,
+            "durationMs": 0
+          },
+          {
+            "at": 2960,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 17"
+          },
+          {
+            "at": 2960,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 17"
+          },
+          {
+            "at": 2960,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 17"
+          },
+          {
+            "at": 2960,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 17"
+          },
+          {
+            "at": 3258,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 19,
+            "durationMs": 0
+          },
+          {
+            "at": 3259,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 19"
+          },
+          {
+            "at": 3259,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 19"
+          },
+          {
+            "at": 3259,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 19"
+          },
+          {
+            "at": 3259,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 19"
+          },
+          {
+            "at": 3350,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / ground / -1"
+          },
+          {
+            "at": 3350,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / water / -1"
+          },
+          {
+            "at": 3350,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / detail / -1"
+          },
+          {
+            "at": 3350,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / solid / -1"
+          },
+          {
+            "at": 3599,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 20,
+            "durationMs": 0
+          },
+          {
+            "at": 3601,
+            "hunt": 1,
+            "name": "sign-paint",
+            "detail": 1,
+            "durationMs": 1
+          },
+          {
+            "at": 3603,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "wood-duck",
+            "durationMs": 2
+          },
+          {
+            "at": 3604,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 20"
+          },
+          {
+            "at": 3604,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 20"
+          },
+          {
+            "at": 3604,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 20"
+          },
+          {
+            "at": 3604,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 20"
+          },
+          {
+            "at": 3750,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / ground / 0"
+          },
+          {
+            "at": 3750,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / water / 0"
+          },
+          {
+            "at": 3750,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / detail / 0"
+          },
+          {
+            "at": 3750,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 4039,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 21,
+            "durationMs": 0
+          },
+          {
+            "at": 4040,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 21"
+          },
+          {
+            "at": 4040,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 21"
+          },
+          {
+            "at": 4040,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 21"
+          },
+          {
+            "at": 4040,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 21"
+          },
+          {
+            "at": 4153,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / ground / 1"
+          },
+          {
+            "at": 4153,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / water / 1"
+          },
+          {
+            "at": 4154,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / detail / 1"
+          },
+          {
+            "at": 4154,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / solid / 1"
+          }
+        ],
+        "startupPhases": {
+          "shellMs": 31,
+          "workerRequestMs": null,
+          "workerReadyMs": null,
+          "manifestReadyMs": null,
+          "verificationStartMs": null,
+          "verificationReadyMs": null,
+          "verificationMissingMs": null,
+          "controlled": false,
+          "navigationType": "navigate",
+          "responseStartMs": 4,
+          "moduleRequestMs": 31,
+          "moduleMs": 148,
+          "rendererReadyMs": 160,
+          "firstSceneSubmitMs": 294,
+          "readyMs": 1652,
+          "opener": []
+        },
+        "restartTrace": {
+          "inputAt": 2263,
+          "handlerAt": 2264,
+          "before": {
+            "geometries": 25,
+            "textures": 20,
+            "programs": 16
+          },
+          "firstFrameSubmittedMs": 125,
+          "firstFrameCpuMs": 85,
+          "firstRenderMs": 36,
+          "after": {
+            "geometries": 32,
+            "textures": 20,
+            "programs": 18
+          },
+          "firstOperations": [
+            {
+              "at": 2292,
+              "hunt": 1,
+              "name": "hunt-trail-reset",
+              "detail": "state and replay setup",
+              "durationMs": 28
+            },
+            {
+              "at": 2296,
+              "hunt": 1,
+              "name": "audio-initialize",
+              "detail": "Web Audio",
+              "durationMs": 3
+            },
+            {
+              "at": 2298,
+              "hunt": 1,
+              "name": "hunt-scene-entry",
+              "detail": "HUD and gesture audio",
+              "durationMs": 6
+            },
+            {
+              "at": 2299,
+              "hunt": 1,
+              "name": "hunt-opening-entities",
+              "detail": "trail entity population",
+              "durationMs": 1
+            },
+            {
+              "at": 2299,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "instruments"
+            },
+            {
+              "at": 2305,
+              "hunt": 1,
+              "name": "texture-dispose",
+              "detail": "Gulf atlas / color"
+            },
+            {
+              "at": 2305,
+              "hunt": 1,
+              "name": "texture-dispose",
+              "detail": "Gulf atlas / properties"
+            },
+            {
+              "at": 2305,
+              "hunt": 1,
+              "name": "gulf-atlas-release",
+              "detail": "Gulf Coast Marsh"
+            },
+            {
+              "at": 2352,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_nor_gl"
+            },
+            {
+              "at": 2352,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+              "durationMs": 47
+            }
+          ],
+          "nextAnimationCallbackMs": 233,
+          "firstPresentationIntervalMs": 128
+        },
+        "capabilities": {
+          "longTasks": false,
+          "namedResourceHooks": true,
+          "gpuExecutionTime": null
+        },
+        "longTasksSupported": false,
+        "longTasks": [],
+        "audio": {
+          "voices": 0,
+          "buffers": 4,
+          "beds": 7,
+          "decodedBytes": 10553644
+        },
+        "build": {
+          "version": "1.0.0-rc.9",
+          "id": "cb8c3dd"
+        }
+      },
+      "weather": "Autumn sunrise",
+      "hud": "Southern Cypress Swamp",
+      "stageLabel": "3 / 30"
+    },
+    {
+      "label": "low-cypress",
+      "seed": 7,
+      "selected": "low",
+      "mode": "running",
+      "elapsed": 36.01726846209873,
+      "distance": 546.1803509873001,
+      "lateral": 0,
+      "lane": 0,
+      "jump": 0,
+      "slide": 0,
+      "height": 0,
+      "ticks": 3,
+      "power": 0,
+      "flight": null,
+      "speed": 18.827227128539906,
+      "tiles": 6,
+      "drawCalls": 52,
+      "geometries": 48,
+      "entities": 16,
+      "skill": [],
+      "upcoming": "single",
+      "hazards": [
+        {
+          "type": "tree",
+          "lane": 0,
+          "distance": 548.6675449048029
+        },
+        {
+          "type": "fallen",
+          "lane": 0,
+          "distance": 575.7680632407091
+        },
+        {
+          "type": "puddle",
+          "lane": -1,
+          "distance": 575.7680632407091
+        }
+      ],
+      "world": [
+        {
+          "index": 21,
+          "landmark": null,
+          "solid": 339,
+          "solidOpaque": true,
+          "habitats": 7
+        },
+        {
+          "index": 17,
+          "landmark": null,
+          "solid": 303,
+          "solidOpaque": true,
+          "habitats": 6
+        },
+        {
+          "index": 18,
+          "landmark": null,
+          "solid": 296,
+          "solidOpaque": true,
+          "habitats": 3
+        },
+        {
+          "index": 19,
+          "landmark": null,
+          "solid": 308,
+          "solidOpaque": true,
+          "habitats": 3
+        },
+        {
+          "index": 20,
+          "landmark": null,
+          "solid": 312,
+          "solidOpaque": true,
+          "habitats": 2
+        }
+      ],
+      "wildlife": null,
+      "signs": [],
+      "rocks": [],
+      "inLaneSigns": false,
+      "perf": {
+        "ready": 1070,
+        "restart": 84,
+        "frames": 21,
+        "discarded": 0,
+        "draws": 56,
+        "triangles": 138547,
+        "textures": 11,
+        "geometries": 51,
+        "programs": 17,
+        "territory": "cypress",
+        "transitions": [
+          {
+            "territory": "cypress",
+            "wall": 0,
+            "at": 1468
+          }
+        ],
+        "adaptiveChanges": 0,
+        "preset": "low",
+        "detail": 0,
+        "residentTiles": 6,
+        "residentPacks": 0,
+        "surfaces": {
+          "active": "compact",
+          "pending": false,
+          "lastLoadMs": 112,
+          "width": 1280,
+          "height": 1024,
+          "estimatedRgbaMipBytes": 6990507,
+          "gulfAtlas": false,
+          "gulfAtlasPending": false
+        },
+        "openingTerrain": {
+          "packets": 3,
+          "reused": 0
+        },
+        "fernResidency": {
+          "requested": false,
+          "ready": false,
+          "lastDemand": null
+        },
+        "dogBreed": "lab",
+        "migrationFlight": null,
+        "adaptiveQuality": {
+          "level": "balanced",
+          "resetReason": "hunt start",
+          "stabilizing": true,
+          "stabilizationRemainingMs": 1200,
+          "cooldownRemainingMs": 0,
+          "recoveryWindows": 0,
+          "recoveryTarget": 4,
+          "window": {
+            "samples": 0,
+            "late": 0,
+            "seconds": 0
+          }
+        },
+        "drawingBuffer": {
+          "width": 223,
+          "height": 397,
+          "scale": 0.699999988079071,
+          "devicePixelRatio": 0.699999988079071,
+          "preset": "low"
+        },
+        "signs": {
+          "width": 1024,
+          "height": 448,
+          "filtering": "trilinear mipmaps",
+          "requestedAnisotropy": 8,
+          "visible": []
+        },
+        "foliage": [
+          {
+            "index": 21,
+            "outer": null,
+            "groves": [],
+            "ferns": 0
+          },
+          {
+            "index": 17,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 18,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 19,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          },
+          {
+            "index": 20,
+            "outer": null,
+            "groves": [
+              "authored forest",
+              "authored forest"
+            ],
+            "ferns": 0
+          }
+        ],
+        "tileTimings": [
+          {
+            "index": 21,
+            "buildMs": 35,
+            "unpackMs": 2,
+            "integrationPeakMs": 2
+          },
+          {
+            "index": 17,
+            "buildMs": 45,
+            "unpackMs": 3,
+            "integrationPeakMs": 3
+          },
+          {
+            "index": 18,
+            "buildMs": 113,
+            "unpackMs": 4,
+            "integrationPeakMs": 3
+          },
+          {
+            "index": 19,
+            "buildMs": 37,
+            "unpackMs": 0,
+            "integrationPeakMs": 0
+          },
+          {
+            "index": 20,
+            "buildMs": 60,
+            "unpackMs": 1,
+            "integrationPeakMs": 1
+          }
+        ],
+        "wildlife": 0,
+        "wildlifeModels": {
+          "resident": 0,
+          "preparing": null,
+          "loadMs": 0,
+          "releasedBoneTextures": 0,
+          "hits": 0,
+          "misses": 0,
+          "evictions": 0,
+          "limit": 2,
+          "models": [],
+          "rigEncounters": 0,
+          "fallbackEncounters": 0,
+          "proceduralEncounters": 0,
+          "fallbackReasons": {}
+        },
+        "trailPool": {
+          "keys": 6,
+          "idle": 6
+        },
+        "framesMs": {
+          "samples": 21,
+          "median": 0.1,
+          "p95": 0.1,
+          "p99": 0.1,
+          "max": 0.1,
+          "over16_7": 0,
+          "over20": 0,
+          "over33_3": 0,
+          "over50": 0,
+          "slow": 0,
+          "average": 0.1
+        },
+        "cpuMs": {
+          "samples": 22,
+          "median": 31,
+          "p95": 49,
+          "p99": 89,
+          "max": 89,
+          "over16_7": 19,
+          "over20": 18,
+          "over33_3": 10,
+          "over50": 1,
+          "slow": 10,
+          "average": 31.77
+        },
+        "presentationMs": {
+          "samples": 21,
+          "median": 301,
+          "p95": 320,
+          "p99": 372,
+          "max": 372,
+          "over16_7": 21,
+          "over20": 21,
+          "over33_3": 21,
+          "over50": 21,
+          "slow": 21,
+          "average": 278
+        },
+        "averageFPS": 3.6,
+        "hunt": {
+          "id": 1,
+          "discarded": 0,
+          "peakTextures": 11,
+          "peakGeometries": 51,
+          "presentation": {
+            "samples": 21,
+            "maxMs": 372,
+            "over20": 21,
+            "over33_3": 21,
+            "over50": 21,
+            "averageMs": 278
+          },
+          "cpu": {
+            "samples": 22,
+            "maxMs": 89,
+            "over20": 18,
+            "over33_3": 10,
+            "over50": 1,
+            "averageMs": 31.77
+          },
+          "averageFPS": 3.6
+        },
+        "session": {
+          "id": null,
+          "discarded": 0,
+          "peakTextures": 11,
+          "peakGeometries": 51,
+          "presentation": {
+            "samples": 21,
+            "maxMs": 372,
+            "over20": 21,
+            "over33_3": 21,
+            "over50": 21,
+            "averageMs": 278
+          },
+          "cpu": {
+            "samples": 22,
+            "maxMs": 89,
+            "over20": 18,
+            "over33_3": 10,
+            "over50": 1,
+            "averageMs": 31.77
+          },
+          "averageFPS": 3.6
+        },
+        "previousHunts": [],
+        "slowFrames": [
+          {
+            "at": 1468,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": null,
+            "cpuMs": 37,
+            "renderMs": 36,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 10,
+            "geometries": 32,
+            "programs": 15,
+            "textureDelta": 1,
+            "geometryDelta": 7,
+            "programDelta": 2,
+            "operations": [
+              {
+                "at": 1422,
+                "hunt": 1,
+                "name": "hunt-trail-reset",
+                "detail": "state and replay setup",
+                "durationMs": 38
+              },
+              {
+                "at": 1425,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 2
+              },
+              {
+                "at": 1426,
+                "hunt": 1,
+                "name": "hunt-scene-entry",
+                "detail": "HUD and gesture audio",
+                "durationMs": 4
+              },
+              {
+                "at": 1427,
+                "hunt": 1,
+                "name": "hunt-opening-entities",
+                "detail": "trail entity population",
+                "durationMs": 1
+              },
+              {
+                "at": 1427,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 1432,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 1432,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 1432,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              },
+              {
+                "at": 1468,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "cypress"
+              }
+            ]
+          },
+          {
+            "at": 1553,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 85,
+            "cpuMs": 37,
+            "renderMs": 35,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 10,
+            "geometries": 32,
+            "programs": 15,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 1468,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "cypress"
+              },
+              {
+                "at": 1633,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 206
+              },
+              {
+                "at": 1634,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 1649,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 15
+              },
+              {
+                "at": 1649,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "mallard"
+              },
+              {
+                "at": 1661,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 12
+              },
+              {
+                "at": 1661,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              }
+            ]
+          },
+          {
+            "at": 1828,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 275,
+            "cpuMs": 5,
+            "renderMs": 4,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 10,
+            "geometries": 32,
+            "programs": 15,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 1633,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 206
+              },
+              {
+                "at": 1634,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 1649,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 15
+              },
+              {
+                "at": 1649,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "mallard"
+              },
+              {
+                "at": 1661,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 12
+              },
+              {
+                "at": 1661,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              },
+              {
+                "at": 1723,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "creek",
+                "durationMs": 62
+              }
+            ]
+          },
+          {
+            "at": 2124,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 296,
+            "cpuMs": 9,
+            "renderMs": 5,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 10,
+            "geometries": 32,
+            "programs": 15,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 2432,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 308,
+            "cpuMs": 7,
+            "renderMs": 6,
+            "draws": 23,
+            "triangles": 36095,
+            "textures": 10,
+            "geometries": 32,
+            "programs": 15,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 2804,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 372,
+            "cpuMs": 89,
+            "renderMs": 88,
+            "draws": 31,
+            "triangles": 61817,
+            "textures": 11,
+            "geometries": 40,
+            "programs": 17,
+            "textureDelta": 1,
+            "geometryDelta": 8,
+            "programDelta": 2,
+            "operations": [
+              {
+                "at": 2715,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 18,
+                "durationMs": 0
+              },
+              {
+                "at": 2716,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 18"
+              },
+              {
+                "at": 2716,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 18"
+              },
+              {
+                "at": 2716,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 18"
+              },
+              {
+                "at": 2716,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 18"
+              }
+            ]
+          },
+          {
+            "at": 3046,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 242,
+            "cpuMs": 21,
+            "renderMs": 20,
+            "draws": 31,
+            "triangles": 61817,
+            "textures": 11,
+            "geometries": 40,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 3339,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 293,
+            "cpuMs": 24,
+            "renderMs": 20,
+            "draws": 31,
+            "triangles": 61817,
+            "textures": 11,
+            "geometries": 40,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 3640,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 301,
+            "cpuMs": 19,
+            "renderMs": 18,
+            "draws": 31,
+            "triangles": 61817,
+            "textures": 11,
+            "geometries": 40,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 3953,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 313,
+            "cpuMs": 42,
+            "renderMs": 41,
+            "draws": 38,
+            "triangles": 88422,
+            "textures": 11,
+            "geometries": 45,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 5,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 3912,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 17,
+                "durationMs": 0
+              },
+              {
+                "at": 3913,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 17"
+              },
+              {
+                "at": 3913,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 17"
+              },
+              {
+                "at": 3913,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 17"
+              },
+              {
+                "at": 3913,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 17"
+              }
+            ]
+          },
+          {
+            "at": 4242,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 289,
+            "cpuMs": 21,
+            "renderMs": 20,
+            "draws": 38,
+            "triangles": 88422,
+            "textures": 11,
+            "geometries": 45,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 4532,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 290,
+            "cpuMs": 21,
+            "renderMs": 20,
+            "draws": 38,
+            "triangles": 88422,
+            "textures": 11,
+            "geometries": 45,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 4839,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 307,
+            "cpuMs": 21,
+            "renderMs": 20,
+            "draws": 38,
+            "triangles": 88422,
+            "textures": 11,
+            "geometries": 45,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 5159,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 320,
+            "cpuMs": 35,
+            "renderMs": 34,
+            "draws": 45,
+            "triangles": 111289,
+            "textures": 11,
+            "geometries": 50,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 5,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 5125,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 19,
+                "durationMs": 0
+              },
+              {
+                "at": 5125,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 19"
+              },
+              {
+                "at": 5126,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 19"
+              },
+              {
+                "at": 5126,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 19"
+              },
+              {
+                "at": 5126,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 19"
+              }
+            ]
+          },
+          {
+            "at": 5461,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 302,
+            "cpuMs": 29,
+            "renderMs": 27,
+            "draws": 45,
+            "triangles": 111289,
+            "textures": 11,
+            "geometries": 47,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 5433,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / -1"
+              },
+              {
+                "at": 5433,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / -1"
+              },
+              {
+                "at": 5433,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / -1"
+              },
+              {
+                "at": 5433,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / -1"
+              }
+            ]
+          },
+          {
+            "at": 5769,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 308,
+            "cpuMs": 31,
+            "renderMs": 30,
+            "draws": 45,
+            "triangles": 111289,
+            "textures": 11,
+            "geometries": 47,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 6077,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 308,
+            "cpuMs": 40,
+            "renderMs": 33,
+            "draws": 45,
+            "triangles": 111289,
+            "textures": 11,
+            "geometries": 47,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 6392,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 315,
+            "cpuMs": 47,
+            "renderMs": 42,
+            "draws": 52,
+            "triangles": 131929,
+            "textures": 11,
+            "geometries": 51,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 4,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 6346,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 20,
+                "durationMs": 0
+              },
+              {
+                "at": 6347,
+                "hunt": 1,
+                "name": "sign-paint",
+                "detail": 1,
+                "durationMs": 1
+              },
+              {
+                "at": 6350,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "wood-duck",
+                "durationMs": 3
+              },
+              {
+                "at": 6351,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 20"
+              },
+              {
+                "at": 6351,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 20"
+              },
+              {
+                "at": 6351,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / detail / 20"
+              },
+              {
+                "at": 6351,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 20"
+              }
+            ]
+          },
+          {
+            "at": 6696,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 304,
+            "cpuMs": 42,
+            "renderMs": 38,
+            "draws": 52,
+            "triangles": 131929,
+            "textures": 11,
+            "geometries": 48,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 6655,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / ground / 0"
+              },
+              {
+                "at": 6657,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / water / 0"
+              },
+              {
+                "at": 6657,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / detail / 0"
+              },
+              {
+                "at": 6657,
+                "hunt": 1,
+                "name": "geometry-dispose",
+                "detail": "gulf / solid / 0"
+              }
+            ]
+          },
+          {
+            "at": 6988,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 292,
+            "cpuMs": 40,
+            "renderMs": 39,
+            "draws": 52,
+            "triangles": 131929,
+            "textures": 11,
+            "geometries": 48,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": []
+          },
+          {
+            "at": 7192,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 204,
+            "cpuMs": 33,
+            "renderMs": 32,
+            "draws": 52,
+            "triangles": 131929,
+            "textures": 11,
+            "geometries": 48,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 7258,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 21,
+                "durationMs": 0
+              },
+              {
+                "at": 7259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 21"
+              },
+              {
+                "at": 7259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 21"
+              },
+              {
+                "at": 7259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 21"
+              }
+            ]
+          },
+          {
+            "at": 7306,
+            "hunt": 1,
+            "territory": "cypress",
+            "preset": "low",
+            "detail": 0,
+            "presentationMs": 114,
+            "cpuMs": 49,
+            "renderMs": 48,
+            "draws": 56,
+            "triangles": 138547,
+            "textures": 11,
+            "geometries": 51,
+            "programs": 17,
+            "textureDelta": 0,
+            "geometryDelta": 3,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 7258,
+                "hunt": 1,
+                "name": "terrain-ready",
+                "detail": 21,
+                "durationMs": 0
+              },
+              {
+                "at": 7259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / ground / 21"
+              },
+              {
+                "at": 7259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / water / 21"
+              },
+              {
+                "at": 7259,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "cypress / solid / 21"
+              }
+            ]
+          }
+        ],
+        "operations": [
+          {
+            "at": 1426,
+            "hunt": 1,
+            "name": "hunt-scene-entry",
+            "detail": "HUD and gesture audio",
+            "durationMs": 4
+          },
+          {
+            "at": 1427,
+            "hunt": 1,
+            "name": "hunt-opening-entities",
+            "detail": "trail entity population",
+            "durationMs": 1
+          },
+          {
+            "at": 1427,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 1432,
+            "hunt": 1,
+            "name": "texture-dispose",
+            "detail": "Gulf atlas / color"
+          },
+          {
+            "at": 1432,
+            "hunt": 1,
+            "name": "texture-dispose",
+            "detail": "Gulf atlas / properties"
+          },
+          {
+            "at": 1432,
+            "hunt": 1,
+            "name": "gulf-atlas-release",
+            "detail": "Gulf Coast Marsh"
+          },
+          {
+            "at": 1468,
+            "hunt": 1,
+            "name": "territory",
+            "detail": "cypress"
+          },
+          {
+            "at": 1633,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "instruments",
+            "durationMs": 206
+          },
+          {
+            "at": 1634,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "goose"
+          },
+          {
+            "at": 1649,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "goose",
+            "durationMs": 15
+          },
+          {
+            "at": 1649,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "mallard"
+          },
+          {
+            "at": 1661,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "mallard",
+            "durationMs": 12
+          },
+          {
+            "at": 1661,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "creek"
+          },
+          {
+            "at": 1723,
+            "hunt": 1,
+            "name": "audio-decode-ready",
+            "detail": "creek",
+            "durationMs": 62
+          },
+          {
+            "at": 2715,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 18,
+            "durationMs": 0
+          },
+          {
+            "at": 2716,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 18"
+          },
+          {
+            "at": 2716,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 18"
+          },
+          {
+            "at": 2716,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 18"
+          },
+          {
+            "at": 2716,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 18"
+          },
+          {
+            "at": 3912,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 17,
+            "durationMs": 0
+          },
+          {
+            "at": 3913,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 17"
+          },
+          {
+            "at": 3913,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 17"
+          },
+          {
+            "at": 3913,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 17"
+          },
+          {
+            "at": 3913,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 17"
+          },
+          {
+            "at": 5125,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 19,
+            "durationMs": 0
+          },
+          {
+            "at": 5125,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 19"
+          },
+          {
+            "at": 5126,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 19"
+          },
+          {
+            "at": 5126,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 19"
+          },
+          {
+            "at": 5126,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 19"
+          },
+          {
+            "at": 5433,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / ground / -1"
+          },
+          {
+            "at": 5433,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / water / -1"
+          },
+          {
+            "at": 5433,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / detail / -1"
+          },
+          {
+            "at": 5433,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / solid / -1"
+          },
+          {
+            "at": 6346,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 20,
+            "durationMs": 0
+          },
+          {
+            "at": 6347,
+            "hunt": 1,
+            "name": "sign-paint",
+            "detail": 1,
+            "durationMs": 1
+          },
+          {
+            "at": 6350,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "wood-duck",
+            "durationMs": 3
+          },
+          {
+            "at": 6351,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 20"
+          },
+          {
+            "at": 6351,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 20"
+          },
+          {
+            "at": 6351,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / detail / 20"
+          },
+          {
+            "at": 6351,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 20"
+          },
+          {
+            "at": 6655,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / ground / 0"
+          },
+          {
+            "at": 6657,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / water / 0"
+          },
+          {
+            "at": 6657,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / detail / 0"
+          },
+          {
+            "at": 6657,
+            "hunt": 1,
+            "name": "geometry-dispose",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 7258,
+            "hunt": 1,
+            "name": "terrain-ready",
+            "detail": 21,
+            "durationMs": 0
+          },
+          {
+            "at": 7259,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / ground / 21"
+          },
+          {
+            "at": 7259,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / water / 21"
+          },
+          {
+            "at": 7259,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "cypress / solid / 21"
+          }
+        ],
+        "startupPhases": {
+          "shellMs": 36,
+          "workerRequestMs": null,
+          "workerReadyMs": null,
+          "manifestReadyMs": null,
+          "verificationStartMs": null,
+          "verificationReadyMs": null,
+          "verificationMissingMs": null,
+          "controlled": false,
+          "navigationType": "navigate",
+          "responseStartMs": 3,
+          "moduleRequestMs": 36,
+          "moduleMs": 137,
+          "rendererReadyMs": 149,
+          "firstSceneSubmitMs": 262,
+          "readyMs": 1070,
+          "opener": []
+        },
+        "restartTrace": {
+          "inputAt": 1384,
+          "handlerAt": 1384,
+          "before": {
+            "geometries": 25,
+            "textures": 11,
+            "programs": 13
+          },
+          "firstFrameSubmittedMs": 84,
+          "firstFrameCpuMs": 37,
+          "firstRenderMs": 36,
+          "after": {
+            "geometries": 32,
+            "textures": 10,
+            "programs": 15
+          },
+          "firstOperations": [
+            {
+              "at": 1422,
+              "hunt": 1,
+              "name": "hunt-trail-reset",
+              "detail": "state and replay setup",
+              "durationMs": 38
+            },
+            {
+              "at": 1425,
+              "hunt": 1,
+              "name": "audio-initialize",
+              "detail": "Web Audio",
+              "durationMs": 2
+            },
+            {
+              "at": 1426,
+              "hunt": 1,
+              "name": "hunt-scene-entry",
+              "detail": "HUD and gesture audio",
+              "durationMs": 4
+            },
+            {
+              "at": 1427,
+              "hunt": 1,
+              "name": "hunt-opening-entities",
+              "detail": "trail entity population",
+              "durationMs": 1
+            },
+            {
+              "at": 1427,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "instruments"
+            },
+            {
+              "at": 1432,
+              "hunt": 1,
+              "name": "texture-dispose",
+              "detail": "Gulf atlas / color"
+            },
+            {
+              "at": 1432,
+              "hunt": 1,
+              "name": "texture-dispose",
+              "detail": "Gulf atlas / properties"
+            },
+            {
+              "at": 1432,
+              "hunt": 1,
+              "name": "gulf-atlas-release",
+              "detail": "Gulf Coast Marsh"
+            }
+          ],
+          "nextAnimationCallbackMs": 132,
+          "firstPresentationIntervalMs": 85
+        },
+        "capabilities": {
+          "longTasks": false,
+          "namedResourceHooks": true,
+          "gpuExecutionTime": null
+        },
+        "longTasksSupported": false,
+        "longTasks": [],
+        "audio": {
+          "voices": 0,
+          "buffers": 4,
+          "beds": 7,
+          "decodedBytes": 10553644
+        },
+        "build": {
+          "version": "1.0.0-rc.9",
+          "id": "cb8c3dd"
+        }
+      },
+      "weather": "Autumn sunrise",
+      "hud": "Southern Cypress Swamp",
+      "stageLabel": "3 / 30"
+    }
+  ]
+}

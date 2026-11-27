@@ -62,15 +62,46 @@ async function review(version, callback) {
     await context.close()
   }
 }
+async function startFixture(page, url, distance) {
+  await page.goto(url+'?perf=1&debug=collision&volumes=off&scenery=on&seed=7&at='+distance+'&qaview=low&course=raptor')
+  const online = page.locator('#content-online')
+  await online.or(page.locator('#primary')).first().waitFor({state:'attached'})
+  if (await online.isVisible()) await online.click()
+  await page.waitForFunction(() => !document.querySelector('#primary').disabled)
+}
+
+function watchAudio(page) {
+  return page.addInitScript(() => {
+    const connect = AudioNode.prototype.connect
+    AudioNode.prototype.connect = function(target,...args) {
+      const output = connect.call(this,target,...args)
+      if (target === this.context.destination && !window.fieldAudioCapture) {
+        const stream = this.context.createMediaStreamDestination()
+        connect.call(this,stream)
+        window.fieldAudioCapture = stream.stream
+      }
+      return output
+    }
+  })
+}
+
+function recordAudio(page, milliseconds) {
+  return page.evaluate(async milliseconds => {
+    const recorder = new MediaRecorder(window.fieldAudioCapture,{mimeType:'audio/webm;codecs=opus'})
+    const data = new Promise(resolve => { recorder.ondataavailable = event => resolve(event.data) })
+    recorder.start()
+    await new Promise(resolve => setTimeout(resolve,milliseconds))
+    recorder.stop()
+    return Array.from(new Uint8Array(await (await data).arrayBuffer()))
+    }, milliseconds)
+}
+
 try {
-  const audition = process.argv.includes('audio-only') || process.argv.includes('studio-only')
+  const audition = process.argv.includes('audio-only') || process.argv.includes('studio-only') || process.argv.includes('gameplay-audio')
   const editions = process.argv.includes('after-only') ? ['after'] : ['before','after']
   for (const version of audition ? [] : editions) await review(version, async ({page,url,shot,context}) => {
     if (process.argv.includes('report-only')) {
-      await page.goto(url+'?perf=1&debug=collision&volumes=off&seed=7&at=32&qaview=low&course=raptor')
-      await page.locator('#content-download').click()
-      await page.waitForFunction(() => !document.querySelector('#primary').disabled)
-      await context.setOffline(true)
+      await startFixture(page,url,32)
       await page.locator('#primary').click()
       await page.locator('#run-again').waitFor({timeout:100000})
       await shot('hunt-over')
@@ -131,6 +162,16 @@ try {
       assert.ok(resources.buffers > 0 && resources.voices <= 40)
     }
   })
+  if (process.argv.includes('gameplay-audio')) await review('after',async ({page,url,shot}) => {
+    await watchAudio(page)
+    await startFixture(page,url,0)
+    await page.locator('#primary').click()
+    await page.waitForFunction(() => Boolean(window.fieldAudioCapture))
+    const clip = await recordAudio(page, 9500)
+    assert.ok(clip.length > 800)
+    await writeFile(resolve(output,'gameplay.webm'),Buffer.from(clip))
+    await shot('gameplay')
+  })
   if (process.argv.includes('studio-only')) await review('studio',async ({page,url,shot}) => {
     await page.goto(url+'?studio=1&view=report&quality=low')
     await page.locator('#content-download').click()
@@ -146,18 +187,7 @@ try {
     assert.equal(await page.evaluate(key => localStorage.getItem(key), saveKey),save)
   })
   if (process.argv.includes('audio-only')) await review('studio',async ({page,url,context}) => {
-    await page.addInitScript(() => {
-      const connect = AudioNode.prototype.connect
-      AudioNode.prototype.connect = function(target,...args) {
-        const output = connect.call(this,target,...args)
-        if (target === this.context.destination && !window.fieldAudioCapture) {
-          const stream = this.context.createMediaStreamDestination()
-          connect.call(this,stream)
-          window.fieldAudioCapture = stream.stream
-        }
-        return output
-      }
-    })
+    await watchAudio(page)
     await page.goto(url+'?studio=1&view=audio&quality=low&perf=1')
     await page.locator('#content-download').click()
     const selection = page.getByLabel('Sound preview')
@@ -174,14 +204,7 @@ try {
       await selection.selectOption(value)
       await start.click()
       await page.waitForFunction(() => Boolean(window.fieldAudioCapture))
-      const clip = await page.evaluate(async value => {
-        const recorder = new MediaRecorder(window.fieldAudioCapture,{mimeType:'audio/webm;codecs=opus'})
-        const data = new Promise(resolve => { recorder.ondataavailable = event => resolve(event.data) })
-        recorder.start()
-        await new Promise(resolve => setTimeout(resolve,value.includes(':') ? 4200 : 6000))
-        recorder.stop()
-        return Array.from(new Uint8Array(await (await data).arrayBuffer()))
-      }, value)
+      const clip = await recordAudio(page, value.includes(':') ? 4200 : 6000)
       assert.ok(clip.length > 800)
       await writeFile(resolve(output,value.replace(':','-')+'.webm'),Buffer.from(clip))
       if (await stop.isVisible()) await stop.click({timeout:2000}).catch(() => {})

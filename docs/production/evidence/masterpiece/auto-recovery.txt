@@ -1,0 +1,48 @@
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+{
+  elapsed: 14.37333333333339,
+  ticks: 1725,
+  input: 6,
+  quality: {
+    level: 'high',
+    resetReason: 'hunt start',
+    stabilizing: false,
+    stabilizationRemainingMs: 0,
+    cooldownRemainingMs: 1492,
+    recoveryWindows: 0,
+    recoveryTarget: null,
+    window: { samples: 55, late: 0, seconds: 0.9083333333333965 },
+    lastWindow: {
+      samples: 72,
+      late: 0,
+      meanMs: 16.67,
+      maxMs: 16.67,
+      seconds: 1.2,
+      pressureWindows: 0,
+      headroomWindows: 4
+    },
+    lastDecision: {
+      from: 'balanced',
+      to: 'high',
+      reason: 'consistent frame headroom',
+      samples: 72,
+      late: 0,
+      meanMs: 16.67,
+      maxMs: 16.67,
+      seconds: 1.2,
+      pressureWindows: 0,
+      headroomWindows: 4
+    }
+  }
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 240000ms exceeded.
+    at /dev/shm/retriever-masterpiece/repo/scripts/phase-three-browser.mjs:828:18 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.22.3
