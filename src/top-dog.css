@@ -204,3 +204,34 @@
   .lodge-heading { padding-block: 14px 12px; }
   .lodge-heading h2 { font-size: 1.43rem; }
 }
+
+.kennel-fitting { padding: 3px 0 8px; background: transparent; }
+.kennel-identity { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem; padding-block: .25rem .6rem; }
+.kennel-identity h3 { margin: 0; color: #f4e5c7; font: 600 1.45rem/1.1 Georgia, serif; overflow-wrap: anywhere; }
+.kennel-count { font-size: .72rem; color: #d2be98; white-space: nowrap; }
+.kennel-stage { height: clamp(177px, 30dvh, 285px); border-radius: 10px; margin-bottom: 3px; }
+.kennel-categories, .kennel-views, .kennel-angles { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 3px; }
+.kennel-categories button, .kennel-views button, .kennel-angles button {
+  min-height: 44px; padding: 3px 1px; font-size: clamp(.69rem, 3vw, .88rem); line-height: 1.15;
+}
+.kennel-angles button { border-color: transparent; background: #26352a; }
+.kennel-categories button { border-radius: 4px 4px 0 0; border: 0; border-bottom: 2px solid #7e704a; }
+.kennel-categories button[aria-pressed="true"] { background: #49432d; border-color: #e3bf80; }
+.kennel-views { margin-top: 3px; }
+.kennel-views button { border: 1px solid transparent; border-radius: 2rem; background: transparent; }
+.kennel-views button[aria-pressed="true"], .kennel-angles button[aria-pressed="true"] { border-color: #af9662; background: #384137; }
+.kennel-preview-status { margin-inline: 0; font-weight: 700; }
+.kennel-selection { margin-bottom: 12px; padding: 0; gap: 5px; border: 0; background: transparent; }
+.kennel-selection .kennel-equip { background: #b8955e; color: #1f271d; font-weight: 800; padding-inline: 16px; }
+.kennel-selection .kennel-equip:disabled { background: #3a4136; color: #dbcdac; }
+.kennel-selection button { font-size: .77rem; }
+.kennel-items { gap: 8px; margin-top: 0; }
+.kennel-items .gear-option { display: flex; flex-direction: column; align-items: stretch; gap: 4px; padding: 4px 4px 8px;
+  border-radius: 8px; background: #28342a; }
+.kennel-items .gear-option[aria-pressed="true"] { background: #45432f; outline: 1px solid #c7a975; outline-offset: -2px; }
+.gear-illustration { display: block; width: 100%; height: auto; max-height: 110px; object-fit: cover; border-radius: 5px; }
+.kennel-items .gear-option strong, .kennel-items .gear-option small { padding-inline: 6px; }
+.kennel-items .gear-option small { font-size: .71rem; }
+.kennel-name input { max-width: 100%; font-size: 16px; min-height: 44px; margin: .35rem .4rem .35rem 0; }
+.kennel-name button { min-height: 44px; }
+.kennel-name label { display: inline-grid; max-width: 100%; }

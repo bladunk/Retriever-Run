@@ -300,7 +300,7 @@ function initialize() {
     import('./collision-debug.js').then(({ collisionDebug }) => { debug = collisionDebug(scene) })
       .catch(error => { if (navigator.onLine) console.error(error) })
   }
-  dog = createPlayer(scene, breed, createPickup, collisionRequested || studioRequested ? flags.get('kit') ?? 'master' : undefined,
+  dog = createPlayer(scene, breed, createPickup, studioRequested ? 'studio' : collisionRequested ? flags.get('kit') ?? 'master' : undefined,
     () => mode !== 'running')
   if (collisionRequested) window.retrieverInspectDog = {
     breed,
@@ -370,7 +370,7 @@ function initialize() {
       ui.game.prepend(ui.trail)
       ui.trail.setAttribute('aria-label', '3D wetlands trail')
       dog.moveTo(scene)
-      dog.appearance(lodge.current().kennel.equipment)
+      dog.appearance(studio?.outfit ?? lodge.current().kennel.equipment)
       if (trailPose && mode !== 'title') dog.pose({ ...trailPose, dt: .25 })
     }
     resize()
@@ -382,6 +382,7 @@ function initialize() {
       quality: profile.quality === 'auto' ? autoPreset : profile.quality,
       graphics(quality) { profile.quality = quality; resize() },
       reset: restartStudio,
+      appearance: equipment => dog.appearance(equipment),
       kennel: button => lodgeUI.open(button, 'kennel'),
       renderer: () => renderer.info.memory,
     })
@@ -532,7 +533,7 @@ function initialize() {
           studioTarget.y = ground + .75
           studioTarget.z = body.z
         }
-        if ((studio.take === 'Dog' || studioEvent && studio.framing === 'animal' && !studioEvent.migration) ||
+        if ((studio.take === 'Dog' && studio.dogCamera !== 'gameplay' || studioEvent && studio.framing === 'animal' && !studioEvent.migration) ||
             studio.yaw || studio.pitch || studio.zoom !== 1) {
           const radius = (studio.take === 'Dog' ? 3.8 : studioEvent ? 4.8 : 6.6) * studio.zoom
           const { x, y, z } = studioTarget
@@ -558,12 +559,23 @@ function initialize() {
       trailPose = {
         x: body.x, z: body.z, height, ground, sliding: body.depth, stride: previousStride + (stride - previousStride) * alpha,
         time: visualTime, heading: idle ? -2.10 : body.angle, turn, dt, idle, landing, wet: weather.wet,
-        lateralSpeed: display.lateralSpeed, retrieve: carriedBird, sinceRetrieve: visualTime - lastRetrieve,
+        speed: display.speed, lateralSpeed: display.lateralSpeed, retrieve: carriedBird, sinceRetrieve: visualTime - lastRetrieve,
         airborne: display.jump > 0, jumpPhase: display.jump > 0 ? 1 - display.jump / jumpDuration : 1,
       }
       if (inspecting && studio.take === 'Dog') {
-        trailPose.stride = studioTime * 12
-        trailPose.idle = studio.playback === 'Idle'
+        const pace = studio.playback === 'Late run' ? 18.2 : 12
+        trailPose.stride = studioTime * pace
+        trailPose.height = getHeight(display)
+        trailPose.speed = studio.playback === 'Late run' ? 21 : 11
+        trailPose.idle = studio.playback === 'Idle' || studio.playback === 'Sit'
+        trailPose.sit = studio.playback === 'Sit'
+        trailPose.kennel = true
+        if (studio.playback === 'Lane change') {
+          trailPose.x += Math.sin(studioTime*1.8) * .91
+          trailPose.lateralSpeed = Math.cos(studioTime*1.8) * 7
+          trailPose.turn = Math.cos(studioTime*1.8)
+          trailPose.heading = trailPose.turn * -.18
+        }
         if (studio.playback === 'Retrieve') {
           trailPose.retrieve = 'mallard'
           trailPose.sinceRetrieve = studioTime % 2.4

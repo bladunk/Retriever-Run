@@ -1,0 +1,6534 @@
+{
+  "kennelCompact": {
+    "before": {
+      "resources": {
+        "geometries": 21,
+        "textures": 15
+      },
+      "switches": [
+        {
+          "geometries": 21,
+          "textures": 15
+        },
+        {
+          "geometries": 21,
+          "textures": 15
+        },
+        {
+          "geometries": 21,
+          "textures": 15
+        },
+        {
+          "geometries": 21,
+          "textures": 15
+        }
+      ],
+      "noOverflow": true,
+      "practiceSaveUnchanged": true,
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "engine": "webkit"
+    },
+    "after": {
+      "resources": {
+        "geometries": 24,
+        "textures": 15
+      },
+      "switches": [
+        {
+          "geometries": 24,
+          "textures": 15
+        },
+        {
+          "geometries": 24,
+          "textures": 15
+        },
+        {
+          "geometries": 24,
+          "textures": 15
+        },
+        {
+          "geometries": 24,
+          "textures": 15
+        }
+      ],
+      "noOverflow": true,
+      "practiceSaveUnchanged": true,
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "engine": "webkit"
+    }
+  },
+  "kennelModern": {
+    "before": {
+      "resources": {
+        "geometries": 21,
+        "textures": 15
+      },
+      "switches": [
+        {
+          "geometries": 21,
+          "textures": 15
+        },
+        {
+          "geometries": 21,
+          "textures": 15
+        },
+        {
+          "geometries": 21,
+          "textures": 15
+        },
+        {
+          "geometries": 21,
+          "textures": 15
+        }
+      ],
+      "noOverflow": true,
+      "practiceSaveUnchanged": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "engine": "webkit"
+    },
+    "after": {
+      "resources": {
+        "geometries": 24,
+        "textures": 15
+      },
+      "switches": [
+        {
+          "geometries": 24,
+          "textures": 15
+        },
+        {
+          "geometries": 24,
+          "textures": 15
+        },
+        {
+          "geometries": 24,
+          "textures": 15
+        },
+        {
+          "geometries": 24,
+          "textures": 15
+        }
+      ],
+      "noOverflow": true,
+      "practiceSaveUnchanged": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "engine": "webkit"
+    }
+  },
+  "startup": {
+    "engine": "webkit",
+    "samples": [
+      {
+        "version": "before",
+        "launch": "fresh installation",
+        "build": {
+          "version": "1.0.0-rc.6",
+          "id": "7d3c626"
+        },
+        "startup": {
+          "shellMs": 199,
+          "workerRequestMs": 210,
+          "workerReadyMs": 644,
+          "manifestReadyMs": 723,
+          "verificationStartMs": 723,
+          "verificationReadyMs": null,
+          "verificationMissingMs": 1245,
+          "controlled": false,
+          "navigationType": "navigate",
+          "responseStartMs": 43,
+          "moduleRequestMs": 13213,
+          "moduleMs": 14050,
+          "rendererReadyMs": 14515,
+          "firstSceneSubmitMs": 24309,
+          "readyMs": 34037,
+          "opener": [
+            {
+              "at": 24309,
+              "durationMs": 8456,
+              "geometries": 13,
+              "textures": 9,
+              "programs": 10
+            },
+            {
+              "at": 28201,
+              "durationMs": 3256,
+              "geometries": 13,
+              "textures": 11,
+              "programs": 10
+            },
+            {
+              "at": 33111,
+              "durationMs": 4721,
+              "geometries": 19,
+              "textures": 11,
+              "programs": 14
+            },
+            {
+              "at": 33593,
+              "durationMs": 72,
+              "geometries": 23,
+              "textures": 11,
+              "programs": 14
+            },
+            {
+              "at": 34116,
+              "durationMs": 74,
+              "geometries": 23,
+              "textures": 11,
+              "programs": 14
+            },
+            {
+              "at": 34437,
+              "durationMs": 98,
+              "geometries": 27,
+              "textures": 11,
+              "programs": 14
+            },
+            {
+              "at": 37634,
+              "durationMs": 2022,
+              "geometries": 33,
+              "textures": 14,
+              "programs": 15
+            }
+          ]
+        },
+        "restart": {
+          "inputAt": 37810,
+          "handlerAt": 38116,
+          "before": {
+            "geometries": 33,
+            "textures": 17,
+            "programs": 15
+          },
+          "firstFrameSubmittedMs": 4235,
+          "firstFrameCpuMs": 1523,
+          "firstRenderMs": 1513,
+          "after": {
+            "geometries": 42,
+            "textures": 17,
+            "programs": 16
+          },
+          "firstOperations": [
+            {
+              "at": 40402,
+              "hunt": 1,
+              "name": "audio-initialize",
+              "detail": "Web Audio",
+              "durationMs": 2280
+            },
+            {
+              "at": 40493,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "instruments"
+            },
+            {
+              "at": 40530,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 1
+            },
+            {
+              "at": 40530,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 40530,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            }
+          ],
+          "nextAnimationCallbackMs": 6480,
+          "firstPresentationIntervalMs": 2562
+        },
+        "drawingBuffer": {
+          "width": 416,
+          "height": 738,
+          "scale": 1.3,
+          "devicePixelRatio": 2,
+          "preset": "balanced"
+        },
+        "capabilities": {
+          "longTasks": false,
+          "namedResourceHooks": true,
+          "gpuExecutionTime": null
+        },
+        "ready": 34037,
+        "observations": [
+          {
+            "at": 42045,
+            "hunt": 1,
+            "territory": "gulf",
+            "preset": "auto",
+            "detail": 1,
+            "presentationMs": null,
+            "cpuMs": 1523,
+            "renderMs": 1513,
+            "draws": 55,
+            "triangles": 149325,
+            "textures": 17,
+            "geometries": 42,
+            "programs": 16,
+            "textureDelta": 0,
+            "geometryDelta": 9,
+            "programDelta": 1,
+            "operations": [
+              {
+                "at": 40530,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "mallard",
+                "durationMs": 1
+              },
+              {
+                "at": 40530,
+                "hunt": 1,
+                "name": "wildlife-fallback",
+                "detail": {
+                  "species": "mallard",
+                  "reason": "preparing"
+                }
+              },
+              {
+                "at": 40530,
+                "hunt": 1,
+                "name": "wildlife-visible",
+                "detail": "mallard"
+              },
+              {
+                "at": 42046,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "gulf"
+              }
+            ]
+          },
+          {
+            "at": 44607,
+            "hunt": 1,
+            "territory": "gulf",
+            "preset": "auto",
+            "detail": 1,
+            "presentationMs": 2562,
+            "cpuMs": 317,
+            "renderMs": 93,
+            "draws": 53,
+            "triangles": 146521,
+            "textures": 18,
+            "geometries": 42,
+            "programs": 16,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 43345,
+                "hunt": 1,
+                "name": "terrain-main-thread-build",
+                "detail": 3,
+                "durationMs": 615
+              },
+              {
+                "at": 43419,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 2926
+              },
+              {
+                "at": 43419,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 43514,
+                "hunt": 1,
+                "name": "wildlife-load-ready",
+                "detail": "deer",
+                "durationMs": 8285
+              },
+              {
+                "at": 43514,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 95
+              },
+              {
+                "at": 43514,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "mallard"
+              },
+              {
+                "at": 43737,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 223
+              },
+              {
+                "at": 43737,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              },
+              {
+                "at": 43940,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "creek",
+                "durationMs": 203
+              },
+              {
+                "at": 44314,
+                "hunt": 1,
+                "name": "terrain-slice",
+                "detail": 3,
+                "durationMs": 9
+              },
+              {
+                "at": 44514,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+              },
+              {
+                "at": 44514,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+                "durationMs": 199
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "version": "before",
+        "launch": "cached offline launch",
+        "build": {
+          "version": "1.0.0-rc.6",
+          "id": "7d3c626"
+        },
+        "startup": {
+          "shellMs": 231,
+          "workerRequestMs": 242,
+          "workerReadyMs": 243,
+          "manifestReadyMs": 383,
+          "verificationStartMs": 384,
+          "verificationReadyMs": 1103,
+          "verificationMissingMs": null,
+          "controlled": true,
+          "navigationType": "reload",
+          "responseStartMs": 6,
+          "moduleRequestMs": 1103,
+          "moduleMs": 1499,
+          "rendererReadyMs": 1619,
+          "firstSceneSubmitMs": 8706,
+          "readyMs": 22809,
+          "opener": [
+            {
+              "at": 8706,
+              "durationMs": 6802,
+              "geometries": 14,
+              "textures": 6,
+              "programs": 9
+            },
+            {
+              "at": 13646,
+              "durationMs": 4348,
+              "geometries": 14,
+              "textures": 10,
+              "programs": 9
+            },
+            {
+              "at": 16128,
+              "durationMs": 1589,
+              "geometries": 17,
+              "textures": 12,
+              "programs": 11
+            },
+            {
+              "at": 22034,
+              "durationMs": 5592,
+              "geometries": 23,
+              "textures": 12,
+              "programs": 15
+            },
+            {
+              "at": 22396,
+              "durationMs": 52,
+              "geometries": 27,
+              "textures": 12,
+              "programs": 15
+            },
+            {
+              "at": 22831,
+              "durationMs": 21,
+              "geometries": 27,
+              "textures": 12,
+              "programs": 15
+            },
+            {
+              "at": 23345,
+              "durationMs": 36,
+              "geometries": 31,
+              "textures": 12,
+              "programs": 15
+            },
+            {
+              "at": 24623,
+              "durationMs": 717,
+              "geometries": 37,
+              "textures": 14,
+              "programs": 16
+            },
+            {
+              "at": 25626,
+              "durationMs": 106,
+              "geometries": 41,
+              "textures": 17,
+              "programs": 16
+            }
+          ]
+        },
+        "restart": {
+          "inputAt": 26046,
+          "handlerAt": 26206,
+          "before": {
+            "geometries": 42,
+            "textures": 20,
+            "programs": 18
+          },
+          "firstFrameSubmittedMs": 1359,
+          "firstFrameCpuMs": 971,
+          "firstRenderMs": 920,
+          "after": {
+            "geometries": 49,
+            "textures": 20,
+            "programs": 19
+          },
+          "firstOperations": [
+            {
+              "at": 26227,
+              "hunt": 1,
+              "name": "audio-initialize",
+              "detail": "Web Audio",
+              "durationMs": 10
+            },
+            {
+              "at": 26288,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "instruments"
+            },
+            {
+              "at": 26440,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 1
+            },
+            {
+              "at": 26440,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 26440,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            }
+          ],
+          "nextAnimationCallbackMs": 1690,
+          "firstPresentationIntervalMs": 686
+        },
+        "drawingBuffer": {
+          "width": 416,
+          "height": 738,
+          "scale": 1.3,
+          "devicePixelRatio": 2,
+          "preset": "balanced"
+        },
+        "capabilities": {
+          "longTasks": false,
+          "namedResourceHooks": true,
+          "gpuExecutionTime": null
+        },
+        "ready": 22809,
+        "observations": [
+          {
+            "at": 27405,
+            "hunt": 1,
+            "territory": "gulf",
+            "preset": "auto",
+            "detail": 1,
+            "presentationMs": null,
+            "cpuMs": 971,
+            "renderMs": 920,
+            "draws": 54,
+            "triangles": 149433,
+            "textures": 20,
+            "geometries": 49,
+            "programs": 19,
+            "textureDelta": 0,
+            "geometryDelta": 7,
+            "programDelta": 1,
+            "operations": [
+              {
+                "at": 26440,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "mallard",
+                "durationMs": 1
+              },
+              {
+                "at": 26440,
+                "hunt": 1,
+                "name": "wildlife-fallback",
+                "detail": {
+                  "species": "mallard",
+                  "reason": "preparing"
+                }
+              },
+              {
+                "at": 26440,
+                "hunt": 1,
+                "name": "wildlife-visible",
+                "detail": "mallard"
+              },
+              {
+                "at": 27405,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "gulf"
+              }
+            ]
+          },
+          {
+            "at": 28091,
+            "hunt": 1,
+            "territory": "gulf",
+            "preset": "auto",
+            "detail": 1,
+            "presentationMs": 686,
+            "cpuMs": 355,
+            "renderMs": 343,
+            "draws": 52,
+            "triangles": 146629,
+            "textures": 20,
+            "geometries": 49,
+            "programs": 19,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 27405,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "gulf"
+              },
+              {
+                "at": 27736,
+                "hunt": 1,
+                "name": "wildlife-load-ready",
+                "detail": "deer",
+                "durationMs": 3950
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "version": "after",
+        "launch": "fresh installation",
+        "build": {
+          "version": "1.0.0-rc.7",
+          "id": "309d0c3"
+        },
+        "startup": {
+          "shellMs": 230,
+          "workerRequestMs": 236,
+          "workerReadyMs": 521,
+          "manifestReadyMs": 544,
+          "verificationStartMs": 546,
+          "verificationReadyMs": null,
+          "verificationMissingMs": 1233,
+          "controlled": false,
+          "navigationType": "navigate",
+          "responseStartMs": 7,
+          "moduleRequestMs": 14494,
+          "moduleMs": 15447,
+          "rendererReadyMs": 15905,
+          "firstSceneSubmitMs": 22108,
+          "readyMs": 32736,
+          "opener": [
+            {
+              "at": 22108,
+              "durationMs": 5363,
+              "geometries": 14,
+              "textures": 6,
+              "programs": 9
+            },
+            {
+              "at": 26431,
+              "durationMs": 3228,
+              "geometries": 14,
+              "textures": 10,
+              "programs": 9
+            },
+            {
+              "at": 29935,
+              "durationMs": 3226,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 13
+            },
+            {
+              "at": 32297,
+              "durationMs": 1969,
+              "geometries": 25,
+              "textures": 12,
+              "programs": 16
+            },
+            {
+              "at": 32414,
+              "durationMs": 25,
+              "geometries": 29,
+              "textures": 12,
+              "programs": 16
+            },
+            {
+              "at": 32798,
+              "durationMs": 58,
+              "geometries": 29,
+              "textures": 12,
+              "programs": 16
+            },
+            {
+              "at": 33025,
+              "durationMs": 37,
+              "geometries": 33,
+              "textures": 12,
+              "programs": 16
+            },
+            {
+              "at": 33989,
+              "durationMs": 593,
+              "geometries": 39,
+              "textures": 13,
+              "programs": 17
+            }
+          ]
+        },
+        "restart": {
+          "inputAt": 34314,
+          "handlerAt": 34583,
+          "before": {
+            "geometries": 40,
+            "textures": 19,
+            "programs": 18
+          },
+          "firstFrameSubmittedMs": 2730,
+          "firstFrameCpuMs": 835,
+          "firstRenderMs": 718,
+          "after": {
+            "geometries": 47,
+            "textures": 19,
+            "programs": 21
+          },
+          "firstOperations": [
+            {
+              "at": 36125,
+              "hunt": 1,
+              "name": "audio-initialize",
+              "detail": "Web Audio",
+              "durationMs": 1537
+            },
+            {
+              "at": 36141,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "instruments"
+            },
+            {
+              "at": 36217,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 3
+            },
+            {
+              "at": 36217,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 36217,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 36233,
+              "hunt": 1,
+              "name": "shader-initialize",
+              "detail": "Habitat / ferns / fern_02"
+            }
+          ],
+          "nextAnimationCallbackMs": 4624,
+          "firstPresentationIntervalMs": 2062
+        },
+        "drawingBuffer": {
+          "width": 416,
+          "height": 738,
+          "scale": 1.3,
+          "devicePixelRatio": 2,
+          "preset": "balanced"
+        },
+        "capabilities": {
+          "longTasks": false,
+          "namedResourceHooks": true,
+          "gpuExecutionTime": null
+        },
+        "ready": 32736,
+        "observations": [
+          {
+            "at": 37044,
+            "hunt": 1,
+            "territory": "gulf",
+            "preset": "auto",
+            "detail": 1,
+            "presentationMs": null,
+            "cpuMs": 835,
+            "renderMs": 718,
+            "draws": 55,
+            "triangles": 151114,
+            "textures": 19,
+            "geometries": 47,
+            "programs": 21,
+            "textureDelta": 0,
+            "geometryDelta": 7,
+            "programDelta": 2,
+            "operations": [
+              {
+                "at": 36217,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "mallard",
+                "durationMs": 3
+              },
+              {
+                "at": 36217,
+                "hunt": 1,
+                "name": "wildlife-fallback",
+                "detail": {
+                  "species": "mallard",
+                  "reason": "preparing"
+                }
+              },
+              {
+                "at": 36217,
+                "hunt": 1,
+                "name": "wildlife-visible",
+                "detail": "mallard"
+              },
+              {
+                "at": 36233,
+                "hunt": 1,
+                "name": "shader-initialize",
+                "detail": "Habitat / ferns / fern_02"
+              },
+              {
+                "at": 37045,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "gulf"
+              },
+              {
+                "at": 37046,
+                "hunt": 1,
+                "name": "shader-preparation-ready",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 819
+              }
+            ]
+          },
+          {
+            "at": 39106,
+            "hunt": 1,
+            "territory": "gulf",
+            "preset": "auto",
+            "detail": 1,
+            "presentationMs": 2062,
+            "cpuMs": 168,
+            "renderMs": 114,
+            "draws": 53,
+            "triangles": 148310,
+            "textures": 19,
+            "geometries": 47,
+            "programs": 21,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 37045,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "gulf"
+              },
+              {
+                "at": 37046,
+                "hunt": 1,
+                "name": "shader-preparation-ready",
+                "detail": "Habitat / Fern 02",
+                "durationMs": 819
+              },
+              {
+                "at": 38332,
+                "hunt": 1,
+                "name": "terrain-main-thread-build",
+                "detail": 3,
+                "durationMs": 235
+              },
+              {
+                "at": 38406,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 2265
+              },
+              {
+                "at": 38406,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 38696,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "goose",
+                "durationMs": 290
+              },
+              {
+                "at": 38696,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "mallard"
+              },
+              {
+                "at": 38928,
+                "hunt": 1,
+                "name": "wildlife-load-ready",
+                "detail": "deer",
+                "durationMs": 4936
+              },
+              {
+                "at": 38938,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "mallard",
+                "durationMs": 242
+              },
+              {
+                "at": 38938,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "creek"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "version": "after",
+        "launch": "cached offline launch",
+        "build": {
+          "version": "1.0.0-rc.7",
+          "id": "309d0c3"
+        },
+        "startup": {
+          "shellMs": 283,
+          "workerRequestMs": 302,
+          "workerReadyMs": 418,
+          "manifestReadyMs": 605,
+          "verificationStartMs": 608,
+          "verificationReadyMs": 1613,
+          "verificationMissingMs": null,
+          "controlled": true,
+          "navigationType": "reload",
+          "responseStartMs": 12,
+          "moduleRequestMs": 1615,
+          "moduleMs": 2063,
+          "rendererReadyMs": 2101,
+          "firstSceneSubmitMs": 12459,
+          "readyMs": 31079,
+          "opener": [
+            {
+              "at": 12458,
+              "durationMs": 10155,
+              "geometries": 14,
+              "textures": 6,
+              "programs": 9
+            },
+            {
+              "at": 18922,
+              "durationMs": 5606,
+              "geometries": 14,
+              "textures": 10,
+              "programs": 9
+            },
+            {
+              "at": 25881,
+              "durationMs": 6197,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 13
+            },
+            {
+              "at": 30568,
+              "durationMs": 3964,
+              "geometries": 25,
+              "textures": 12,
+              "programs": 16
+            },
+            {
+              "at": 30760,
+              "durationMs": 73,
+              "geometries": 29,
+              "textures": 12,
+              "programs": 16
+            },
+            {
+              "at": 31169,
+              "durationMs": 83,
+              "geometries": 29,
+              "textures": 12,
+              "programs": 16
+            },
+            {
+              "at": 31800,
+              "durationMs": 88,
+              "geometries": 33,
+              "textures": 12,
+              "programs": 16
+            },
+            {
+              "at": 32780,
+              "durationMs": 598,
+              "geometries": 39,
+              "textures": 16,
+              "programs": 17
+            },
+            {
+              "at": 33369,
+              "durationMs": 81,
+              "geometries": 43,
+              "textures": 20,
+              "programs": 17
+            }
+          ]
+        },
+        "restart": {
+          "inputAt": 33192,
+          "handlerAt": 33371,
+          "before": {
+            "geometries": 43,
+            "textures": 20,
+            "programs": 17
+          },
+          "firstFrameSubmittedMs": 1311,
+          "firstFrameCpuMs": 813,
+          "firstRenderMs": 698,
+          "after": {
+            "geometries": 51,
+            "textures": 21,
+            "programs": 18
+          },
+          "firstOperations": [
+            {
+              "at": 33414,
+              "hunt": 1,
+              "name": "audio-initialize",
+              "detail": "Web Audio",
+              "durationMs": 42
+            },
+            {
+              "at": 33424,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "instruments"
+            },
+            {
+              "at": 33594,
+              "hunt": 1,
+              "name": "habitat-ready",
+              "detail": "ferns",
+              "durationMs": 2280
+            },
+            {
+              "at": 33688,
+              "hunt": 1,
+              "name": "terrain-main-thread-build",
+              "detail": 4,
+              "durationMs": 90
+            },
+            {
+              "at": 33697,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 5
+            },
+            {
+              "at": 33697,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "preparing"
+              }
+            },
+            {
+              "at": 33697,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 33805,
+              "hunt": 1,
+              "name": "texture-upload",
+              "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+            },
+            {
+              "at": 33805,
+              "hunt": 1,
+              "name": "texture-preparation",
+              "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+              "durationMs": 104
+            }
+          ],
+          "nextAnimationCallbackMs": 1772,
+          "firstPresentationIntervalMs": 701
+        },
+        "drawingBuffer": {
+          "width": 416,
+          "height": 738,
+          "scale": 1.3,
+          "devicePixelRatio": 2,
+          "preset": "balanced"
+        },
+        "capabilities": {
+          "longTasks": false,
+          "namedResourceHooks": true,
+          "gpuExecutionTime": null
+        },
+        "ready": 31079,
+        "observations": [
+          {
+            "at": 34503,
+            "hunt": 1,
+            "territory": "gulf",
+            "preset": "auto",
+            "detail": 1,
+            "presentationMs": null,
+            "cpuMs": 813,
+            "renderMs": 698,
+            "draws": 56,
+            "triangles": 151421,
+            "textures": 21,
+            "geometries": 51,
+            "programs": 18,
+            "textureDelta": 0,
+            "geometryDelta": 8,
+            "programDelta": 1,
+            "operations": [
+              {
+                "at": 33697,
+                "hunt": 1,
+                "name": "wildlife-art",
+                "detail": "mallard",
+                "durationMs": 5
+              },
+              {
+                "at": 33697,
+                "hunt": 1,
+                "name": "wildlife-fallback",
+                "detail": {
+                  "species": "mallard",
+                  "reason": "preparing"
+                }
+              },
+              {
+                "at": 33697,
+                "hunt": 1,
+                "name": "wildlife-visible",
+                "detail": "mallard"
+              },
+              {
+                "at": 33805,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_diff-fern_02_alpha"
+              },
+              {
+                "at": 33805,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_diff-fern_02_alpha",
+                "durationMs": 104
+              },
+              {
+                "at": 34503,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "gulf"
+              }
+            ]
+          },
+          {
+            "at": 35204,
+            "hunt": 1,
+            "territory": "gulf",
+            "preset": "auto",
+            "detail": 1,
+            "presentationMs": 701,
+            "cpuMs": 240,
+            "renderMs": 134,
+            "draws": 54,
+            "triangles": 148617,
+            "textures": 22,
+            "geometries": 51,
+            "programs": 18,
+            "textureDelta": 0,
+            "geometryDelta": 0,
+            "programDelta": 0,
+            "operations": [
+              {
+                "at": 34503,
+                "hunt": 1,
+                "name": "territory",
+                "detail": "gulf"
+              },
+              {
+                "at": 34798,
+                "hunt": 1,
+                "name": "audio-decode-ready",
+                "detail": "instruments",
+                "durationMs": 1374
+              },
+              {
+                "at": 34798,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "goose"
+              },
+              {
+                "at": 34964,
+                "hunt": 1,
+                "name": "wildlife-load-ready",
+                "detail": "deer",
+                "durationMs": 3063
+              },
+              {
+                "at": 35070,
+                "hunt": 1,
+                "name": "texture-upload",
+                "detail": "Habitat / ferns / fern_02_nor_gl"
+              },
+              {
+                "at": 35070,
+                "hunt": 1,
+                "name": "texture-preparation",
+                "detail": "Habitat / Fern 02 / fern_02_nor_gl",
+                "durationMs": 96
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "studio": {
+    "engine": "webkit",
+    "samples": [
+      {
+        "take": "before",
+        "studio": true,
+        "light": "overcast",
+        "seed": 7,
+        "region": 6,
+        "moves": [
+          "Jump",
+          "Slide",
+          "Land",
+          "Retrieve"
+        ],
+        "build": {
+          "version": "1.0.0-rc.6",
+          "id": "7d3c626"
+        }
+      },
+      {
+        "take": "after",
+        "studio": true,
+        "light": "overcast",
+        "seed": 7,
+        "region": 6,
+        "moves": [
+          "Lane change",
+          "Jump",
+          "Slide",
+          "Land",
+          "Retrieve"
+        ],
+        "build": {
+          "version": "1.0.0-rc.7",
+          "id": "c09511a"
+        }
+      },
+      {
+        "studio": true,
+        "previewIsolated": true,
+        "breed": "boyd",
+        "territory": 13
+      }
+    ]
+  },
+  "worldwide": {
+    "rr_worldwide_standings": {
+      "status": "ok",
+      "season": "great-migration-1",
+      "open": false,
+      "totalRanked": 0,
+      "rows": 0
+    },
+    "rr_ranked_board": {
+      "status": "ok",
+      "season": "great-migration-1",
+      "open": false,
+      "totalRanked": 0,
+      "rows": 0
+    }
+  },
+  "signedReplay": [
+    {
+      "seed": 0,
+      "ticks": 54203,
+      "actions": 438,
+      "verifierMs": 504.73,
+      "score": 38067,
+      "distance": 11637,
+      "duration": 451687,
+      "retrieves": 15,
+      "combo": 52
+    },
+    {
+      "seed": 1,
+      "ticks": 72196,
+      "actions": 571,
+      "verifierMs": 285.21,
+      "score": 45850,
+      "distance": 15985,
+      "duration": 601631,
+      "retrieves": 13,
+      "combo": 32
+    },
+    {
+      "seed": 2,
+      "ticks": 103455,
+      "actions": 878,
+      "verifierMs": 479.72,
+      "score": 66583,
+      "distance": 23538,
+      "duration": 862124,
+      "retrieves": 9,
+      "combo": 76
+    }
+  ],
+  "beforeOpening": {
+    "seed": 7,
+    "elapsed": 10.108666666666663,
+    "start": {
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "7d3c626"
+      },
+      "drawingBuffer": {
+        "width": 223,
+        "height": 397,
+        "scale": 0.699999988079071,
+        "devicePixelRatio": 0.699999988079071,
+        "preset": "low"
+      },
+      "adaptiveQuality": {
+        "level": "balanced",
+        "resetReason": "startup",
+        "stabilizing": true,
+        "stabilizationRemainingMs": 1200,
+        "cooldownRemainingMs": 0,
+        "recoveryWindows": 0,
+        "recoveryTarget": 4,
+        "window": {
+          "samples": 0,
+          "late": 0,
+          "seconds": 0
+        }
+      },
+      "startupPhases": {
+        "shellMs": 420,
+        "workerRequestMs": null,
+        "workerReadyMs": null,
+        "manifestReadyMs": null,
+        "verificationStartMs": null,
+        "verificationReadyMs": null,
+        "verificationMissingMs": null,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 188,
+        "moduleRequestMs": 441,
+        "moduleMs": 2938,
+        "rendererReadyMs": 3336,
+        "firstSceneSubmitMs": 12190,
+        "readyMs": 22317,
+        "opener": []
+      },
+      "ready": 22317,
+      "restartTrace": null,
+      "territory": null,
+      "draws": 0,
+      "triangles": 0,
+      "geometries": 0,
+      "textures": 0,
+      "programs": 0,
+      "residentTiles": 2,
+      "hunt": null,
+      "wildlifeModels": {
+        "resident": 0,
+        "preparing": null,
+        "loadMs": 0,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "limit": 2,
+        "models": [],
+        "rigEncounters": 0,
+        "fallbackEncounters": 0,
+        "proceduralEncounters": 0,
+        "fallbackReasons": {}
+      }
+    },
+    "end": {
+      "build": {
+        "version": "1.0.0-rc.6",
+        "id": "7d3c626"
+      },
+      "drawingBuffer": {
+        "width": 223,
+        "height": 397,
+        "scale": 0.699999988079071,
+        "devicePixelRatio": 0.699999988079071,
+        "preset": "low"
+      },
+      "adaptiveQuality": {
+        "level": "balanced",
+        "resetReason": "hunt start",
+        "stabilizing": true,
+        "stabilizationRemainingMs": 1200,
+        "cooldownRemainingMs": 0,
+        "recoveryWindows": 0,
+        "recoveryTarget": 4,
+        "window": {
+          "samples": 0,
+          "late": 0,
+          "seconds": 0
+        }
+      },
+      "startupPhases": {
+        "shellMs": 420,
+        "workerRequestMs": null,
+        "workerReadyMs": null,
+        "manifestReadyMs": null,
+        "verificationStartMs": null,
+        "verificationReadyMs": null,
+        "verificationMissingMs": null,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 188,
+        "moduleRequestMs": 441,
+        "moduleMs": 2938,
+        "rendererReadyMs": 3336,
+        "firstSceneSubmitMs": 12190,
+        "readyMs": 22317,
+        "opener": []
+      },
+      "ready": 22317,
+      "restartTrace": {
+        "inputAt": 26188,
+        "handlerAt": 26188,
+        "before": {
+          "geometries": 19,
+          "textures": 10,
+          "programs": 11
+        },
+        "firstFrameSubmittedMs": 5548,
+        "firstFrameCpuMs": 2790,
+        "firstRenderMs": 2742,
+        "after": {
+          "geometries": 32,
+          "textures": 10,
+          "programs": 15
+        },
+        "firstOperations": [
+          {
+            "at": 28806,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 2602
+          },
+          {
+            "at": 28837,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 28988,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 2
+          },
+          {
+            "at": 28988,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 28988,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 28995,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 28995,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 28995,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 9109,
+        "firstPresentationIntervalMs": 3600
+      },
+      "territory": "gulf",
+      "draws": 59,
+      "triangles": 119445,
+      "geometries": 50,
+      "textures": 11,
+      "programs": 20,
+      "residentTiles": 7,
+      "hunt": {
+        "id": 1,
+        "discarded": 21,
+        "peakTextures": 11,
+        "peakGeometries": 50,
+        "presentation": {
+          "samples": 43,
+          "maxMs": 4681,
+          "over20": 43,
+          "over33_3": 43,
+          "over50": 43,
+          "averageMs": 618.28
+        },
+        "cpu": {
+          "samples": 44,
+          "maxMs": 2790,
+          "over20": 44,
+          "over33_3": 42,
+          "over50": 39,
+          "averageMs": 359.64
+        },
+        "averageFPS": 1.6
+      },
+      "wildlifeModels": {
+        "resident": 0,
+        "preparing": null,
+        "loadMs": 0,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "limit": 2,
+        "models": [],
+        "rigEncounters": 0,
+        "fallbackEncounters": 1,
+        "proceduralEncounters": 1,
+        "fallbackReasons": {
+          "battery saver": 1
+        }
+      }
+    }
+  },
+  "beforeRun2": {
+    "engine": "webkit",
+    "quality": "low",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "frames": [
+      {
+        "label": "moving-00",
+        "seconds": 2.2083333333333335,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 172,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 59,
+            "moduleRequestMs": 173,
+            "moduleMs": 1287,
+            "rendererReadyMs": 1647,
+            "firstSceneSubmitMs": 5182,
+            "readyMs": 8575,
+            "opener": []
+          },
+          "ready": 8575,
+          "restartTrace": {
+            "inputAt": 9838,
+            "handlerAt": 9838,
+            "before": {
+              "geometries": 19,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 2498,
+            "firstFrameCpuMs": 1481,
+            "firstRenderMs": 1471,
+            "after": {
+              "geometries": 29,
+              "textures": 10,
+              "programs": 14
+            },
+            "firstOperations": [
+              {
+                "at": 10760,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 919
+              },
+              {
+                "at": 10773,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              }
+            ],
+            "nextAnimationCallbackMs": 4346,
+            "firstPresentationIntervalMs": 1912
+          },
+          "territory": "gulf",
+          "draws": 48,
+          "triangles": 116002,
+          "geometries": 37,
+          "textures": 11,
+          "programs": 15,
+          "residentTiles": 5,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 37,
+            "presentation": {
+              "samples": 8,
+              "maxMs": 1912,
+              "over20": 8,
+              "over33_3": 8,
+              "over50": 8,
+              "averageMs": 513.5
+            },
+            "cpu": {
+              "samples": 9,
+              "maxMs": 1481,
+              "over20": 9,
+              "over33_3": 9,
+              "over50": 9,
+              "averageMs": 296.89
+            },
+            "averageFPS": 1.9
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-04",
+        "seconds": 2.6083333333333334,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 172,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 59,
+            "moduleRequestMs": 173,
+            "moduleMs": 1287,
+            "rendererReadyMs": 1647,
+            "firstSceneSubmitMs": 5182,
+            "readyMs": 8575,
+            "opener": []
+          },
+          "ready": 8575,
+          "restartTrace": {
+            "inputAt": 9838,
+            "handlerAt": 9838,
+            "before": {
+              "geometries": 19,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 2498,
+            "firstFrameCpuMs": 1481,
+            "firstRenderMs": 1471,
+            "after": {
+              "geometries": 29,
+              "textures": 10,
+              "programs": 14
+            },
+            "firstOperations": [
+              {
+                "at": 10760,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 919
+              },
+              {
+                "at": 10773,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              }
+            ],
+            "nextAnimationCallbackMs": 4346,
+            "firstPresentationIntervalMs": 1912
+          },
+          "territory": "gulf",
+          "draws": 51,
+          "triangles": 124011,
+          "geometries": 39,
+          "textures": 11,
+          "programs": 16,
+          "residentTiles": 6,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 39,
+            "presentation": {
+              "samples": 12,
+              "maxMs": 1912,
+              "over20": 12,
+              "over33_3": 12,
+              "over50": 12,
+              "averageMs": 450.17
+            },
+            "cpu": {
+              "samples": 13,
+              "maxMs": 1481,
+              "over20": 13,
+              "over33_3": 13,
+              "over50": 13,
+              "averageMs": 258.54
+            },
+            "averageFPS": 2.2
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-08",
+        "seconds": 3.0083333333333333,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 172,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 59,
+            "moduleRequestMs": 173,
+            "moduleMs": 1287,
+            "rendererReadyMs": 1647,
+            "firstSceneSubmitMs": 5182,
+            "readyMs": 8575,
+            "opener": []
+          },
+          "ready": 8575,
+          "restartTrace": {
+            "inputAt": 9838,
+            "handlerAt": 9838,
+            "before": {
+              "geometries": 19,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 2498,
+            "firstFrameCpuMs": 1481,
+            "firstRenderMs": 1471,
+            "after": {
+              "geometries": 29,
+              "textures": 10,
+              "programs": 14
+            },
+            "firstOperations": [
+              {
+                "at": 10760,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 919
+              },
+              {
+                "at": 10773,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              }
+            ],
+            "nextAnimationCallbackMs": 4346,
+            "firstPresentationIntervalMs": 1912
+          },
+          "territory": "gulf",
+          "draws": 50,
+          "triangles": 120911,
+          "geometries": 38,
+          "textures": 11,
+          "programs": 16,
+          "residentTiles": 6,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 41,
+            "presentation": {
+              "samples": 17,
+              "maxMs": 1912,
+              "over20": 17,
+              "over33_3": 17,
+              "over50": 17,
+              "averageMs": 402.94
+            },
+            "cpu": {
+              "samples": 18,
+              "maxMs": 1481,
+              "over20": 18,
+              "over33_3": 18,
+              "over50": 18,
+              "averageMs": 231.06
+            },
+            "averageFPS": 2.5
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-12",
+        "seconds": 3.408333333333333,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 172,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 59,
+            "moduleRequestMs": 173,
+            "moduleMs": 1287,
+            "rendererReadyMs": 1647,
+            "firstSceneSubmitMs": 5182,
+            "readyMs": 8575,
+            "opener": []
+          },
+          "ready": 8575,
+          "restartTrace": {
+            "inputAt": 9838,
+            "handlerAt": 9838,
+            "before": {
+              "geometries": 19,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 2498,
+            "firstFrameCpuMs": 1481,
+            "firstRenderMs": 1471,
+            "after": {
+              "geometries": 29,
+              "textures": 10,
+              "programs": 14
+            },
+            "firstOperations": [
+              {
+                "at": 10760,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 919
+              },
+              {
+                "at": 10773,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              }
+            ],
+            "nextAnimationCallbackMs": 4346,
+            "firstPresentationIntervalMs": 1912
+          },
+          "territory": "gulf",
+          "draws": 50,
+          "triangles": 121535,
+          "geometries": 38,
+          "textures": 11,
+          "programs": 16,
+          "residentTiles": 7,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 41,
+            "presentation": {
+              "samples": 21,
+              "maxMs": 1912,
+              "over20": 21,
+              "over33_3": 21,
+              "over50": 21,
+              "averageMs": 381.95
+            },
+            "cpu": {
+              "samples": 22,
+              "maxMs": 1481,
+              "over20": 22,
+              "over33_3": 22,
+              "over50": 22,
+              "averageMs": 212.64
+            },
+            "averageFPS": 2.6
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-16",
+        "seconds": 3.8083333333333336,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 172,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 59,
+            "moduleRequestMs": 173,
+            "moduleMs": 1287,
+            "rendererReadyMs": 1647,
+            "firstSceneSubmitMs": 5182,
+            "readyMs": 8575,
+            "opener": []
+          },
+          "ready": 8575,
+          "restartTrace": {
+            "inputAt": 9838,
+            "handlerAt": 9838,
+            "before": {
+              "geometries": 19,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 2498,
+            "firstFrameCpuMs": 1481,
+            "firstRenderMs": 1471,
+            "after": {
+              "geometries": 29,
+              "textures": 10,
+              "programs": 14
+            },
+            "firstOperations": [
+              {
+                "at": 10760,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 919
+              },
+              {
+                "at": 10773,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 10866,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              }
+            ],
+            "nextAnimationCallbackMs": 4346,
+            "firstPresentationIntervalMs": 1912
+          },
+          "territory": "gulf",
+          "draws": 54,
+          "triangles": 127027,
+          "geometries": 40,
+          "textures": 11,
+          "programs": 17,
+          "residentTiles": 7,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 41,
+            "presentation": {
+              "samples": 25,
+              "maxMs": 1912,
+              "over20": 25,
+              "over33_3": 25,
+              "over50": 25,
+              "averageMs": 377.48
+            },
+            "cpu": {
+              "samples": 26,
+              "maxMs": 1481,
+              "over20": 26,
+              "over33_3": 26,
+              "over50": 26,
+              "averageMs": 210.58
+            },
+            "averageFPS": 2.6
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      }
+    ]
+  },
+  "beforeRun426": {
+    "engine": "webkit",
+    "quality": "low",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "frames": [
+      {
+        "label": "moving-00",
+        "seconds": 426.2083333333333,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 159,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 18,
+            "moduleRequestMs": 160,
+            "moduleMs": 1025,
+            "rendererReadyMs": 1135,
+            "firstSceneSubmitMs": 5238,
+            "readyMs": 11510,
+            "opener": []
+          },
+          "ready": 11510,
+          "restartTrace": {
+            "inputAt": 13439,
+            "handlerAt": 13441,
+            "before": {
+              "geometries": 22,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 3367,
+            "firstFrameCpuMs": 1986,
+            "firstRenderMs": 1982,
+            "after": {
+              "geometries": 37,
+              "textures": 9,
+              "programs": 17
+            },
+            "firstOperations": [
+              {
+                "at": 14734,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 1021
+              },
+              {
+                "at": 14743,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 14822,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 5286,
+            "firstPresentationIntervalMs": 1985
+          },
+          "territory": "mountain",
+          "draws": 65,
+          "triangles": 136398,
+          "geometries": 55,
+          "textures": 10,
+          "programs": 19,
+          "residentTiles": 5,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 55,
+            "presentation": {
+              "samples": 22,
+              "maxMs": 1985,
+              "over20": 22,
+              "over33_3": 22,
+              "over50": 22,
+              "averageMs": 437.82
+            },
+            "cpu": {
+              "samples": 23,
+              "maxMs": 1986,
+              "over20": 23,
+              "over33_3": 23,
+              "over50": 22,
+              "averageMs": 249.83
+            },
+            "averageFPS": 2.3
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-04",
+        "seconds": 426.60833333333335,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 159,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 18,
+            "moduleRequestMs": 160,
+            "moduleMs": 1025,
+            "rendererReadyMs": 1135,
+            "firstSceneSubmitMs": 5238,
+            "readyMs": 11510,
+            "opener": []
+          },
+          "ready": 11510,
+          "restartTrace": {
+            "inputAt": 13439,
+            "handlerAt": 13441,
+            "before": {
+              "geometries": 22,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 3367,
+            "firstFrameCpuMs": 1986,
+            "firstRenderMs": 1982,
+            "after": {
+              "geometries": 37,
+              "textures": 9,
+              "programs": 17
+            },
+            "firstOperations": [
+              {
+                "at": 14734,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 1021
+              },
+              {
+                "at": 14743,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 14822,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 5286,
+            "firstPresentationIntervalMs": 1985
+          },
+          "territory": "mountain",
+          "draws": 62,
+          "triangles": 132553,
+          "geometries": 56,
+          "textures": 10,
+          "programs": 19,
+          "residentTiles": 6,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 56,
+            "presentation": {
+              "samples": 26,
+              "maxMs": 1985,
+              "over20": 26,
+              "over33_3": 26,
+              "over50": 26,
+              "averageMs": 430.81
+            },
+            "cpu": {
+              "samples": 27,
+              "maxMs": 1986,
+              "over20": 27,
+              "over33_3": 27,
+              "over50": 26,
+              "averageMs": 236.11
+            },
+            "averageFPS": 2.3
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-08",
+        "seconds": 427.0083333333333,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 159,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 18,
+            "moduleRequestMs": 160,
+            "moduleMs": 1025,
+            "rendererReadyMs": 1135,
+            "firstSceneSubmitMs": 5238,
+            "readyMs": 11510,
+            "opener": []
+          },
+          "ready": 11510,
+          "restartTrace": {
+            "inputAt": 13439,
+            "handlerAt": 13441,
+            "before": {
+              "geometries": 22,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 3367,
+            "firstFrameCpuMs": 1986,
+            "firstRenderMs": 1982,
+            "after": {
+              "geometries": 37,
+              "textures": 9,
+              "programs": 17
+            },
+            "firstOperations": [
+              {
+                "at": 14734,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 1021
+              },
+              {
+                "at": 14743,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 14822,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 5286,
+            "firstPresentationIntervalMs": 1985
+          },
+          "territory": "mountain",
+          "draws": 63,
+          "triangles": 144017,
+          "geometries": 56,
+          "textures": 10,
+          "programs": 19,
+          "residentTiles": 6,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 61,
+            "presentation": {
+              "samples": 32,
+              "maxMs": 1985,
+              "over20": 32,
+              "over33_3": 32,
+              "over50": 32,
+              "averageMs": 407.19
+            },
+            "cpu": {
+              "samples": 33,
+              "maxMs": 1986,
+              "over20": 33,
+              "over33_3": 33,
+              "over50": 32,
+              "averageMs": 221.7
+            },
+            "averageFPS": 2.5
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-12",
+        "seconds": 427.40833333333336,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 159,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 18,
+            "moduleRequestMs": 160,
+            "moduleMs": 1025,
+            "rendererReadyMs": 1135,
+            "firstSceneSubmitMs": 5238,
+            "readyMs": 11510,
+            "opener": []
+          },
+          "ready": 11510,
+          "restartTrace": {
+            "inputAt": 13439,
+            "handlerAt": 13441,
+            "before": {
+              "geometries": 22,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 3367,
+            "firstFrameCpuMs": 1986,
+            "firstRenderMs": 1982,
+            "after": {
+              "geometries": 37,
+              "textures": 9,
+              "programs": 17
+            },
+            "firstOperations": [
+              {
+                "at": 14734,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 1021
+              },
+              {
+                "at": 14743,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 14822,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 5286,
+            "firstPresentationIntervalMs": 1985
+          },
+          "territory": "mountain",
+          "draws": 67,
+          "triangles": 142453,
+          "geometries": 59,
+          "textures": 10,
+          "programs": 19,
+          "residentTiles": 7,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 61,
+            "presentation": {
+              "samples": 37,
+              "maxMs": 1985,
+              "over20": 37,
+              "over33_3": 37,
+              "over50": 37,
+              "averageMs": 406
+            },
+            "cpu": {
+              "samples": 38,
+              "maxMs": 1986,
+              "over20": 38,
+              "over33_3": 38,
+              "over50": 37,
+              "averageMs": 217.47
+            },
+            "averageFPS": 2.5
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-16",
+        "seconds": 427.80833333333334,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.6",
+            "id": "7d3c626"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 159,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 18,
+            "moduleRequestMs": 160,
+            "moduleMs": 1025,
+            "rendererReadyMs": 1135,
+            "firstSceneSubmitMs": 5238,
+            "readyMs": 11510,
+            "opener": []
+          },
+          "ready": 11510,
+          "restartTrace": {
+            "inputAt": 13439,
+            "handlerAt": 13441,
+            "before": {
+              "geometries": 22,
+              "textures": 10,
+              "programs": 11
+            },
+            "firstFrameSubmittedMs": 3367,
+            "firstFrameCpuMs": 1986,
+            "firstRenderMs": 1982,
+            "after": {
+              "geometries": 37,
+              "textures": 9,
+              "programs": 17
+            },
+            "firstOperations": [
+              {
+                "at": 14734,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 1021
+              },
+              {
+                "at": 14743,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 14822,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 14823,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 5286,
+            "firstPresentationIntervalMs": 1985
+          },
+          "territory": "mountain",
+          "draws": 65,
+          "triangles": 145807,
+          "geometries": 60,
+          "textures": 10,
+          "programs": 19,
+          "residentTiles": 7,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 61,
+            "presentation": {
+              "samples": 41,
+              "maxMs": 1985,
+              "over20": 41,
+              "over33_3": 41,
+              "over50": 41,
+              "averageMs": 407.2
+            },
+            "cpu": {
+              "samples": 42,
+              "maxMs": 1986,
+              "over20": 42,
+              "over33_3": 42,
+              "over50": 41,
+              "averageMs": 216.17
+            },
+            "averageFPS": 2.5
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      }
+    ]
+  },
+  "afterOpening": {
+    "seed": 7,
+    "elapsed": 10.123666666666661,
+    "start": {
+      "build": {
+        "version": "1.0.0-rc.7",
+        "id": "c09511a"
+      },
+      "drawingBuffer": {
+        "width": 223,
+        "height": 397,
+        "scale": 0.699999988079071,
+        "devicePixelRatio": 0.699999988079071,
+        "preset": "low"
+      },
+      "adaptiveQuality": {
+        "level": "balanced",
+        "resetReason": "startup",
+        "stabilizing": true,
+        "stabilizationRemainingMs": 1200,
+        "cooldownRemainingMs": 0,
+        "recoveryWindows": 0,
+        "recoveryTarget": 4,
+        "window": {
+          "samples": 0,
+          "late": 0,
+          "seconds": 0
+        }
+      },
+      "startupPhases": {
+        "shellMs": 465,
+        "workerRequestMs": null,
+        "workerReadyMs": null,
+        "manifestReadyMs": null,
+        "verificationStartMs": null,
+        "verificationReadyMs": null,
+        "verificationMissingMs": null,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 69,
+        "moduleRequestMs": 466,
+        "moduleMs": 2410,
+        "rendererReadyMs": 3309,
+        "firstSceneSubmitMs": 11173,
+        "readyMs": 18285,
+        "opener": []
+      },
+      "ready": 18285,
+      "restartTrace": null,
+      "territory": null,
+      "draws": 0,
+      "triangles": 0,
+      "geometries": 0,
+      "textures": 0,
+      "programs": 0,
+      "residentTiles": 3,
+      "hunt": null,
+      "wildlifeModels": {
+        "resident": 0,
+        "preparing": null,
+        "loadMs": 0,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "limit": 2,
+        "models": [],
+        "rigEncounters": 0,
+        "fallbackEncounters": 0,
+        "proceduralEncounters": 0,
+        "fallbackReasons": {}
+      }
+    },
+    "end": {
+      "build": {
+        "version": "1.0.0-rc.7",
+        "id": "c09511a"
+      },
+      "drawingBuffer": {
+        "width": 223,
+        "height": 397,
+        "scale": 0.699999988079071,
+        "devicePixelRatio": 0.699999988079071,
+        "preset": "low"
+      },
+      "adaptiveQuality": {
+        "level": "balanced",
+        "resetReason": "hunt start",
+        "stabilizing": true,
+        "stabilizationRemainingMs": 1200,
+        "cooldownRemainingMs": 0,
+        "recoveryWindows": 0,
+        "recoveryTarget": 4,
+        "window": {
+          "samples": 0,
+          "late": 0,
+          "seconds": 0
+        }
+      },
+      "startupPhases": {
+        "shellMs": 465,
+        "workerRequestMs": null,
+        "workerReadyMs": null,
+        "manifestReadyMs": null,
+        "verificationStartMs": null,
+        "verificationReadyMs": null,
+        "verificationMissingMs": null,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 69,
+        "moduleRequestMs": 466,
+        "moduleMs": 2410,
+        "rendererReadyMs": 3309,
+        "firstSceneSubmitMs": 11173,
+        "readyMs": 18285,
+        "opener": []
+      },
+      "ready": 18285,
+      "restartTrace": {
+        "inputAt": 21567,
+        "handlerAt": 21579,
+        "before": {
+          "geometries": 24,
+          "textures": 10,
+          "programs": 12
+        },
+        "firstFrameSubmittedMs": 7640,
+        "firstFrameCpuMs": 4913,
+        "firstRenderMs": 4849,
+        "after": {
+          "geometries": 39,
+          "textures": 11,
+          "programs": 17
+        },
+        "firstOperations": [
+          {
+            "at": 24109,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 2527
+          },
+          {
+            "at": 24163,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 24303,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 1
+          },
+          {
+            "at": 24303,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 24303,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 24359,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 24360,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 24360,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 2"
+          },
+          {
+            "at": 24360,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 11896,
+        "firstPresentationIntervalMs": 4501
+      },
+      "territory": "gulf",
+      "draws": 61,
+      "triangles": 122547,
+      "geometries": 52,
+      "textures": 11,
+      "programs": 21,
+      "residentTiles": 7,
+      "hunt": {
+        "id": 1,
+        "discarded": 16,
+        "peakTextures": 11,
+        "peakGeometries": 52,
+        "presentation": {
+          "samples": 43,
+          "maxMs": 4501,
+          "over20": 43,
+          "over33_3": 43,
+          "over50": 43,
+          "averageMs": 553.56
+        },
+        "cpu": {
+          "samples": 44,
+          "maxMs": 4913,
+          "over20": 44,
+          "over33_3": 44,
+          "over50": 44,
+          "averageMs": 348.64
+        },
+        "averageFPS": 1.8
+      },
+      "wildlifeModels": {
+        "resident": 0,
+        "preparing": null,
+        "loadMs": 0,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "limit": 2,
+        "models": [],
+        "rigEncounters": 0,
+        "fallbackEncounters": 1,
+        "proceduralEncounters": 1,
+        "fallbackReasons": {
+          "battery saver": 1
+        }
+      }
+    }
+  },
+  "afterRun2": {
+    "engine": "webkit",
+    "quality": "low",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "frames": [
+      {
+        "label": "moving-00",
+        "seconds": 2.2083333333333335,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 169,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 13,
+            "moduleRequestMs": 170,
+            "moduleMs": 904,
+            "rendererReadyMs": 1096,
+            "firstSceneSubmitMs": 7626,
+            "readyMs": 14187,
+            "opener": []
+          },
+          "ready": 14187,
+          "restartTrace": {
+            "inputAt": 15583,
+            "handlerAt": 15584,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 3590,
+            "firstFrameCpuMs": 2513,
+            "firstRenderMs": 2510,
+            "after": {
+              "geometries": 36,
+              "textures": 11,
+              "programs": 16
+            },
+            "firstOperations": [
+              {
+                "at": 16515,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 929
+              },
+              {
+                "at": 16575,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 2"
+              }
+            ],
+            "nextAnimationCallbackMs": 5807,
+            "firstPresentationIntervalMs": 2310
+          },
+          "territory": "gulf",
+          "draws": 50,
+          "triangles": 119164,
+          "geometries": 39,
+          "textures": 11,
+          "programs": 16,
+          "residentTiles": 5,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 39,
+            "presentation": {
+              "samples": 6,
+              "maxMs": 2310,
+              "over20": 6,
+              "over33_3": 6,
+              "over50": 6,
+              "averageMs": 601.33
+            },
+            "cpu": {
+              "samples": 7,
+              "maxMs": 2513,
+              "over20": 7,
+              "over33_3": 7,
+              "over50": 7,
+              "averageMs": 479.43
+            },
+            "averageFPS": 1.7
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-04",
+        "seconds": 2.6083333333333334,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 169,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 13,
+            "moduleRequestMs": 170,
+            "moduleMs": 904,
+            "rendererReadyMs": 1096,
+            "firstSceneSubmitMs": 7626,
+            "readyMs": 14187,
+            "opener": []
+          },
+          "ready": 14187,
+          "restartTrace": {
+            "inputAt": 15583,
+            "handlerAt": 15584,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 3590,
+            "firstFrameCpuMs": 2513,
+            "firstRenderMs": 2510,
+            "after": {
+              "geometries": 36,
+              "textures": 11,
+              "programs": 16
+            },
+            "firstOperations": [
+              {
+                "at": 16515,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 929
+              },
+              {
+                "at": 16575,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 2"
+              }
+            ],
+            "nextAnimationCallbackMs": 5807,
+            "firstPresentationIntervalMs": 2310
+          },
+          "territory": "gulf",
+          "draws": 53,
+          "triangles": 127173,
+          "geometries": 41,
+          "textures": 11,
+          "programs": 17,
+          "residentTiles": 6,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 41,
+            "presentation": {
+              "samples": 10,
+              "maxMs": 2310,
+              "over20": 10,
+              "over33_3": 10,
+              "over50": 10,
+              "averageMs": 524.6
+            },
+            "cpu": {
+              "samples": 11,
+              "maxMs": 2513,
+              "over20": 11,
+              "over33_3": 11,
+              "over50": 11,
+              "averageMs": 391.73
+            },
+            "averageFPS": 1.9
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-08",
+        "seconds": 3.0083333333333333,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 169,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 13,
+            "moduleRequestMs": 170,
+            "moduleMs": 904,
+            "rendererReadyMs": 1096,
+            "firstSceneSubmitMs": 7626,
+            "readyMs": 14187,
+            "opener": []
+          },
+          "ready": 14187,
+          "restartTrace": {
+            "inputAt": 15583,
+            "handlerAt": 15584,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 3590,
+            "firstFrameCpuMs": 2513,
+            "firstRenderMs": 2510,
+            "after": {
+              "geometries": 36,
+              "textures": 11,
+              "programs": 16
+            },
+            "firstOperations": [
+              {
+                "at": 16515,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 929
+              },
+              {
+                "at": 16575,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 2"
+              }
+            ],
+            "nextAnimationCallbackMs": 5807,
+            "firstPresentationIntervalMs": 2310
+          },
+          "territory": "gulf",
+          "draws": 52,
+          "triangles": 124073,
+          "geometries": 40,
+          "textures": 11,
+          "programs": 17,
+          "residentTiles": 6,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 43,
+            "presentation": {
+              "samples": 15,
+              "maxMs": 2310,
+              "over20": 15,
+              "over33_3": 15,
+              "over50": 15,
+              "averageMs": 459.4
+            },
+            "cpu": {
+              "samples": 16,
+              "maxMs": 2513,
+              "over20": 16,
+              "over33_3": 16,
+              "over50": 16,
+              "averageMs": 327.56
+            },
+            "averageFPS": 2.2
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-12",
+        "seconds": 3.408333333333333,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 169,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 13,
+            "moduleRequestMs": 170,
+            "moduleMs": 904,
+            "rendererReadyMs": 1096,
+            "firstSceneSubmitMs": 7626,
+            "readyMs": 14187,
+            "opener": []
+          },
+          "ready": 14187,
+          "restartTrace": {
+            "inputAt": 15583,
+            "handlerAt": 15584,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 3590,
+            "firstFrameCpuMs": 2513,
+            "firstRenderMs": 2510,
+            "after": {
+              "geometries": 36,
+              "textures": 11,
+              "programs": 16
+            },
+            "firstOperations": [
+              {
+                "at": 16515,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 929
+              },
+              {
+                "at": 16575,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 2"
+              }
+            ],
+            "nextAnimationCallbackMs": 5807,
+            "firstPresentationIntervalMs": 2310
+          },
+          "territory": "gulf",
+          "draws": 52,
+          "triangles": 124697,
+          "geometries": 40,
+          "textures": 11,
+          "programs": 17,
+          "residentTiles": 7,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 43,
+            "presentation": {
+              "samples": 19,
+              "maxMs": 2310,
+              "over20": 19,
+              "over33_3": 19,
+              "over50": 19,
+              "averageMs": 421.89
+            },
+            "cpu": {
+              "samples": 20,
+              "maxMs": 2513,
+              "over20": 20,
+              "over33_3": 20,
+              "over50": 20,
+              "averageMs": 284.4
+            },
+            "averageFPS": 2.4
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-16",
+        "seconds": 3.8083333333333336,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 169,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 13,
+            "moduleRequestMs": 170,
+            "moduleMs": 904,
+            "rendererReadyMs": 1096,
+            "firstSceneSubmitMs": 7626,
+            "readyMs": 14187,
+            "opener": []
+          },
+          "ready": 14187,
+          "restartTrace": {
+            "inputAt": 15583,
+            "handlerAt": 15584,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 3590,
+            "firstFrameCpuMs": 2513,
+            "firstRenderMs": 2510,
+            "after": {
+              "geometries": 36,
+              "textures": 11,
+              "programs": 16
+            },
+            "firstOperations": [
+              {
+                "at": 16515,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 929
+              },
+              {
+                "at": 16575,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 0"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 1"
+              },
+              {
+                "at": 16673,
+                "hunt": 1,
+                "name": "geometry-upload",
+                "detail": "gulf / solid / 2"
+              }
+            ],
+            "nextAnimationCallbackMs": 5807,
+            "firstPresentationIntervalMs": 2310
+          },
+          "territory": "gulf",
+          "draws": 56,
+          "triangles": 130189,
+          "geometries": 42,
+          "textures": 11,
+          "programs": 18,
+          "residentTiles": 7,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 11,
+            "peakGeometries": 43,
+            "presentation": {
+              "samples": 23,
+              "maxMs": 2310,
+              "over20": 23,
+              "over33_3": 23,
+              "over50": 23,
+              "averageMs": 405.48
+            },
+            "cpu": {
+              "samples": 24,
+              "maxMs": 2513,
+              "over20": 24,
+              "over33_3": 24,
+              "over50": 23,
+              "averageMs": 271.38
+            },
+            "averageFPS": 2.5
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 0,
+            "fallbackReasons": {}
+          }
+        }
+      }
+    ]
+  },
+  "afterRun426": {
+    "engine": "webkit",
+    "quality": "low",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "frames": [
+      {
+        "label": "moving-00",
+        "seconds": 426.2083333333333,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 78,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 16,
+            "moduleRequestMs": 78,
+            "moduleMs": 462,
+            "rendererReadyMs": 509,
+            "firstSceneSubmitMs": 3705,
+            "readyMs": 6768,
+            "opener": []
+          },
+          "ready": 6768,
+          "restartTrace": {
+            "inputAt": 8176,
+            "handlerAt": 8176,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 2719,
+            "firstFrameCpuMs": 1686,
+            "firstRenderMs": 1675,
+            "after": {
+              "geometries": 39,
+              "textures": 9,
+              "programs": 18
+            },
+            "firstOperations": [
+              {
+                "at": 9134,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 718
+              },
+              {
+                "at": 9166,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 9210,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 3948,
+            "firstPresentationIntervalMs": 1266
+          },
+          "territory": "mountain",
+          "draws": 67,
+          "triangles": 139560,
+          "geometries": 57,
+          "textures": 10,
+          "programs": 20,
+          "residentTiles": 5,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 57,
+            "presentation": {
+              "samples": 23,
+              "maxMs": 1266,
+              "over20": 23,
+              "over33_3": 23,
+              "over50": 22,
+              "averageMs": 433.65
+            },
+            "cpu": {
+              "samples": 24,
+              "maxMs": 1686,
+              "over20": 24,
+              "over33_3": 22,
+              "over50": 20,
+              "averageMs": 270.29
+            },
+            "averageFPS": 2.3
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-04",
+        "seconds": 426.60833333333335,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 78,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 16,
+            "moduleRequestMs": 78,
+            "moduleMs": 462,
+            "rendererReadyMs": 509,
+            "firstSceneSubmitMs": 3705,
+            "readyMs": 6768,
+            "opener": []
+          },
+          "ready": 6768,
+          "restartTrace": {
+            "inputAt": 8176,
+            "handlerAt": 8176,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 2719,
+            "firstFrameCpuMs": 1686,
+            "firstRenderMs": 1675,
+            "after": {
+              "geometries": 39,
+              "textures": 9,
+              "programs": 18
+            },
+            "firstOperations": [
+              {
+                "at": 9134,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 718
+              },
+              {
+                "at": 9166,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 9210,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 3948,
+            "firstPresentationIntervalMs": 1266
+          },
+          "territory": "mountain",
+          "draws": 64,
+          "triangles": 135715,
+          "geometries": 58,
+          "textures": 10,
+          "programs": 20,
+          "residentTiles": 6,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 58,
+            "presentation": {
+              "samples": 27,
+              "maxMs": 1266,
+              "over20": 27,
+              "over33_3": 27,
+              "over50": 26,
+              "averageMs": 458.44
+            },
+            "cpu": {
+              "samples": 28,
+              "maxMs": 1686,
+              "over20": 28,
+              "over33_3": 26,
+              "over50": 24,
+              "averageMs": 270.61
+            },
+            "averageFPS": 2.2
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-08",
+        "seconds": 427.0083333333333,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 78,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 16,
+            "moduleRequestMs": 78,
+            "moduleMs": 462,
+            "rendererReadyMs": 509,
+            "firstSceneSubmitMs": 3705,
+            "readyMs": 6768,
+            "opener": []
+          },
+          "ready": 6768,
+          "restartTrace": {
+            "inputAt": 8176,
+            "handlerAt": 8176,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 2719,
+            "firstFrameCpuMs": 1686,
+            "firstRenderMs": 1675,
+            "after": {
+              "geometries": 39,
+              "textures": 9,
+              "programs": 18
+            },
+            "firstOperations": [
+              {
+                "at": 9134,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 718
+              },
+              {
+                "at": 9166,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 9210,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 3948,
+            "firstPresentationIntervalMs": 1266
+          },
+          "territory": "mountain",
+          "draws": 65,
+          "triangles": 147179,
+          "geometries": 58,
+          "textures": 10,
+          "programs": 20,
+          "residentTiles": 6,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 63,
+            "presentation": {
+              "samples": 33,
+              "maxMs": 1266,
+              "over20": 33,
+              "over33_3": 33,
+              "over50": 32,
+              "averageMs": 496.55
+            },
+            "cpu": {
+              "samples": 34,
+              "maxMs": 1686,
+              "over20": 34,
+              "over33_3": 32,
+              "over50": 30,
+              "averageMs": 289.41
+            },
+            "averageFPS": 2
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-12",
+        "seconds": 427.40833333333336,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 78,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 16,
+            "moduleRequestMs": 78,
+            "moduleMs": 462,
+            "rendererReadyMs": 509,
+            "firstSceneSubmitMs": 3705,
+            "readyMs": 6768,
+            "opener": []
+          },
+          "ready": 6768,
+          "restartTrace": {
+            "inputAt": 8176,
+            "handlerAt": 8176,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 2719,
+            "firstFrameCpuMs": 1686,
+            "firstRenderMs": 1675,
+            "after": {
+              "geometries": 39,
+              "textures": 9,
+              "programs": 18
+            },
+            "firstOperations": [
+              {
+                "at": 9134,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 718
+              },
+              {
+                "at": 9166,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 9210,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 3948,
+            "firstPresentationIntervalMs": 1266
+          },
+          "territory": "mountain",
+          "draws": 69,
+          "triangles": 145615,
+          "geometries": 61,
+          "textures": 10,
+          "programs": 20,
+          "residentTiles": 7,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 63,
+            "presentation": {
+              "samples": 39,
+              "maxMs": 1266,
+              "over20": 39,
+              "over33_3": 39,
+              "over50": 38,
+              "averageMs": 512.28
+            },
+            "cpu": {
+              "samples": 40,
+              "maxMs": 1686,
+              "over20": 40,
+              "over33_3": 38,
+              "over50": 36,
+              "averageMs": 287.98
+            },
+            "averageFPS": 2
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      },
+      {
+        "label": "moving-16",
+        "seconds": 427.80833333333334,
+        "probe": {
+          "build": {
+            "version": "1.0.0-rc.7",
+            "id": "309d0c3"
+          },
+          "drawingBuffer": {
+            "width": 223,
+            "height": 397,
+            "scale": 0.699999988079071,
+            "devicePixelRatio": 0.699999988079071,
+            "preset": "low"
+          },
+          "adaptiveQuality": {
+            "level": "balanced",
+            "resetReason": "hunt start",
+            "stabilizing": true,
+            "stabilizationRemainingMs": 1200,
+            "cooldownRemainingMs": 0,
+            "recoveryWindows": 0,
+            "recoveryTarget": 4,
+            "window": {
+              "samples": 0,
+              "late": 0,
+              "seconds": 0
+            }
+          },
+          "startupPhases": {
+            "shellMs": 78,
+            "workerRequestMs": null,
+            "workerReadyMs": null,
+            "manifestReadyMs": null,
+            "verificationStartMs": null,
+            "verificationReadyMs": null,
+            "verificationMissingMs": null,
+            "controlled": false,
+            "navigationType": "navigate",
+            "responseStartMs": 16,
+            "moduleRequestMs": 78,
+            "moduleMs": 462,
+            "rendererReadyMs": 509,
+            "firstSceneSubmitMs": 3705,
+            "readyMs": 6768,
+            "opener": []
+          },
+          "ready": 6768,
+          "restartTrace": {
+            "inputAt": 8176,
+            "handlerAt": 8176,
+            "before": {
+              "geometries": 24,
+              "textures": 10,
+              "programs": 12
+            },
+            "firstFrameSubmittedMs": 2719,
+            "firstFrameCpuMs": 1686,
+            "firstRenderMs": 1675,
+            "after": {
+              "geometries": 39,
+              "textures": 9,
+              "programs": 18
+            },
+            "firstOperations": [
+              {
+                "at": 9134,
+                "hunt": 1,
+                "name": "audio-initialize",
+                "detail": "Web Audio",
+                "durationMs": 718
+              },
+              {
+                "at": 9166,
+                "hunt": 1,
+                "name": "audio-decode-start",
+                "detail": "instruments"
+              },
+              {
+                "at": 9210,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / color"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "texture-dispose",
+                "detail": "Gulf atlas / properties"
+              },
+              {
+                "at": 9211,
+                "hunt": 1,
+                "name": "gulf-atlas-release",
+                "detail": "Gulf Coast Marsh"
+              }
+            ],
+            "nextAnimationCallbackMs": 3948,
+            "firstPresentationIntervalMs": 1266
+          },
+          "territory": "mountain",
+          "draws": 67,
+          "triangles": 148969,
+          "geometries": 62,
+          "textures": 10,
+          "programs": 20,
+          "residentTiles": 7,
+          "hunt": {
+            "id": 1,
+            "discarded": 0,
+            "peakTextures": 10,
+            "peakGeometries": 63,
+            "presentation": {
+              "samples": 43,
+              "maxMs": 1266,
+              "over20": 43,
+              "over33_3": 43,
+              "over50": 42,
+              "averageMs": 518.81
+            },
+            "cpu": {
+              "samples": 44,
+              "maxMs": 1686,
+              "over20": 44,
+              "over33_3": 42,
+              "over50": 40,
+              "averageMs": 286.3
+            },
+            "averageFPS": 1.9
+          },
+          "wildlifeModels": {
+            "resident": 0,
+            "preparing": null,
+            "loadMs": 0,
+            "releasedBoneTextures": 0,
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "limit": 2,
+            "models": [],
+            "rigEncounters": 0,
+            "fallbackEncounters": 0,
+            "proceduralEncounters": 1,
+            "fallbackReasons": {}
+          }
+        }
+      }
+    ]
+  },
+  "continuousOffline": {
+    "seed": 7,
+    "from": 0,
+    "elapsed": 461.041666666668,
+    "quality": "low",
+    "offline": true,
+    "executed": 408,
+    "engine": "webkit",
+    "end": {
+      "build": {
+        "version": "1.0.0-rc.7",
+        "id": "c09511a"
+      },
+      "drawingBuffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "low"
+      },
+      "adaptiveQuality": {
+        "level": "balanced",
+        "resetReason": "hunt start",
+        "stabilizing": true,
+        "stabilizationRemainingMs": 1200,
+        "cooldownRemainingMs": 0,
+        "recoveryWindows": 0,
+        "recoveryTarget": 4,
+        "window": {
+          "samples": 0,
+          "late": 0,
+          "seconds": 0
+        }
+      },
+      "startupPhases": {
+        "shellMs": 285,
+        "workerRequestMs": null,
+        "workerReadyMs": null,
+        "manifestReadyMs": null,
+        "verificationStartMs": null,
+        "verificationReadyMs": null,
+        "verificationMissingMs": null,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 99,
+        "moduleRequestMs": 285,
+        "moduleMs": 1415,
+        "rendererReadyMs": 1876,
+        "firstSceneSubmitMs": 12071,
+        "readyMs": 19996,
+        "opener": []
+      },
+      "ready": 19996,
+      "restartTrace": {
+        "inputAt": 21366,
+        "handlerAt": 21366,
+        "before": {
+          "geometries": 21,
+          "textures": 10,
+          "programs": 12
+        },
+        "firstFrameSubmittedMs": 4233,
+        "firstFrameCpuMs": 2842,
+        "firstRenderMs": 2817,
+        "after": {
+          "geometries": 34,
+          "textures": 10,
+          "programs": 16
+        },
+        "firstOperations": [
+          {
+            "at": 22605,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 1234
+          },
+          {
+            "at": 22658,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 22773,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 5
+          },
+          {
+            "at": 22773,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 22773,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 22790,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 22790,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 22790,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 7198,
+        "firstPresentationIntervalMs": 3112
+      },
+      "territory": "mountain",
+      "draws": 68,
+      "triangles": 144253,
+      "geometries": 125,
+      "textures": 12,
+      "programs": 29,
+      "residentTiles": 7,
+      "hunt": {
+        "id": 1,
+        "discarded": 1616,
+        "peakTextures": 12,
+        "peakGeometries": 129,
+        "presentation": {
+          "samples": 2001,
+          "maxMs": 3112,
+          "over20": 2001,
+          "over33_3": 1997,
+          "over50": 1924,
+          "averageMs": 237.62
+        },
+        "cpu": {
+          "samples": 2002,
+          "maxMs": 2842,
+          "over20": 2000,
+          "over33_3": 1900,
+          "over50": 1773,
+          "averageMs": 151.72
+        },
+        "averageFPS": 4.2
+      },
+      "wildlifeModels": {
+        "resident": 0,
+        "preparing": null,
+        "loadMs": 0,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "limit": 2,
+        "models": [],
+        "rigEncounters": 0,
+        "fallbackEncounters": 16,
+        "proceduralEncounters": 84,
+        "fallbackReasons": {
+          "battery saver": 16
+        }
+      }
+    },
+    "territories": [
+      "gulf",
+      "cypress",
+      "flyway",
+      "timber",
+      "ozark",
+      "farm",
+      "platte",
+      "sandhills",
+      "prairie",
+      "dakota",
+      "manitoba",
+      "parklands",
+      "boreal",
+      "foothills",
+      "mountain"
+    ],
+    "renderedSamples": 923,
+    "residencySamples": [
+      {
+        "elapsed": 0,
+        "distance": 0,
+        "draws": 46,
+        "triangles": 103927,
+        "geometries": 34,
+        "textures": 10,
+        "tiles": 3,
+        "packs": 0,
+        "tileSliceMs": 20
+      },
+      {
+        "elapsed": 30.238333333333316,
+        "distance": 438.79772702333287,
+        "draws": 60,
+        "triangles": 135344,
+        "geometries": 66,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 0,
+        "tileSliceMs": 40
+      },
+      {
+        "elapsed": 60.11999999999998,
+        "distance": 1024.2865543033329,
+        "draws": 65,
+        "triangles": 138991,
+        "geometries": 84,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 2,
+        "tileSliceMs": 9
+      },
+      {
+        "elapsed": 90.16333333333347,
+        "distance": 1677.0870219874087,
+        "draws": 62,
+        "triangles": 129267,
+        "geometries": 88,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 2,
+        "tileSliceMs": 40
+      },
+      {
+        "elapsed": 120.0366666666668,
+        "distance": 2375.628353980744,
+        "draws": 57,
+        "triangles": 107671,
+        "geometries": 84,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 150.03333333333345,
+        "distance": 3119.238554311116,
+        "draws": 64,
+        "triangles": 158180,
+        "geometries": 95,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 0,
+        "tileSliceMs": 155
+      },
+      {
+        "elapsed": 180.06833333333347,
+        "distance": 3898.5410332920437,
+        "draws": 64,
+        "triangles": 129486,
+        "geometries": 103,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 9
+      },
+      {
+        "elapsed": 210.0133333333334,
+        "distance": 4703.935103627784,
+        "draws": 64,
+        "triangles": 125846,
+        "geometries": 105,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 3
+      },
+      {
+        "elapsed": 240.12166666666664,
+        "distance": 5536.647844886858,
+        "draws": 54,
+        "triangles": 104274,
+        "geometries": 105,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 7
+      },
+      {
+        "elapsed": 270.13499999999993,
+        "distance": 6385.887742148895,
+        "draws": 63,
+        "triangles": 115409,
+        "geometries": 106,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 54
+      },
+      {
+        "elapsed": 300.09333333333336,
+        "distance": 7248.6984522697085,
+        "draws": 51,
+        "triangles": 96550,
+        "geometries": 102,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 2
+      },
+      {
+        "elapsed": 330.21333333333325,
+        "distance": 8119.17140362245,
+        "draws": 57,
+        "triangles": 133997,
+        "geometries": 105,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 5
+      },
+      {
+        "elapsed": 360.1933333333336,
+        "distance": 8986.466179780906,
+        "draws": 53,
+        "triangles": 153633,
+        "geometries": 111,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 8
+      },
+      {
+        "elapsed": 390.20166666666745,
+        "distance": 9855.448457601047,
+        "draws": 68,
+        "triangles": 150687,
+        "geometries": 115,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 420.19500000000096,
+        "distance": 10724.772210585254,
+        "draws": 53,
+        "triangles": 143681,
+        "geometries": 119,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 450.1433333333344,
+        "distance": 11593.089650001064,
+        "draws": 49,
+        "triangles": 124176,
+        "geometries": 119,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      }
+    ]
+  },
+  "continuousOfflinePreview": {
+    "seed": 7,
+    "from": 0,
+    "elapsed": 461.0150000000001,
+    "quality": "low",
+    "offline": true,
+    "executed": 408,
+    "engine": "webkit",
+    "end": {
+      "build": {
+        "version": "1.0.0-rc.7",
+        "id": "d9d8e07"
+      },
+      "drawingBuffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "low"
+      },
+      "adaptiveQuality": {
+        "level": "balanced",
+        "resetReason": "hunt start",
+        "stabilizing": true,
+        "stabilizationRemainingMs": 1200,
+        "cooldownRemainingMs": 0,
+        "recoveryWindows": 0,
+        "recoveryTarget": 4,
+        "window": {
+          "samples": 0,
+          "late": 0,
+          "seconds": 0
+        }
+      },
+      "startupPhases": {
+        "shellMs": 106,
+        "workerRequestMs": null,
+        "workerReadyMs": null,
+        "manifestReadyMs": null,
+        "verificationStartMs": null,
+        "verificationReadyMs": null,
+        "verificationMissingMs": null,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 35,
+        "moduleRequestMs": 107,
+        "moduleMs": 583,
+        "rendererReadyMs": 838,
+        "firstSceneSubmitMs": 4294,
+        "readyMs": 8444,
+        "opener": []
+      },
+      "ready": 8444,
+      "restartTrace": {
+        "inputAt": 9242,
+        "handlerAt": 9242,
+        "before": {
+          "geometries": 21,
+          "textures": 10,
+          "programs": 12
+        },
+        "firstFrameSubmittedMs": 1884,
+        "firstFrameCpuMs": 1159,
+        "firstRenderMs": 1151,
+        "after": {
+          "geometries": 34,
+          "textures": 10,
+          "programs": 16
+        },
+        "firstOperations": [
+          {
+            "at": 9890,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 646
+          },
+          {
+            "at": 9937,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 9970,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 1
+          },
+          {
+            "at": 9970,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 9970,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 9978,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 9978,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 9978,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 2375,
+        "firstPresentationIntervalMs": 521
+      },
+      "territory": "mountain",
+      "draws": 68,
+      "triangles": 144253,
+      "geometries": 125,
+      "textures": 12,
+      "programs": 29,
+      "residentTiles": 7,
+      "hunt": {
+        "id": 1,
+        "discarded": 1630,
+        "peakTextures": 12,
+        "peakGeometries": 129,
+        "presentation": {
+          "samples": 2003,
+          "maxMs": 820,
+          "over20": 2002,
+          "over33_3": 1925,
+          "over50": 1188,
+          "averageMs": 75.96
+        },
+        "cpu": {
+          "samples": 2004,
+          "maxMs": 1159,
+          "over20": 1958,
+          "over33_3": 1012,
+          "over50": 524,
+          "averageMs": 47.8
+        },
+        "averageFPS": 13.2
+      },
+      "wildlifeModels": {
+        "resident": 0,
+        "preparing": null,
+        "loadMs": 0,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "limit": 2,
+        "models": [],
+        "rigEncounters": 0,
+        "fallbackEncounters": 16,
+        "proceduralEncounters": 84,
+        "fallbackReasons": {
+          "battery saver": 16
+        }
+      }
+    },
+    "territories": [
+      "gulf",
+      "cypress",
+      "flyway",
+      "timber",
+      "ozark",
+      "farm",
+      "platte",
+      "sandhills",
+      "prairie",
+      "dakota",
+      "manitoba",
+      "parklands",
+      "boreal",
+      "foothills",
+      "mountain"
+    ],
+    "renderedSamples": 923,
+    "residencySamples": [
+      {
+        "elapsed": 0,
+        "distance": 0,
+        "draws": 46,
+        "triangles": 103927,
+        "geometries": 34,
+        "textures": 10,
+        "tiles": 3,
+        "packs": 0,
+        "tileSliceMs": 7
+      },
+      {
+        "elapsed": 30.234999999999992,
+        "distance": 438.73660642999965,
+        "draws": 60,
+        "triangles": 135344,
+        "geometries": 66,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 0,
+        "tileSliceMs": 4
+      },
+      {
+        "elapsed": 60.08166666666666,
+        "distance": 1023.488308959444,
+        "draws": 65,
+        "triangles": 138991,
+        "geometries": 84,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 2,
+        "tileSliceMs": 3
+      },
+      {
+        "elapsed": 90.17166666666684,
+        "distance": 1677.275326655187,
+        "draws": 62,
+        "triangles": 129267,
+        "geometries": 88,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 2,
+        "tileSliceMs": 2
+      },
+      {
+        "elapsed": 120.0183333333335,
+        "distance": 2375.1856696481523,
+        "draws": 60,
+        "triangles": 108180,
+        "geometries": 84,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 0,
+        "tileSliceMs": 2
+      },
+      {
+        "elapsed": 150.03333333333336,
+        "distance": 3119.238554311114,
+        "draws": 64,
+        "triangles": 158180,
+        "geometries": 95,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 180.09166666666664,
+        "distance": 3899.1584422601877,
+        "draws": 65,
+        "triangles": 129731,
+        "geometries": 104,
+        "textures": 12,
+        "tiles": 7,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 210.01333333333335,
+        "distance": 4703.935103627782,
+        "draws": 64,
+        "triangles": 125846,
+        "geometries": 105,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 240.11666666666656,
+        "distance": 5536.507872529634,
+        "draws": 54,
+        "triangles": 104274,
+        "geometries": 105,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 2
+      },
+      {
+        "elapsed": 270.12166666666644,
+        "distance": 6385.506616562224,
+        "draws": 63,
+        "triangles": 115409,
+        "geometries": 106,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 300.08499999999975,
+        "distance": 7248.4577507846825,
+        "draws": 51,
+        "triangles": 96550,
+        "geometries": 102,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 330.2299999999995,
+        "distance": 8119.65331977666,
+        "draws": 57,
+        "triangles": 133997,
+        "geometries": 105,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 360.20666666666637,
+        "distance": 8986.852090031558,
+        "draws": 53,
+        "triangles": 153633,
+        "geometries": 111,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 2
+      },
+      {
+        "elapsed": 390.19333333333316,
+        "distance": 9855.207008306297,
+        "draws": 70,
+        "triangles": 150701,
+        "geometries": 115,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      },
+      {
+        "elapsed": 420.216666666667,
+        "distance": 10725.400334719272,
+        "draws": 53,
+        "triangles": 143681,
+        "geometries": 119,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 2
+      },
+      {
+        "elapsed": 450.1416666666667,
+        "distance": 11593.041325001035,
+        "draws": 49,
+        "triangles": 124176,
+        "geometries": 119,
+        "textures": 12,
+        "tiles": 6,
+        "packs": 0,
+        "tileSliceMs": 1
+      }
+    ]
+  },
+  "auto": {
+    "seed": 7,
+    "from": 0,
+    "elapsed": 18.006666666667243,
+    "quality": "auto",
+    "offline": true,
+    "executed": 9,
+    "engine": "webkit",
+    "end": {
+      "build": {
+        "version": "1.0.0-rc.7",
+        "id": "c09511a"
+      },
+      "drawingBuffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "high"
+      },
+      "adaptiveQuality": {
+        "level": "high",
+        "resetReason": "hunt start",
+        "stabilizing": false,
+        "stabilizationRemainingMs": 0,
+        "cooldownRemainingMs": 0,
+        "recoveryWindows": 2,
+        "recoveryTarget": null,
+        "window": {
+          "samples": 59,
+          "late": 0,
+          "seconds": 0.9750000000000678
+        },
+        "lastWindow": {
+          "samples": 72,
+          "late": 0,
+          "meanMs": 16.67,
+          "maxMs": 16.67,
+          "seconds": 1.2,
+          "pressureWindows": 0,
+          "headroomWindows": 2
+        },
+        "lastDecision": {
+          "from": "balanced",
+          "to": "high",
+          "reason": "consistent frame headroom",
+          "samples": 73,
+          "late": 0,
+          "meanMs": 16.55,
+          "maxMs": 16.67,
+          "seconds": 1.21,
+          "pressureWindows": 0,
+          "headroomWindows": 4
+        }
+      },
+      "startupPhases": {
+        "shellMs": 462,
+        "workerRequestMs": null,
+        "workerReadyMs": null,
+        "manifestReadyMs": null,
+        "verificationStartMs": null,
+        "verificationReadyMs": null,
+        "verificationMissingMs": null,
+        "controlled": false,
+        "navigationType": "navigate",
+        "responseStartMs": 89,
+        "moduleRequestMs": 475,
+        "moduleMs": 3558,
+        "rendererReadyMs": 3860,
+        "firstSceneSubmitMs": 11598,
+        "readyMs": 24605,
+        "opener": []
+      },
+      "ready": 24605,
+      "restartTrace": {
+        "inputAt": 28310,
+        "handlerAt": 28311,
+        "before": {
+          "geometries": 21,
+          "textures": 18,
+          "programs": 15
+        },
+        "firstFrameSubmittedMs": 7869,
+        "firstFrameCpuMs": 4808,
+        "firstRenderMs": 4777,
+        "after": {
+          "geometries": 34,
+          "textures": 18,
+          "programs": 19
+        },
+        "firstOperations": [
+          {
+            "at": 31173,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 2859
+          },
+          {
+            "at": 31198,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 31387,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 8
+          },
+          {
+            "at": 31387,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "preparing"
+            }
+          },
+          {
+            "at": 31387,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 31406,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 31407,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 31407,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 11713,
+        "firstPresentationIntervalMs": 4287
+      },
+      "territory": "gulf",
+      "draws": 66,
+      "triangles": 188502,
+      "geometries": 67,
+      "textures": 24,
+      "programs": 28,
+      "residentTiles": 7,
+      "hunt": {
+        "id": 1,
+        "discarded": 0,
+        "peakTextures": 24,
+        "peakGeometries": 67,
+        "presentation": {
+          "samples": 923,
+          "maxMs": 4287,
+          "over20": 923,
+          "over33_3": 923,
+          "over50": 923,
+          "averageMs": 305.67
+        },
+        "cpu": {
+          "samples": 924,
+          "maxMs": 4808,
+          "over20": 895,
+          "over33_3": 781,
+          "over50": 666,
+          "averageMs": 100.02
+        },
+        "averageFPS": 3.3
+      },
+      "wildlifeModels": {
+        "resident": 2,
+        "preparing": null,
+        "loadMs": 10110,
+        "releasedBoneTextures": 0,
+        "hits": 0,
+        "misses": 2,
+        "evictions": 0,
+        "limit": 2,
+        "models": [
+          {
+            "id": "mallard",
+            "materialTextures": 7,
+            "boneTextures": 1,
+            "prepared": {
+              "textures": 7,
+              "skeletons": 1,
+              "shaders": 3,
+              "geometries": 0,
+              "geometryTotal": 8
+            }
+          },
+          {
+            "id": "deer",
+            "materialTextures": 2,
+            "boneTextures": 0,
+            "prepared": {
+              "textures": 0,
+              "skeletons": 0,
+              "shaders": 0,
+              "geometries": 0,
+              "geometryTotal": 3
+            }
+          }
+        ],
+        "rigEncounters": 0,
+        "fallbackEncounters": 1,
+        "proceduralEncounters": 2,
+        "fallbackReasons": {
+          "preparing": 1
+        }
+      }
+    },
+    "territories": [
+      "gulf"
+    ],
+    "renderedSamples": 37,
+    "residencySamples": [
+      {
+        "elapsed": 0,
+        "distance": 0,
+        "draws": 47,
+        "triangles": 130298,
+        "geometries": 34,
+        "textures": 19,
+        "tiles": 3,
+        "packs": 1,
+        "tileSliceMs": 43,
+        "buffer": {
+          "width": 102,
+          "height": 181,
+          "scale": 0.3199999928474426,
+          "devicePixelRatio": 0.3199999928474426,
+          "preset": "balanced"
+        },
+        "adaptive": {
+          "level": "balanced",
+          "resetReason": "hunt start",
+          "stabilizing": true,
+          "stabilizationRemainingMs": 1080,
+          "cooldownRemainingMs": 0,
+          "recoveryWindows": 0,
+          "recoveryTarget": 4,
+          "window": {
+            "samples": 0,
+            "late": 0,
+            "seconds": 0
+          }
+        },
+        "atlas": "full"
+      }
+    ]
+  },
+  "restarts": {
+    "seed": 7,
+    "quality": "low",
+    "cycles": 6,
+    "samples": [
+      {
+        "hunt": {
+          "id": 1,
+          "discarded": 0,
+          "peakTextures": 12,
+          "peakGeometries": 52,
+          "presentation": {
+            "samples": 25,
+            "maxMs": 12169.100000023842,
+            "over20": 25,
+            "over33_3": 24,
+            "over50": 24,
+            "averageMs": 3415.08
+          },
+          "cpu": {
+            "samples": 26,
+            "maxMs": 9136.700000047684,
+            "over20": 13,
+            "over33_3": 9,
+            "over50": 6,
+            "averageMs": 749.83
+          },
+          "averageFPS": 0.3
+        },
+        "restart": 10608.900000035763,
+        "restartTrace": {
+          "inputAt": 29144.100000023842,
+          "handlerAt": 29251.19999998808,
+          "before": {
+            "geometries": 25,
+            "textures": 11,
+            "programs": 13
+          },
+          "firstFrameSubmittedMs": 10716,
+          "firstFrameCpuMs": 9136.7,
+          "firstRenderMs": 9110,
+          "after": {
+            "geometries": 38,
+            "textures": 11,
+            "programs": 17
+          },
+          "firstOperations": [
+            {
+              "at": 29655,
+              "hunt": 1,
+              "name": "audio-initialize",
+              "detail": "Web Audio",
+              "durationMs": 297.4
+            },
+            {
+              "at": 29718.30000001192,
+              "hunt": 1,
+              "name": "audio-decode-start",
+              "detail": "instruments"
+            },
+            {
+              "at": 29931.19999998808,
+              "hunt": 1,
+              "name": "audio-decode-ready",
+              "detail": "instruments",
+              "durationMs": 212.9
+            },
+            {
+              "at": 30733.19999998808,
+              "hunt": 1,
+              "name": "terrain-slice",
+              "detail": 2,
+              "durationMs": 4.5
+            },
+            {
+              "at": 30748,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 0.8
+            },
+            {
+              "at": 30748.100000023842,
+              "hunt": 1,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "battery saver"
+              }
+            },
+            {
+              "at": 30748.100000023842,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            },
+            {
+              "at": 30765.600000023842,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / 0"
+            },
+            {
+              "at": 30766,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / 1"
+            },
+            {
+              "at": 30766.100000023842,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "gulf / solid / -1"
+            }
+          ],
+          "nextAnimationCallbackMs": 10775.6,
+          "firstPresentationIntervalMs": 92.3
+        },
+        "final": {
+          "geometries": 48,
+          "textures": 12,
+          "programs": 19,
+          "tiles": 7,
+          "wildlife": 0,
+          "pool": {
+            "keys": 6,
+            "idle": 5
+          }
+        },
+        "contact": {
+          "fraction": 0.2728281191296865,
+          "type": "stream",
+          "part": "front paws",
+          "solid": "wet channel",
+          "obstacleDistance": 37.147644719999995,
+          "obstacleLane": 0,
+          "distance": 35.866847311142806,
+          "lateral": 0,
+          "targetLane": 0,
+          "lane": 0,
+          "jumpRemaining": 0,
+          "slideRemaining": 0,
+          "action": "run",
+          "elapsed": 3.1606069009927467,
+          "pattern": "creek-crossing",
+          "origin": 35.84025431481482,
+          "contactX": 0.18934823931124983,
+          "contactY": 0.0769445557722472,
+          "contactZ": -0.4827575403240385,
+          "height": 0,
+          "seed": 7,
+          "ruleset": "migration-30-raptor",
+          "territory": "gulf",
+          "stage": 1
+        }
+      },
+      {
+        "hunt": {
+          "id": 2,
+          "discarded": 0,
+          "peakTextures": 12,
+          "peakGeometries": 51,
+          "presentation": {
+            "samples": 25,
+            "maxMs": 5728.300000011921,
+            "over20": 25,
+            "over33_3": 24,
+            "over50": 24,
+            "averageMs": 2884.32
+          },
+          "cpu": {
+            "samples": 26,
+            "maxMs": 59.09999996423721,
+            "over20": 7,
+            "over33_3": 6,
+            "over50": 2,
+            "averageMs": 18.49
+          },
+          "averageFPS": 0.3
+        },
+        "restart": 399.60000002384186,
+        "restartTrace": {
+          "inputAt": 130219.39999997616,
+          "handlerAt": 130231.89999997616,
+          "before": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstFrameSubmittedMs": 412.1,
+          "firstFrameCpuMs": 14.9,
+          "firstRenderMs": 7.4,
+          "after": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstOperations": [
+            {
+              "at": 130623.89999997616,
+              "hunt": 2,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 4.1
+            },
+            {
+              "at": 130623.89999997616,
+              "hunt": 2,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "battery saver"
+              }
+            },
+            {
+              "at": 130623.89999997616,
+              "hunt": 2,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            }
+          ],
+          "nextAnimationCallbackMs": 421.1,
+          "firstPresentationIntervalMs": 20.5
+        },
+        "final": {
+          "geometries": 48,
+          "textures": 12,
+          "programs": 19,
+          "tiles": 7,
+          "wildlife": 0,
+          "pool": {
+            "keys": 9,
+            "idle": 5
+          }
+        },
+        "contact": {
+          "fraction": 0.2728281191296865,
+          "type": "stream",
+          "part": "front paws",
+          "solid": "wet channel",
+          "obstacleDistance": 37.147644719999995,
+          "obstacleLane": 0,
+          "distance": 35.866847311142806,
+          "lateral": 0,
+          "targetLane": 0,
+          "lane": 0,
+          "jumpRemaining": 0,
+          "slideRemaining": 0,
+          "action": "run",
+          "elapsed": 3.1606069009927467,
+          "pattern": "creek-crossing",
+          "origin": 35.84025431481482,
+          "contactX": 0.18934823931124983,
+          "contactY": 0.0769445557722472,
+          "contactZ": -0.4827575403240385,
+          "height": 0,
+          "seed": 7,
+          "ruleset": "migration-30-raptor",
+          "territory": "gulf",
+          "stage": 1
+        }
+      },
+      {
+        "hunt": {
+          "id": 3,
+          "discarded": 0,
+          "peakTextures": 12,
+          "peakGeometries": 51,
+          "presentation": {
+            "samples": 25,
+            "maxMs": 5931.699999988079,
+            "over20": 24,
+            "over33_3": 24,
+            "over50": 24,
+            "averageMs": 2735.28
+          },
+          "cpu": {
+            "samples": 26,
+            "maxMs": 138.30000001192093,
+            "over20": 4,
+            "over33_3": 3,
+            "over50": 1,
+            "averageMs": 16.29
+          },
+          "averageFPS": 0.4
+        },
+        "restart": 2222,
+        "restartTrace": {
+          "inputAt": 212413,
+          "handlerAt": 212431.39999997616,
+          "before": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstFrameSubmittedMs": 2240.4,
+          "firstFrameCpuMs": 13.7,
+          "firstRenderMs": 5,
+          "after": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstOperations": [
+            {
+              "at": 214648,
+              "hunt": 3,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 3.9
+            },
+            {
+              "at": 214648.10000002384,
+              "hunt": 3,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "battery saver"
+              }
+            },
+            {
+              "at": 214648.10000002384,
+              "hunt": 3,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            }
+          ],
+          "nextAnimationCallbackMs": 2249,
+          "firstPresentationIntervalMs": 10.6
+        },
+        "final": {
+          "geometries": 48,
+          "textures": 12,
+          "programs": 19,
+          "tiles": 7,
+          "wildlife": 0,
+          "pool": {
+            "keys": 9,
+            "idle": 5
+          }
+        },
+        "contact": {
+          "fraction": 0.2728281191296865,
+          "type": "stream",
+          "part": "front paws",
+          "solid": "wet channel",
+          "obstacleDistance": 37.147644719999995,
+          "obstacleLane": 0,
+          "distance": 35.866847311142806,
+          "lateral": 0,
+          "targetLane": 0,
+          "lane": 0,
+          "jumpRemaining": 0,
+          "slideRemaining": 0,
+          "action": "run",
+          "elapsed": 3.1606069009927467,
+          "pattern": "creek-crossing",
+          "origin": 35.84025431481482,
+          "contactX": 0.18934823931124983,
+          "contactY": 0.0769445557722472,
+          "contactZ": -0.4827575403240385,
+          "height": 0,
+          "seed": 7,
+          "ruleset": "migration-30-raptor",
+          "territory": "gulf",
+          "stage": 1
+        }
+      },
+      {
+        "hunt": {
+          "id": 4,
+          "discarded": 0,
+          "peakTextures": 12,
+          "peakGeometries": 51,
+          "presentation": {
+            "samples": 25,
+            "maxMs": 3730.5,
+            "over20": 23,
+            "over33_3": 22,
+            "over50": 22,
+            "averageMs": 1143.95
+          },
+          "cpu": {
+            "samples": 26,
+            "maxMs": 38,
+            "over20": 1,
+            "over33_3": 1,
+            "over50": 0,
+            "averageMs": 6.48
+          },
+          "averageFPS": 0.9
+        },
+        "restart": 2114.199999988079,
+        "restartTrace": {
+          "inputAt": 290804.89999997616,
+          "handlerAt": 290808.5,
+          "before": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstFrameSubmittedMs": 2117.8,
+          "firstFrameCpuMs": 12.7,
+          "firstRenderMs": 1.3,
+          "after": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstOperations": [
+            {
+              "at": 292921,
+              "hunt": 4,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 4.5
+            },
+            {
+              "at": 292921,
+              "hunt": 4,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "battery saver"
+              }
+            },
+            {
+              "at": 292921,
+              "hunt": 4,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            }
+          ],
+          "nextAnimationCallbackMs": 2122.5,
+          "firstPresentationIntervalMs": 12.7
+        },
+        "final": {
+          "geometries": 48,
+          "textures": 12,
+          "programs": 19,
+          "tiles": 7,
+          "wildlife": 0,
+          "pool": {
+            "keys": 9,
+            "idle": 5
+          }
+        },
+        "contact": {
+          "fraction": 0.2728281191296865,
+          "type": "stream",
+          "part": "front paws",
+          "solid": "wet channel",
+          "obstacleDistance": 37.147644719999995,
+          "obstacleLane": 0,
+          "distance": 35.866847311142806,
+          "lateral": 0,
+          "targetLane": 0,
+          "lane": 0,
+          "jumpRemaining": 0,
+          "slideRemaining": 0,
+          "action": "run",
+          "elapsed": 3.1606069009927467,
+          "pattern": "creek-crossing",
+          "origin": 35.84025431481482,
+          "contactX": 0.18934823931124983,
+          "contactY": 0.0769445557722472,
+          "contactZ": -0.4827575403240385,
+          "height": 0,
+          "seed": 7,
+          "ruleset": "migration-30-raptor",
+          "territory": "gulf",
+          "stage": 1
+        }
+      },
+      {
+        "hunt": {
+          "id": 5,
+          "discarded": 0,
+          "peakTextures": 12,
+          "peakGeometries": 51,
+          "presentation": {
+            "samples": 25,
+            "maxMs": 1163.7000000476837,
+            "over20": 22,
+            "over33_3": 22,
+            "over50": 22,
+            "averageMs": 463.54
+          },
+          "cpu": {
+            "samples": 26,
+            "maxMs": 290.80000001192093,
+            "over20": 5,
+            "over33_3": 4,
+            "over50": 3,
+            "averageMs": 28.32
+          },
+          "averageFPS": 2.2
+        },
+        "restart": 11.199999988079071,
+        "restartTrace": {
+          "inputAt": 323123.3000000119,
+          "handlerAt": 323126.3000000119,
+          "before": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstFrameSubmittedMs": 14.2,
+          "firstFrameCpuMs": 3,
+          "firstRenderMs": 1.8,
+          "after": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstOperations": [
+            {
+              "at": 323135.60000002384,
+              "hunt": 5,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 0.7
+            },
+            {
+              "at": 323135.60000002384,
+              "hunt": 5,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "battery saver"
+              }
+            },
+            {
+              "at": 323135.60000002384,
+              "hunt": 5,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            }
+          ],
+          "nextAnimationCallbackMs": 429.6,
+          "firstPresentationIntervalMs": 421.2
+        },
+        "final": {
+          "geometries": 48,
+          "textures": 12,
+          "programs": 19,
+          "tiles": 7,
+          "wildlife": 0,
+          "pool": {
+            "keys": 9,
+            "idle": 5
+          }
+        },
+        "contact": {
+          "fraction": 0.2728281191296865,
+          "type": "stream",
+          "part": "front paws",
+          "solid": "wet channel",
+          "obstacleDistance": 37.147644719999995,
+          "obstacleLane": 0,
+          "distance": 35.866847311142806,
+          "lateral": 0,
+          "targetLane": 0,
+          "lane": 0,
+          "jumpRemaining": 0,
+          "slideRemaining": 0,
+          "action": "run",
+          "elapsed": 3.1606069009927467,
+          "pattern": "creek-crossing",
+          "origin": 35.84025431481482,
+          "contactX": 0.18934823931124983,
+          "contactY": 0.0769445557722472,
+          "contactZ": -0.4827575403240385,
+          "height": 0,
+          "seed": 7,
+          "ruleset": "migration-30-raptor",
+          "territory": "gulf",
+          "stage": 1
+        }
+      },
+      {
+        "hunt": {
+          "id": 6,
+          "discarded": 0,
+          "peakTextures": 12,
+          "peakGeometries": 51,
+          "presentation": {
+            "samples": 25,
+            "maxMs": 1048.5,
+            "over20": 24,
+            "over33_3": 23,
+            "over50": 22,
+            "averageMs": 425.54
+          },
+          "cpu": {
+            "samples": 26,
+            "maxMs": 36.59999996423721,
+            "over20": 1,
+            "over33_3": 1,
+            "over50": 0,
+            "averageMs": 6.37
+          },
+          "averageFPS": 2.3
+        },
+        "restart": 19.5,
+        "restartTrace": {
+          "inputAt": 336018.6999999881,
+          "handlerAt": 336021.60000002384,
+          "before": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstFrameSubmittedMs": 22.4,
+          "firstFrameCpuMs": 10.3,
+          "firstRenderMs": 3.8,
+          "after": {
+            "geometries": 48,
+            "textures": 12,
+            "programs": 19
+          },
+          "firstOperations": [
+            {
+              "at": 336037.10000002384,
+              "hunt": 6,
+              "name": "wildlife-art",
+              "detail": "mallard",
+              "durationMs": 4.6
+            },
+            {
+              "at": 336037.10000002384,
+              "hunt": 6,
+              "name": "wildlife-fallback",
+              "detail": {
+                "species": "mallard",
+                "reason": "battery saver"
+              }
+            },
+            {
+              "at": 336037.10000002384,
+              "hunt": 6,
+              "name": "wildlife-visible",
+              "detail": "mallard"
+            }
+          ],
+          "nextAnimationCallbackMs": 41.4,
+          "firstPresentationIntervalMs": 22.7
+        },
+        "final": {
+          "geometries": 48,
+          "textures": 12,
+          "programs": 19,
+          "tiles": 7,
+          "wildlife": 0,
+          "pool": {
+            "keys": 9,
+            "idle": 5
+          }
+        },
+        "contact": {
+          "fraction": 0.2728281191296865,
+          "type": "stream",
+          "part": "front paws",
+          "solid": "wet channel",
+          "obstacleDistance": 37.147644719999995,
+          "obstacleLane": 0,
+          "distance": 35.866847311142806,
+          "lateral": 0,
+          "targetLane": 0,
+          "lane": 0,
+          "jumpRemaining": 0,
+          "slideRemaining": 0,
+          "action": "run",
+          "elapsed": 3.1606069009927467,
+          "pattern": "creek-crossing",
+          "origin": 35.84025431481482,
+          "contactX": 0.18934823931124983,
+          "contactY": 0.0769445557722472,
+          "contactZ": -0.4827575403240385,
+          "height": 0,
+          "seed": 7,
+          "ruleset": "migration-30-raptor",
+          "territory": "gulf",
+          "stage": 1
+        }
+      }
+    ]
+  },
+  "update": {
+    "engine": "webkit",
+    "baseline": false,
+    "upgrade": "phase-three",
+    "disclosure": "17.37 MB to download \u00b7 17.37 MB total",
+    "interruptedAsset": "labrador.glb",
+    "injectedNetworkErrors": 0,
+    "interruption": "The download stopped. Retry to resume from your verified files.",
+    "coldReadyMsIncludingRetry": 34923,
+    "updateVersions": [
+      "73a422bd53296d2a9c69",
+      "568456fa764dedc9857e"
+    ],
+    "update": {
+      "busyHuntProtected": true,
+      "preservedRuns": 2,
+      "unchangedAudioRequests": 1
+    }
+  }
+}

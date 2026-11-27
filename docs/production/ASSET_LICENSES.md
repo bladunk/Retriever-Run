@@ -137,3 +137,9 @@ The PrairieSeedheads and WetlandRushes meshes are original Retriever Run assets.
 ## RC.6 Living World
 
 The compact and detailed Ring-necked Pheasant meshes, crane flight silhouette, articulated wing panels, moose forms and motion routines are original project work, reproducible from [wildlife-art.js](../../src/wildlife-art.js) and [wildlife-motion.js](../../src/wildlife-motion.js). They use vertex-color materials and add no diffuse, roughness or normal textures. The archived CC BY 4.0 pheasant GLB remains covered by its Phase 04 credit. RC.6 no longer ships it in the offline package. The existing Mallard, Bald Eagle and doe rigs and their redistribution credits retain the asset records above. RC.6 holds animated horizontal root motion stationary relative to the encounter path and retimes selected clips. Existing legally cleared pheasant, crane and goose recordings are reused with spatial and cue timing changes. No research photo, video or recording was copied.
+
+## RC.7 · Gun Dog
+
+The signature Labrador is a further CC BY 4.0 sculpt of the game’s licensed working dog by kenchoo and all of life via 3DPets. Quaternius CC0 locomotion remains retargeted to the existing skeleton. The RC.6 runtime mesh was 893,212 bytes and the RC.7 runtime mesh is 953,856 bytes. Both use a 1536 × 1536 embedded coat. The material revision uses original anatomical pigment and short-fur shading. The Pointer and Boyd geometry, title and approved portrait derivatives retain their existing entries. [Model and motion sources](../../PORTRAIT.md#asset-credits)
+
+The vest construction, textile shading, camouflage fields, collar details, bandana mesh and Kennel illustrations are original project work. Design reference photos and branded textile patterns are absent from the assets. These additions are generated from code and have no separately downloaded image, audio or mesh file. [Asset sizes and reference links](GUN_DOG_REPORT.md)

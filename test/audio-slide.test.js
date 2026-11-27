@@ -272,3 +272,32 @@ test('all six vest styles share a separate weighted shell and leave the collisio
   assert.ok(!vest.visible)
   assert.equal(body.material.color.getHex(), 0xffffff)
 })
+
+test('hemmed neckwear stays attached through inspection, movement and full-catalog swaps without duplicating the vest', async () => {
+  const { kennelCatalog } = await import('../src/kennel-catalog.js')
+  const rig = await loadRig()
+  const pose = { dt:1/30,time:0,stride:0,airborne:false,jumpPhase:1,sliding:0,idle:true,turn:0,landing:0,ground:0,
+    kennel:true,sit:true }
+  rig.appearance(gearAppearance({ vest:'canvas-vest',collar:'marsh-bandana' }))
+  const garment = rig.root.getObjectByName('WorkingDogVest')
+  const scarf = rig.root.getObjectByName('WorkingDogBandana')
+  const bib = scarf.getObjectByName('HemmedTriangularBib')
+  const positions = bib.geometry.attributes.position
+  assert.equal(scarf.parent.name,'Neck1')
+  assert.ok(scarf.visible && garment.visible)
+  assert.ok(Math.abs(positions.getX(14)-positions.getX(0)) > 1)
+  assert.ok(Math.abs(positions.getX(239)-positions.getX(225)) < .025)
+  assert.ok(positions.getY(0)-positions.getY(225) > .65)
+  for (let i=0;i<16;i++) rig.pose({ ...pose,time:i/30 })
+  rig.root.traverse(part => assert.ok(part.matrixWorld.elements.every(Number.isFinite),part.name))
+  for (const [category,items] of Object.entries(kennelCatalog)) for (const item of items) {
+    rig.appearance(gearAppearance({ vest:'canvas-vest',[category]:item.id }))
+    assert.equal(rig.root.getObjectByName('WorkingDogVest'),garment)
+    assert.equal(rig.root.getObjectByName('HemmedTriangularBib'),bib)
+    if (category === 'collar') assert.equal(scarf.visible,Boolean(item.bandana))
+  }
+  let disposed = 0
+  for (const mesh of [garment,bib]) mesh.geometry.addEventListener('dispose',() => disposed++)
+  rig.dispose()
+  assert.equal(disposed,2)
+})

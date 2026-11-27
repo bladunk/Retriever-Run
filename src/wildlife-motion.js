@@ -38,6 +38,10 @@ const interval = .035
 function pheasant(time, path) {
   path.along = .7*time + move(time,17.3,.36)
   path.side = -.85*smooth(time,.02,.62) + move(Math.max(0,time-.65),5.1,.43)
+  // Keep the first rising strokes above the bank's inside edge. The
+  // grounded concealment, launch time, vertical curve and departure stay
+  // intact; heading still follows the revised presentation trajectory.
+  path.side -= .68 * smooth(time,.14,.49) * (1 - smooth(time,1.05,1.78))
   path.lift = .06*Math.sin(time*9)*Math.exp(-4*time) +
     2.18*(1-Math.exp(-time*3.4)) + .70*Math.min(time,1.28) - .31*Math.max(0,time-1.48)
 }

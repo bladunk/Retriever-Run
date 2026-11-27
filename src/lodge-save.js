@@ -7,6 +7,7 @@ import { journalIssues, reviewSavedRank } from './career-integrity.js'
 import { expeditionRegions, migrationSecondsByTerritory, regionAt, territorySeconds } from './expedition.js'
 import { commitWildlife, normalizeWildlife } from './wildlife-journal.js'
 import { migrationCourse } from './ruleset.js'
+import { validatedDogName } from './dog-name.js'
 import { defaultGear, kennelCatalog, legacyGear, ownedGear, normalizeKennel, unlocked } from './kennel-catalog.js'
 import { advanceFieldwork, awardFieldHonors, masterHunterChecks, normalizeProgression, qualifyBoyd } from './progression.js'
 import { lodgeChanges, lodgeProgress, normalizeLodgeDisplay, recordLodgeGear, trophyFor, trophyLimit } from './lodge-progress.js'
@@ -266,6 +267,16 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       player.enrollment = enrollment
       player.nickname = nickname(name, player.nickname)
       return commit()
+    },
+    renameDog(value) {
+      const name = validatedDogName(value)
+      const kennel = current().kennel
+      if (practice || kennel.breed === 'boyd' || name === undefined) return false
+      const previous = kennel.name
+      kennel.name = name
+      if (commit()) return true
+      kennel.name = previous
+      return false
     },
     equip(category, itemId) {
       const player = current()
