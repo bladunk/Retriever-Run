@@ -39,14 +39,14 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 18 | Desirable waterfowl vests | Implemented in RC.7 draft · owner fit review pending | Existing cosmetics and fitting rig | Model authentic neoprene and waxed canvas with reinforced panels, recognizable stitching, seams and buckles. Keep equipment cosmetic. |
-| 19 | Camouflage and visibility fabrics | Implemented in RC.7 draft · native lighting review pending | Vest UVs and materials | Produce distinctive traditional duck and marsh camouflage plus practical blaze orange. Verify on dog under gameplay lighting. |
-| 20 | Triangular fabric bandanas and improved collars | Implemented in RC.7 draft · native motion review pending | Dog rigs and equipment slots | Use genuine neck drape and triangular fabric geometry. Keep collars legible, fitted and separate. |
+| 18 | Desirable waterfowl vests | Implemented in merged RC.7 · owner fit review pending | Existing cosmetics and fitting rig | Model authentic neoprene and waxed canvas with reinforced panels, recognizable stitching, seams and buckles. Keep equipment cosmetic. |
+| 19 | Camouflage and visibility fabrics | Implemented in merged RC.7 · native lighting review pending | Vest UVs and materials | Produce distinctive traditional duck and marsh camouflage plus practical blaze orange. Verify on dog under gameplay lighting. |
+| 20 | Triangular fabric bandanas and improved collars | Implemented in merged RC.7 · native motion review pending | Dog rigs and equipment slots | Use genuine neck drape and triangular fabric geometry. Keep collars legible, fitted and separate. |
 | 21 | Dog naming | Implemented · local and offline verification | Per-profile saves and Kennel | Let players name their dog with private, reversible, validated local storage. |
 | 22 | Natural reactions and personality | Partial · posture, breathing and movement implemented | Dog animation and sound mixer | Use restrained contextual reactions through transitions and encounters. Never interrupt input. |
-| 23 | Canine anatomy and coat rendering | Implemented in RC.7 draft · owner artistic review pending | Labrador, Pointer and approved Boyd asset | Improve rear and three-quarter anatomy and coat distinction. Preserve Boyd and keep existing reference photo protections. |
+| 23 | Canine anatomy and coat rendering | Implemented in merged RC.7 · owner artistic review pending | Labrador, Pointer and approved Boyd asset | Improve rear and three-quarter anatomy and coat distinction. Preserve Boyd and keep existing reference photo protections. |
 | 24 | Equipment fitting across dogs | Partial · catalog and pose checks pass | Existing breed rigs and slots | Verify equipment across body shapes and animations. Fix clipping and reproduce owned items on save reload. |
-| 25 | Visual Kennel | Implemented in RC.7 draft · physical-device review pending | Equipment ownership and pagination | Use game-style visual item cards and equipped/owned/locked states. Remove native spreadsheet-style selection flows. |
+| 25 | Visual Kennel | Implemented in merged RC.7 · physical-device review pending | Equipment ownership and pagination | Use game-style visual item cards and equipped/owned/locked states. Remove native spreadsheet-style selection flows. |
 
 ## RC.8 · Legacy
 

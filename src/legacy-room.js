@@ -86,7 +86,7 @@ export function legacyInterior(player, context) {
   scene.dataset.tier = tier.id
   const displayedName = qualified ? 'Master Hunter’s Lodge' : tier.name
   scene.dataset.finish = player.lodgeDisplay.finish ?? lodgeFinishes[tierIndex].id
-  const title = node('header', null, 'legacy-cabin-title')
+  const title = node('div', null, 'legacy-cabin-title')
   title.append(node('div', 'Tier ' + tier.numeral + ' · Level ' + standing.level, 'legacy-eyebrow'), node('h3', displayedName))
   if (preview) title.append(node('span', 'Art Studio · simulated career', 'legacy-preview-label'))
   const room = node('div', null, 'legacy-interior')
@@ -108,17 +108,18 @@ export function legacyInterior(player, context) {
     const portrait = exhibitButton('', () => inspect({
       name:'Boyd · Master Hunter', art:'boyd', badge:'Master Hunter tribute', date:player.progression.boyd,
       description:'Boyd’s portrait and signature collar commemorate the highest field qualification.',
-    }), 'legacy-boyd-frame')
+    }, portrait), 'legacy-boyd-frame')
     portrait.append(photo('./branding/boyd-portrait.webp',768,960,'Inspect the Boyd tribute'))
     room.append(portrait)
   }
   const shelf = node('div', null, 'legacy-mantel')
+  shelf.setAttribute('role','region')
   shelf.setAttribute('aria-label','Earned displays')
   const caption = node('section', null, 'legacy-inspection')
   const furnishing = progress.upgrades.slice().reverse().find(entry => ['equipment','journal','map','decoy','observation'].includes(entry.art))
   if (furnishing) {
     const artwork = exhibitButton('', () => inspect({ name:furnishing.name, badge:'Earned furnishing',
-      art:furnishing.art, description:lodgeRequirements(furnishing) }), 'legacy-furnishing')
+      art:furnishing.art, description:lodgeRequirements(furnishing) }, artwork), 'legacy-furnishing')
     artwork.setAttribute('aria-label','Inspect ' + furnishing.name)
     artwork.append(exhibitImage(furnishing))
     room.append(artwork)
@@ -128,14 +129,14 @@ export function legacyInterior(player, context) {
   const transport = node('div', null, 'legacy-return')
   transport.append(exhibitButton('Hunt', hunt, 'legacy-hunt'),
     exhibitButton('Trophy room',() => navigate('collection')))
-  function inspect(item) {
+  function inspect(item, trigger) {
     const header = node('h4', item.name)
     const close = exhibitButton('Close', () => {
       caption.hidden = true
-      shelf.querySelector('[aria-pressed="true"]')?.focus({ preventScroll:true })
+      trigger.focus({ preventScroll:true })
       shelf.querySelector('[aria-pressed="true"]')?.setAttribute('aria-pressed','false')
     })
-    const headerBar = node('header')
+    const headerBar = node('div', null, 'legacy-inspection-heading')
     headerBar.append(node('p',item.badge,'legacy-eyebrow'), close, header)
     const content = exhibitCaption(item)
     if (item.key) content.append(exhibitButton('Manage display', () => navigate('collection',item.key)))
@@ -148,12 +149,13 @@ export function legacyInterior(player, context) {
     caption.replaceChildren(headerBar,content)
     caption.hidden = false
     header.tabIndex = -1
+    caption.scrollIntoView({ block:'nearest' })
     header.focus({ preventScroll:true })
   }
   for (const item of chooseExhibits(player)) {
     const button = exhibitButton('', () => {
       for (const peer of shelf.children) peer.setAttribute('aria-pressed',String(peer === button))
-      inspect(item)
+      inspect(item, button)
     }, 'legacy-shelf-item')
     button.setAttribute('aria-pressed','false')
     button.dataset.exhibit = item.key

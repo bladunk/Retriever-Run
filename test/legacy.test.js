@@ -60,6 +60,9 @@ test('finish and shelf changes persist locally with ownership, a bounded display
   reload.select(fresh.id)
   assert.equal(reload.current().lodgeDisplay.finish,undefined)
   assert.equal(reload.current().lodgeDisplay.pins.length,0)
+  reload.select(player.id)
+  assert.equal(reload.setLodgeFinish(player.id,'camp'),true)
+  assert.equal(load().current().lodgeDisplay.finish,'camp')
   assert.equal(load({practice:true}).setLodgeFinish(1,'camp'),false)
 })
 

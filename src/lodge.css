@@ -444,3 +444,15 @@
   margin-block: .45rem;
 }
 .wildlife-card .photo-credit { display: block; overflow-wrap: anywhere; font-size: .75rem; }
+
+.legacy-room-nav { overflow-x: auto; display: flex; gap: 5px; padding-block: 5px 8px; scrollbar-width: thin; }
+.legacy-room-nav[hidden] { display: none; }
+.legacy-room-nav button { white-space: nowrap; min-height: 44px; padding: 5px 9px; font-size: .77rem; flex: 0 0 auto;
+  border: 1px solid transparent; border-radius: 4px; background: transparent; color: #d7c29b; }
+.legacy-room-nav button[aria-current=page] { border-color: #ac8e5f; background: #463d2c; color: #ffe1a6; }
+.legacy-tier-rank .patch-badge { color: #e0bc82; }
+.career-patch[data-rank-tier="1"] .patch-badge, .career-patch[data-rank-tier="2"] .patch-badge { border-radius: 3px; }
+.career-patch[data-rank-tier="4"] .patch-badge, .career-patch[data-rank-tier="5"] .patch-badge { border: 2px double #c19c63; }
+.career-patch[data-rank-tier="7"] .patch-badge, .career-patch[data-rank-tier="8"] .patch-badge { border: 3px double #dfc18a; border-radius: 5px 5px 45% 45%; }
+.career-patch[data-rank-tier="9"] .patch-badge, .career-patch[data-rank-tier="10"] .patch-badge { border: 3px double #d6ae67; background: #604b37; }
+

@@ -160,6 +160,7 @@ export function trophyFor(player, key) {
     if (!rank || rank.level === 1 || rank.level > levelFromXP(player.career.xp) ||
       (rank.id === 'master-hunter' && (!player.progression.boyd || player.progression.paused))) return null
     return { key, category: 'career', name: rank.name, art: 'record', badge: 'Career milestone',
+      date: player.legacyHistory?.milestones[key] ?? (rank.id === 'master-hunter' ? player.progression.boyd : undefined),
       description: rank.id === 'master-hunter' ? 'Earned full Master Hunter qualification.' : 'Reached Career Level ' + rank.level + '.' }
   }
   return null
@@ -197,7 +198,7 @@ export function normalizeLodgeDisplay(raw, player, practice = false) {
   const available = Array.isArray(source.recentGear) && source.recentGear.length
     ? new Set(ownedGear(player, careerStanding(player.career)).map(item => item.id)) : null
   const finish = availableFinish(source.finish, player)?.id
-  return { version: lodgeDisplayVersion, ...(finish && finish !== 'camp' ? { finish } : {}),
+  return { version: lodgeDisplayVersion, ...(finish ? { finish } : {}),
     pins: bounded(source.pins, key => Boolean(trophyFor(player, key)), trophyLimit),
     recentGear: available ? bounded(source.recentGear, id => available.has(id), recentGearLimit) : [] }
 }

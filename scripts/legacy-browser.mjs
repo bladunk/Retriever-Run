@@ -35,7 +35,7 @@ const browser = await mode.launch(mode === chromium ? { executablePath:process.e
 const captures = []
 const qa = {}
 try {
-  for (const edition of studioOnly ? ['studio'] : ['before','after']) {
+  for (const edition of studioOnly ? ['studio'] : process.argv.includes('after') ? ['after'] : ['before','after']) {
     const context = await browser.newContext({ ...devices['iPhone 13'], viewport, deviceScaleFactor:1,
       ...(process.argv.includes('video') && edition === 'after' ? {recordVideo:{dir:resolve(output,'video'),size:viewport}} : {}) })
     await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort())

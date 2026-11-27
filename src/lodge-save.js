@@ -251,8 +251,7 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const player = current()
       if (id !== player.id || !availableFinish(finish, player)) return false
       const prior = player.lodgeDisplay.finish
-      if (finish === 'camp') delete player.lodgeDisplay.finish
-      else player.lodgeDisplay.finish = finish
+      player.lodgeDisplay.finish = finish
       if (commit()) return true
       if (prior) player.lodgeDisplay.finish = prior
       else delete player.lodgeDisplay.finish
