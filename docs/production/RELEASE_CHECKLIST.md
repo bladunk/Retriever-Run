@@ -1,5 +1,16 @@
 # Production release and rollback checklist
 
+## Permanent release acceptance
+
+- Show noticeable improvement in the intended area with matched before-and-after gameplay evidence.
+- Inspect Battery Saver, Balanced, High and Auto on representative physical devices. Check signs, terrain clarity, canopy integrity and hazard silhouettes under difficult weather and at moving speed. Link the software-browser and physical-device evidence separately.
+- Prove deterministic regression and competitive replay isolation. Check visual collision correspondence, route viability and the last safe input for affected hazards.
+- Verify bounded memory and resource residency, warm and cold startup, replay, graphics recovery, suspension, interruption and offline updates. Test the current save and at least one versioned older save.
+- Verify licenses and the privacy of inputs and shipped assets. Use existing free infrastructure and review additions for necessity.
+- Document known issues, a recoverable release artifact or commit, and application and save rollback procedures. Obtain owner approval before merging. Record deployment, ranked activation and any production reset as separate decisions.
+
+Northern Frontier’s verified rollback baseline is Heartland merge `76c9a1c39b12eb4eac1bbfb7374211a91433aa1a`, Pages build `1.0.0-rc.4 · a524eac`. Preserve a snapshot of the current save before any rollback that could rewrite newer discovery metadata. Verify the older artifact and offline worker before publishing it through a separately approved revert.
+
 ## Reference deployment
 
 The last verified pre-production deployment is version **5.5.1**, commit `88d5de3b5c0028468723ae2d1dcd8dc2c57cb09c`. The corresponding GitHub Pages workflow completed its build and deploy. The public site served that revision’s boulder code and a live smoke run loaded it. [Deployment run](https://github.com/bladunk/Retriever-Run/actions/runs/45325398605)

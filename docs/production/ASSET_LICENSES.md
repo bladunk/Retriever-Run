@@ -129,3 +129,7 @@ Original Retriever Run scenery authored in Blender from regional field reference
 ### Heartland RC.4
 
 The PrairieSeedheads and WetlandRushes meshes are original Retriever Run assets. Source is in `art/blender/heartland.py`. The existing glTF Transform and Meshopt packer outputs `src/assets/environment/heartland-meshes.js` with 255 and 227 indexed triangles respectively. Regional photographs and survey imagery served as visual references. Runtime artwork uses original geometry, existing cleared materials and the existing terrain atlas. No reference photographs or author GLBs are distributed. Rebuild with `blender -b -t 2 --python art/blender/heartland.py -- <scratch>` and `node scripts/art/pack-gulf.mjs <scratch> <gltf-tooling> heartland`.
+
+## Northern Frontier
+
+`ShieldLichen` and `RockyMountainTalus` are original Retriever Run meshes. The [Blender authoring source](../../art/blender/northern-frontier.py) and [pack script](../../scripts/art/pack-gulf.mjs) reproduce the [runtime geometry](../../src/assets/environment/northern-frontier-meshes.js). No third-party meshes, photos, maps or recordings were copied from the [regional references](WILDERNESS_NORTHERN_FRONTIER_REPORT.md#territories). The two meshes use the existing terrain atlas. Forest silhouettes, the Reedwatch loon and landing, the layered ridges and shaders are original project art. Existing foliage and audio retain the earlier provenance and terms. The draft introduces no new texture or audio files.

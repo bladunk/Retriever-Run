@@ -2,9 +2,9 @@
 
 ## Resume here
 
-- Heartland starts at merged Clarity `c4a29e579120c80552a7ee45eb201305bf06a93f`. The owner accepted the corrected RC.3.1 visual baseline and reported 60 FPS in Safari on build `368a0bd`. [Clarity report](CLARITY_REPORT.md) · [Merged PR #42](https://github.com/bladunk/Retriever-Run/pull/42)
-- RC.4 candidate `a524eac` develops territories 6–10 and corrects puddle visibility along the full trail. The change keeps the existing deterministic courses and introduces a permanent obstacle readability review. [Draft PR #43](https://github.com/bladunk/Retriever-Run/pull/43) · [Heartland report](WILDERNESS_HEARTLAND_REPORT.md) · [Player-first charter](PLAYER_FIRST_CHARTER.md)
-- Use the Heartland native checklist after owner approval of a preview. The published production build and competition remain in their existing state. Northern Frontier follows Heartland. [Roadmap](PRODUCTION_ROADMAP.md)
+- Heartland PR #43 merged at `76c9a1c39b12eb4eac1bbfb7374211a91433aa1a`. The public build was verified at `1.0.0-rc.4 · a524eac` when RC.5 began. The latest documented owner device baseline is RC.3.1. [Heartland report](WILDERNESS_HEARTLAND_REPORT.md) · [Merged PR #43](https://github.com/bladunk/Retriever-Run/pull/43)
+- Northern Frontier draft PR #44 adds the northern environmental overhaul, isolated scenic events and per-profile discovery records. Its report has the exact build, visual captures, reproduction commands and remaining device tests. [Northern Frontier report](WILDERNESS_NORTHERN_FRONTIER_REPORT.md) · [Draft PR #44](https://github.com/bladunk/Retriever-Run/pull/44)
+- The owner’s 92 approved features and commitments now live in the master roadmap. Living World follows Northern Frontier review. Treat merge, deployment, ranked activation and any production reset as separate decisions. [Master roadmap](MASTER_ROADMAP.md) · [Permanent acceptance checklist](RELEASE_CHECKLIST.md#permanent-release-acceptance)
 
 ## Implemented in Phase 01
 
