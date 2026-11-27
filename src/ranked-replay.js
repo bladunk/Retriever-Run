@@ -2,6 +2,9 @@ import { firstContact } from './collision.js'
 import { diveAge, diveExit } from './dive.js'
 import { act, advance, collect, createCourse, newRun, score, touchesPickup } from './runner.js'
 import { courseRuleset } from './ruleset.js'
+import { masteryDirector } from './difficulty.js'
+import { createMasteryCourse } from './mastery-course.js'
+import { collectMastery, createSkillTracker, sweptPickup } from './mastery-events.js'
 import { samplePose, tickSeconds } from './timing.js'
 
 export const rankedVersion = 'great-migration-1'
@@ -28,8 +31,19 @@ export function recordRankedActions() {
 }
 
 export function validRankedTrace(trace) {
-  if (!Number.isSafeInteger(trace?.ticks) || trace.ticks < 240 || trace.ticks > lastRankedTick ||
-      !Array.isArray(trace.actions) || trace.actions.length > maxRankedActions) return false
+  return validTrace(trace, lastRankedTick, maxRankedActions, 17)
+}
+
+export const maxMasteryTicks = 120 * 60 * 60
+export const maxMasteryActions = 8192
+
+export function validMasteryTrace(trace) {
+  return validTrace(trace, maxMasteryTicks, maxMasteryActions, 2)
+}
+
+function validTrace(trace, maxTicks, maxActions, simultaneous) {
+  if (!Number.isSafeInteger(trace?.ticks) || trace.ticks < 240 || trace.ticks > maxTicks ||
+      !Array.isArray(trace.actions) || trace.actions.length > maxActions) return false
   let last = -1
   let onTick = 0
   for (const entry of trace.actions) {
@@ -37,7 +51,7 @@ export function validRankedTrace(trace) {
     const tick = Math.floor(entry / 4)
     if (tick < last) return false
     onTick = tick === last ? onTick + 1 : 1
-    if (onTick > 17) return false
+    if (onTick > simultaneous) return false
     last = tick
   }
   return true
@@ -46,11 +60,22 @@ export function validRankedTrace(trace) {
 // Course objects, collision, pickup order and scoring are the same code used
 // by the runner. Assets, render time and graphics options are outside this path.
 export function verifyRankedReplay(seed, trace) {
-  if (!validRankedTrace(trace) || !Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) return null
-  const run = newRun()
+  return verifyTrace(seed, trace, false)
+}
+
+export function verifyMasteryReplay(seed, trace) {
+  return verifyTrace(seed, trace, true)
+}
+
+function verifyTrace(seed, trace, mastery) {
+  const valid = mastery ? validMasteryTrace : validRankedTrace
+  if (!valid(trace) || !Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) return null
+  const rules = mastery ? masteryDirector : undefined
+  const run = newRun(rules)
+  const skill = mastery ? createSkillTracker() : undefined
   const previous = {}
   const hit = {}
-  const next = createCourse(seed)
+  const next = mastery ? createMasteryCourse(seed) : createCourse(seed)
   const entities = []
   let row = next()
   let action = 0
@@ -63,20 +88,23 @@ export function verifyRankedReplay(seed, trace) {
       if (!act(run, rankedMoves[trace.actions[action++] % 4])) return null
     }
     samplePose(previous, run, run, 1)
-    advance(run, tickSeconds)
+    advance(run, tickSeconds, rules)
     if (firstContact(previous, run, entities, hit)) {
       if (tick + 1 !== trace.ticks || action !== trace.actions.length) return null
       samplePose(run, previous, run, hit.fraction)
       return { score: score(run), distance: Math.floor(run.distance), duration: Math.round(run.elapsed * 1000),
-        retrieves: run.retrieves, combo: run.bestStreak }
+        retrieves: run.retrieves, combo: run.bestStreak,
+        ...(mastery ? { nearMisses: run.nearMisses, cleanStreak: run.bestCleanStreak } : {}) }
     }
+    skill?.(previous, run, entities)
     for (let index = 0; index < entities.length; index++) {
       const item = entities[index]
       const ahead = item.distance - run.distance
       if (item.type === 'goose') {
         if (diveAge(item, run.distance) > diveExit) entities.splice(index--, 1)
-      } else if (touchesPickup(run, item)) {
-        collect(run, item.type)
+      } else if (mastery ? sweptPickup(previous, run, item) : touchesPickup(run, item)) {
+        if (mastery) collectMastery(run, item, collect)
+        else collect(run, item.type)
         entities.splice(index--, 1)
       } else if (ahead < (item.type === 'treat' ? -1 : -8 - (item.span ?? 0) * .5)) {
         if (item.type === 'treat' && !item.comboOptional) run.streak = 0

@@ -12,7 +12,7 @@ import { cameraLayout, newCameraState, updateFollow } from './camera.js'
 import { firstContact, hazardFrame, isWaterHazard, playerFrame } from './collision.js'
 import { createCampfire } from './campfire.js'
 import { createFixedClock, samplePose } from './timing.js'
-import { swipeDirection } from './gesture.js'
+import { masterySwipe, swipeDirection } from './gesture.js'
 import { createRunControls } from './run-controls.js'
 import { adaptivePresentation, adaptiveQuality, graphics, pixelRatio } from './quality.js'
 import { createPlayer } from './player.js'
@@ -39,8 +39,11 @@ import {
   jumpDuration, pickupNames, powerDuration, score,
 } from './runner.js'
 import { expeditionRegions, regionAt } from './expedition.js'
-import { courseStages, director, distanceAtTime, localDirector, speedAtTime, stageAt } from './difficulty.js'
-import { localCourseRuleset } from './ruleset.js'
+import { courseStages, director, distanceAtTime, localDirector, masteryDirector, speedAtTime, stageAt } from './difficulty.js'
+import { localCourseRuleset, masteryCourseRuleset } from './ruleset.js'
+import { createMasteryCourse } from './mastery-course.js'
+import { collectMastery, createSkillTracker, sweptPickup } from './mastery-events.js'
+import { masteryStart } from './mastery-pace.js'
 import { placeOnTrail, trailHeight } from './trail.js'
 import { createTerrain } from './terrain.js'
 import { createTrailSigns } from './sign-scenery.js'
@@ -183,6 +186,12 @@ else window.addEventListener('load', syncCamp, { once: true })
 let run = newRun()
 samplePose(previous, run, run, 1)
 let runCourse = localCourseRuleset
+let runRules = localDirector
+let skill
+const announceSkill = (kind, points) => {
+  announce((kind === 'near' ? 'Near miss · +' : 'Clean run · +') + points, 2)
+  sound.play(kind)
+}
 let nextRow = createCourse(2026, localDirector)
 let row = nextRow()
 let stride = 0
@@ -790,7 +799,7 @@ function step(dt) {
   const wasAirborne = run.jump > 0
   samplePose(previous, run, run, 1)
   previousStride = stride
-  advance(run, dt)
+  advance(run, dt, runRules)
   ticks++
 
   const impacted = firstContact(previous, run, entities, contact)
@@ -826,6 +835,7 @@ function step(dt) {
     if (distance % 750 === 0) hapticFeedback(navigator, profile.haptics, 'milestone')
   }
 
+  skill?.(previous, run, entities, announceSkill)
   let warningLabel = ''
   let warningPhase
   // Rows emit their pickups in course order. Expire earlier treats before
@@ -874,8 +884,8 @@ function step(dt) {
         splashUntil = entity.distance + 2.4
       }
     }
-    if (touchesPickup(run, entity)) {
-      const result = collect(run, entity.type)
+    if (run.mastery ? sweptPickup(previous, run, entity) : touchesPickup(run, entity)) {
+      const result = run.mastery ? collectMastery(run, entity, collect) : collect(run, entity.type)
       runStatistics.pickup(entity.type, entity)
       const treat = entity.type === 'treat'
       if (treat) lastTreat = run.elapsed
@@ -886,14 +896,14 @@ function step(dt) {
       }
       entity.duration = retrieve ? .72 : .30
       entity.remaining = entity.duration
-      const combo = treat && run.streak <= 15 && run.streak % 5 === 0
-      if (retrieve) hapticFeedback(navigator, profile.haptics, 'retrieve')
+      const combo = run.mastery ? result.milestone : treat && run.streak <= 15 && run.streak % 5 === 0
+      if (retrieve || combo && run.mastery) hapticFeedback(navigator, profile.haptics, 'retrieve')
       sound.play(retrieve ? 'retrieve' : result.activated ? 'power' : combo ? 'combo' : treat ? 'treat' : 'bonus')
       if (retrieve && result.activated) announce(pickupNames[entity.type] + '  +' + result.points + ' · Good Boy bonus', 3)
       else if (result.activated) announce('Good Boy!  ·  Double pickup points', 3)
       else if (!treat) announce(pickupNames[entity.type] + '  +' + result.points, 3)
       else announce('+' + result.points + (multiplier(run.streak) > 1 ? '  ·  ' + multiplier(run.streak) + '× streak' : ''), 1)
-      if (retrieve && dog.canCarry()) release(entity)
+      if (treat && run.mastery || retrieve && dog.canCarry()) release(entity)
       else effects.push(entity)
       entities.splice(index--, 1)
     } else if (ahead < (entity.type === 'treat' ? -1 : -8 - (entity.span ?? 0) * .5)) {
@@ -964,15 +974,17 @@ function updateHud() {
   const distance = Math.floor(run.distance)
   const charge = run.power ? Math.ceil(run.power / powerDuration * 100) : run.meter
   const stage = stageAt(run.elapsed)
-  if (hudCache.stage !== stage.level) {
+  const endless = run.mastery && run.elapsed >= masteryStart
+  const stageLabel = endless ? 'Endless' : stage.level
+  if (hudCache.stage !== stageLabel) {
     const display = ui['difficulty-stage']
-    display.textContent = stage.level + ' / ' + courseStages.length
-    display.title = stage.group
-    display.setAttribute('aria-label', 'Stage ' + stage.level + ' of ' + courseStages.length + ', ' + stage.group)
+    display.textContent = endless ? 'Endless' : stage.level + ' / ' + courseStages.length
+    display.title = endless ? 'Endless survival' : stage.group
+    display.setAttribute('aria-label', endless ? 'Endless survival' : 'Stage ' + stage.level + ' of ' + courseStages.length + ', ' + stage.group)
     if (hudCache.stage && stage.level > hudCache.stage && !reduceMotion()) {
       display.animate([{ color: '#fff0cd' }, { color: '#efca91' }], 650)
     }
-    hudCache.stage = stage.level
+    hudCache.stage = stageLabel
   }
   if (hudCache.points !== points) ui.score.textContent = format.format(points)
   if (hudCache.distance !== distance) ui.distance.textContent = distance < 1000 ? format.format(distance) + ' m' : (distance / 1000).toFixed(2) + ' km'
@@ -1002,8 +1014,10 @@ function showTitleRecord() {
   ui['title-rank'].textContent = careerLine(player)
   ui['title-xp'].max = career.span
   ui['title-xp'].value = career.within
-  ui.record.hidden = !profile.best && !profile.farthest
-  ui.record.textContent = 'Best ' + format.format(profile.best) + '  ·  Longest run ' + format.format(profile.farthest) + ' m'
+  ui.record.hidden = !player.masteryBest && !profile.best && !profile.farthest
+  const record = player.masteryBest ? 'Best ' + format.format(player.masteryBest)
+    : profile.best ? 'Earlier best ' + format.format(profile.best) : ''
+  ui.record.textContent = [record, 'Longest run ' + format.format(profile.farthest) + ' m'].filter(Boolean).join('  ·  ')
   const next = career.nextRank
   const remaining = next ? xpAt(next.level) - career.xp : Infinity
   const milestone = !player.stats.runs ? 'Your first hunt earns career XP.'
@@ -1064,7 +1078,7 @@ function setMode(value, options = {}) {
     ui['report-career'].hidden = true
   } else if (over && oldMode !== 'over') {
     const runner = lodge.current()
-    const previousBest = runner.profile.best
+    const previousBest = run.mastery ? runner.masteryBest : runner.profile.best
     const priorRuns = runner.stats.runs
     const repeated = runner.stats.lastHazard === contact.type
     const report = previewRegion
@@ -1153,20 +1167,22 @@ function resetTrail(seed) {
   for (const effect of effects) release(effect)
   entities.length = 0
   effects.length = 0
-  run = newRun()
+  runRules = runCourse === masteryCourseRuleset ? masteryDirector : runCourse === courseRuleset ? director : localDirector
+  run = newRun(runRules)
+  skill = run.mastery ? createSkillTracker() : undefined
   discoveriesPlan = planDiscoveries(seed)
   wildlifeDiscovery = planWildlifeDiscovery(seed)
   lastDiscovery = undefined
   signSeed = seed
   setTerrainSeed(seed)
   currentTerritory = null
-  nextRow = createCourse(seed, runCourse === courseRuleset ? director : localDirector)
+  nextRow = run.mastery ? createMasteryCourse(seed) : createCourse(seed, runRules)
   row = nextRow()
   if (previewRegion) {
     run.elapsed = previewElapsed
-    run.distance = distanceAtTime(run.elapsed)
-    run.speed = speedAtTime(run.elapsed)
-  } else debug?.depart(run)
+    run.distance = distanceAtTime(run.elapsed, runRules)
+    run.speed = speedAtTime(run.elapsed, runRules)
+  } else debug?.depart(run, runRules)
   while ((row.end ?? row.at) < run.distance - 2) row = nextRow()
   stride = previousStride = 0
   ticks = 0
@@ -1204,7 +1220,9 @@ function start(ticket, inputAt) {
   runPermit = !diagnosticsRequested && ticket?.profile === runPlayer &&
     ticket.owner === camp.member(runPlayer)?.identity ? ticket : null
   runTrace = runPermit ? recordRankedActions() : null
-  runCourse = runPermit || collisionRequested && flags.get('course') === 'phase05' ? courseRuleset : localCourseRuleset
+  if (runPermit || collisionRequested && flags.get('course') === 'phase05') runCourse = courseRuleset
+  else if (collisionRequested && flags.get('course') !== 'mastery') runCourse = localCourseRuleset
+  else runCourse = masteryCourseRuleset
   const trailStart = performanceProbe?.stamp()
   resetTrail(runPermit?.seed ?? debug?.seed ?? Math.floor(Math.random() * 0x100000000))
   performanceProbe?.operation('hunt-trail-reset', 'state and replay setup', trailStart)
@@ -1410,7 +1428,8 @@ function bindInput() {
   })
   function sendSwipe(event, finished) {
     if (gesture?.id !== event.pointerId || gesture.moved) return
-    const direction = swipeDirection(event.clientX - gesture.x, event.clientY - gesture.y, viewWidth, finished, profile.swipe)
+    const recognize = run.mastery ? masterySwipe : swipeDirection
+    const direction = recognize(event.clientX - gesture.x, event.clientY - gesture.y, viewWidth, finished, profile.swipe)
     if (direction) {
       gesture.moved = true
       move(direction)

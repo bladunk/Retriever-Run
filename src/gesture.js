@@ -10,3 +10,7 @@ export function swipeDirection(dx, dy, width, finished = false, sensitivity = 's
   if (Math.min(x, y) * (finished ? 1.10 : 1.22) > Math.max(x, y)) return null
   return x > y ? dx < 0 ? 'left' : 'right' : dy < 0 ? 'jump' : 'slide'
 }
+
+export function masterySwipe(dx, dy, width, finished, sensitivity) {
+  return swipeDirection(dx, dy, width * .86, finished, sensitivity)
+}

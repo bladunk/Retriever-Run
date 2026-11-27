@@ -151,7 +151,8 @@ export function createRunStatistics(runId, onSkill = () => {}, course = courseRu
     preview(run) {
       const territory = regionAt(run.elapsed)
       return { ...stats, jumpClears, course, territoryKey: territory.key, distance: run.distance, duration: run.elapsed, score: score(run),
-        retrieves: run.retrieves, territory: territory.index + 1 }
+        retrieves: run.retrieves, territory: territory.index + 1,
+        ...(run.mastery ? { nearMisses: run.nearMisses, bestCleanStreak: run.bestCleanStreak } : {}) }
     },
     finish(run, hazard) {
       if (finalized) return null

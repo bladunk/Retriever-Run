@@ -1,21 +1,22 @@
 import { completeRun, normalizeProfile } from './profile.js'
 import { causes, counters, createRunStatistics } from './field-stats.js'
+import { localHonors } from './field-honors.js'
 import { awardPatches, patches } from './honors.js'
 import { applyRunXP, careerStanding, normalizeCareer, xpAt } from './career.js'
 import { careerStanding as oldStanding, legacyLevel, normalizeCareer as normalizeLegacyCareer, serviceCredit } from './legacy-career.js'
 import { journalIssues, reviewSavedRank } from './career-integrity.js'
 import { expeditionRegions, migrationSecondsByTerritory, regionAt, territorySeconds } from './expedition.js'
 import { commitWildlife, normalizeWildlife } from './wildlife-journal.js'
-import { migrationCourse } from './ruleset.js'
+import { masteryCourseRuleset, migrationCourse } from './ruleset.js'
 import { validatedDogName } from './dog-name.js'
 import { defaultGear, kennelCatalog, legacyGear, ownedGear, normalizeKennel, unlocked } from './kennel-catalog.js'
-import { advanceFieldwork, awardFieldHonors, masterHunterChecks, normalizeProgression, qualifyBoyd } from './progression.js'
+import { advanceFieldwork, awardFieldHonors, masterHunterChecks, normalizeProgression, progressionMetrics, qualifyBoyd } from './progression.js'
 import { normalizeLegacyHistory, recordLegacyMilestones } from './legacy-history.js'
 import { availableFinish, completeMigrations, lodgeChanges, lodgeProgress, normalizeLodgeDisplay, recordLodgeGear, trophyFor, trophyLimit } from './lodge-progress.js'
 import { normalizeDiscoveries, recordDiscoveries } from './environment-discoveries.js'
 
 export const saveKey = 'retriever-run.record'
-export const saveVersion = 6
+export const saveVersion = 7
 
 export const legacyTerritoryNames = ['Gulf Coast Marsh', 'Southern Cypress Swamp', 'Mississippi Flyway',
   'Arkansas Flooded Timber', 'Midwest Farm Country', 'Prairie Potholes', 'Dakota Wetlands',
@@ -41,6 +42,7 @@ function normalizePlayer(raw, id, schema, practice) {
     id,
     nickname: nickname(raw?.nickname, id === 1 ? 'Marsh Runner' : 'Runner ' + id),
     profile: normalizeProfile(raw?.profile),
+    masteryBest: count(raw?.masteryBest),
     stats: {
       ...Object.fromEntries(counters.map(key => [key, count(base[key])])),
       runs: count(base.runs), distance: measure(base.distance), playtime: measure(base.playtime),
@@ -168,10 +170,23 @@ function readSave(serialized) {
     const raw = JSON.parse(serialized)
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null
     if (raw.version == null || raw.version > saveVersion) return raw
-    if (![1, 2, 3, 4, 5, saveVersion].includes(raw.version) || !Array.isArray(raw.players) ||
+    if (![1, 2, 3, 4, 5, 6, saveVersion].includes(raw.version) || !Array.isArray(raw.players) ||
         !raw.players.some(player => count(player?.id) > 0)) return null
     return raw
   } catch { return null }
+}
+
+function changedAchievements(player, before, result, earned) {
+  const after = progressionMetrics(player, result)
+  const written = new Set(earned.map(item => item.id))
+  return localHonors.flatMap(honor => {
+    if (honor.secret || honor.checks.length !== 1 || !written.has(honor.id) &&
+        Object.hasOwn(player.progression.honors, honor.id)) return []
+    const { key, target } = honor.checks[0]
+    const from = Math.min(target, before.get(key) ?? 0)
+    const to = Math.min(target, after.get(key) ?? 0)
+    return to > from && target > 0 ? [{ id: honor.id, name: honor.name, from, to, target, completed: written.has(honor.id) }] : []
+  }).sort((a, b) => Number(b.completed) - Number(a.completed) || b.to / b.target - a.to / a.target).slice(0, 3)
 }
 
 export function openLodge(storage = () => globalThis.localStorage, now = () => new Date(), { practice = false } = {}) {
@@ -358,7 +373,11 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const date = now().toISOString()
       const firstHunt = !player.stats.runs && !player.profile.best && !player.profile.farthest && !player.profile.retrieves
       const hadMigration = completeMigrations(player)
-      const previousBest = player.profile.best
+      const mastery = result.course === masteryCourseRuleset
+      const previousBest = mastery ? player.masteryBest : player.profile.best
+      const previousRecords = { ...player.records, score: previousBest, distance: player.profile.farthest }
+      const priorMetrics = practice ? null : progressionMetrics(player)
+      const priorDiscoveries = new Set(Object.keys(player.discoveries.entries))
       const previousStanding = careerStanding(player.career)
       const oldGear = practice ? [] : ownedGear(player, previousStanding)
       const previousLodge = practice ? null : lodgeProgress(player, previousStanding, oldGear)
@@ -390,14 +409,17 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       statistics.longestEarlyStreak = Math.max(statistics.longestEarlyStreak, statistics.earlyStreak)
 
       const improved = []
-      if (result.score > player.profile.best) improved.push('score')
+      if (result.score > previousBest) improved.push('score')
       if (Math.floor(result.distance) > player.profile.farthest) improved.push('distance')
       for (const key of Object.keys(records)) {
         if (result[key] <= player.records[key]) continue
         player.records[key] = result[key]
         improved.push(key)
       }
-      player.profile = completeRun(player.profile, { ...result, elapsed: result.duration }, result.score)
+      const previousScore = player.profile.score
+      player.profile = completeRun(player.profile, { ...result, elapsed: result.duration },
+        mastery ? previousScore : result.score)
+      if (mastery) player.masteryBest = Math.max(previousBest, result.score)
       const plausible = !journalIssues(player).length
       player.progression.paused = !plausible
       const earned = plausible || practice ? awardPatches(player, date) : []
@@ -421,10 +443,16 @@ export function openLodge(storage = () => globalThis.localStorage, now = () => n
       const placements = emptyCounts(metrics)
       const courseEntries = save.entries.filter(run => run.course === entry.course)
       for (const metric of metrics) placements[metric] = rankRuns(courseEntries, metric).findIndex(run => run.id === entry.id) + 1
+      const presentation = Object.freeze({
+        previousRecords,
+        achievements: priorMetrics ? changedAchievements(player, priorMetrics, result, newHonors) : [],
+        discoveries: Object.keys(player.discoveries.entries).filter(key => !priorDiscoveries.has(key)),
+        migrationCompleted: !hadMigration && completeMigrations(player) > 0,
+      })
       const saved = commit()
       if (!saved) unsavedProgress = true
       return { ...result, id: entry.id, nickname: player.nickname, date, improved, earned, placements,
-        career, gear, lodge, practice, newWildlife, newHonors, boyd, saved, previousBest }
+        career, gear, lodge, practice, newWildlife, newHonors, boyd, saved, previousBest, presentation }
     },
   }
 }

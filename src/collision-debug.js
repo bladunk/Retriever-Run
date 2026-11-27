@@ -110,17 +110,17 @@ export function collisionDebug(scene) {
       skillEvents.push(event)
       if (skillEvents.length > 16) skillEvents.shift()
     },
-    depart(run) {
+    depart(run, rules) {
       if (!at) return
       let low = 0, high = at / 10
       for (let i = 0; i < 24; i++) {
         const mid = (low + high) * .5
-        if (distanceAtTime(mid) < at) low = mid
+        if (distanceAtTime(mid, rules) < at) low = mid
         else high = mid
       }
       run.distance = at
       run.elapsed = high
-      run.speed = speedAtTime(high)
+      run.speed = speedAtTime(high, rules)
     },
     hit(details) {
       death = { ...details }

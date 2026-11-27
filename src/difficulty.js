@@ -1,3 +1,5 @@
+import { endlessDistance, endlessSpeed, masteryStart } from './mastery-pace.js'
+
 export const stageSeconds = 15
 const groups = ['Rookie', 'Field Dog', 'Seasoned Hunter', 'Veteran', 'Northern Expedition', 'Wilderness Legend']
 
@@ -92,6 +94,7 @@ export const director = {
 // Preserve Phase 05's exact director for signed competitive tickets and
 // archived replays. Local Raptor hunts have their own record namespace.
 export const localDirector = { ...director, hostileGooseSpacing: 1.57, hostileGooseCooldown: 8 }
+export const masteryDirector = { ...localDirector, endless: true }
 
 // The shipped stages have uniform 15-second segments. Select the same
 // left-hand segment used by the original inclusive-end loop at boundaries.
@@ -120,7 +123,8 @@ export function speedAt(difficulty, rules = director) {
 }
 
 export function speedAtTime(seconds, rules = director) {
-  return speedAt(difficultyAt(seconds, rules.curve), rules)
+  const speed = speedAt(difficultyAt(seconds, rules.curve), rules)
+  return rules.endless && seconds > masteryStart ? endlessSpeed(seconds, speed) : speed
 }
 
 // Course rows use the integral of the pace curve, so a timed event's distance
@@ -141,7 +145,7 @@ for (let index = 1; index < difficultyCurve.length; index++) {
 
 export function distanceAtTime(seconds, rules = director) {
   let distance = 0
-  if (rules === director || rules === localDirector) {
+  if (rules === director || rules === localDirector || rules === masteryDirector) {
     const index = paceSegment(seconds)
     if (index < rules.curve.length) return segmentStarts[index - 1] + segmentDistance(seconds, rules, index)
     distance = segmentStarts.at(-1)
@@ -150,5 +154,8 @@ export function distanceAtTime(seconds, rules = director) {
     if (seconds <= rules.curve[index][0]) return distance
   }
   const [end, value] = rules.curve.at(-1)
-  return distance + (seconds - end) * speedAt(value, rules)
+  const speed = speedAt(value, rules)
+  if (rules.endless && seconds > masteryStart)
+    return distance + (masteryStart - end) * speed + endlessDistance(seconds, speed)
+  return distance + (seconds - end) * speed
 }

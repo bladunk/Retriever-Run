@@ -10,6 +10,8 @@ const vary = (low, high) => low + Math.random() * (high - low)
 const rewards = {
   treat: [62, 69],
   combo: [62, 66, 74],
+  near: [55, 62],
+  clean: [57, 64, 69],
   bonus: [57, 62, 66],
   retrieve: [54, 62, 69],
   power: [50, 57, 62, 66],

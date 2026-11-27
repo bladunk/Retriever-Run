@@ -23,14 +23,21 @@ export const pickupNames = {
 }
 
 export function newRun(rules = director) {
-  return { distance: 0, elapsed: 0, scoreBonus: 0, lane: 0, x: 0, lateralSpeed: 0, jump: 0, slide: 0, power: 0,
+  const mastery = rules.endless ? { mastery: true, lastLaneAt: -Infinity, lastLaneFrom: 0,
+    nearMisses: 0, cleanStreak: 0, bestCleanStreak: 0 } : {}
+  return { ...mastery, distance: 0, elapsed: 0, scoreBonus: 0, lane: 0, x: 0, lateralSpeed: 0, jump: 0, slide: 0, power: 0,
     meter: 0, speed: rules.startingSpeed, streak: 0, bestStreak: 0, retrieves: 0 }
 }
 
 export function act(run, move) {
   if (move === 'left' || move === 'right') {
+    if (run.mastery && run.elapsed - run.lastLaneAt < .09 - 1e-9) return false
     const previous = run.lane
     run.lane = Math.max(-1, Math.min(1, run.lane + (move === 'left' ? -1 : 1)))
+    if (run.mastery && run.lane !== previous) {
+      run.lastLaneAt = run.elapsed
+      run.lastLaneFrom = previous
+    }
     return run.lane !== previous
   } else if (move === 'jump' && !run.jump && !run.slide) {
     run.jump = jumpDuration

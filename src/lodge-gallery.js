@@ -9,7 +9,7 @@ import { verifiedHonorRequirements } from './ranked-camp.js'
 import { causes, causeNames } from './field-stats.js'
 import { duration, rows, cards, node, number, meters, date } from './lodge-elements.js'
 import { completeMigrations, displayEquipment, earnedTrophies, migrationStop, trophyLimit } from './lodge-progress.js'
-import { courseRuleset, legacyMigrationRuleset, localCourseRuleset } from './ruleset.js'
+import { courseRuleset, legacyMigrationRuleset, localCourseRuleset, masteryCourseRuleset } from './ruleset.js'
 import { ownedGear } from './kennel-catalog.js'
 
 const categoryOrder = { discovery: 1, legend: 0, competitive: 1, regional: 2, retrieves: 3, wildlife: 4, career: 5, honors: 6, hall: 7 }
@@ -279,7 +279,8 @@ function recordPanels(player, lodge) {
   const room = node('section',null,'legacy-records')
   const section = node('div', null, 'record-grid')
   section.append(...cards([
-    ['Highest hunt score', profile.best ? number(profile.best) : '—'], ['Greatest distance', profile.farthest ? meters(profile.farthest) : '—'],
+    ['Mastery score', player.masteryBest ? number(player.masteryBest) : '—'],
+    ['Earlier course score', profile.best ? number(profile.best) : '—'], ['Greatest distance', profile.farthest ? meters(profile.farthest) : '—'],
     ['Longest hunt', records.duration ? duration(records.duration) : '—'], ['Most retrieves in a hunt', records.retrieves ? number(records.retrieves) : '—'],
     ['Best treat streak', profile.streak ? number(profile.streak) : '—'], ['Longest verified clear chain', player.progression.best.chain || '—'],
   ]))
@@ -295,7 +296,7 @@ function recordPanels(player, lodge) {
     ['Equipment owned',number(ownedGear(player,careerStanding(player.career)).length)],
   ]))
   const all = lodge.personalEntries(player.id)
-  const grouped = [[localCourseRuleset, 'Current Great Migration'], [courseRuleset, 'Phase 05 Great Migration'], [legacyMigrationRuleset, 'Earlier Great Migration'], ['legacy-10', 'Original route']]
+  const grouped = [[masteryCourseRuleset, 'Current Great Migration'], [localCourseRuleset, 'Raptor Great Migration'], [courseRuleset, 'Phase 05 Great Migration'], [legacyMigrationRuleset, 'Earlier Great Migration'], ['legacy-10', 'Original route']]
   const books = node('section', null, 'lodge-record-books')
   for (const [course, title] of grouped) {
     const selected = all.filter(entry => (entry.course ?? 'legacy-10') === course).sort((a,b) => b.score-a.score || a.id-b.id)
