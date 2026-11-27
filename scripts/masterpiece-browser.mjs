@@ -144,6 +144,7 @@ try {
       'paw:gravel','paw:mud','paw:sand','paw:snow','bird:crane','bird:pheasant','bird:goose','bird:mallard',
       'lodge','kennel','cue:interface','cue:retrieve']) {
       if (process.argv.includes('mix-only') && !value.startsWith('region:')) continue
+      if (process.argv.includes('effects-only') && !/^(bird:|cue:|lodge$|kennel$)/.test(value)) continue
       await selection.selectOption(value)
       await start.click()
       await page.waitForFunction(() => Boolean(window.fieldAudioCapture))
@@ -157,7 +158,7 @@ try {
       }, value)
       assert.ok(clip.length > 800)
       await writeFile(resolve(output,value.replace(':','-')+'.webm'),Buffer.from(clip))
-      await stop.click()
+      if (await stop.isVisible()) await stop.click({timeout:2000}).catch(() => {})
     }
     const after = await page.evaluate(key => localStorage.getItem(key), saveKey)
     assert.equal(after,save)

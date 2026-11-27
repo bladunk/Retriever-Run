@@ -169,8 +169,8 @@ export function openArtStudio(game, flags, api) {
     const musicTime = { early: 10, middle: 190, north: 365, endless: 570 }
     const isField = Object.hasOwn(musicTime,key) || key === 'region'
     const seconds = key === 'region' ? Number(value) * 30 + 15 : musicTime[key]
-    const scene = isField ? 'running' : ['title','lodge','kennel'].includes(key) ? key : 'studio'
-    sound.selectScene(scene, { gesture: true, restart: isField, quietMusic: key === 'region' })
+    const scene = isField || key === 'bird' ? 'running' : ['title','lodge','kennel'].includes(key) ? key : 'studio'
+    sound.selectScene(scene, { gesture: true, restart: isField, quietMusic: key === 'region' || key === 'bird' })
     const tasks = new Set()
     let playing = true
     stopAudio = () => {
