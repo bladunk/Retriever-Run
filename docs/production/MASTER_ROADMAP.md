@@ -35,16 +35,18 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 
 ## RC.7 · Gun Dog
 
+[RC.7 implementation, evidence and remaining acceptance](GUN_DOG_REPORT.md).
+
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 18 | Desirable waterfowl vests | Prototype | Existing cosmetics and fitting rig | Model authentic neoprene and waxed canvas with reinforced panels, recognizable stitching, seams and buckles. Keep equipment cosmetic. |
-| 19 | Camouflage and visibility fabrics | Prototype | Vest UVs and materials | Produce distinctive traditional duck and marsh camouflage plus practical blaze orange. Verify on dog under gameplay lighting. |
-| 20 | Triangular fabric bandanas and improved collars | Prototype | Dog rigs and equipment slots | Use genuine neck drape and triangular fabric geometry. Keep collars legible, fitted and separate. |
-| 21 | Dog naming | Planned | Per-profile saves and Kennel | Let players name their dog with private, reversible, validated local storage. |
-| 22 | Natural reactions and personality | Planned | Dog animation and sound mixer | Use restrained contextual reactions through transitions and encounters. Never interrupt input. |
-| 23 | Canine anatomy and coat rendering | Partial | Labrador, Pointer and approved Boyd asset | Improve rear and three-quarter anatomy and coat distinction. Preserve Boyd and keep existing reference photo protections. |
-| 24 | Equipment fitting across dogs | Partial | Existing breed rigs and slots | Verify equipment across body shapes and animations. Fix clipping and reproduce owned items on save reload. |
-| 25 | Visual Kennel | Partial | Equipment ownership and pagination | Use game-style visual item cards and equipped/owned/locked states. Remove native spreadsheet-style selection flows. |
+| 18 | Desirable waterfowl vests | Implemented in RC.7 draft · owner fit review pending | Existing cosmetics and fitting rig | Model authentic neoprene and waxed canvas with reinforced panels, recognizable stitching, seams and buckles. Keep equipment cosmetic. |
+| 19 | Camouflage and visibility fabrics | Implemented in RC.7 draft · native lighting review pending | Vest UVs and materials | Produce distinctive traditional duck and marsh camouflage plus practical blaze orange. Verify on dog under gameplay lighting. |
+| 20 | Triangular fabric bandanas and improved collars | Implemented in RC.7 draft · native motion review pending | Dog rigs and equipment slots | Use genuine neck drape and triangular fabric geometry. Keep collars legible, fitted and separate. |
+| 21 | Dog naming | Implemented · local and offline verification | Per-profile saves and Kennel | Let players name their dog with private, reversible, validated local storage. |
+| 22 | Natural reactions and personality | Partial · posture, breathing and movement implemented | Dog animation and sound mixer | Use restrained contextual reactions through transitions and encounters. Never interrupt input. |
+| 23 | Canine anatomy and coat rendering | Implemented in RC.7 draft · owner artistic review pending | Labrador, Pointer and approved Boyd asset | Improve rear and three-quarter anatomy and coat distinction. Preserve Boyd and keep existing reference photo protections. |
+| 24 | Equipment fitting across dogs | Partial · catalog and pose checks pass | Existing breed rigs and slots | Verify equipment across body shapes and animations. Fix clipping and reproduce owned items on save reload. |
+| 25 | Visual Kennel | Implemented in RC.7 draft · physical-device review pending | Equipment ownership and pagination | Use game-style visual item cards and equipped/owned/locked states. Remove native spreadsheet-style selection flows. |
 
 ## RC.8 · Legacy
 
@@ -81,7 +83,7 @@ The [Player First Charter](PLAYER_FIRST_CHARTER.md), [release acceptance checkli
 | 44 | Jump and slide animation | Partial | Dog rigs and established collision timings | Improve anticipation and follow-through without changing timing or what the player can clear. |
 | 45 | Swipe responsiveness | Implemented, playtest pending | Existing input buffering and settings | Match touch intent without unexpected gestures on varied phones and refresh rates. |
 | 46 | Water splashes, mud and impact effects | Prototype | Terrain, colliders and effects budget | Use responsive splash and mud effects, subtle camera motion and readable feedback. Respect reduced motion. |
-| 47 | Exceptional-hunt celebrations and interactive Hunt Over | Partial | Hunt Over and verified personal bests | Celebrate real achievements, show animated XP and achievement progress, and keep replay available. |
+| 47 | Exceptional-hunt celebrations and interactive Hunt Over | Partial | Hunt Over and verified personal bests | Animate score and statistics, fill XP across every level earned, show achievement progress meters, celebrate records and reveal rewards. Keep Play Again available immediately with no claim sequence. |
 | 48 | Optional slow-motion death replay | Planned | Replay input history and camera | Show enough context to explain the collision. Keep optional, skippable and entirely off the immediate replay path. |
 | 49 | Optional haptics and one-tap replay | Implemented with platform limits | Feature detection and lifecycle | Keep replay immediately available. Verify supported haptics gracefully no-op on unsupported devices. |
 

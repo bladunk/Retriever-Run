@@ -79,6 +79,44 @@ try {
       await startHunt('cached offline launch')
     },2)
   }
+  else if (process.argv.includes('gun-dog-studio')) for (const version of ['studio-before','studio']) {
+    const take = version === 'studio' ? 'after' : 'before'
+    await inspect(version,{width:390,height:844},async (page,prefix) => {
+      await page.addInitScript(() => localStorage.setItem('retriever-run.record',JSON.stringify({displayFixture:'untouched'})))
+      const source = '?studio=1&perf=1&seed=7&territory=6&offset=12&quality=balanced'
+      await open(page,prefix+source+'&light=overcast')
+      const summary = page.locator('#art-studio summary')
+      await summary.waitFor()
+      await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'studio' &&
+        window.retrieverPerformance().residentTiles >= 5)
+      await summary.click()
+      await page.getByLabel('View',{exact:true}).selectOption('Dog')
+      const camera = { Yaw:1.48, Elevation:-.50, Distance:.91 }
+      for (const [key,value] of Object.entries(camera)) await page.getByLabel(key,{exact:true}).evaluate((input,value) => {
+        input.value = value
+        input.dispatchEvent(new Event('input',{bubbles:true}))
+      },value)
+      await summary.click()
+      const image = name => page.screenshot({path:resolve(output,take+'-'+name+'.jpg'),type:'jpeg',quality:88,scale:'css'})
+      await page.waitForTimeout(1300)
+      await image('overcast')
+      const moves = take === 'after' ? ['Lane change','Jump','Slide','Land','Retrieve'] : ['Jump','Slide','Land','Retrieve']
+      for (const motion of moves) {
+        await summary.click()
+        await page.getByLabel('Dog animation').selectOption(motion)
+        await page.getByRole('button',{name:'Reset view'}).click()
+        await summary.click()
+        const name = motion.toLowerCase().replace(' ','-')
+        for (let frame=0;frame<10;frame++) {
+          await image(name+'-'+String(frame).padStart(2,'0'))
+          await page.waitForTimeout(60)
+        }
+      }
+      assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('retriever-run.record')).displayFixture),'untouched')
+      samples.push({take, studio:true, light:'overcast', seed:7, region:6, moves,
+        build:await page.evaluate(() => window.retrieverPerformance().build)})
+    })
+  }
   else if (process.argv.includes('southern-studio')) for (const version of ['studio-before','studio']) {
     const keys = ['gulf','cypress','flyway','timber','ozark']
     for (let index = 0; index < keys.length; index++) {

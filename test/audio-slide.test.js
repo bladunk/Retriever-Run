@@ -273,7 +273,7 @@ test('all six vest styles share a separate weighted shell and leave the collisio
   assert.equal(body.material.color.getHex(), 0xffffff)
 })
 
-test('hemmed neckwear stays attached through inspection, movement and 151 catalog swaps without duplicating the vest', async () => {
+test('hemmed neckwear stays attached through inspection, movement and full-catalog swaps without duplicating the vest', async () => {
   const { kennelCatalog } = await import('../src/kennel-catalog.js')
   const rig = await loadRig()
   const pose = { dt:1/30,time:0,stride:0,airborne:false,jumpPhase:1,sliding:0,idle:true,turn:0,landing:0,ground:0,
