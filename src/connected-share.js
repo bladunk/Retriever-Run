@@ -1,3 +1,4 @@
+import { migrationMap } from './lodge-map.js'
 import { node } from './lodge-elements.js'
 import './connected-share.css'
 
@@ -40,19 +41,31 @@ export async function buildShareImage(model, { square = false, includeName = fal
   canvas.width = width
   canvas.height = height
   const context = canvas.getContext('2d', { alpha:false })
+  let route
   try {
-    const image = await photo(model.image)
+    if (model.route) {
+      const map = migrationMap(2.1)
+      map.draw({migration:model.route},Math.max(0,model.route.farthest-1))
+      route = map.canvas
+    }
+    const image = route ?? await photo(model.image)
     const emblems = await Promise.all((model.exhibits ?? []).slice(0,3).map(async item =>
       ({...item, photo:await photo(item.image)})))
-    const endOfPhoto = model.kind === 'hunt' ? (square ? 490 : 660) : height-265
+    const endOfPhoto = model.kind === 'hunt' ? (square ? 485 : 655) : height-(model.kind === 'lodge' ? 330 : 265)
     context.fillStyle = green
     context.fillRect(0,0,width,height)
-    fillImage(context,image,18,172,width-36,endOfPhoto-172,model.kind === 'lodge' ? .48 : .5)
+    if (route || model.kind === 'dog' && !square) {
+      context.fillStyle = route ? '#243a2e' : '#283831'
+      context.fillRect(18,172,width-36,endOfPhoto-172)
+      const scale = Math.min((width-36)/image.width,(endOfPhoto-172)/image.height)
+      const w = image.width*scale, h = image.height*scale
+      context.drawImage(image,(width-w)/2,172+(endOfPhoto-172-h)/2,w,h)
+    } else fillImage(context,image,18,172,width-36,endOfPhoto-172,model.kind === 'lodge' ? .48 : .5)
     const shade = context.createLinearGradient(0,endOfPhoto-160,0,endOfPhoto)
     shade.addColorStop(0,'transparent')
     shade.addColorStop(1,green)
     context.fillStyle = shade
-    context.fillRect(18,endOfPhoto-160,width-36,161)
+    if (!route) context.fillRect(18,endOfPhoto-160,width-36,161)
     context.strokeStyle = brass
     context.lineWidth = 2
     context.strokeRect(18,18,width-36,height-36)
@@ -86,6 +99,7 @@ export async function buildShareImage(model, { square = false, includeName = fal
       blob ? resolve(blob) : reject(new Error('Image could not be saved')), 'image/jpeg', .93))
   } finally {
     canvas.width = canvas.height = 1
+    if (route) route.width = route.height = 1
   }
 }
 

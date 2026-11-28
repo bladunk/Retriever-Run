@@ -3,6 +3,7 @@ begin;
 -- Keep the historical functions on their original tickets and season.
 alter table retriever_camp.ranked_control
   drop constraint ranked_control_season_check, drop constraint ranked_control_course_check;
+alter table retriever_camp.ranked_control add column public_career_enabled boolean not null default false;
 alter table retriever_camp.ranked_control add constraint ranked_control_season_course check (
   (season,course) in (('great-migration-1','migration-30-phase-05'),
     ('one-more-hunt-1','migration-30-mastery-1')));
@@ -231,7 +232,9 @@ begin
   )
   select jsonb_build_object('status','ok','season',settings.season,'course',settings.course,'open',settings.active,
     'as_of',statement_timestamp(),'total_ranked',case when start_at=0 then summary.population end,
-    'mine',(select to_jsonb(m) - array['player_id','beaten'] from mine m),
+    'mine',(select (to_jsonb(m) - array['player_id','beaten']) ||
+      jsonb_build_object('bests', (select jsonb_object_agg(metric,b.value) from retriever_camp.ranked_bests b
+        where b.season=settings.season and b.player_id=m.player_id)) from mine m),
     'percentile',(select round(m.beaten*100.0/nullif(summary.population-1,0)) from mine m),
     'rivals',coalesce((select jsonb_agg(jsonb_build_object('rank',n.rank,'nickname',p.nickname,
       'value',n.value,'recorded_at',n.recorded_at) order by n.rank)
@@ -258,6 +261,9 @@ begin
   if caller is null then return jsonb_build_object('status','auth_required'); end if;
   if p_publish is false then
     delete from retriever_camp.public_careers where player_id=caller;
+  elsif p_publish is true and not exists(select 1 from retriever_camp.ranked_control
+    where season='one-more-hunt-1' and public_career_enabled)
+    then return jsonb_build_object('status','feature_closed');
   elsif p_publish is true and p_level between 1 and 100 and p_migration is not null
     and exists(select 1 from retriever_camp.players where player_id=caller) then
     insert into retriever_camp.public_careers values (caller,p_level,p_migration)
@@ -272,12 +278,13 @@ returns jsonb language sql stable security definer set search_path = '' as $$
     select jsonb_build_object('status','ok','nickname',p.nickname,'season',p_season,
       'records',coalesce(records.data,'{}'::jsonb), 'career',case when c.player_id is not null then
         jsonb_build_object('level',c.level,'migration_complete',c.migration_complete) end)
-    from retriever_camp.players p left join retriever_camp.public_careers c using(player_id)
+    from retriever_camp.players p left join retriever_camp.public_careers c on c.player_id=p.player_id and exists(
+      select 1 from retriever_camp.ranked_control where season='one-more-hunt-1' and public_career_enabled)
     cross join lateral (
       select jsonb_object_agg(b.metric,b.value) as data from retriever_camp.ranked_bests b
         where b.player_id=p.player_id and b.season=p_season
     ) records
-    where p.nickname=p_nickname and (records.data is not null or c.player_id is not null)
+    where lower(p.nickname)=lower(p_nickname) and (records.data is not null or c.player_id is not null)
       and p_season in ('one-more-hunt-1','great-migration-1')
   ),'{"status":"not_found"}'::jsonb)
 $$;

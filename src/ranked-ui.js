@@ -22,6 +22,7 @@ const messages = {
   expired: 'This ranked ticket expired. Your local hunt was saved.',
   rate_limited: 'Too many requests recently. Try again later.',
   invalid_code: 'That code did not match an available invitation.',
+  feature_closed: 'Public career snapshots are awaiting approval.',
   invalid: 'Check the profile details and try again.',
   invalid_name: 'Use 3–20 characters, with letters or numbers at each end.',
   not_found: 'This entry is no longer available to you.',
@@ -481,8 +482,24 @@ function competitiveProfile(camp, legacy, player, onJoin, onErase) {
   sharing.append(node('p','Optional career snapshot · Shares your local level and Migration completion alongside your public nickname. These details are unverified.'),
     action('Publish career snapshot', () => ask(sharing,'Publish this local career snapshot?', () => shareCareer(true))),
     action('Remove career snapshot', () => shareCareer(false)))
+  const profileLookup = node('section',null,'ranked-entry')
+  const publicResult = node('div')
+  publicResult.setAttribute('role','status')
+  profileLookup.append(inputForm('Look up a public nickname','Find profile',async nickname => {
+    publicResult.textContent = 'Reading public profile…'
+    const response = await camp.publicProfile(nickname,masteryReplayVersion)
+    if (!profileLookup.isConnected) return false
+    publicResult.replaceChildren()
+    if (response.status !== 'ok') publicResult.textContent = feedback(response)
+    else {
+      publicResult.append(node('h4',response.nickname),...recordRows(response.records))
+      if (response.career) publicResult.append(node('p','Shared local level ' + response.career.level +
+        (response.career.migration_complete ? ' · Great Migration completed' : '') + ' · Unverified','room-note'))
+    }
+    return false
+  },20),publicResult)
   section.append(node('p', 'Camp shares your nickname and verified bests. Friends and private Camp members are visible within their groups.', 'room-note'),
-    form, resultArea, sharing, erase,
+    form, resultArea, sharing, profileLookup, erase,
     node('p', 'Camp uses an anonymous identity stored in this browser. Clearing site data or changing devices can lose access. Account recovery is unavailable. Career, dog and ownership stay on this device.', 'room-note'))
   async function show() {
     form.querySelector('input').value = legacy.member(player.id)?.nickname ?? player.nickname

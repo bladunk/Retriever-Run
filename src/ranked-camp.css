@@ -56,3 +56,8 @@
 .ranked-version details { display: inline-block; margin-inline-start: .7rem; }
 .ranked-version summary { cursor: pointer; }
 .ranked-camp .ranked-code button, .ranked-camp .ranked-entry button { min-height: 44px; }
+.ranked-overview, .ranked-camp, .ranked-entry, .ranked-code, .ranked-form {
+  grid-template-columns: minmax(0,1fr);
+}
+.worldwide-toolbar { flex-wrap: wrap; }
+.worldwide-toolbar button { max-inline-size: 100%; }

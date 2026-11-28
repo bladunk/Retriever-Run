@@ -7,7 +7,8 @@ export function huntShareModel(report, name, best = false) {
     (report.course !== 'legacy-10' ? expeditionRegions[report.territory - 1] : undefined)
   return {
     kind:'hunt', title:best ? 'Personal best' : 'Hunt result',
-    name, image:'./lodge/map.webp',
+    name, route:territory ? { farthest:territory.index+1,duration:report.duration } : undefined,
+    image:territory ? undefined : './lodge/map.webp',
     metrics:[['Score',number(report.score)],['Distance',meters(report.distance)],
       ['Survival',duration(report.duration)],['Retrieves',number(report.retrieves)],
       ['Territory',territory?.name ?? 'Not recorded']],

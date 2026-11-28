@@ -1,0 +1,1778 @@
+{
+  "versions": [
+    {
+      "build": {
+        "version": "1.0.0-rc.11",
+        "id": "720d433"
+      },
+      "elapsed": 630.0516666666667,
+      "tapeMoves": 559,
+      "samples": 1261,
+      "offline": true,
+      "drawingBuffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "low"
+      },
+      "hunt": {
+        "id": 1,
+        "discarded": 2554,
+        "peakTextures": 12,
+        "peakGeometries": 126,
+        "presentation": {
+          "samples": 2630,
+          "maxMs": 440,
+          "over20": 2628,
+          "over33_3": 2508,
+          "over50": 784,
+          "averageMs": 49.34
+        },
+        "cpu": {
+          "samples": 2631,
+          "maxMs": 909,
+          "over20": 2577,
+          "over33_3": 605,
+          "over50": 75,
+          "averageMs": 31.92
+        },
+        "averageFPS": 20.3
+      },
+      "graphics": {
+        "drawsMax": 81,
+        "programs": 29,
+        "residentTiles": 6,
+        "trailPool": {
+          "keys": 46,
+          "idle": 78
+        },
+        "rendererStartup": {
+          "shellMs": 93,
+          "workerRequestMs": null,
+          "workerReadyMs": null,
+          "manifestReadyMs": null,
+          "verificationStartMs": null,
+          "verificationReadyMs": null,
+          "verificationMissingMs": null,
+          "controlled": false,
+          "navigationType": "navigate",
+          "responseStartMs": 19,
+          "moduleRequestMs": 94,
+          "moduleMs": 311,
+          "rendererReadyMs": 340,
+          "firstSceneSubmitMs": 1916,
+          "readyMs": 4322,
+          "opener": []
+        }
+      },
+      "entry": {
+        "inputAt": 4838,
+        "handlerAt": 4838,
+        "before": {
+          "geometries": 24,
+          "textures": 10,
+          "programs": 12
+        },
+        "firstFrameSubmittedMs": 945,
+        "firstFrameCpuMs": 909,
+        "firstRenderMs": 904,
+        "after": {
+          "geometries": 38,
+          "textures": 11,
+          "programs": 17
+        },
+        "firstOperations": [
+          {
+            "at": 4839,
+            "hunt": 1,
+            "name": "hunt-trail-reset",
+            "detail": "state and replay setup",
+            "durationMs": 1
+          },
+          {
+            "at": 4851,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 11
+          },
+          {
+            "at": 4853,
+            "hunt": 1,
+            "name": "hunt-scene-entry",
+            "detail": "HUD and gesture audio",
+            "durationMs": 13
+          },
+          {
+            "at": 4856,
+            "hunt": 1,
+            "name": "hunt-opening-entities",
+            "detail": "trail entity population",
+            "durationMs": 3
+          },
+          {
+            "at": 4856,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 4877,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 1
+          },
+          {
+            "at": 4877,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 4877,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 4880,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 4880,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 4880,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 2"
+          },
+          {
+            "at": 4881,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 1190,
+        "firstPresentationIntervalMs": 279
+      },
+      "slowFrames": [
+        {
+          "at": 133436,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 56,
+          "cpuMs": 29,
+          "renderMs": 28,
+          "draws": 51,
+          "triangles": 115880,
+          "textures": 12,
+          "geometries": 115,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 133452,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 554,
+              "durationMs": 0
+            },
+            {
+              "at": 133453,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 554"
+            },
+            {
+              "at": 133453,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 552"
+            },
+            {
+              "at": 133497,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 553"
+            },
+            {
+              "at": 133497,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 553"
+            }
+          ]
+        },
+        {
+          "at": 133482,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 46,
+          "cpuMs": 31,
+          "renderMs": 29,
+          "draws": 55,
+          "triangles": 129794,
+          "textures": 12,
+          "geometries": 118,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 3,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 133452,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 554,
+              "durationMs": 0
+            },
+            {
+              "at": 133453,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 554"
+            },
+            {
+              "at": 133453,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 552"
+            },
+            {
+              "at": 133497,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 553"
+            },
+            {
+              "at": 133497,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 553"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 133560,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 2
+            }
+          ]
+        },
+        {
+          "at": 133533,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 51,
+          "cpuMs": 38,
+          "renderMs": 37,
+          "draws": 58,
+          "triangles": 128305,
+          "textures": 12,
+          "geometries": 120,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 2,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 133452,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 554,
+              "durationMs": 0
+            },
+            {
+              "at": 133453,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 554"
+            },
+            {
+              "at": 133453,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 552"
+            },
+            {
+              "at": 133497,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 553"
+            },
+            {
+              "at": 133497,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 553"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 133560,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 2
+            },
+            {
+              "at": 133612,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            }
+          ]
+        },
+        {
+          "at": 133594,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 61,
+          "cpuMs": 37,
+          "renderMs": 34,
+          "draws": 53,
+          "triangles": 121964,
+          "textures": 12,
+          "geometries": 113,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 133497,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 553"
+            },
+            {
+              "at": 133497,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 553"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 548"
+            },
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 133560,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 2
+            },
+            {
+              "at": 133612,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            },
+            {
+              "at": 133672,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            }
+          ]
+        },
+        {
+          "at": 133652,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 58,
+          "cpuMs": 41,
+          "renderMs": 40,
+          "draws": 53,
+          "triangles": 120275,
+          "textures": 12,
+          "geometries": 114,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 1,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 133558,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 133560,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 2
+            },
+            {
+              "at": 133612,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            },
+            {
+              "at": 133672,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            },
+            {
+              "at": 133716,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 555,
+              "durationMs": 0
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            },
+            {
+              "at": 133765,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 549"
+            }
+          ]
+        },
+        {
+          "at": 133703,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 51,
+          "cpuMs": 33,
+          "renderMs": 32,
+          "draws": 56,
+          "triangles": 131890,
+          "textures": 12,
+          "geometries": 116,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 2,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 133612,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            },
+            {
+              "at": 133672,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            },
+            {
+              "at": 133716,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 555,
+              "durationMs": 0
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            },
+            {
+              "at": 133765,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 549"
+            }
+          ]
+        },
+        {
+          "at": 133751,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 48,
+          "cpuMs": 36,
+          "renderMs": 35,
+          "draws": 56,
+          "triangles": 132211,
+          "textures": 12,
+          "geometries": 119,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 3,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 133672,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            },
+            {
+              "at": 133716,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 555,
+              "durationMs": 0
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            },
+            {
+              "at": 133765,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 549"
+            },
+            {
+              "at": 133856,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 554"
+            }
+          ]
+        },
+        {
+          "at": 133796,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 45,
+          "cpuMs": 31,
+          "renderMs": 30,
+          "draws": 55,
+          "triangles": 126091,
+          "textures": 12,
+          "geometries": 115,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 133717,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            },
+            {
+              "at": 133765,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 549"
+            },
+            {
+              "at": 133766,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 549"
+            },
+            {
+              "at": 133856,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 554"
+            },
+            {
+              "at": 133890,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 556,
+              "durationMs": 0
+            },
+            {
+              "at": 133891,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 555"
+            },
+            {
+              "at": 133891,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 555"
+            },
+            {
+              "at": 133891,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 556"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "build": {
+        "version": "1.0.0-rc.12",
+        "id": "f3b8bbc"
+      },
+      "elapsed": 630.0666666666667,
+      "tapeMoves": 559,
+      "samples": 1261,
+      "offline": true,
+      "drawingBuffer": {
+        "width": 102,
+        "height": 181,
+        "scale": 0.3199999928474426,
+        "devicePixelRatio": 0.3199999928474426,
+        "preset": "low"
+      },
+      "hunt": {
+        "id": 1,
+        "discarded": 2555,
+        "peakTextures": 12,
+        "peakGeometries": 126,
+        "presentation": {
+          "samples": 2630,
+          "maxMs": 1577,
+          "over20": 2630,
+          "over33_3": 2599,
+          "over50": 1985,
+          "averageMs": 119.35
+        },
+        "cpu": {
+          "samples": 2631,
+          "maxMs": 3014,
+          "over20": 2610,
+          "over33_3": 1906,
+          "over50": 1483,
+          "averageMs": 75.83
+        },
+        "averageFPS": 8.4
+      },
+      "graphics": {
+        "drawsMax": 80,
+        "programs": 29,
+        "residentTiles": 6,
+        "trailPool": {
+          "keys": 46,
+          "idle": 78
+        },
+        "rendererStartup": {
+          "shellMs": 276,
+          "workerRequestMs": null,
+          "workerReadyMs": null,
+          "manifestReadyMs": null,
+          "verificationStartMs": null,
+          "verificationReadyMs": null,
+          "verificationMissingMs": null,
+          "controlled": false,
+          "navigationType": "navigate",
+          "responseStartMs": 56,
+          "moduleRequestMs": 276,
+          "moduleMs": 941,
+          "rendererReadyMs": 1048,
+          "firstSceneSubmitMs": 5664,
+          "readyMs": 14540,
+          "opener": []
+        }
+      },
+      "entry": {
+        "inputAt": 15986,
+        "handlerAt": 15986,
+        "before": {
+          "geometries": 24,
+          "textures": 10,
+          "programs": 12
+        },
+        "firstFrameSubmittedMs": 4190,
+        "firstFrameCpuMs": 3014,
+        "firstRenderMs": 3003,
+        "after": {
+          "geometries": 38,
+          "textures": 11,
+          "programs": 17
+        },
+        "firstOperations": [
+          {
+            "at": 15990,
+            "hunt": 1,
+            "name": "hunt-trail-reset",
+            "detail": "state and replay setup",
+            "durationMs": 3
+          },
+          {
+            "at": 17055,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 1064
+          },
+          {
+            "at": 17073,
+            "hunt": 1,
+            "name": "hunt-scene-entry",
+            "detail": "HUD and gesture audio",
+            "durationMs": 1083
+          },
+          {
+            "at": 17076,
+            "hunt": 1,
+            "name": "hunt-opening-entities",
+            "detail": "trail entity population",
+            "durationMs": 3
+          },
+          {
+            "at": 17076,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 17170,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 6
+          },
+          {
+            "at": 17170,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 17170,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 17178,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 17178,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 17178,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 2"
+          },
+          {
+            "at": 17178,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 5096,
+        "firstPresentationIntervalMs": 1065
+      },
+      "slowFrames": [
+        {
+          "at": 331989,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 43,
+          "cpuMs": 25,
+          "renderMs": 24,
+          "draws": 51,
+          "triangles": 115880,
+          "textures": 12,
+          "geometries": 115,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 331873,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 547"
+            },
+            {
+              "at": 331873,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 547"
+            },
+            {
+              "at": 331873,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 547"
+            },
+            {
+              "at": 331873,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 547"
+            },
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 554,
+              "durationMs": 0
+            },
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 554"
+            },
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 552"
+            },
+            {
+              "at": 332067,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 553"
+            },
+            {
+              "at": 332067,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 553"
+            }
+          ]
+        },
+        {
+          "at": 332042,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 53,
+          "cpuMs": 31,
+          "renderMs": 30,
+          "draws": 56,
+          "triangles": 129854,
+          "textures": 12,
+          "geometries": 118,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 3,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 554,
+              "durationMs": 0
+            },
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 554"
+            },
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 552"
+            },
+            {
+              "at": 332067,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 553"
+            },
+            {
+              "at": 332067,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 553"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 332128,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 0
+            }
+          ]
+        },
+        {
+          "at": 332097,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 55,
+          "cpuMs": 32,
+          "renderMs": 30,
+          "draws": 58,
+          "triangles": 128305,
+          "textures": 12,
+          "geometries": 120,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 2,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 554,
+              "durationMs": 0
+            },
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 554"
+            },
+            {
+              "at": 332012,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 552"
+            },
+            {
+              "at": 332067,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 553"
+            },
+            {
+              "at": 332067,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 553"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 332128,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 0
+            },
+            {
+              "at": 332167,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            },
+            {
+              "at": 332199,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            }
+          ]
+        },
+        {
+          "at": 332153,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 56,
+          "cpuMs": 26,
+          "renderMs": 24,
+          "draws": 53,
+          "triangles": 121964,
+          "textures": 12,
+          "geometries": 113,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 332067,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 553"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 548"
+            },
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 332128,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 0
+            },
+            {
+              "at": 332167,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            },
+            {
+              "at": 332199,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            },
+            {
+              "at": 332232,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 555,
+              "durationMs": 0
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            }
+          ]
+        },
+        {
+          "at": 332190,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 37,
+          "cpuMs": 24,
+          "renderMs": 23,
+          "draws": 53,
+          "triangles": 120275,
+          "textures": 12,
+          "geometries": 114,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 1,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 332128,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 0
+            },
+            {
+              "at": 332167,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            },
+            {
+              "at": 332199,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            },
+            {
+              "at": 332232,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 555,
+              "durationMs": 0
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 549"
+            }
+          ]
+        },
+        {
+          "at": 332222,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 32,
+          "cpuMs": 24,
+          "renderMs": 23,
+          "draws": 56,
+          "triangles": 131890,
+          "textures": 12,
+          "geometries": 116,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 2,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 332127,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 548"
+            },
+            {
+              "at": 332128,
+              "hunt": 1,
+              "name": "wildlife-art",
+              "detail": "bufflehead",
+              "durationMs": 0
+            },
+            {
+              "at": 332167,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            },
+            {
+              "at": 332199,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            },
+            {
+              "at": 332232,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 555,
+              "durationMs": 0
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 549"
+            }
+          ]
+        },
+        {
+          "at": 332258,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 36,
+          "cpuMs": 26,
+          "renderMs": 25,
+          "draws": 56,
+          "triangles": 132211,
+          "textures": 12,
+          "geometries": 119,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 3,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 332167,
+              "hunt": 1,
+              "name": "wildlife-visible",
+              "detail": "bufflehead"
+            },
+            {
+              "at": 332199,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 553"
+            },
+            {
+              "at": 332232,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 555,
+              "durationMs": 0
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 549"
+            },
+            {
+              "at": 332350,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 554"
+            }
+          ]
+        },
+        {
+          "at": 332301,
+          "hunt": 1,
+          "territory": "mountain",
+          "preset": "low",
+          "detail": 0,
+          "presentationMs": 43,
+          "cpuMs": 22,
+          "renderMs": 21,
+          "draws": 55,
+          "triangles": 126091,
+          "textures": 12,
+          "geometries": 115,
+          "programs": 29,
+          "textureDelta": 0,
+          "geometryDelta": 0,
+          "programDelta": 0,
+          "operations": [
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 554"
+            },
+            {
+              "at": 332234,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 555"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / ground / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / water / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / detail / 549"
+            },
+            {
+              "at": 332279,
+              "hunt": 1,
+              "name": "geometry-dispose",
+              "detail": "mountain / solid / 549"
+            },
+            {
+              "at": 332350,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / detail / 554"
+            },
+            {
+              "at": 332384,
+              "hunt": 1,
+              "name": "terrain-ready",
+              "detail": 556,
+              "durationMs": 0
+            },
+            {
+              "at": 332385,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / ground / 555"
+            },
+            {
+              "at": 332385,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / water / 555"
+            },
+            {
+              "at": 332385,
+              "hunt": 1,
+              "name": "geometry-upload",
+              "detail": "mountain / solid / 556"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "worker": {
+    "interruptedAsset": "labrador.glb",
+    "installationRecovery": "The download stopped. Retry to resume from your verified files.",
+    "update": {
+      "busyHuntProtected": true,
+      "preservedRuns": 4,
+      "unchangedAudioRequests": 1
+    },
+    "offlineReadyMs": 18531,
+    "decodedAudioBytes": 10517048,
+    "replay": {
+      "inputAt": 54085.30000001192,
+      "handlerAt": 55105.30000001192,
+      "before": {
+        "geometries": 52,
+        "textures": 24,
+        "programs": 21
+      },
+      "firstFrameSubmittedMs": 1046.9,
+      "firstFrameCpuMs": 5.4,
+      "firstRenderMs": 2.4,
+      "after": {
+        "geometries": 52,
+        "textures": 24,
+        "programs": 21
+      },
+      "firstOperations": [
+        {
+          "at": 55105.5,
+          "hunt": 2,
+          "name": "hunt-trail-reset",
+          "detail": "state and replay setup",
+          "durationMs": 0.2
+        },
+        {
+          "at": 55106.69999998808,
+          "hunt": 2,
+          "name": "hunt-scene-entry",
+          "detail": "HUD and gesture audio",
+          "durationMs": 1.2
+        },
+        {
+          "at": 55107.89999997616,
+          "hunt": 2,
+          "name": "hunt-opening-entities",
+          "detail": "trail entity population",
+          "durationMs": 1.2
+        },
+        {
+          "at": 55129.59999996424,
+          "hunt": 2,
+          "name": "wildlife-art",
+          "detail": "mallard",
+          "durationMs": 0.7
+        },
+        {
+          "at": 55129.59999996424,
+          "hunt": 2,
+          "name": "wildlife-fallback",
+          "detail": {
+            "species": "mallard",
+            "reason": "preparing"
+          }
+        },
+        {
+          "at": 55129.59999996424,
+          "hunt": 2,
+          "name": "wildlife-visible",
+          "detail": "mallard"
+        }
+      ],
+      "nextAnimationCallbackMs": 1097.8,
+      "firstPresentationIntervalMs": 55.8
+    },
+    "changedRequiredBytes": 1332621
+  }
+}

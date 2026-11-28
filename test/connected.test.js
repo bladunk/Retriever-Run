@@ -88,10 +88,28 @@ test('Mastery admission, replay and commit preserve the isolated season and actu
   assert.equal((await call(two,'connected_standings',['camp',camp.id])).status,'not_found')
   assert.equal((await call(null,'connected_standings',['camp',camp.id])).status,'auth_required')
   assert.equal((await call(null,'connected_profile',['River Scout'])).status,'not_found')
+  assert.equal((await call(three,'connected_visibility',[true,16,true])).status,'feature_closed')
+  await as(null,null,'update retriever_camp.ranked_control set public_career_enabled=true where season=$1',[masteryReplayVersion])
   assert.equal((await call(three,'connected_visibility',[true,16,true])).status,'ok')
   assert.deepEqual((await call(null,'connected_profile',['River Scout'])).career,{level:16,migration_complete:true})
   await call(three,'connected_visibility',[false])
   assert.equal((await call(null,'connected_profile',['River Scout'])).status,'not_found')
+  await as(null,null,`with people as (
+    insert into auth.users(id)
+      select ('a0000000-0000-4000-8000-' || lpad(g::text,12,'0'))::uuid from generate_series(1,101) g
+      returning id
+  ), joined as (
+    insert into retriever_camp.players(player_id,nickname,renamed_at)
+      select id,'Review ' || right(id::text,3),now() from people returning player_id
+  ) insert into retriever_camp.ranked_bests(season,metric,player_id,value,recorded_at)
+    select 'one-more-hunt-1','score',player_id,314159,now() from joined`)
+  const front = await call(one,'connected_standings',[])
+  assert.equal(front.mine.rank,102)
+  assert.equal(front.total_ranked,103)
+  assert.equal(front.percentile,0)
+  const end = await call(one,'connected_standings',['worldwide',null,75])
+  assert.equal(end.rows.at(-1).rank,100)
+  assert.equal(end.has_more,false)
 })
 
 test('long trace recorder and personal sharing preserve labels and catalog order', () => {

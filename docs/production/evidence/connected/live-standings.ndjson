@@ -1,0 +1,3 @@
+{"build":{"version":"1.0.0-rc.11","id":"c3ca268"},"version":"d8765feeeda517e430de","rpc":"rr_connected_standings","http":404,"code":"PGRST202","rows":null,"rivals":null}
+{"build":{"version":"1.0.0-rc.11","id":"c3ca268"},"version":"d8765feeeda517e430de","rpc":"rr_worldwide_standings","http":200,"status":"ok","open":false,"course":"migration-30-phase-05","season":"great-migration-1","rows":0,"rivals":0}
+{"build":{"version":"1.0.0-rc.11","id":"c3ca268"},"version":"d8765feeeda517e430de","rpc":"rr_ranked_board","http":200,"status":"ok","open":false,"course":"migration-30-phase-05","season":"great-migration-1","rows":0,"rivals":0}
