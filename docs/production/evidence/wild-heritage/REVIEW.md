@@ -33,7 +33,7 @@ All images are captures from the application. The paired route used WebKit softw
 - **Share exports.** Based on the fixture’s actual result, fitted gear and earned Lodge. [Preview](connected/hunt-share.jpg) · [Record card](connected/hunt-share-export.jpg) · [Labrador portrait](connected/labrador-share-export.jpg) · [Lodge image](connected/lodge-share-export.jpg)
 - **Installation and update.** [Interrupted image request](offline/interrupted.png) · [Offline Journal](offline/offline-wildlife-journal.png) · [First installation and update protection trace](offline/production-test.json) · [Actual RC.12-to-review-build fixture](offline/rc12-update.json)
 
-[Baseline run telemetry](territories/baseline/soak.json) · [Candidate run telemetry](territories/final/soak.json) · [Chromium Connected checks](connected/chromium.json) · [WebKit Connected checks](connected/webkit.json)
+[Baseline run telemetry](territories/baseline/soak.json) · [Candidate run telemetry](territories/final/soak.json) · [Unrecorded release confirmation](offline/release-confirmation.json) · [Chromium Connected checks](connected/chromium.json) · [WebKit Connected checks](connected/webkit.json)
 
 ## Targeted comparisons
 

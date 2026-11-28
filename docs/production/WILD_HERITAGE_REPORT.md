@@ -2,7 +2,7 @@
 
 ## Release status
 
-Owner review in [draft PR #52](https://github.com/bladunk/Retriever-Run/pull/52). The repository started at merged RC.12 main `673311caef599f57b5cd001cdf415c77d71a080f` (PR #51). The independent live Pages read reported app `1.0.0-rc.12`, build `78c86e3`, manifest `a8f5dc6f46d33ed775e2`. Pages run `46123805137` succeeded. The RC.12.1 production artifact verified at implementation commit `3e7d2dc` reports build `5bc0fd2`, manifest `feb58b72a8f04c6fc15d`. Evidence and documentation follow in the draft head.
+Owner review in [draft PR #52](https://github.com/bladunk/Retriever-Run/pull/52). The repository started at merged RC.12 main `673311caef599f57b5cd001cdf415c77d71a080f` (PR #51). The independent live Pages read reported app `1.0.0-rc.12`, build `78c86e3`, manifest `a8f5dc6f46d33ed775e2`. Pages run `46123805137` succeeded. The RC.12.1 production artifact verified at implementation commit `4f33212` reports build `ea2b3a4`, manifest `6d28044b53783ef15734`. Evidence and documentation follow in the draft head.
 
 The remaster changes near-field vegetation, water depth and shore contact, the readability of the trail, authored territory introductions, the compact HUD and five-destination navigation. Every equipment card now shows a render of actual fitted gear. The Lodge presents earned objects inside the room and Field Honors groups related medals. Production remains on RC.12 pending review.
 
@@ -64,7 +64,7 @@ Controlled production-renderer comparison used the same seed 7 reference inputs,
 | Harness engine readiness | 8,318 ms | 4,149 ms |
 | Harness hunt-entry field | 1,490 ms | 1,152 ms |
 
-The unchanged 130-geometry gate passed. Normal frame pacing, discarded-time, replay and native input targets remain unverified. The accelerated renderer clock and recorded WebKit throughput do not characterize physical iPhone gameplay. Readiness and the harness hunt-entry field are internal markers. They omit the display and touch pipeline. The candidate full-route captures used build `480dcca`. Later review builds add feedback layout, release notes, an isolated first-arrival fixture and alert priority. The same terrain and simulation are used. [Machine traces and recordings](evidence/wild-heritage/REVIEW.md)
+A second confirmation without video recording on build `5bc0fd2` reached 635.18 seconds, peaked at 126 geometries and 12 textures, and averaged 19.7 FPS. It used the same accelerated software fixture and had 2,626 discarded timing samples. The unchanged 130-geometry gate passed. Normal frame pacing, discarded-time, replay and native input targets remain unverified. The accelerated renderer clock and recorded WebKit throughput do not characterize physical iPhone gameplay. Readiness and the harness hunt-entry field are internal markers. They omit the display and touch pipeline. The candidate full-route captures used build `480dcca`. Later review builds add feedback layout, release notes, an isolated first-arrival fixture and alert priority. The same terrain and simulation are used. [Machine traces and recordings](evidence/wild-heritage/REVIEW.md)
 
 The Boreal to Foothills handoff is visible in both runs. The historical native interruption still lacks a confirmed cause. The Low test did not request high-detail Fern residency. Fern churn, four-hunt native geometry growth to 158, first-hunt and restart spikes, hazard visibility, sustained thermal and battery use are open physical-device checks. No material runtime limit has been increased.
 
@@ -72,10 +72,10 @@ The Boreal to Foothills handoff is visible in both runs. The historical native i
 
 | Metric | RC.12 baseline | RC.12.1 review build |
 | --- | ---: | ---: |
-| Complete production artifact | 18,655,597 B | 20,511,153 B |
+| Complete production artifact | 18,655,597 B | 20,511,147 B |
 | Required verified assets | 132 | 286 |
-| Required verified asset bytes | 18,550,040 B | 20,316,534 B |
-| Boot shell bytes | 135,404 B | 135,574 B |
+| Required verified asset bytes | 18,550,040 B | 20,316,528 B |
+| Boot shell bytes | 135,404 B | 135,568 B |
 
 The incremental required asset transfer is approximately 3.80 MB with all exact RC.12 hashes available, plus the new manifests. The field atlas (2.57 MB), Boyd model (1.43 MB) and Gulf material scan (1.40 MB) are the largest individual image or model assets. The equipment gallery accounts for 1.69 MB of network bytes. A decoded 360 × 248 card is about 349 KiB RGBA. All 154 simultaneously would be about 52.45 MiB, so cards remain lazily loaded as DOM images outside active gameplay. The canopy atlas increases from 1 MiB to 4 MiB base RGBA, or from about 1.33 MiB to 5.33 MiB with a full mip chain. No texture count increase was observed in the Low run.
 
@@ -83,7 +83,7 @@ The existing manifest still declares regional asset groups, content hashes, immu
 
 ## Verification
 
-- **Automated and deterministic.** All 253 automated tests passed. The suite includes original and Mastery course fingerprints, hazard hull and reachability tests, reward idempotence, local migration of pre-existing saves, both historical and Mastery verification paths, and four focused checks for chapter timing/route, Field Honor grouping and the equipment image manifest. The signed historical stress fixtures reproduced scores 38,067, 45,850 and 66,583 at 54,203, 72,196 and 103,455 ticks. No course, movement, collider, reward, score or database code changes are included.
+- **Automated and deterministic.** All 253 automated tests passed. The suite includes original and Mastery course fingerprints, hazard hull and reachability tests, reward idempotence, local migration of pre-existing saves, both historical and Mastery verification paths, and four focused checks for chapter timing/route, Field Honor grouping and the equipment image manifest. The signed historical stress fixtures reproduced scores 38,067, 45,850 and 66,583 at 54,203, 72,196 and 103,455 ticks. Authoritative course, movement, collider, reward, score and database paths are preserved. [Passing GitHub build and release verification](https://github.com/bladunk/Retriever-Run/actions/runs/46126643612)
 - **Production and offline.** The build and the complete worker/manifest byte checks passed. Software WebKit retried an interrupted required gear download, booted offline, entered the offline Journal and Kennel, finished a hunt and preserved a paused hunt across staged updates. A separate controlled RC.12-to-RC.12.1 update also preserved the paused-session veto and unchanged audio reuse. The route and replay fixtures use independent profiles and disable competitive submissions.
 - **Repeated hunts.** Five offline Low Mastery restarts ended each time on 43 geometries, 11 textures and 18 programs. Hunt peaks were 47 on the first and 46 thereafter. The four cached restart markers ranged from 136 to 193 ms in the accelerated software fixture. The fixture checks resource stability and local isolation. Actual touch-to-presentation time remains a device check.
 - **Presentation and protections.** Chromium at 320 × 568 and software WebKit at 430 × 932 exercised title, navigation, private and public competitive layouts, the opt-in profile fixture, offline exports, cancellation and Hunt Over immediate replay. The local RC.11 fixture checked explicit screenshot selection and removal, optional diagnostic attachment, offline queue cancellation and retry, receipt handling and private dashboard states. The hosted system was not used for any fixture.
