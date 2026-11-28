@@ -117,18 +117,20 @@ These bands are balancing proposals. Establish actual survival distributions wit
 
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 50 | Report a bug, suggest an improvement or send a note | Planned | Settings and private submission service | Make each channel available from Settings with bounded inputs and plain privacy information. |
-| 51 | Report an unfair death | Planned | Hunt Over and same report service | Send an optional targeted report without delaying Play Again. |
-| 52 | Optional screenshot and consented diagnostics | Planned, privacy design approval pending | Explicit consent and attachment limits | Show what will be sent, strip unnecessary data and make attachments optional. |
-| 53 | Course seed and recent inputs | Planned, privacy design approval pending | Deterministic route and input history | Reproduce the issue with a bounded trace voluntarily attached by the player. |
-| 54 | Release notes, issues, roadmap and optional fix notice | Planned | Versioned notes and player preferences | Show release and issue context in-game. Offer optional notice only for a reported issue. |
-| 55 | Private developer inbox | Planned | Authorized storage and admin identity | Only authorized staff can read reports. Apply abuse limits, retention and deletion. |
-| 56 | Private iPhone developer dashboard | Planned | Scoped permissions, bounded queries and free infrastructure | Readable on iPhone with authenticated access and safe rate limits. Never expose reports publicly. |
+| 50 | Report a bug, suggest an improvement or send a note | Implemented in draft | Settings and private submission service | Make each channel available from Settings with bounded inputs and plain privacy information. |
+| 51 | Report an unfair death | Implemented in draft | Hunt Over and same report service | Send an optional targeted report without delaying Play Again. |
+| 52 | Optional screenshot and consented diagnostics | Implemented in draft, intake approval pending | Explicit consent and attachment limits | Show what will be sent, strip unnecessary data and make attachments optional. |
+| 53 | Course seed and recent inputs | Collision-step review implemented, full reproduction pending | Deterministic route and input history | Reproduce the issue with a bounded trace voluntarily attached by the player. |
+| 54 | Release notes, issues, roadmap and optional fix notice | Implemented in draft | Versioned notes and player preferences | Show release and issue context in-game. Offer optional notice only for a reported issue. |
+| 55 | Private developer inbox | Implemented in draft, hosted verification pending | Authorized storage and admin identity | Only authorized staff can read reports. Apply abuse limits, retention and deletion. |
+| 56 | Private iPhone developer dashboard | Implemented in draft, native acceptance pending | Scoped permissions, bounded queries and free infrastructure | Readable on iPhone with authenticated access and safe rate limits. Never expose reports publicly. |
 | 57 | Causes of death and progression stalls | Design only | Owner-approved collection and consent | Measure aggregate friction without profiling or encouraging more time played. |
 | 58 | Voluntary replay and returning players | Design only | Consent and retention limits | Measure whether players freely replay or return with minimal data. |
 | 59 | Equipped cosmetics and menu friction | Design only | Consent and minimization | Use aggregate comparisons without tracking unnecessary personal details. |
-| 60 | Crashes, comparative quality and performance | Partial | Local perf diagnostics and approved collection | Support transparent, device-capability-level comparisons with bounded payloads. Local perf exists today. |
+| 60 | Crashes, comparative quality and performance | Local diagnostics and submitted-report summaries implemented | Local perf diagnostics and approved collection | Support transparent, device-capability-level comparisons with bounded payloads. Local perf exists today. |
 | 61 | Privacy design and safeguards for young players | Owner design approval pending | Data inventory, access, retention and fair consent | Approve the final measurement design separately. Never implement invisible tracking, behavioral advertising or invasive collection. |
+
+Worldwide public reads verified closed and empty. RC.11 clarifies the closed state and keeps scores and competition controls intact. The accelerated continuous offline WebKit run reached 10:30 with 126 peak geometries against the existing limit of 130. Keep native performance, Boreal interruption, hazard readability, human difficulty and isolated hosted Mastery admission open. [RC.11 evidence and gates](COMMAND_CENTER_REPORT.md) · [Owner approvals and privacy design](COMMAND_CENTER_OPERATIONS.md)
 
 ## RC.12 · Connected
 

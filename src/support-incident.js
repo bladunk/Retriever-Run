@@ -3,7 +3,8 @@ import { firstContact, obstacleVolumes } from './collision.js'
 const poseKeys = ['distance', 'elapsed', 'x', 'lane', 'lateralSpeed', 'jump', 'slide', 'power', 'speed']
 const hazardKeys = ['type', 'lane', 'distance', 'wide', 'variant', 'turn', 'span', 'flightSpeed', 'direction', 'lead',
   'safeLane', 'pattern', 'rowId', 'hazard']
-const contactKeys = ['type', 'lane', 'elapsed', 'fraction', 'distance', 'part', 'pattern', 'height']
+const contactKeys = ['type', 'lane', 'elapsed', 'fraction', 'distance', 'part', 'solid', 'pattern', 'height',
+  'obstacleDistance', 'obstacleLane', 'targetLane', 'jumpRemaining', 'slideRemaining', 'action']
 const pick = (value, keys) => Object.fromEntries(keys.filter(key => {
   const item = value[key]
   return Number.isFinite(item) || typeof item === 'boolean' || typeof item === 'string' && item.length < 96
@@ -47,7 +48,7 @@ export function createIncidentCapture() {
 }
 
 export function inspectIncident(incident, builtWith, reviewBuild) {
-  if (!incident || !validPose(incident.before) || !validPose(incident.after) || !incident.expected ||
+  if (!incident || !validPose(incident.before) || !validPose(incident.after) || !Number.isFinite(incident.expected?.fraction) ||
       !Array.isArray(incident.hazards) || incident.hazards.length > 36 ||
       incident.hazards.some(hazard => !hazard || typeof hazard.type !== 'string' || !Number.isFinite(hazard.distance) ||
         !Number.isFinite(hazard.lane))) return { status: 'insufficient' }

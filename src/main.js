@@ -1207,7 +1207,7 @@ function setMode(value, options = {}) {
   ui['field-report'].hidden = !over
   ui['run-again'].textContent = example ? 'Back to Art Studio' : 'Play Again'
   ui['report-watch'].hidden = !over || Boolean(example) || !recap.canWatch()
-  ui['report-unfair'].hidden = !over || studioRequested
+  ui['report-unfair'].hidden = !over || diagnosticsRequested
   ui['report-lodge'].hidden = Boolean(example)
   ui['main-menu'].hidden = Boolean(example)
   ui.game.inert = over
@@ -1596,8 +1596,8 @@ function bindInput() {
 
 async function openSupport(kind, source) {
   const { showSupport } = await import('./support-ui.js')
-  showSupport({ kind, source, build: runningBuild, diagnostics: () =>
-    incidentCapture.diagnostics(profile.quality, kind === 'unfair') })
+  showSupport({ kind, source, build: runningBuild, fixture: diagnosticsRequested ? 'success' : undefined,
+    diagnostics: () => incidentCapture.diagnostics(profile.quality, kind === 'unfair') })
 }
 for (const [id, kind] of [['open-feedback','feedback'], ['open-release-notes','updates'], ['report-unfair','unfair']]) {
   ui[id].addEventListener('click', () => void openSupport(kind, ui[id]))
@@ -1606,7 +1606,7 @@ for (const [id, kind] of [['open-feedback','feedback'], ['open-release-notes','u
 function retrySavedFeedback() {
   try {
     const queued = localStorage.getItem('retriever-run.feedback.pending.v1')
-    if (queued && queued !== '[]' && !studioRequested) {
+    if (queued && queued !== '[]' && !diagnosticsRequested) {
       void import('./support-ui.js').then(({ retryFeedback }) => retryFeedback()).catch(() => {})
     }
   } catch { /* Feedback storage can be unavailable. */ }

@@ -17,7 +17,7 @@ export function openFieldUpdates(source) {
   close.textContent = 'Close'
   close.addEventListener('click', () => dialog.close())
   dialog.addEventListener('close', () => { dialog.remove(); source?.focus() }, { once: true })
-  const header = document.createElement('header')
+  const header = document.createElement('div')
   header.className = 'support-heading'
   header.append(heading, close)
   dialog.append(header)

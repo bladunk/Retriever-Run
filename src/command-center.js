@@ -50,10 +50,12 @@ function copyPanel(parent, label, text) {
   }), status, panel)
 }
 
-export async function openCommandCenter({ preview = false } = {}) {
+export async function openCommandCenter(configuration = {}) {
+  const preview = (import.meta.env.DEV || import.meta.env.MODE === 'art-studio') && configuration.preview === true
   document.querySelector('#content-screen').hidden = true
   document.querySelector('#game').hidden = true
-  const data = preview ? await import('./command-preview.js') : null
+  const data = (import.meta.env.DEV || import.meta.env.MODE === 'art-studio') && preview ?
+    await import('./command-preview.js') : null
   const api = data?.previewTransport() ?? createSupportTransport({ developer: true })
   const root = element('main', null, 'command-center')
   const layout = element('div', null, 'command-layout')
@@ -239,6 +241,14 @@ export async function openCommandCenter({ preview = false } = {}) {
       'Summarize verified findings with no player information.\n\nSuggested label ' + (item.kind === 'suggestion' ? 'enhancement' : 'bug'))
     const triage = section(view, 'Triage')
     const form = element('form')
+    if (item.state_history?.length) {
+      const history = element('details')
+      history.append(element('summary','Status history'))
+      for (const change of item.state_history.slice().reverse()) {
+        history.append(element('p', change.at.slice(0,10) + ' · ' + states[change.from] + ' → ' + states[change.to]))
+      }
+      triage.append(history)
+    }
     const status = options(states, null, item.state)
     const severity = options(severities, null, item.severity)
     const note = element('textarea', item.developer_note || '')
@@ -285,15 +295,12 @@ export async function openCommandCenter({ preview = false } = {}) {
       bar.setAttribute('aria-label', area + ', ' + count + ' reported unfair deaths')
       chart.append(element('p', area + ' · ' + count), bar)
     }
-    const results = await Promise.all(reports.filter(row => row.has_diagnostics).slice(0,8).map(row => api.detail(row.id)))
-    if (stamp !== serial) return
     const timing = section(view, 'Submitted frame timing by release',
       'These measurements describe self-selected recent intervals. Screen recording and device type are unknown.')
     const versions = new Map()
-    for (const result of results) {
-      const item = result.status === 'ok' ? result.report : null
-      const ms = item?.diagnostics?.timing?.averageMs
-      if (!Number.isFinite(ms) || ms <= 0) continue
+    for (const item of reports.slice(0,25)) {
+      const ms = item.timing_average_ms
+      if (!Number.isFinite(ms) || ms <= 0 || ms > 10000) continue
       if (!versions.has(item.version)) versions.set(item.version,[])
       versions.get(item.version).push(ms)
     }

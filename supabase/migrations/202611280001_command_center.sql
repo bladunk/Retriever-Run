@@ -3,12 +3,18 @@ begin;
 create schema rr_support;
 revoke all on schema rr_support from public, anon, authenticated;
 
+create table rr_support.control (
+  singleton boolean primary key check (singleton),
+  accepting boolean not null default false
+);
+insert into rr_support.control(singleton) values (true);
+alter table rr_support.control enable row level security;
+
 create table rr_support.developers (
   user_id uuid primary key references auth.users(id) on delete cascade
 );
 create table rr_support.reports (
   id uuid primary key,
-  actor uuid not null,
   receipt_hash bytea not null,
   created_at timestamptz not null default now(),
   kind text not null check (kind in ('bug','suggestion','note','unfair')),
@@ -21,13 +27,20 @@ create table rr_support.reports (
   diagnostics jsonb,
   screenshot bytea,
   state text not null default 'new',
+  state_history jsonb not null default '[]'::jsonb,
   severity text not null default 'unclassified',
   developer_note text not null default '',
   issue text not null default '',
   changed_at timestamptz not null default now()
 );
 create index reports_recent on rr_support.reports(created_at desc, id);
-create index reports_actor_recent on rr_support.reports(actor, created_at desc);
+create table rr_support.submissions (
+  actor uuid not null,
+  sent_at timestamptz not null default now()
+);
+create index submissions_time on rr_support.submissions(sent_at);
+create index submissions_actor_time on rr_support.submissions(actor,sent_at);
+alter table rr_support.submissions enable row level security;
 alter table rr_support.developers enable row level security;
 alter table rr_support.reports enable row level security;
 revoke all on all tables in schema rr_support from public, anon, authenticated;
@@ -36,6 +49,50 @@ create function rr_support.authorized() returns boolean
 language sql stable security definer set search_path = '' as $$
   select coalesce((auth.jwt() ->> 'is_anonymous') = 'false', false)
     and exists (select 1 from rr_support.developers where user_id = auth.uid());
+$$;
+
+-- Validate the bounded header before accepting an image. The browser
+-- re-encodes the pixels. This keeps executable/non-JPEG types and large
+-- decoded dimensions out of the private viewer even for direct API calls.
+create function rr_support.jpeg_supported(data bytea) returns boolean
+language plpgsql immutable set search_path = '' as $$
+declare
+  n integer := octet_length(data);
+  cursor_at integer := 2;
+  marker integer;
+  span integer;
+  have_frame boolean := false;
+begin
+  if n not between 64 and 196608 or substr(data,1,2) <> decode('ffd8','hex')
+    or substr(data,n-1,2) <> decode('ffd9','hex') then return false; end if;
+  while cursor_at+4<n loop
+    if get_byte(data,cursor_at)<>255 then return false; end if;
+    cursor_at := cursor_at+1;
+    while cursor_at<n and get_byte(data,cursor_at)=255 loop cursor_at := cursor_at+1; end loop;
+    if cursor_at+2>=n then return false; end if;
+    marker := get_byte(data,cursor_at);
+    cursor_at := cursor_at+1;
+    span := get_byte(data,cursor_at)*256 + get_byte(data,cursor_at+1);
+    if span<2 or cursor_at+span>=n then return false; end if;
+    if marker in (192,193,194) then
+      if span<8 or get_byte(data,cursor_at+2)<>8
+        or get_byte(data,cursor_at+3)*256+get_byte(data,cursor_at+4) not between 1 and 800
+        or get_byte(data,cursor_at+5)*256+get_byte(data,cursor_at+6) not between 1 and 800
+        then return false; end if;
+      have_frame := true;
+    elsif marker=218 then
+      return have_frame and span>=6 and cursor_at+span<n-2;
+    end if;
+    cursor_at := cursor_at+span;
+  end loop;
+  return false;
+end;
+$$;
+
+create function public.rr_support_status() returns jsonb
+language sql stable security definer set search_path = '' as $$
+  select jsonb_build_object('status',case when accepting then 'ok' else 'closed' end)
+    from rr_support.control where singleton;
 $$;
 
 create function public.rr_support_submit(p_record jsonb) returns jsonb
@@ -50,6 +107,8 @@ declare
   key text;
 begin
   if caller is null then return jsonb_build_object('status','denied'); end if;
+  if not coalesce((select accepting from rr_support.control where singleton),false)
+    then return jsonb_build_object('status','closed'); end if;
   if jsonb_typeof(p_record) is distinct from 'object' or octet_length(p_record::text) > 290000
     then return jsonb_build_object('status','invalid'); end if;
   if p_record - array['id','secret','kind','subject','message','topic','version','build','updates','diagnostics','screenshot'] <> '{}'::jsonb
@@ -77,7 +136,7 @@ begin
       then return jsonb_build_object('status','invalid'); end if;
     begin image := decode(p_record->>'screenshot','base64');
     exception when invalid_parameter_value or data_exception then return jsonb_build_object('status','invalid'); end;
-    if octet_length(image) not between 64 and 196608 or right(encode(substring(image from octet_length(image)-1),'hex'),4) <> 'ffd9'
+    if not rr_support.jpeg_supported(image)
       then return jsonb_build_object('status','invalid'); end if;
   end if;
 
@@ -89,14 +148,16 @@ begin
     then return jsonb_build_object('status','ok','reference',reference); end if;
   if exists (select 1 from rr_support.reports where id=report_id)
     then return jsonb_build_object('status','invalid'); end if;
-  if (select count(*) from rr_support.reports where actor=caller and created_at > now()-interval '1 hour') >= 3
-    or (select count(*) from rr_support.reports where actor=caller and created_at > now()-interval '1 day') >= 10
-    or (select count(*) from rr_support.reports where created_at > now()-interval '1 hour') >= 100
+  delete from rr_support.submissions where sent_at <= now()-interval '1 day';
+  if (select count(*) from rr_support.submissions where actor=caller and sent_at > now()-interval '1 hour') >= 3
+    or (select count(*) from rr_support.submissions where actor=caller and sent_at > now()-interval '1 day') >= 10
+    or (select count(*) from rr_support.submissions where sent_at > now()-interval '1 hour') >= 100
     or (select count(*) from rr_support.reports) >= 10000
     or (image is not null and (select count(*) from rr_support.reports where screenshot is not null) >= 1000)
     then return jsonb_build_object('status','rate_limited'); end if;
-  insert into rr_support.reports(id,actor,receipt_hash,kind,subject,message,topic,version,build,updates,diagnostics,screenshot)
-  values (report_id,caller,proof,p_record->>'kind',p_record->>'subject',p_record->>'message',p_record->>'topic',
+  insert into rr_support.submissions(actor) values (caller);
+  insert into rr_support.reports(id,receipt_hash,kind,subject,message,topic,version,build,updates,diagnostics,screenshot)
+  values (report_id,proof,p_record->>'kind',p_record->>'subject',p_record->>'message',p_record->>'topic',
     p_record->>'version',p_record->>'build',(p_record->>'updates')::boolean,details,image);
   return jsonb_build_object('status','ok','reference',reference);
 end;
@@ -132,7 +193,9 @@ begin
   select coalesce(jsonb_agg(to_jsonb(r)), '[]'::jsonb) into rows from (
     select id, created_at, kind, subject, topic, version, build, state, severity, issue,
       diagnostics is not null as has_diagnostics, screenshot is not null as has_screenshot,
-      diagnostics->'incident'->>'territory' as territory
+      diagnostics->'incident'->>'territory' as territory,
+      case when jsonb_typeof(diagnostics#>'{timing,averageMs}')='number'
+        then diagnostics#>'{timing,averageMs}' else null end as timing_average_ms
     from rr_support.reports
     where (coalesce(p_filters->>'kind','')='' or kind=p_filters->>'kind')
       and (coalesce(p_filters->>'state','')='' or state=p_filters->>'state')
@@ -152,7 +215,7 @@ declare
   data jsonb;
 begin
   if not rr_support.authorized() then return jsonb_build_object('status','denied'); end if;
-  select (to_jsonb(r) - array['actor','receipt_hash','screenshot']) ||
+  select (to_jsonb(r) - array['receipt_hash','screenshot']) ||
     jsonb_build_object('screenshot',replace(encode(screenshot,'base64'),chr(10),''))
     into data from rr_support.reports r where id=p_id;
   if not found then return jsonb_build_object('status','unknown'); end if;
@@ -171,6 +234,9 @@ begin
     or coalesce(p_change->>'issue','') !~ '^[a-zA-Z0-9#._/-]{0,100}$'
     then return jsonb_build_object('status','invalid'); end if;
   update rr_support.reports set state=p_change->>'state', severity=p_change->>'severity',
+    state_history=case when state=p_change->>'state' then state_history
+      else (case when jsonb_array_length(state_history)>=20 then state_history-0 else state_history end)
+        || jsonb_build_object('from',state,'to',p_change->>'state','at',now()) end,
     developer_note=coalesce(p_change->>'developer_note',''), issue=coalesce(p_change->>'issue',''), changed_at=now()
     where id=p_id;
   return jsonb_build_object('status',case when found then 'ok' else 'unknown' end);
@@ -189,6 +255,7 @@ $$;
 -- Call from the SQL editor on the owner's approved retention schedule.
 create function rr_support.prune() returns void language plpgsql set search_path = '' as $$
 begin
+  delete from rr_support.submissions where sent_at <= now()-interval '1 day';
   update rr_support.reports set screenshot=null, diagnostics=null
     where created_at < now()-interval '30 days' and (screenshot is not null or diagnostics is not null);
   delete from rr_support.reports where created_at < now()-interval '180 days'
@@ -197,11 +264,11 @@ end;
 $$;
 
 revoke all on all functions in schema rr_support from public, anon, authenticated;
-revoke all on function public.rr_support_submit(jsonb), public.rr_support_receipt(uuid,text,text),
+revoke all on function public.rr_support_status(), public.rr_support_submit(jsonb), public.rr_support_receipt(uuid,text,text),
   public.rr_support_inbox(jsonb), public.rr_support_detail(uuid), public.rr_support_triage(uuid,jsonb),
   public.rr_support_owner_delete(uuid) from public, anon, authenticated;
 grant execute on function public.rr_support_submit(jsonb), public.rr_support_inbox(jsonb),
   public.rr_support_detail(uuid), public.rr_support_triage(uuid,jsonb), public.rr_support_owner_delete(uuid) to authenticated;
-grant execute on function public.rr_support_receipt(uuid,text,text) to anon, authenticated;
+grant execute on function public.rr_support_status(), public.rr_support_receipt(uuid,text,text) to anon, authenticated;
 
 commit;

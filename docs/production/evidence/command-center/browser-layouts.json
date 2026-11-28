@@ -1,0 +1,339 @@
+{
+  "tests": [
+    {
+      "version": "before",
+      "name": "worldwide-before",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            302,
+            302
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "feedback",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            280,
+            280
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "report-bug",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            280,
+            280
+          ],
+          [
+            280,
+            280
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "receipt",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            280,
+            280
+          ],
+          [
+            280,
+            280
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "suggestion",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            280,
+            280
+          ],
+          [
+            280,
+            280
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "offline-queue",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            280,
+            280
+          ],
+          [
+            280,
+            280
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "developer-note",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            280,
+            280
+          ],
+          [
+            280,
+            280
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "release-notes",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            280,
+            280
+          ],
+          [
+            280,
+            280
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "worldwide-after",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            302,
+            302
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "worldwide-unavailable",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            302,
+            302
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "private-login",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            320,
+            320
+          ]
+        ]
+      }
+    },
+    {
+      "version": "studio",
+      "name": "overview",
+      "layout": {
+        "width": 430,
+        "documentWidth": 430,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            430,
+            430
+          ]
+        ]
+      }
+    },
+    {
+      "version": "studio",
+      "name": "inbox",
+      "layout": {
+        "width": 430,
+        "documentWidth": 430,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            430,
+            430
+          ]
+        ]
+      }
+    },
+    {
+      "version": "studio",
+      "name": "incident",
+      "layout": {
+        "width": 430,
+        "documentWidth": 430,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            430,
+            430
+          ]
+        ]
+      }
+    },
+    {
+      "version": "studio",
+      "name": "evidence",
+      "layout": {
+        "width": 430,
+        "documentWidth": 430,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            430,
+            430
+          ]
+        ]
+      }
+    },
+    {
+      "version": "studio",
+      "name": "release-health",
+      "layout": {
+        "width": 430,
+        "documentWidth": 430,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            430,
+            430
+          ]
+        ]
+      }
+    },
+    {
+      "version": "studio",
+      "name": "worldwide-health",
+      "layout": {
+        "width": 430,
+        "documentWidth": 430,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            430,
+            430
+          ]
+        ]
+      }
+    },
+    {
+      "version": "studio",
+      "name": "unfair-consent",
+      "layout": {
+        "width": 430,
+        "documentWidth": 430,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            430,
+            430
+          ],
+          [
+            390,
+            390
+          ]
+        ]
+      }
+    },
+    {
+      "version": "studio",
+      "name": "screenshot-preview",
+      "layout": {
+        "width": 430,
+        "documentWidth": 430,
+        "dialogs": [
+          [
+            0,
+            0
+          ],
+          [
+            430,
+            430
+          ],
+          [
+            390,
+            390
+          ]
+        ]
+      }
+    }
+  ],
+  "externalServices": "isolated browser fixtures"
+}

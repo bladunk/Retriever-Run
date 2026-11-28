@@ -59,7 +59,9 @@ export function createFeedback({ kind, subject, message, topic = '', build, atta
   }
   const secret = Array.from(random.getRandomValues(new Uint8Array(32)), n => n.toString(16).padStart(2, '0')).join('')
   return { id: random.randomUUID(), secret, kind, subject, message, topic: topic.slice(0, 80),
-    version: build.version, build: build.id, updates: Boolean(updates), ...attachment }
+    version: build.version, build: build.id, updates: Boolean(updates),
+    ...(attachment?.diagnostics && { diagnostics: attachment.diagnostics }),
+    ...(attachment?.screenshot && { screenshot: attachment.screenshot }) }
 }
 
 export async function prepareScreenshot(file, document) {

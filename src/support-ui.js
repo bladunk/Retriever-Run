@@ -63,7 +63,7 @@ export function showSupport({ kind, source, build, diagnostics, fixture }) {
   const title = element('h2', 'Player feedback')
   title.id = 'support-title'
   const content = element('div')
-  const head = element('header', null, 'support-heading')
+  const head = element('div', null, 'support-heading')
   const close = button('Close', () => dialog.close())
   head.append(title, close)
   dialog.append(head, content)
@@ -224,7 +224,9 @@ export function showSupport({ kind, source, build, diagnostics, fixture }) {
     form.append(field('Short description (optional)', subject),
       field(category === 'suggestion' ? 'Your idea (optional with description)' : 'What happened? (optional with description)', message),
       field('Choose a screenshot (optional)', upload), image, remove,
-      field('Include technical details about this game session', consent), review,
+      field('Include technical details about this game session', consent),
+      element('small', category === 'unfair' ? 'Includes graphics settings, recent frame timing and what happened around the collision.'
+        : 'Includes graphics settings and recent frame timing when available.'), review,
       field('Let me check for a verified fix using this receipt', updates), sendButton, save, status)
     content.replaceChildren(button('All feedback options', home), form)
   }

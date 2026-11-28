@@ -4,6 +4,7 @@ export function createSupportTransport({ settings = campPublicConfig, developer 
   load = () => import('@supabase/supabase-js') } = {}) {
   let client
   let signingIn
+  const storageKey = developer ? 'retriever-run.command.session' : 'retriever-run.feedback.session'
   const unavailable = { status: 'unavailable' }
   async function api() {
     if (!client) {
@@ -12,7 +13,7 @@ export function createSupportTransport({ settings = campPublicConfig, developer 
         db: { retry: false },
         auth: { autoRefreshToken: false, detectSessionInUrl: false, persistSession: true,
           storage: developer ? globalThis.sessionStorage : globalThis.localStorage,
-          storageKey: developer ? 'retriever-run.command.session' : 'retriever-run.feedback.session' },
+          storageKey },
       })).catch(error => { client = undefined; throw error })
     }
     return client
@@ -42,7 +43,10 @@ export function createSupportTransport({ settings = campPublicConfig, developer 
   }
 
   return {
-    send: record => call('rr_support_submit', { p_record: record }, true),
+    async send(record) {
+      const availability = await call('rr_support_status')
+      return availability.status === 'ok' ? call('rr_support_submit', { p_record: record }, true) : availability
+    },
     receipt: (receipt, action) => call('rr_support_receipt', { p_id: receipt.id, p_secret: receipt.secret, p_action: action }),
     inbox: filters => call('rr_support_inbox', { p_filters: filters }),
     detail: id => call('rr_support_detail', { p_id: id }),
@@ -56,7 +60,13 @@ export function createSupportTransport({ settings = campPublicConfig, developer 
       } catch { return unavailable }
     },
     async logout() {
-      try { await (await api()).auth.signOut({ scope: 'local' }) } catch { /* No live session available. */ }
+      if (!developer) return
+      try { if (settings) await (await api()).auth.signOut({ scope: 'local' }) }
+      catch { /* The server can be unreachable. */ }
+      finally {
+        try { globalThis.sessionStorage?.removeItem(storageKey) } catch { /* Storage can be blocked. */ }
+        client = undefined
+      }
     },
   }
 }
