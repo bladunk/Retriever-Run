@@ -25,6 +25,9 @@ export function createKennelView() {
   floor.position.y = -.01
   room.add(sky, key, rim, floor)
   const orbit = new T.PerspectiveCamera(32, 1, .1, 25)
+  const portraitCamera = new T.PerspectiveCamera(32,960/720,.1,25)
+  portraitCamera.position.set(3.25,1.52,-2.24)
+  portraitCamera.lookAt(0,.76,-.13)
   const pose = { x: 0, z: 0, height: 0, ground: 0, heading: 0, turn: 0, stride: 0, sliding: 0,
     airborne: false, jumpPhase: 1, idle: true, kennel: true, landing: 0, time: 0, dt: 0 }
   let previous = -Infinity
@@ -80,6 +83,23 @@ export function createKennelView() {
       orbit.updateProjectionMatrix()
       renderer.setDrawingBufferSize(width, height, Math.min(devicePixelRatio, 1.35))
       previous = -Infinity
+    },
+    portrait(renderer, dog) {
+      const size = renderer.getSize(new T.Vector2())
+      const pixelRatio = renderer.getPixelRatio()
+      const frame = document.createElement('canvas')
+      frame.width = 960
+      frame.height = 720
+      try {
+        renderer.setDrawingBufferSize(frame.width,frame.height,1)
+        dog.pose({ ...pose, sit:false, dt:0, time:0 })
+        renderer.render(room,portraitCamera)
+        frame.getContext('2d',{ alpha:false }).drawImage(renderer.domElement,0,0)
+        return frame
+      } finally {
+        renderer.setDrawingBufferSize(size.x,size.y,pixelRatio)
+        previous = -Infinity
+      }
     },
     render(renderer, dog, ms, reduced) {
       const wall = ms - previous

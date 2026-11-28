@@ -1,6 +1,12 @@
 import { campNickname, runIdPattern } from './camp-rules.js'
 import { honorById } from './field-honors.js'
-import { rankedCourse, rankedVersion, validRankedTrace } from './ranked-replay.js'
+import { masteryCourseRuleset } from './ruleset.js'
+import { masteryReplayVersion, validMasteryTrace, rankedCourse, rankedVersion, validRankedTrace } from './ranked-replay.js'
+
+export const rankedSeasons = { [rankedVersion]: rankedCourse, [masteryReplayVersion]: masteryCourseRuleset }
+const knownCourse = (season, course) => Object.hasOwn(rankedSeasons, season) && rankedSeasons[season] === course
+const validSubmission = body => knownCourse(body?.season, body?.course) &&
+  (body.course === masteryCourseRuleset ? validMasteryTrace(body) : validRankedTrace(body))
 
 export const rankedMetrics = Object.freeze({
   score: 'Highest Score', distance: 'Longest Distance', duration: 'Longest Hunt', retrieves: 'Most Retrieves', combo: 'Longest Combo',
@@ -62,8 +68,8 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
       for (const key of entries) {
         let item
         try { item = JSON.parse(saved.getItem(key)) } catch { /* Treat a corrupt item separately. */ }
-        if (item && validRankedTrace(item.body) && key === prefix + 'hunt.' + item.body.ticket &&
-            runIdPattern.test(item.body.ticket) && item.body.course === rankedCourse && item.body.season === rankedVersion &&
+        if (item && validSubmission(item.body) && key === prefix + 'hunt.' + item.body.ticket &&
+            runIdPattern.test(item.body.ticket) &&
             member(item.profile)?.identity === item.owner && item.expires > now()) pending.set(item.body.ticket, item)
         else saved.removeItem(key)
       }
@@ -134,10 +140,10 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
     return attempt
   }
 
-  async function board(profile, metric, scope = 'worldwide', camp = null, offset = 0, refresh = false) {
+  async function board(profile, metric, scope = 'worldwide', camp = null, offset = 0, refresh = false, season) {
     if (!transport?.rankedBoard) return note('board', { status: 'schema_missing' })
     const owner = member(profile)?.identity
-    const key = JSON.stringify([owner, metric, scope, camp, offset])
+    const key = JSON.stringify([profile, owner, metric, scope, camp, offset, season])
     const saved = boards.get(key)
     if (!online()) {
       note('board', { status: 'offline' })
@@ -149,13 +155,13 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
     if (reading.has(readKey)) return reading.get(readKey)
     const promise = (async () => {
       try {
-        const data = await transport.rankedBoard(profile, owner, { p_metric: metric, p_offset: offset, p_scope: scope, p_camp: camp })
+        const data = await transport.rankedBoard(profile, owner, { p_metric: metric, p_offset: offset, p_scope: scope, p_camp: camp, ...(season && { p_season: season }) })
         if (owner !== member(profile)?.identity) return note('board', { status: 'reconnect' })
-        if (epoch !== boardEpoch) return board(profile, metric, scope, camp, offset, true)
+        if (epoch !== boardEpoch) return board(profile, metric, scope, camp, offset, true, season)
         if (data.status !== 'ok') return note('board', data)
-        if (data.season !== rankedVersion || data.course !== rankedCourse) return note('board', { status: 'wrong_version' })
+        if (!knownCourse(data.season,data.course) || season && season !== data.season && !data.legacyFallback) return note('board', { status: 'wrong_version' })
         const clean = { ...data, rows: data.rows.filter(validRow).slice(0, pageLimit),
-          mine: validRow(data.mine) ? data.mine : null, rivals: data.rivals.filter(validRow).slice(0, 2) }
+          mine: validRow(data.mine) ? data.mine : null, rivals: (Array.isArray(data.rivals) && validRow(data.mine) ? data.rivals : []).filter(validRow).slice(0, 2) }
         if (boards.size >= 24) boards.delete(boards.keys().next().value)
         boards.set(key, { at: now(), data: clean })
         note('board', { status: clean.authStatus ?? (clean.open ? 'ok' : 'closed') })
@@ -177,14 +183,14 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
     pending: count,
     honors,
     flush,
-    async ticket(profile) {
+    async ticket(profile, course = rankedCourse) {
       const owner = member(profile)?.identity
       if (!owner || !online()) return { status: owner ? 'offline' : 'profile_required' }
       if (count(profile) >= queueLimit) return { status: 'queue_full' }
       try {
-        const ticket = await transport.rankedTicket(profile, owner, rankedCourse)
+        const ticket = await transport.rankedTicket(profile, owner, course)
         if (ticket.status !== 'ok') return note('ticket', ticket)
-        if (ticket.season !== rankedVersion || ticket.course !== rankedCourse) return note('ticket', { status: 'wrong_version' })
+        if (!knownCourse(ticket.season,ticket.course) || ticket.course !== course) return note('ticket', { status: 'wrong_version' })
         if (!runIdPattern.test(ticket.id) ||
           !Number.isInteger(ticket.seed) || ticket.seed < 0 || ticket.seed > 0xffffffff ||
           !(Date.parse(ticket.expires) > now())) return note('ticket', { status: 'unavailable' })
@@ -192,21 +198,24 @@ export function createRankedCamp(transport, legacy, { store = () => globalThis.l
       } catch { return note('ticket', { status: 'unavailable' }) }
     },
     finish(permit, trace) {
-      if (!permit || !validRankedTrace(trace)) return { status: 'invalid_run' }
+      if (!permit || !trace) return { status: 'invalid_run' }
+      const body = { ticket:permit.id, season:permit.season ?? rankedVersion, course:permit.course ?? rankedCourse,
+        ticks:trace.ticks, actions:trace.actions }
+      if (!validSubmission(body)) return { status: 'invalid_run' }
       if (member(permit.profile)?.identity !== permit.owner || Date.parse(permit.expires) <= now())
         return { status: 'expired' }
       if (count(permit.profile) >= queueLimit) return { status: 'queue_full' }
       const id = permit.id
       const item = { profile: permit.profile, owner: permit.owner, expires: Date.parse(permit.expires),
-        body: { ticket: id, season: rankedVersion, course: rankedCourse, ...trace } }
+        body }
       pending.set(id, item)
       try { store().setItem(prefix + 'hunt.' + id, JSON.stringify(item)) } catch { /* Keep the in-session submission. */ }
       return { status: 'pending', done: flush(permit.profile, id) }
     },
     board,
-    async publicProfile(nickname) {
+    async publicProfile(nickname, season) {
       if (!transport || !online()) return { status: 'offline' }
-      try { return await transport.rankedProfile(nickname) } catch { return { status: 'unavailable' } }
+      try { return await transport.rankedProfile(nickname, season) } catch { return { status: 'unavailable' } }
     },
     async social(profile, action, options) {
       const owner = member(profile)?.identity

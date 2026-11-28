@@ -1,0 +1,22 @@
+.connected-share {
+  background: #18291f;
+  color: #f5ecd8;
+  border: 1px solid #b5a176;
+  border-radius: 12px;
+  width: min(440px,calc(100% - 1rem));
+  max-height: calc(100dvh - 1.5rem);
+  margin: auto;
+  padding: .85rem;
+  overflow: auto;
+}
+.connected-share::backdrop { background: #08140ddc; }
+.connected-share-title { display: flex; justify-content: space-between; align-items: center; gap: .75rem; }
+.connected-share-title h3 { font: 600 1.25rem Georgia,serif; }
+.connected-share img { display: block; object-fit: contain; width: 100%; height: min(55dvh,570px); }
+.connected-share input { inline-size: 1rem; block-size: 1rem; margin-inline-end: .5rem; }
+.connected-share label, .connected-share a, .connected-share button {
+  display: inline-flex; align-items: center; min-height: 44px; padding: .4rem .65rem;
+  margin: .12rem; border-radius: .4rem; color: inherit;
+}
+.connected-share :is(button,a) { border: 1px solid #8e846c; }
+.connected-share p { margin: .1rem 0; }

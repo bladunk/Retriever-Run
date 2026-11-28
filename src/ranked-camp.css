@@ -47,3 +47,12 @@
 .worldwide-table tr > :nth-child(2) { position: sticky; left: 2.25rem; z-index: 1; text-align: left; box-shadow: 1px 0 #59634c; }
 .worldwide-table .ranked-player { max-inline-size: 8rem; min-height: 44px; overflow: hidden; text-overflow: ellipsis; }
 .worldwide-table th small { display: block; color: #e8c88d; }
+
+/* Phone rows keep the deciding statistic visible. Tap a hunter for their full record. */
+@media (max-width: 540px) {
+  .worldwide-table tr > :nth-child(n+4) { display: none; }
+  .worldwide-table .ranked-player { max-inline-size: min(46vw, 12rem); }
+}
+.ranked-version details { display: inline-block; margin-inline-start: .7rem; }
+.ranked-version summary { cursor: pointer; }
+.ranked-camp .ranked-code button, .ranked-camp .ranked-entry button { min-height: 44px; }

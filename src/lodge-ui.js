@@ -434,7 +434,7 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
 }
 
 export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, onClose, onKennel, onAppearance, onDestination,
-  onStart, onJoin, onErase, inspectDogs }) {
+  onStart, onJoin, onErase, onPortrait, inspectDogs }) {
   const dialog = ui.lodge
   const panel = ui['lodge-panel']
   const scroll = dialog.querySelector('.lodge-scroll')
@@ -449,7 +449,7 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
   const labels = { overview: 'Lodge overview', collection: 'Trophy room', trophies: 'Field Honors', career: 'Career and Master Hunter',
     history: 'Career timeline', records: 'Personal records', migration: 'Great Migration', shame: 'Hall of Shame',
     kennel: 'Kennel', equipment: 'Equipment room', board: 'Local records', worldwide: 'Worldwide rankings', friends: 'Friends',
-    'private-camps': 'Private Camps', 'camp-profile': 'Competitive profile', 'camp-archives': 'Archived standings' }
+    'private-camps': 'Private Camps', 'camp-history': 'Archived seasons', 'camp-profile': 'Competitive profile', 'camp-archives': 'Archived standings' }
   const positions = new Map()
   const views = new Map()
   const galleryRooms = new Set(['overview','collection','migration','equipment','shame','records','history'])
@@ -537,7 +537,7 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
         if (!demo) onPlayer()
         renderRoom()
         panel.querySelector('.kennel-breeds').open = true
-      }, target))
+      }, target, onPortrait))
     } else if (room === 'career') content = careerRoom(player, insignia)
     else if (room === 'trophies') content = fieldHonorsRoom(player, insignia, trophies(player), target, rankedCamp.honors(player.id))
     else if (room === 'journal') content = journal(player)
@@ -557,7 +557,7 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
         return
       }
       content = gallery(room, player, { lodge: reading, target, preview: Boolean(demo),
-        competitive: demo ? [] : rankedCamp.honors(player.id),
+        competitive: demo ? [] : rankedCamp.honors(player.id), publicNickname:demo ? undefined : camp.member(player.id)?.nickname,
         hunt: () => { if (demo || !onStart()) dialog.close() },
         navigate(value, detail) {
         views.delete('overview')

@@ -1,3 +1,4 @@
+import { shareFrom } from './share-entry.js'
 import { careerStanding, xpAt } from './career.js'
 import { dogDisplayName } from './dog-name.js'
 import { expeditionRegions } from './expedition.js'
@@ -128,7 +129,16 @@ export function legacyInterior(player, context) {
   caption.setAttribute('aria-label','Display inspection')
   const transport = node('div', null, 'legacy-return')
   transport.append(exhibitButton('Hunt', hunt, 'legacy-hunt'),
-    exhibitButton('Trophy room',() => navigate('collection')))
+    exhibitButton('Trophy room',() => navigate('collection')),
+    exhibitButton('Share Lodge',event => shareFrom(event.currentTarget, () => ({
+      kind:'lodge', title:displayedName, name:preview ? undefined : context.publicNickname,
+      image:backdrop.getAttribute('src'),
+      exhibits:chooseExhibits(player).map(item => ({ title:item.name, image:'./lodge/' +
+        (item.species ? 'observation' : item.art === 'migration' ? 'map' : item.art) + '.webp' })),
+      notes:[lodgeFinishes.find(item => item.id === scene.dataset.finish)?.name ?? tier.name,
+        [qualified ? 'Boyd tribute' : '', furnishing?.name, crossing ? 'Great Migration completed' : ''].filter(Boolean).join(' · ')],
+      footer:preview ? 'ART STUDIO · SIMULATED LODGE' : 'EARNED LODGE · TIER ' + tier.numeral,
+    }))))
   function inspect(item, trigger) {
     const header = node('h4', item.name)
     const close = exhibitButton('Close', () => {
