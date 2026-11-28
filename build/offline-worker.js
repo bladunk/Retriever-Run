@@ -1,3 +1,4 @@
+import { kennelItems } from '../src/kennel-catalog.js'
 import { speciesPhotoFiles } from '../src/species-artwork.js'
 import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
@@ -10,7 +11,8 @@ const worker = readFileSync(new URL('./offline-runtime.js', import.meta.url), 'u
 const publicShell = ['manifest.webmanifest', 'icons/boyd-heritage-48.png', 'branding/boyd-install.webp']
 const lodgeArt = ['interior-1','interior-2','interior-3','interior-4','interior-5','decoy','pheasant','equipment','journal',
   'legend','map','medal','observation','record','shame','bronze-flight','skill-form','certificate','aurora-frame'].map(name => 'lodge/' + name + '.webp')
-const publicFiles = [...publicShell, ...lodgeArt, ...speciesPhotoFiles, 'icons/boyd-heritage-192.png', 'icons/boyd-heritage-512.png',
+const gearArt = kennelItems.map(({ id }) => 'gear/' + id + '.webp')
+const publicFiles = [...publicShell, ...lodgeArt, ...gearArt, ...speciesPhotoFiles, 'icons/boyd-heritage-192.png', 'icons/boyd-heritage-512.png',
   'icons/boyd-heritage-maskable-512.png', 'icons/boyd-heritage-180.png', 'branding/boyd-portrait.webp', 'branding/boyd-menu.webp',
   'branding/master-hunter.png']
 const wildlifeTerritories = (...species) => Object.entries(habitatEncounters)
@@ -31,6 +33,7 @@ const groups = {
   'sky-wildlife': { label: 'River and northern airspace', license: 'living-wildlife', territories: wildlifeTerritories('eagle') },
   'field-recordings': { label: 'Wilderness field recordings', license: 'living-recordings' },
   'species-photos': { label: 'Field Journal photographs', license: 'species-photographs' },
+  'equipment-art': { label: 'Kennel equipment photography', license: 'original' },
   lodge: { label: 'Lodge interiors and display objects', license: 'original' },
   dogs: { label: 'Labrador and animations', license: 'labrador' },
   branding: { label: 'Boyd artwork and icons', license: 'boyd-artwork' },
@@ -45,6 +48,7 @@ function groupFor(file, shell) {
   const key = cleanId(file)
   if (/^(?:collision-debug|art-studio|command-center|command-preview)/.test(key)) return 'diagnostics'
   if (/^(?:lab(?:rador)?|pointer|boyd)\./.test(key)) return 'dogs'
+  if (file.startsWith('gear/')) return 'equipment-art'
   if (file.startsWith('species/')) return 'species-photos'
   if (file.startsWith('lodge/') || /^lodge-gallery\./.test(key)) return 'lodge'
   if (/^(branding|icons)\//.test(file)) return 'branding'

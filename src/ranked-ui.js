@@ -265,7 +265,7 @@ function ranking(camp, player, scope, campId, onReady, season = masteryReplayVer
   return { section, refresh: () => load(0, true) }
 }
 
-function worldwide(camp, player, start, navigate) {
+function worldwide(camp, player, start) {
   const region = node('div', null, 'ranked-overview')
   const state = node('p', '', 'room-note')
   state.setAttribute('role', 'status')
@@ -529,5 +529,5 @@ export function rankedRoom(room, camp, legacy, player, { start, navigate, onJoin
   if (room === 'friends') return friends(camp, player)
   if (room === 'private-camps') return privateCamps(camp, player)
   if (room === 'camp-profile') return competitiveProfile(camp, legacy, player, onJoin, onErase)
-  return worldwide(camp, player, start, navigate)
+  return worldwide(camp, player, start)
 }

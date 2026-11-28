@@ -35,7 +35,6 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category, compet
   const rarity = collectionSelect('Honor rarity', { all: 'All tiers', Bronze: 'Bronze', Silver: 'Silver', Gold: 'Gold', Platinum: 'Platinum' })
   const sort = collectionSelect('Order Field Honors', { catalog: 'Catalog order', recent: 'Recently earned', name: 'Name' })
   const tools = node('div', null, 'collection-tools')
-  tools.append(search, filters)
   const preferences = node('details',null,'heritage-honor-filters')
   preferences.append(node('summary','Filter Field Honors'),filters)
   tools.replaceChildren(search,preferences)

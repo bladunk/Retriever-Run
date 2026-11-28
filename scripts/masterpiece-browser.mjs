@@ -127,7 +127,10 @@ try {
     await page.locator('.lodge-interior img').first().evaluate(image => image.decode())
     await shot('lodge')
     for (const name of ['migration','records','trophies']) {
-      await page.locator('[data-lodge-room="'+name+'"]').click()
+      const destination = page.locator('[data-lodge-room="'+name+'"]')
+      const parent = { records:'career', trophies:'collection' }[name]
+      if (parent && !await destination.isVisible()) await page.locator('[data-lodge-room="'+parent+'"]').click()
+      await destination.click()
       await shot(name)
     }
     await page.locator('#tab-journal').click()
@@ -141,6 +144,12 @@ try {
     await page.locator('#tab-kennel').click()
     await page.locator('.kennel-stage canvas').waitFor()
     await shot('kennel')
+    const gear = page.locator('.kennel-items .gear-illustration').first()
+    if (await gear.count()) {
+      await gear.scrollIntoViewIfNeeded()
+      await gear.evaluate(image => image.decode())
+      await shot('kennel-gear')
+    }
     await page.locator('#close-lodge').click()
     if (process.argv.includes('menus-only')) return
     await context.setOffline(true)

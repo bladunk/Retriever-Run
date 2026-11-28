@@ -96,3 +96,11 @@
 .support-panel form { padding-top: .3rem; }
 .support-panel .support-field { margin-block: .58rem; }
 .support-panel .support-preview { border-left: 2px solid #a98d62; }
+.support-panel .support-routes { display: grid; margin-block: .85rem 1rem; border-block: 1px solid #c3a57558; }
+.support-panel .support-routes button {
+  width: 100%; min-height: 48px; margin: 0; padding: .7rem .35rem; border: 0; border-radius: 0;
+  background: none; text-align: start; font-family: var(--field-display, Georgia, serif); font-size: 1rem;
+}
+.support-panel .support-routes button + button { border-block-start: 1px solid #c3a57535; }
+.support-panel .support-routes button::after { content: '›'; float: inline-end; margin-inline-end: .2rem; color: #dfbb81; }
+.support-panel .support-routes button:focus-visible { outline-offset: -2px; }

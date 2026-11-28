@@ -133,7 +133,7 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog, previe
         button.type = 'button'
         button.dataset.gear = item.id
         const label = node('small')
-        button.append(gearIllustration(item, value), node('strong', item.name), label)
+        button.append(gearIllustration(item), node('strong', item.name), label)
         button.addEventListener('click', () => {
           selected = item.id
           update()

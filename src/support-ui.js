@@ -74,7 +74,9 @@ export function showSupport({ kind, source, build, diagnostics, fixture }) {
   function home() {
     title.textContent = 'Player feedback'
     content.replaceChildren(element('p', 'Share field observations with the developer. Sending feedback is optional.'))
-    for (const key of ['bug','suggestion','note']) content.append(button(feedbackKinds[key], () => formFor(key)))
+    const routes = element('div', null, 'support-routes')
+    for (const key of ['bug','suggestion','note']) routes.append(button(feedbackKinds[key], () => formFor(key)))
+    content.append(routes)
     const pending = fixture ? [] : store.pending()
     const receipts = fixture ? [] : store.receipts()
     if (pending.length) {

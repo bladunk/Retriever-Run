@@ -248,6 +248,9 @@ export function openArtStudio(game, flags, api) {
     ['clean','Clean obstacle run'],['water','Water splash'],['mud','Mud']],flags.get('effect') ?? 'pickup',() => {})
   const feedback = button('Show feedback', () => api.feedback(effects.value))
   if (flags.get('view') === 'effects') queueMicrotask(() => feedback.scrollIntoView({block:'nearest'}))
+  const fieldNotes = document.createElement('p')
+  fieldNotes.textContent = 'Use Canopy and Shoreline to study the remaster. Run isolated practice to see this territory’s chapter and progress ribbon in motion.'
+  form.append(fieldNotes)
   button('Run isolated practice', api.practice)
   const fixtures = ['ordinary','record','partial','level','multi','rank','equipment','trophy','lodge','rare','migration','master']
   const requestedResult = fixtures.includes(flags.get('result')) ? flags.get('result') : 'multi'
