@@ -2,7 +2,7 @@
 
 ## Release status
 
-Owner review in [draft PR #52](https://github.com/bladunk/Retriever-Run/pull/52). The repository started at merged RC.12 main `673311caef599f57b5cd001cdf415c77d71a080f` (PR #51). The independent live Pages read reported app `1.0.0-rc.12`, build `78c86e3`, manifest `a8f5dc6f46d33ed775e2`. Pages run `46123805137` succeeded. The RC.12.1 production artifact verified at implementation commit `7503bcd` reports build `82e6157`, manifest `62b0bb9b0294ef7c17ca`. Evidence and documentation follow in the draft head.
+Owner review in [draft PR #52](https://github.com/bladunk/Retriever-Run/pull/52). The repository started at merged RC.12 main `673311caef599f57b5cd001cdf415c77d71a080f` (PR #51). The independent live Pages read reported app `1.0.0-rc.12`, build `78c86e3`, manifest `a8f5dc6f46d33ed775e2`. Pages run `46123805137` succeeded. The RC.12.1 production artifact verified at implementation commit `3e7d2dc` reports build `5bc0fd2`, manifest `feb58b72a8f04c6fc15d`. Evidence and documentation follow in the draft head.
 
 The remaster changes near-field vegetation, water depth and shore contact, the readability of the trail, authored territory introductions, the compact HUD and five-destination navigation. Every equipment card now shows a render of actual fitted gear. The Lodge presents earned objects inside the room and Field Honors groups related medals. Production remains on RC.12 pending review.
 
@@ -66,15 +66,15 @@ Controlled production-renderer comparison used the same seed 7 reference inputs,
 
 The unchanged 130-geometry gate passed. Normal frame pacing, discarded-time, replay and native input targets remain unverified. The accelerated renderer clock and recorded WebKit throughput do not characterize physical iPhone gameplay. Readiness and the harness hunt-entry field are internal markers. They omit the display and touch pipeline. The candidate full-route captures used build `480dcca`. Later review builds add feedback layout, release notes, an isolated first-arrival fixture and alert priority. The same terrain and simulation are used. [Machine traces and recordings](evidence/wild-heritage/REVIEW.md)
 
-The Boreal to Foothills handoff is visible in both runs. The frame capture cannot attribute the historical native interruption to a particular upload, geometry, shader or release operation. The Low test did not request high-detail Fern residency. Fern churn, four-hunt native geometry growth to 158, first-hunt and restart spikes, hazard visibility, sustained thermal and battery use are open physical-device checks. No material runtime limit has been increased.
+The Boreal to Foothills handoff is visible in both runs. The historical native interruption still lacks a confirmed cause. The Low test did not request high-detail Fern residency. Fern churn, four-hunt native geometry growth to 158, first-hunt and restart spikes, hazard visibility, sustained thermal and battery use are open physical-device checks. No material runtime limit has been increased.
 
 ## Assets, offline delivery and licenses
 
 | Metric | RC.12 baseline | RC.12.1 review build |
 | --- | ---: | ---: |
-| Complete production artifact | 18,655,597 B | 20,511,068 B |
+| Complete production artifact | 18,655,597 B | 20,511,153 B |
 | Required verified assets | 132 | 286 |
-| Required verified asset bytes | 18,550,040 B | 20,316,449 B |
+| Required verified asset bytes | 18,550,040 B | 20,316,534 B |
 | Boot shell bytes | 135,404 B | 135,574 B |
 
 The incremental required asset transfer is approximately 3.80 MB with all exact RC.12 hashes available, plus the new manifests. The field atlas (2.57 MB), Boyd model (1.43 MB) and Gulf material scan (1.40 MB) are the largest individual image or model assets. The equipment gallery accounts for 1.69 MB of network bytes. A decoded 360 × 248 card is about 349 KiB RGBA. All 154 simultaneously would be about 52.45 MiB, so cards remain lazily loaded as DOM images outside active gameplay. The canopy atlas increases from 1 MiB to 4 MiB base RGBA, or from about 1.33 MiB to 5.33 MiB with a full mip chain. No texture count increase was observed in the Low run.
@@ -102,7 +102,7 @@ The existing manifest still declares regional asset groups, content hashes, immu
 
 ## Art Studio and cinematic handoff
 
-Use `npm run dev` from the review checkout, or build a local Studio with `npm run build -- --mode art-studio --outDir qa-output/wild-heritage-studio`. Studio runs on practice profiles. It does not award progress or send ranked results. Append `?studio=1&territory=2&quality=high&seed=7&camera=grove` for Cypress canopy, `?studio=1&territory=12&camera=shore&seed=7` for Parklands, or `?studio=1&territory=11&offset=0.15&arrival=first` for the first-arrival marker. Choose Run isolated practice to see the chapter ribbon. The Territory selector includes all 15, and supported lighting, dog pose and shoreline views share the actual game renderer. The five Lodge interiors can be reviewed with `?studio=1&view=lodge&tier=1` through `tier=5`. No public RC.12.1 Studio deployment is available.
+Use `npm run dev` from the review checkout, or build a local Studio with `npm run build -- --mode art-studio --outDir qa-output/wild-heritage-studio`. Studio runs on practice profiles. It does not award progress or send ranked results. Append `?studio=1&territory=2&quality=high&seed=7&camera=grove` for Cypress canopy, `?studio=1&territory=12&camera=shore&seed=7` for Parklands, or `?studio=1&territory=11&offset=0.15&arrival=first` for the first-arrival marker. Choose Run isolated practice to see the chapter ribbon once the selected territory is ready. The Territory selector includes all 15, and supported lighting, dog pose and shoreline views share the actual game renderer. The five Lodge interiors can be reviewed with `?studio=1&view=lodge&tier=1` through `tier=5`. No public RC.12.1 Studio deployment is available.
 
 RC.12.2 can reuse the existing route, upgraded terrain renderer, authors’ chapter labels, field map, your fitted dog, licensed wildlife and each earned Lodge composition. The ~30-second skippable offline introduction and its original or licensed score are still planned. Owner artistic acceptance, independent playtesting and the Gold Master safeguards remain on the [canonical roadmap](MASTER_ROADMAP.md).
 
