@@ -147,9 +147,12 @@ Owner-requested equipped/owned/locked ordering is implemented across Kennel cate
 
 ## RC.12.1 · Wild Heritage
 
+The implementation is in [draft PR #52](https://github.com/bladunk/Retriever-Run/pull/52). Review near-field woodland forms, bank and puddle surfaces, the chapter ribbon, five destinations, the fitted gear renders, grouped Honors and in-room trophy placement. The Low software renderer reached all 15 territories and Endless at 10:35 with peak 126 geometries against the existing limit of 130. The owner’s original video was unavailable to this workspace. Its findings remain preserved below. More detail on the architecture, direct captures, release verification and unfinished artistic and physical-device checks are in the [Wild Heritage report](WILD_HERITAGE_REPORT.md). Owner review of the visual direction and physical iPhone sign-off remain ahead of the cinematic and Proving Grounds.
+
+
 - Use Cypress Swamp as the quality benchmark and build a species-specific tree library with connected branches, realistic bark, convincing foliage silhouettes and believable forest depth.
 - Improve water, puddles, adjoining shorelines, readable natural hazards, trail surfaces and lighting. Give all 15 territories distinct identities and cinematic entrance announcements.
-- Plan a cleaner five-destination navigation, consolidate the competitive surfaces into Worldwide Camp, simplify the HUD, group achievement families and integrate earned trophies into redesigned Lodges.
+- Use five primary destinations, consolidate the competitive surfaces into Worldwide Camp, simplify the HUD, group achievement families and integrate earned trophies into redesigned Lodges.
 - Refine Labrador and equipment art and menu presentation. Replace repetitive vest thumbnails with clearly differentiated materials, stitching, construction, camouflage and hardware. Master Gun Dog equipment should look and feel more prestigious. Improve Hunt Over celebrations and the website-like feedback and competitive screens.
 - Preserve prior video-review findings in their existing evidence and review them when deciding the redesign priorities. Larger optimized offline assets are acceptable when they improve quality. Measure runtime memory, keep download progress transparent and retain interrupted-download recovery.
 

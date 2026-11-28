@@ -1,0 +1,40 @@
+{
+  "engine": "webkit",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "quality": "low",
+  "captures": [
+    {
+      "label": "puddle-gulf",
+      "elapsed": 15.146016753454301,
+      "distance": 191.87146490278698,
+      "weather": "Autumn sunrise",
+      "puddle": 210.6482226949627,
+      "approachSeconds": 1.32468295707564,
+      "lastSafeJumpSeconds": 1.1916666666666667,
+      "puddleLane": 0
+    },
+    {
+      "label": "puddle-timber",
+      "elapsed": 106.24978020205737,
+      "distance": 2047.5006273715667,
+      "weather": "Morning fog",
+      "puddle": 2066.2129415439485,
+      "approachSeconds": 0.8101335852095631,
+      "lastSafeJumpSeconds": 0.7333333333333333,
+      "puddleLane": 0
+    },
+    {
+      "label": "puddle-mountain",
+      "elapsed": 444.7271500242579,
+      "distance": 11436.046134689559,
+      "weather": "High-country snow",
+      "puddle": 11454.687563189558,
+      "approachSeconds": 0.6552853940334541,
+      "lastSafeJumpSeconds": 0.5833333333333334,
+      "puddleLane": 1
+    }
+  ]
+}

@@ -1,0 +1,230 @@
+[
+  {
+    "version": "before",
+    "name": "install",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "before",
+    "name": "title",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "before",
+    "name": "settings",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "before",
+    "name": "lodge",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "before",
+    "name": "migration",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "before",
+    "name": "records",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "before",
+    "name": "trophies",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "before",
+    "name": "journal",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "before",
+    "name": "journal-entry",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "before",
+    "name": "worldwide",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "before",
+    "name": "kennel",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "before",
+    "name": "kennel-gear",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "install",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "after",
+    "name": "title",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "after",
+    "name": "settings",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "after",
+    "name": "lodge",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "migration",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "records",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "trophies",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "journal",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "journal-entry",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "worldwide",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "kennel",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  },
+  {
+    "version": "after",
+    "name": "kennel-gear",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320,
+      "lodgeWidth": 302,
+      "lodgeClient": 302
+    }
+  }
+]

@@ -1,0 +1,202 @@
+{
+  "engine": "webkit",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "quality": "low",
+  "offline": true,
+  "captures": [
+    {
+      "label": "journey-gulf",
+      "elapsed": 15.786666666666624,
+      "distance": 201.11524235925924,
+      "weather": "Autumn sunrise",
+      "hud": "Gulf Coast Marsh",
+      "stageLabel": "2 / 30",
+      "recordingSeconds": 11.539374441,
+      "sampledAfter": 15,
+      "drawCalls": 54,
+      "geometries": 53
+    },
+    {
+      "label": "journey-cypress",
+      "elapsed": 45.72666666666663,
+      "distance": 732.9852916592589,
+      "weather": "Overcast",
+      "hud": "Southern Cypress Swamp",
+      "stageLabel": "4 / 30",
+      "recordingSeconds": 18.254866583,
+      "sampledAfter": 45,
+      "drawCalls": 62,
+      "geometries": 68
+    },
+    {
+      "label": "journey-flyway",
+      "elapsed": 76.13166666666679,
+      "distance": 1365.5914388733336,
+      "weather": "Morning fog",
+      "hud": "Mississippi Delta",
+      "stageLabel": "6 / 30",
+      "recordingSeconds": 24.477188057,
+      "sampledAfter": 75,
+      "drawCalls": 64,
+      "geometries": 76
+    },
+    {
+      "label": "journey-timber",
+      "elapsed": 105.60666666666717,
+      "distance": 2032.4281985185196,
+      "weather": "Morning fog",
+      "hud": "Arkansas Flooded Timber",
+      "stageLabel": "8 / 30",
+      "recordingSeconds": 31.773624183,
+      "sampledAfter": 105,
+      "drawCalls": 62,
+      "geometries": 81
+    },
+    {
+      "label": "journey-ozark",
+      "elapsed": 136.01166666666668,
+      "distance": 2766.9925318935216,
+      "weather": "Light rain",
+      "hud": "Ozark River Country",
+      "stageLabel": "10 / 30",
+      "recordingSeconds": 38.574183794999996,
+      "sampledAfter": 135,
+      "drawCalls": 58,
+      "geometries": 79
+    },
+    {
+      "label": "journey-farm",
+      "elapsed": 165.69666666666606,
+      "distance": 3521.675156832225,
+      "weather": "Heavy rain",
+      "hud": "Midwest Farm Country",
+      "stageLabel": "12 / 30",
+      "recordingSeconds": 45.121710377999996,
+      "sampledAfter": 165,
+      "drawCalls": 66,
+      "geometries": 92
+    },
+    {
+      "label": "journey-platte",
+      "elapsed": 196.08666666666662,
+      "distance": 4326.220080049263,
+      "weather": "Windy",
+      "hud": "Platte River Valley",
+      "stageLabel": "14 / 30",
+      "recordingSeconds": 51.551273197,
+      "sampledAfter": 195,
+      "drawCalls": 59,
+      "geometries": 100
+    },
+    {
+      "label": "journey-sandhills",
+      "elapsed": 225.3366666666664,
+      "distance": 5125.153987150375,
+      "weather": "Snow",
+      "hud": "Nebraska Sandhills",
+      "stageLabel": "16 / 30",
+      "recordingSeconds": 57.369770751999994,
+      "sampledAfter": 225,
+      "drawCalls": 49,
+      "geometries": 99
+    },
+    {
+      "label": "journey-prairie",
+      "elapsed": 255.98166666666583,
+      "distance": 5983.2120858111175,
+      "weather": "Sleet",
+      "hud": "Dakota Prairie Potholes",
+      "stageLabel": "18 / 30",
+      "recordingSeconds": 62.981249641000005,
+      "sampledAfter": 255,
+      "drawCalls": 56,
+      "geometries": 99
+    },
+    {
+      "label": "journey-dakota",
+      "elapsed": 285.9216666666659,
+      "distance": 6839.487627276597,
+      "weather": "Autumn sunrise",
+      "hud": "Northern Dakota Wetlands",
+      "stageLabel": "20 / 30",
+      "recordingSeconds": 69.333991637,
+      "sampledAfter": 285,
+      "drawCalls": 66,
+      "geometries": 103
+    },
+    {
+      "label": "journey-manitoba",
+      "elapsed": 316.08666666666664,
+      "distance": 7710.793576033115,
+      "weather": "Overcast",
+      "hud": "Manitoba Marshlands",
+      "stageLabel": "22 / 30",
+      "recordingSeconds": 75.063158096,
+      "sampledAfter": 315,
+      "drawCalls": 51,
+      "geometries": 102
+    },
+    {
+      "label": "journey-parklands",
+      "elapsed": 345.786666666666,
+      "distance": 8569.588209169118,
+      "weather": "Overcast",
+      "hud": "Saskatchewan Parklands",
+      "stageLabel": "24 / 30",
+      "recordingSeconds": 81.222484272,
+      "sampledAfter": 345,
+      "drawCalls": 61,
+      "geometries": 104
+    },
+    {
+      "label": "journey-boreal",
+      "elapsed": 375.72666666666606,
+      "distance": 9436.165451849265,
+      "weather": "Morning fog",
+      "hud": "Canadian Boreal Forest",
+      "stageLabel": "26 / 30",
+      "recordingSeconds": 88.519012309,
+      "sampledAfter": 375,
+      "drawCalls": 67,
+      "geometries": 106
+    },
+    {
+      "label": "journey-foothills",
+      "elapsed": 406.1316666666666,
+      "distance": 10317.102493560407,
+      "weather": "Light rain",
+      "hud": "Canadian Rocky Mountain Foothills",
+      "stageLabel": "28 / 30",
+      "recordingSeconds": 95.58122014,
+      "sampledAfter": 405,
+      "drawCalls": 68,
+      "geometries": 115
+    },
+    {
+      "label": "journey-mountain",
+      "elapsed": 435.83166666666597,
+      "distance": 11178.122875000057,
+      "weather": "High-country snow",
+      "hud": "Canadian Mountain Wilderness",
+      "stageLabel": "30 / 30",
+      "recordingSeconds": 101.509027588,
+      "sampledAfter": 435,
+      "drawCalls": 72,
+      "geometries": 118
+    },
+    {
+      "label": "soak-finish",
+      "elapsed": 635.0766666666667,
+      "distance": 16966.7907071581,
+      "weather": "Alpine sunbreak",
+      "hud": "Canadian Mountain Wilderness",
+      "stageLabel": "Endless",
+      "recordingSeconds": 141.65017667799998,
+      "drawCalls": 57,
+      "geometries": 118
+    }
+  ]
+}

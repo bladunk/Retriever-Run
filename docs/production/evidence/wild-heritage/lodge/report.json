@@ -1,0 +1,20 @@
+{
+  "engine": "webkit",
+  "captures": [
+    "before-tier-1.jpg",
+    "before-cabin-1.jpg",
+    "before-tier-2.jpg",
+    "before-tier-3.jpg",
+    "before-tier-4.jpg",
+    "before-tier-5.jpg",
+    "before-cabin-5.jpg",
+    "after-tier-1.jpg",
+    "after-cabin-1.jpg",
+    "after-tier-2.jpg",
+    "after-tier-3.jpg",
+    "after-tier-4.jpg",
+    "after-tier-5.jpg",
+    "after-cabin-5.jpg"
+  ],
+  "qa": {}
+}

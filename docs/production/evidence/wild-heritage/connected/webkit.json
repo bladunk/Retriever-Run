@@ -1,0 +1,22 @@
+{
+  "engine": "webkit",
+  "viewport": {
+    "width": 430,
+    "height": 932
+  },
+  "shots": [
+    "closed",
+    "offline-hunt-result",
+    "hunt-share",
+    "feedback",
+    "lodge-share",
+    "owned-first",
+    "labrador-share",
+    "immediate-replay"
+  ],
+  "verifiedPublicWrites": "synthetic fixture only",
+  "offlineImages": true,
+  "secondProfilePreserved": true,
+  "nativeShare": "cancelled using browser fixture",
+  "submittedRuns": 0
+}
