@@ -1,4 +1,5 @@
 /* Hunt chrome leaves the middle of the moving camera open. */
+#game[data-mode="running"] #art-studio { display: none; }
 #game[data-mode="running"] #hud {
   inset: max(8px, env(safe-area-inset-top)) max(70px, calc(env(safe-area-inset-right) + 62px)) auto max(9px, env(safe-area-inset-left));
   min-width: 0; max-width: 28rem; padding: .39rem .55rem .40rem; gap: .24rem;

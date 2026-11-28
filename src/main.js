@@ -478,6 +478,7 @@ function initialize() {
       lodge: (button, room, exhibit, preview) => lodgeUI.open(button,room,exhibit,preview),
       renderer: () => renderer.info.memory,
       practice: () => start(null, performance.now()),
+      practiceReady: () => trailReady && contextReady,
       feedback: kind => {
         const at = run.distance
         if (kind === 'water' || kind === 'mud')
@@ -560,10 +561,13 @@ function initialize() {
       if (kennelStage) kennel.render(renderer, dog, ms, reduceMotion())
       return
     }
-    if (!trailReady && terrain.readyAt(0) && terrain.readyAt(-1)) {
+    const openingDistance = studioRequested ? run.distance : 0
+    const nextOpeningTile = studioRequested ? openingDistance + 30 : -1
+    if (!trailReady && terrain.readyAt(openingDistance) && terrain.readyAt(nextOpeningTile)) {
       trailReady = needsRedraw = true
       performanceProbe?.ready()
       ui.primary.disabled = false
+      studio?.enablePractice()
       if (mode === 'title') ui.primary.textContent = 'Hunt'
 
       if (collisionRequested && flags.get('inspect') === 'kennel') {
