@@ -71,3 +71,14 @@ export function applyRunXP(career, id, result, improved, newHonors) {
   const after = careerStanding(career)
   return { before, after, earned: after.xp - before.xp }
 }
+
+export function xpTransitions(before, after) {
+  const legs = []
+  for (let level = before.level; level <= after.level; level++) {
+    const from = level === before.level ? before.within : 0
+    const max = level === maxLevel ? 1 : xpAt(level + 1) - xpAt(level)
+    const to = level === after.level ? after.within : max
+    legs.push({ level, from, to, max })
+  }
+  return legs
+}

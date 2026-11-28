@@ -59,7 +59,7 @@ export function progressionMetrics(player, result) {
   set('families', Object.values(p.clears).filter(Boolean).length)
   for (const [key, value] of Object.entries(stats.deathsBy)) set('death:' + key, value)
   set('early', stats.shortRuns)
-  for (const [key, value] of Object.entries({ ...p.best, ...player.records, score: player.profile.best,
+  for (const [key, value] of Object.entries({ ...p.best, ...player.records, score: Math.max(player.profile.best, player.masteryBest ?? 0),
     distance: player.profile.farthest, streak: player.profile.streak })) set('best:' + key, value)
   if (result) {
     for (const [key, value] of Object.entries({ time: result.duration, bag: result.retrieves, goose: result.geese,

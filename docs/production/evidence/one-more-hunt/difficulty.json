@@ -1,0 +1,207 @@
+[
+  {
+    "time": 600,
+    "old": {
+      "time": 600,
+      "edition": "raptor",
+      "speed": 28.995,
+      "hazards": 106,
+      "decisions": 53,
+      "gates": 28,
+      "laneChanges": 33,
+      "strings": null,
+      "decisionReserve": null,
+      "medianGap": 1.02,
+      "longestGap": 1.48
+    },
+    "mastery": {
+      "time": 600,
+      "edition": "mastery",
+      "speed": 29.091,
+      "hazards": 86,
+      "decisions": 43,
+      "gates": 7,
+      "laneChanges": 38,
+      "strings": 6,
+      "decisionReserve": [
+        0.43,
+        0.631
+      ],
+      "medianGap": 1.068,
+      "longestGap": 4.73
+    },
+    "target": {
+      "pressure": 0.23809523809523808,
+      "decisionGap": 0.9971428571428572,
+      "gateGap": 1.4942857142857142,
+      "stringLength": 6,
+      "relief": 0.7395238095238096,
+      "repeatChangeChance": 0.4828571428571429,
+      "secondGateChance": 0.3580952380952381
+    }
+  },
+  {
+    "time": 900,
+    "old": {
+      "time": 900,
+      "edition": "raptor",
+      "speed": 28.995,
+      "hazards": 134,
+      "decisions": 53,
+      "gates": 26,
+      "laneChanges": 25,
+      "strings": null,
+      "decisionReserve": null,
+      "medianGap": 1.02,
+      "longestGap": 2.181
+    },
+    "mastery": {
+      "time": 900,
+      "edition": "mastery",
+      "speed": 29.191,
+      "hazards": 90,
+      "decisions": 45,
+      "gates": 9,
+      "laneChanges": 39,
+      "strings": 8,
+      "decisionReserve": [
+        0.42,
+        0.553
+      ],
+      "medianGap": 1.063,
+      "longestGap": 4.679
+    },
+    "target": {
+      "pressure": 0.4838709677419355,
+      "decisionGap": 0.9529032258064516,
+      "gateGap": 1.4574193548387098,
+      "stringLength": 8,
+      "relief": 0.594516129032258,
+      "repeatChangeChance": 0.6303225806451613,
+      "secondGateChance": 0.5006451612903225
+    }
+  },
+  {
+    "time": 1200,
+    "old": {
+      "time": 1200,
+      "edition": "raptor",
+      "speed": 28.995,
+      "hazards": 151,
+      "decisions": 51,
+      "gates": 24,
+      "laneChanges": 32,
+      "strings": null,
+      "decisionReserve": null,
+      "medianGap": 1.02,
+      "longestGap": 2.181
+    },
+    "mastery": {
+      "time": 1200,
+      "edition": "mastery",
+      "speed": 29.242,
+      "hazards": 87,
+      "decisions": 45,
+      "gates": 10,
+      "laneChanges": 37,
+      "strings": 9,
+      "decisionReserve": [
+        0.421,
+        0.569
+      ],
+      "medianGap": 1.063,
+      "longestGap": 5.21
+    },
+    "target": {
+      "pressure": 0.6097560975609756,
+      "decisionGap": 0.9302439024390244,
+      "gateGap": 1.4385365853658536,
+      "stringLength": 9,
+      "relief": 0.5202439024390244,
+      "repeatChangeChance": 0.7058536585365853,
+      "secondGateChance": 0.5736585365853658
+    }
+  },
+  {
+    "time": 1800,
+    "old": {
+      "time": 1800,
+      "edition": "raptor",
+      "speed": 28.995,
+      "hazards": 115,
+      "decisions": 58,
+      "gates": 31,
+      "laneChanges": 28,
+      "strings": null,
+      "decisionReserve": null,
+      "medianGap": 1.02,
+      "longestGap": 1.48
+    },
+    "mastery": {
+      "time": 1800,
+      "edition": "mastery",
+      "speed": 29.294,
+      "hazards": 88,
+      "decisions": 44,
+      "gates": 15,
+      "laneChanges": 36,
+      "strings": 10,
+      "decisionReserve": [
+        0.432,
+        0.534
+      ],
+      "medianGap": 1.394,
+      "longestGap": 5.134
+    },
+    "target": {
+      "pressure": 0.7377049180327869,
+      "decisionGap": 0.9072131147540984,
+      "gateGap": 1.419344262295082,
+      "stringLength": 10,
+      "relief": 0.4447540983606557,
+      "repeatChangeChance": 0.7826229508196721,
+      "secondGateChance": 0.6478688524590164
+    }
+  },
+  {
+    "time": 3600,
+    "old": {
+      "time": 3600,
+      "edition": "raptor",
+      "speed": 28.995,
+      "hazards": 121,
+      "decisions": 55,
+      "gates": 29,
+      "laneChanges": 26,
+      "strings": null,
+      "decisionReserve": null,
+      "medianGap": 1.02,
+      "longestGap": 2.181
+    },
+    "mastery": {
+      "time": 3600,
+      "edition": "mastery",
+      "speed": 29.346,
+      "hazards": 85,
+      "decisions": 45,
+      "gates": 14,
+      "laneChanges": 34,
+      "strings": 11,
+      "decisionReserve": [
+        0.428,
+        0.507
+      ],
+      "medianGap": 1.275,
+      "longestGap": 5.124
+    },
+    "target": {
+      "pressure": 0.8677685950413223,
+      "decisionGap": 0.8838016528925621,
+      "gateGap": 1.3998347107438016,
+      "stringLength": 11,
+      "relief": 0.36801652892561987,
+      "repeatChangeChance": 0.8606611570247933,
+      "secondGateChance": 0.7233057851239669
+    }
+  }
+]

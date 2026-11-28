@@ -1,0 +1,88 @@
+[
+  {
+    "version": "after",
+    "name": "ordinary-result",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "after",
+    "name": "watch-final-moments",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "after",
+    "offline": true,
+    "completed": 2,
+    "retainedProfiles": 2,
+    "replay": {
+      "inputAt": 120581.89999997616,
+      "handlerAt": 120585.69999998808,
+      "before": {
+        "geometries": 49,
+        "textures": 13,
+        "programs": 19
+      },
+      "firstFrameSubmittedMs": 1217,
+      "firstFrameCpuMs": 3.4,
+      "firstRenderMs": 1.4,
+      "after": {
+        "geometries": 49,
+        "textures": 13,
+        "programs": 19
+      },
+      "firstOperations": [
+        {
+          "at": 120585.79999995232,
+          "hunt": 3,
+          "name": "hunt-trail-reset",
+          "detail": "state and replay setup",
+          "durationMs": 0.1
+        },
+        {
+          "at": 120587.79999995232,
+          "hunt": 3,
+          "name": "hunt-scene-entry",
+          "detail": "HUD and gesture audio",
+          "durationMs": 1.8
+        },
+        {
+          "at": 120590.59999996424,
+          "hunt": 3,
+          "name": "hunt-opening-entities",
+          "detail": "trail entity population",
+          "durationMs": 2.8
+        },
+        {
+          "at": 121797.39999997616,
+          "hunt": 3,
+          "name": "wildlife-art",
+          "detail": "mallard",
+          "durationMs": 1.1
+        },
+        {
+          "at": 121797.39999997616,
+          "hunt": 3,
+          "name": "wildlife-fallback",
+          "detail": {
+            "species": "mallard",
+            "reason": "battery saver"
+          }
+        },
+        {
+          "at": 121797.39999997616,
+          "hunt": 3,
+          "name": "wildlife-visible",
+          "detail": "mallard"
+        }
+      ],
+      "nextAnimationCallbackMs": 1253.3,
+      "firstPresentationIntervalMs": 76.2
+    }
+  }
+]

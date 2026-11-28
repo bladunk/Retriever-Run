@@ -1,0 +1,42 @@
+[
+  {
+    "version": "studio",
+    "name": "minute-5",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "minute-10",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "minute-15",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "minute-20",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "minute-30",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  }
+]

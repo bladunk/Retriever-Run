@@ -19,6 +19,7 @@ export function createRunControls() {
       buffered = undefined
     },
     apply(run, onAction) {
+      const lead = run.mastery ? .18 : verticalBuffer
       let usedVertical = false
       for (const move of queue) {
         const vertical = move === 'jump' || move === 'slide'
@@ -29,9 +30,9 @@ export function createRunControls() {
             usedVertical = true
             buffered = undefined
           }
-        } else if (vertical && Math.max(run.jump, run.slide) <= verticalBuffer) {
+        } else if (vertical && Math.max(run.jump, run.slide) <= lead) {
           buffered = move
-          expires = run.elapsed + verticalBuffer + .02
+          expires = run.elapsed + lead + .02
         }
       }
       queue.length = 0
