@@ -1,3 +1,4 @@
+import { createIncidentCapture, submittedPerformance } from './support-incident.js'
 import { createHuntRecap } from './hunt-recap.js'
 import { renderHuntResults } from './hunt-results.js'
 import fontLicense from './assets/fonts/SOURCE-SERIF-OFL.txt?url'
@@ -111,6 +112,7 @@ let finishResults
 let completionNeedsSave = false
 let playback
 const recap = createHuntRecap()
+const incidentCapture = createIncidentCapture()
 let calloutAnimation
 
 const flags = new URLSearchParams(location.search)
@@ -729,6 +731,7 @@ function initialize() {
           const submitted = performanceProbe.stamp()
           for (const input of acceptedInputs) input.submittedAt ??= submitted
         }
+        if (mode === 'running' && !studioRequested && wall > 0) incidentCapture.frame(wall * 1000)
         if ((mode === 'running' || inspecting) && performanceProbe) {
           const end = performanceProbe.stamp()
           performanceProbe.graphics(profile.quality, preset.detail)
@@ -845,6 +848,7 @@ function runningSurface() {
 }
 
 function onAction(move) {
+  if (!studioRequested) incidentCapture.input(ticks, move)
   if (performanceProbe) {
     if (acceptedInputs.length === 24) acceptedInputs.shift()
     acceptedInputs.push({ move, tick:ticks, elapsed:run.elapsed,
@@ -872,6 +876,9 @@ function step(dt) {
 
   const impacted = firstContact(previous, run, entities, contact)
   if (impacted) {
+    if (!studioRequested) incidentCapture.fatal({ seed: signSeed, ruleset: runCourse, territory: regionAt(contact.elapsed).key,
+      stage: stageAt(contact.elapsed).level, tick: ticks, before: previous, after: run, contact, entities,
+      pressure: run.mastery ? endlessPressure(contact.elapsed) : undefined })
     samplePose(run, previous, run, contact.fraction)
     for (const entity of entities) {
       if (entity.hazard && entity !== impacted) runStatistics.passed(previous, run, entity)
@@ -1200,6 +1207,7 @@ function setMode(value, options = {}) {
   ui['field-report'].hidden = !over
   ui['run-again'].textContent = example ? 'Back to Art Studio' : 'Play Again'
   ui['report-watch'].hidden = !over || Boolean(example) || !recap.canWatch()
+  ui['report-unfair'].hidden = !over || diagnosticsRequested
   ui['report-lodge'].hidden = Boolean(example)
   ui['main-menu'].hidden = Boolean(example)
   ui.game.inert = over
@@ -1262,6 +1270,7 @@ function resetTrail(seed) {
   run = newRun(runRules)
   skill = run.mastery ? createSkillTracker() : undefined
   recap.reset()
+  incidentCapture.reset()
   acceptedInputs.length = 0
   pendingInputTimes.clear()
   discoveriesPlan = planDiscoveries(seed)
@@ -1583,4 +1592,30 @@ function bindInput() {
     previousTime = undefined
     resize()
   })
+}
+
+async function openSupport(kind, source) {
+  const { showSupport } = await import('./support-ui.js')
+  showSupport({ kind, source, build: runningBuild, fixture: diagnosticsRequested ? 'success' : undefined,
+    diagnostics: () => {
+      const details = incidentCapture.diagnostics(profile.quality, kind === 'unfair')
+      const performance = submittedPerformance(performanceProbe?.read())
+      return performance ? { ...details, performance } : details
+    } })
+}
+for (const [id, kind] of [['open-feedback','feedback'], ['open-release-notes','updates'], ['report-unfair','unfair']]) {
+  ui[id].addEventListener('click', () => void openSupport(kind, ui[id]))
+}
+
+function retrySavedFeedback() {
+  try {
+    const queued = localStorage.getItem('retriever-run.feedback.pending.v1')
+    if (queued && queued !== '[]' && !diagnosticsRequested) {
+      void import('./support-ui.js').then(({ retryFeedback }) => retryFeedback()).catch(() => {})
+    }
+  } catch { /* Feedback storage can be unavailable. */ }
+}
+window.addEventListener('online', retrySavedFeedback)
+if (navigator.onLine) {
+  document.addEventListener('pointerdown', () => setTimeout(retrySavedFeedback, 2000), { once: true })
 }

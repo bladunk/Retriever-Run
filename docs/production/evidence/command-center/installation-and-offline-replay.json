@@ -1,0 +1,93 @@
+{
+  "interruptedDownload": {
+    "asset": "labrador.glb",
+    "message": "The download stopped. Retry to resume from your verified files.",
+    "readyIncludingRetryMs": 13158
+  },
+  "offline": {
+    "build": {
+      "version": "1.0.0-rc.11",
+      "id": "f896c46"
+    },
+    "readyMs": 6145
+  },
+  "update": {
+    "busyHuntProtected": true,
+    "preservedRuns": 4,
+    "unchangedAudioRequests": 1
+  },
+  "decoded": {
+    "terrainAtlasMipBytes": 27962027,
+    "audioBytes": 10517048
+  },
+  "replay": {
+    "version": "after",
+    "offline": true,
+    "completed": 2,
+    "retainedProfiles": 2,
+    "replay": {
+      "inputAt": 69334.09999996424,
+      "handlerAt": 69337,
+      "before": {
+        "geometries": 48,
+        "textures": 13,
+        "programs": 19
+      },
+      "firstFrameSubmittedMs": 2109.9,
+      "firstFrameCpuMs": 3.3,
+      "firstRenderMs": 1.8,
+      "after": {
+        "geometries": 48,
+        "textures": 13,
+        "programs": 19
+      },
+      "firstOperations": [
+        {
+          "at": 69337.09999996424,
+          "hunt": 3,
+          "name": "hunt-trail-reset",
+          "detail": "state and replay setup",
+          "durationMs": 0.1
+        },
+        {
+          "at": 69342.59999996424,
+          "hunt": 3,
+          "name": "hunt-scene-entry",
+          "detail": "HUD and gesture audio",
+          "durationMs": 5.5
+        },
+        {
+          "at": 69343.39999997616,
+          "hunt": 3,
+          "name": "hunt-opening-entities",
+          "detail": "trail entity population",
+          "durationMs": 0.8
+        },
+        {
+          "at": 71442,
+          "hunt": 3,
+          "name": "wildlife-art",
+          "detail": "mallard",
+          "durationMs": 0.6
+        },
+        {
+          "at": 71442,
+          "hunt": 3,
+          "name": "wildlife-fallback",
+          "detail": {
+            "species": "mallard",
+            "reason": "battery saver"
+          }
+        },
+        {
+          "at": 71442,
+          "hunt": 3,
+          "name": "wildlife-visible",
+          "detail": "mallard"
+        }
+      ],
+      "nextAnimationCallbackMs": 2173.3,
+      "firstPresentationIntervalMs": 69
+    }
+  }
+}

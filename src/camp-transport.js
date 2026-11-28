@@ -1,4 +1,4 @@
-const config = typeof __CAMP_PUBLIC_CONFIG__ === 'undefined' ? null : __CAMP_PUBLIC_CONFIG__
+export const campPublicConfig = typeof __CAMP_PUBLIC_CONFIG__ === 'undefined' ? null : __CAMP_PUBLIC_CONFIG__
 const rpcMissing = error => ['PGRST202', '42883'].includes(error.cause?.code)
 
 export function fetchForCamp(fetcher, timeoutMs = 6500) {
@@ -21,7 +21,7 @@ export function fetchForCamp(fetcher, timeoutMs = 6500) {
   }
 }
 
-export function createCampTransport(settings = config, {
+export function createCampTransport(settings = campPublicConfig, {
   loadSdk = () => import('@supabase/supabase-js'),
   storage = () => globalThis.localStorage,
   fetcher = (...args) => globalThis.fetch(...args),

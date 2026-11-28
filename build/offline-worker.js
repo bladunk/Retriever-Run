@@ -43,7 +43,7 @@ const digest = input => createHash('sha256').update(input).digest('hex')
 function groupFor(file, shell) {
   if (shell.has(file)) return 'shell'
   const key = cleanId(file)
-  if (/^(?:collision-debug|art-studio)/.test(key)) return 'diagnostics'
+  if (/^(?:collision-debug|art-studio|command-center|command-preview)/.test(key)) return 'diagnostics'
   if (/^(?:lab(?:rador)?|pointer|boyd)\./.test(key)) return 'dogs'
   if (file.startsWith('species/')) return 'species-photos'
   if (file.startsWith('lodge/') || /^lodge-gallery\./.test(key)) return 'lodge'

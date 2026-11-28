@@ -160,3 +160,7 @@ The vest construction, textile shading, camouflage fields, collar details, banda
 | Field Journal photos, room plates, and wildlife calls | Existing photo, Legacy and Living World sources above | Existing licenses | Reused without replacing, modifying or re-encoding the underlying media. |
 
 The review captures are documentation and add zero install bytes. RC.9 adds no source recordings, meshes or textures.
+
+## RC.11 · Developer Command Center
+
+Original project interface and test fixtures. Review screenshots and footage use existing licensed game assets and synthetic report data. Obstacle contact shadows now share the existing unit quad without changing the original material or textures. RC.11 introduced no third-party art, recordings, typefaces, meshes or textures. [Evidence index](evidence/command-center/REVIEW.md)

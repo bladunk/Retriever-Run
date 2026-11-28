@@ -8,7 +8,7 @@ const messages = {
   auth_required: 'Your Worldwide session has expired. Reconnect from Competitive profile.',
   auth_unavailable: 'Worldwide sign-in is temporarily unavailable. Public rankings may still be available.',
   profile_required: 'Join Worldwide Camp from Competitive profile to use this room.',
-  closed: 'The new competition is closed until the production review. Local hunts are ready.',
+  closed: 'Official Worldwide competition is closed. Local hunts and progress are available.',
   unavailable: 'Camp is temporarily unavailable. Your local progress is safe.',
   schema_missing: 'The Worldwide database API needs its migration or a schema refresh. Local hunts are available.',
   verifier_missing: 'The online verifier is not configured. Your eligible result is queued.',
@@ -196,7 +196,7 @@ function ranking(camp, player, scope, campId, onReady) {
       if (worldwide) compatibility.textContent = result.scoresOnly
         ? 'Official score rankings are available. The other verified bests are temporarily unavailable.'
         : 'Official rank follows verified score. Each column shows a separate personal best.'
-      version.textContent = 'Great Migration 1 · ' + (result.open ? 'Open' : 'Launch review')
+      version.textContent = 'Great Migration 1 · ' + (result.open ? 'Open' : 'Competition closed')
       if (worldwide) version.append(node('small', result.course))
       if (result.as_of && Number.isFinite(Date.parse(result.as_of))) version.append(node('small', 'Last synced ' + playedAt.format(new Date(result.as_of))))
       if (worldwide && Number.isSafeInteger(result.total_ranked)) population.textContent = 'Worldwide top 100 · ' + number(result.total_ranked) + ' ranked'
@@ -242,7 +242,7 @@ function ranking(camp, player, scope, campId, onReady) {
     if (worldwide) viewport.hidden = !list.children.length
     status.textContent = result.stale ? (result.staleReason === 'offline' ? 'Offline. Showing the last downloaded standings.'
       : 'Refresh failed. Showing the last downloaded standings.') : result.authStatus ? feedback({ status: result.authStatus }) :
-      !list.children.length ? (worldwide ? 'No verified worldwide scores yet.' : 'No verified records in this category yet.') : ''
+      !list.children.length ? (worldwide ? 'No eligible verified scores are available for this season.' : 'No verified records in this category yet.') : ''
     offset = from + 25
   }
   queueMicrotask(() => void load())
@@ -290,7 +290,7 @@ function worldwide(camp, player, start, navigate) {
   const links = node('div', null, 'worldwide-toolbar')
   links.append(action('Competitive profile', () => navigate('camp-profile')),
     action('Archived rankings', () => navigate('camp-archives')))
-  region.append(board.section, state, ranked, pending, links)
+  region.append(state, board.section, ranked, pending, links)
   return region
 }
 
