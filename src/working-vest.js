@@ -122,13 +122,14 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
   const material = new T.MeshStandardMaterial({ roughness: .88 })
   const coarseWeave = { value: .6 }
   const textile = { value: 0 }
+  const prestige = { value: 0 }
   const panel = { value: new T.Color() }
   const binding = { value: new T.Color() }
   material.onBeforeCompile = shader => {
-    Object.assign(shader.uniforms, { vestPanel: panel, vestBinding: binding, vestWeave: coarseWeave, vestTextile: textile })
+    Object.assign(shader.uniforms, { vestPanel: panel, vestBinding: binding, vestWeave: coarseWeave, vestTextile: textile, vestPrestige: prestige })
     shader.vertexShader = 'attribute vec4 fitRest; varying vec4 vestCut;\n' + shader.vertexShader
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvestCut = fitRest;')
-    shader.fragmentShader = 'varying vec4 vestCut; uniform vec3 vestPanel, vestBinding; uniform float vestWeave, vestTextile;\n' + shader.fragmentShader
+    shader.fragmentShader = 'varying vec4 vestCut; uniform vec3 vestPanel, vestBinding; uniform float vestWeave, vestTextile, vestPrestige;\n' + shader.fragmentShader
       .replace('#include <color_fragment>', `#include <color_fragment>
         float side = abs(vestCut.x);
         float y = vestCut.y;
@@ -169,6 +170,20 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
         cloth += (.023*teeth + .018*chestEdge*grainFade + .035*stitch + boundStitch*.029 + tabThread*.036);
         float fastener = max(slider,loop*.85);
         cloth = mix(cloth,vec3(.34,.24,.129),fastener);
+        if (vestPrestige > .5) {
+          // Reinforced field panel, double-piped seam and stitched oval mark.
+          // Everything follows the same weighted shell and shader program.
+          float sidePanel = smoothstep(.008,.040,panelLine+.088)*(1.-smoothstep(.25,.38,z));
+          float welt = 1.-smoothstep(.006,.013,abs(panelLine+.063));
+          float chevron = 1.-smoothstep(.009,.021,abs(z+.29-.58*(y-1.66)));
+          vec2 mark = vec2((z+.22)/.153,(y-1.78)/.086);
+          float crest = 1.-smoothstep(.87,1.,length(mark));
+          float stamp = (1.-smoothstep(.08,.17,abs(abs(mark.x)*.58+mark.y+.23))) * crest;
+          cloth = mix(cloth,vestPanel*.68,(.30+.18*vestPrestige)*sidePanel);
+          cloth = mix(cloth,vec3(.20,.147,.078),.82*welt+.20*chevron*sidePanel);
+          cloth = mix(cloth,vec3(.13,.088,.047),crest*.88);
+          cloth = mix(cloth,vec3(.51,.36,.17),stamp*.87);
+        }
         diffuseColor.rgb = cloth * (1. + (.12 - vestWeave*.033)*weave);
       `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         roughnessFactor = mix(roughnessFactor + weave*.043,.39,fastener);
@@ -202,6 +217,7 @@ export function createWorkingVest(body, restSpace = body.matrixWorld) {
     const waxed = style.id.endsWith('-heritage-vest') || style.id === 'seasoned-vest'
     material.roughness = neoprene ? .77 : waxed ? .73 : style.rough ?? .88
     textile.value = waxed ? 1 : 0
+    prestige.value = /^(master|legend|boyd)/.test(style.id) ? 1 : 0
     coarseWeave.value = neoprene ? .13 : waxed ? .81 : .96
     panel.value.setHex(style.panel ?? style.color)
     binding.value.setHex(style.binding ?? style.color)

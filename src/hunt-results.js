@@ -77,6 +77,9 @@ function exhibits(report, player) {
 }
 
 export function renderHuntResults(ui, report, { player, motion, openRoom } = {}) {
+  const celebration = report.boyd || report.presentation?.migrationCompleted || report.lodge?.tier ||
+    report.gear?.length || report.improved?.includes('score')
+  ui['field-report'].toggleAttribute('data-celebration',Boolean(celebration))
   const panel = ui['report-journey']
   panel.replaceChildren()
   const awards = ui['report-earned']

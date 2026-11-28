@@ -1,6 +1,7 @@
+import { migrationChapter } from './migration-chapter.js'
 import { shareFrom } from './share-entry.js'
 import { huntShareModel } from './share-model.js'
-import { kennelItems } from './kennel-catalog.js'
+import { classicGear, kennelItems } from './kennel-catalog.js'
 import { createIncidentCapture, submittedPerformance } from './support-incident.js'
 import { createHuntRecap } from './hunt-recap.js'
 import { renderHuntResults } from './hunt-results.js'
@@ -70,9 +71,11 @@ import './ranked-camp.css'
 import './top-dog.css'
 import './masterpiece.css'
 import './mastery.css'
+import './wild-heritage.css'
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]))
 addDestinationIcons(ui)
+const chapter = migrationChapter(ui)
 ui['font-license'].href = fontLicense
 const volumeKeys = Object.keys(audioDefaults)
 const systemMotion = matchMedia('(prefers-reduced-motion: reduce)')
@@ -440,6 +443,27 @@ function initialize() {
     dog.appearance(outfit.equipment)
     try { return kennel.portrait(renderer,dog) }
     finally { restore() }
+  }
+
+  if (collisionRequested && flags.get('gear-shots') === '1') {
+    window.retrieverGearShot = (slot,id) => {
+      const item = kennelItems.find(gear => gear.id === id)
+      if (!kennelStage || !dog.modelReady() || !item || (item.breed ?? 'lab') !== dog.activeBreed()) return null
+      dog.appearance({ ...classicGear, [slot]:id })
+      const frame = kennel.portrait(renderer,dog)
+      try {
+        const area = slot === 'vest' ? [200,146,575,396] : slot === 'collar' ?
+          [520,115,405,329] : [105,111,762,480]
+        const thumb = document.createElement('canvas')
+        thumb.width = 360
+        thumb.height = 248
+        thumb.getContext('2d',{alpha:false}).drawImage(frame,...area,0,0,360,248)
+        return thumb.toDataURL('image/webp',.91)
+      } finally {
+        frame.width = frame.height = 1
+        dog.appearance(lodge.current().kennel.equipment)
+      }
+    }
   }
 
   if (studioRequested) runCourse = masteryCourseRuleset
@@ -1063,7 +1087,13 @@ function updateConditions(weather) {
       sound.play('territory')
       hapticFeedback(navigator, profile.haptics, 'milestone')
     }
-    announce(region.key === 'manitoba' ? 'Canada · Manitoba Marshlands' : region.name, 2)
+  }
+  if (!frozen && mode === 'running') {
+    const endless = run.mastery && run.elapsed >= masteryStart
+    const first = !diagnosticsRequested && currentTerritory !== region.key && region.index > 0 &&
+      (lodge.current().migration.farthest ?? 0) <= region.index
+    chapter.show(region,run.elapsed,{ first,endless })
+    chapter.update(region,run.elapsed,endless)
   }
   currentTerritory = region.key
   if (ui.habitat.textContent !== habitat) {
@@ -1305,6 +1335,7 @@ function resetTrail(seed) {
   signSeed = seed
   setTerrainSeed(seed)
   currentTerritory = null
+  chapter.reset()
   nextRow = run.mastery ? createMasteryCourse(seed) : createCourse(seed, runRules)
   row = nextRow()
   if (previewRegion) {

@@ -291,12 +291,10 @@ export function createTerrain(scene, showSign, probe) {
     const delta = packet.territory === 'flyway'
     const heartland = heartlandTypes.has(packet.territory)
     const northern = packet.northern
-    const floodedTimber = packet.territory === 'timber'
     tile.swamp = swamp
     for (const [index, mesh] of tile.forest.entries()) {
       const compact = delta || heartland || northern && index === 1 || field.fieldDetail.value < 2
       const trees = swamp ? cypressModel(index > 0 ? 2 : variant)
-        : floodedTimber ? southernModel((index ? 'WillowOak' : 'BottomlandOak') + (compact ? 'LOD' : ''))
         : forestModel(variants[index], compact, Math.abs(packet.index + index) % 2)
       assignForestGeometry(mesh, trees)
       mesh.count = 0

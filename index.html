@@ -63,9 +63,16 @@
         <progress id="charge" max="100" value="0"></progress>
       </div>
       <p id="combo" hidden></p>
+      <div id="migration-ribbon" role="progressbar" aria-label="Great Migration progress" aria-valuemin="0" aria-valuemax="15"></div>
     </section>
     <span class="practice-status">Practice run · Career and Worldwide Camp disabled</span>
     <div id="conditions" hidden><span id="habitat"></span><span id="weather"></span></div>
+    <aside id="migration-chapter" role="status" aria-atomic="true" hidden>
+      <span id="chapter-series"></span>
+      <strong id="chapter-title"></strong>
+      <span id="chapter-subtitle"></span>
+      <span id="chapter-milestone"></span>
+    </aside>
     <div id="flight-warning" class="callout" role="status" hidden></div>
     <div id="callout" class="callout" aria-hidden="true"></div>
     <div id="patch-toast" class="patch-toast" role="status" hidden></div>
@@ -86,8 +93,7 @@
           <button id="open-lodge" type="button">Lodge</button>
           <button type="button" data-entry="kennel">Kennel</button>
           <button type="button" data-entry="journal">Journal</button>
-          <button id="open-worldwide" data-entry="worldwide" type="button">Worldwide</button>
-          <button type="button" data-entry="board">Camp</button>
+          <button id="open-worldwide" data-entry="worldwide" type="button">Worldwide Camp</button>
           </div>
         </nav>
         <div class="title-tools" aria-label="Hunt options">
@@ -294,10 +300,9 @@
         <button id="tab-overview" type="button" data-room="overview">Lodge</button>
         <button id="tab-kennel" type="button" data-room="kennel">Kennel</button>
         <button id="tab-journal" type="button" data-room="journal">Journal</button>
-        <button id="tab-worldwide" type="button" data-room="worldwide">Worldwide</button>
-        <button id="tab-board" type="button" data-room="board">Camp</button>
+        <button id="tab-worldwide" type="button" data-room="worldwide">Worldwide Camp</button>
       </nav>
-      <label class="room-picker" id="room-picker">Room <select id="lodge-room"></select></label>
+      
       <div id="lodge-panel" class="lodge-panel" role="region" aria-labelledby="tab-overview" tabindex="0"></div>
     </div>
     </dialog>

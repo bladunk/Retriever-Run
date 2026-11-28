@@ -1,5 +1,5 @@
 import { rewardGroups } from './hunt-presentation.js'
-import { collectionSearch, matchesCollection, primaryRoom, roomGroups } from './collection-browser.js'
+import { collectionSearch, matchesCollection, primaryRoom } from './collection-browser.js'
 import { encounterTiers, fieldSpecies, habitatEncounters } from './wildlife-catalog.js'
 import { journalFieldMarks } from './journal-field-marks.js'
 import { environmentalDiscoveries } from './environment-discoveries.js'
@@ -439,12 +439,18 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
   const panel = ui['lodge-panel']
   const scroll = dialog.querySelector('.lodge-scroll')
   const tabs = [...dialog.querySelectorAll('[data-room]')]
-  const picker = ui['lodge-room']
   const rooms = node('nav', null, 'legacy-room-nav')
   rooms.setAttribute('aria-label','Lodge rooms')
   panel.before(rooms)
-  const lodgeRooms = { overview:'Cabin', collection:'Trophies', history:'Timeline', records:'Records',
-    migration:'Migration', career:'Ranks', trophies:'Honors', shame:'Camp humor' }
+  const areas = { overview:['overview','collection','career'], worldwide:['worldwide','friends','private-camps','camp-profile','camp-history'],
+    kennel:['kennel','equipment'] }
+  const details = { overview:['migration'], collection:['trophies','shame'], career:['history','records'],
+    history:['history','records'], records:['history','records'], trophies:['trophies','shame'], shame:['trophies','shame'],
+    'camp-history':['camp-archives','board'], 'camp-archives':['camp-history','board'], board:['camp-history','camp-archives'] }
+  const roomNames = { overview:'Cabin',collection:'Collection',career:'Career',records:'Local records',
+    migration:'Migration map',history:'Timeline',trophies:'Field Honors',shame:'Camp humor',
+    worldwide:'Standings',friends:'Friends','private-camps':'Private Camps','camp-profile':'Profile',
+    'camp-history':'Archives','camp-archives':'Early seasons',board:'Local ranks',kennel:'Outfit',equipment:'Equipment room' }
   let demo
   const labels = { overview: 'Lodge overview', collection: 'Trophy room', trophies: 'Field Honors', career: 'Career and Master Hunter',
     history: 'Career timeline', records: 'Personal records', migration: 'Great Migration', shame: 'Hall of Shame',
@@ -482,16 +488,15 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
     }
     const title = ui['lodge-title']
     if (group === 'overview') title.replaceChildren('The ', node('em', 'Lodge'))
-    else title.textContent = { kennel: 'Kennel', journal: 'Field Journal', worldwide: 'Worldwide', board: 'Camp' }[group]
+    else title.textContent = { kennel: 'Kennel', journal: 'Field Journal', worldwide: 'Worldwide Camp' }[group]
     ui['close-lodge'].setAttribute('aria-label', 'Close ' + title.textContent)
     panel.setAttribute('aria-labelledby', 'tab-' + group)
     for (const tab of tabs) {
       if (tab.dataset.room === group) tab.setAttribute('aria-current', 'page')
       else tab.removeAttribute('aria-current')
     }
-    rooms.hidden = group !== 'overview'
-    rooms.replaceChildren(...Object.entries(lodgeRooms).map(([key,label]) => {
-      const button = node('button',label)
+    function roomButton(key) {
+      const button = node('button',roomNames[key] ?? labels[key])
       button.type = 'button'
       button.dataset.lodgeRoom = key
       if (key === room) button.setAttribute('aria-current','page')
@@ -500,14 +505,21 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
         rooms.querySelector('[data-lodge-room="'+key+'"]')?.focus({ preventScroll:true })
       })
       return button
-    }))
-    ui['room-picker'].hidden = group === 'overview' || room === 'worldwide' || roomGroups[group].length < 2
-    picker.replaceChildren(...roomGroups[group].map(key => {
-      const option = node('option', labels[key])
-      option.value = key
-      return option
-    }))
-    picker.value = room
+    }
+    const roots = areas[group] ?? []
+    const children = details[room] ?? []
+    rooms.hidden = !roots.length
+    rooms.replaceChildren()
+    if (roots.length) {
+      const line = node('div',null,'heritage-room-tabs')
+      line.append(...roots.map(roomButton))
+      rooms.append(line)
+    }
+    if (children.length) {
+      const line = node('div',null,'heritage-room-details')
+      line.append(...children.map(roomButton))
+      rooms.append(line)
+    }
     if (room === 'overview') views.delete(room)
     const remembered = !target && room !== 'kennel' && views.get(room)
     if (remembered) {
@@ -607,7 +619,7 @@ export function createLodgeUI(ui, lodge, { camp, rankedCamp, onPlayer, onOpen, o
     renderPlayers()
   })
   for (const tab of tabs) tab.addEventListener('click', () => selectRoom(tab.dataset.room))
-  picker.addEventListener('change', () => selectRoom(picker.value))
+  ui['lodge-room']?.addEventListener('change', () => selectRoom(ui['lodge-room'].value))
   ui['camp-hunt'].addEventListener('click', () => dialog.close())
 
   function onConnectivity() {

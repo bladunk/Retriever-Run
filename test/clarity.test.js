@@ -2,7 +2,6 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { adaptiveQuality, graphics, pixelRatio } from '../src/quality.js'
 import { forestModel } from '../src/forest-models.js'
-import { southernModel } from '../src/southern-banks.js'
 import { createPerformanceProbe } from '../src/performance-probe.js'
 import { createWildlifeModels } from '../src/wildlife-models.js'
 
@@ -34,10 +33,10 @@ test('Auto steps down under sustained strain and recovers from Low with isolated
   assert.ok(pixelRatio(402,714,3,graphics.high) > pixelRatio(402,714,3,graphics.balanced))
 })
 
-test('Delta and timber crown triangles have vertical thickness at all foliage detail levels', () => {
-  const delta = ['willow','cottonwood'].flatMap(kind => [true,false].map(compact => forestModel(kind,compact)))
-  const timber = ['BottomlandOak','WillowOak','BottomlandOakLOD','WillowOakLOD'].map(southernModel)
-  for (const geometry of [...delta,...timber]) {
+test('Delta and flooded oaks use layered cutout crowns and keep their connected bark UVs', () => {
+  const forms = ['willow','cottonwood','bottomlandOak','willowOak'].flatMap(kind =>
+    [true,false].map(compact => forestModel(kind,compact)))
+  for (const geometry of forms) {
     const { position, uv } = geometry.attributes
     const faces = geometry.index.array
     let crownFaces = 0
@@ -45,12 +44,12 @@ test('Delta and timber crown triangles have vertical thickness at all foliage de
     let barkVertices = 0
     for (let i=0; i<uv.count; i++) {
       if (uv.getX(i)<0 || uv.getX(i)>=.03) continue
-      assert.ok(uv.getY(i)>.95,'wood marker survives Blender glTF V conversion')
+      assert.ok(uv.getY(i)>.95,'wood marker stays in the atlas bark sample')
       barkVertices++
     }
     for (let i=0; i<faces.length; i+=3) {
       const a=faces[i], b=faces[i+1], c=faces[i+2]
-      if (uv.getX(a)>=0 || uv.getX(b)>=0 || uv.getX(c)>=0) continue
+      if ([a,b,c].some(index => uv.getX(index)<.03 || uv.getX(index)>.48 || uv.getY(index)>.73)) continue
       crownFaces++
       const axis = [position.getY(a),position.getY(b),position.getY(c)]
       vertical += Number(Math.max(...axis)-Math.min(...axis) > .015)

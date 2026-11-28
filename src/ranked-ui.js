@@ -314,11 +314,7 @@ function worldwide(camp, player, start, navigate) {
         ? 'Get a connected ticket to qualify. Ordinary hunts and Play Again save local records.'
         : 'Join in Competitive profile to enter.') : messages.closed
   })
-  const links = node('div', null, 'worldwide-toolbar')
-  links.append(action('Friends', () => navigate('friends')), action('Private Camps', () => navigate('private-camps')),
-    action('Competitive profile', () => navigate('camp-profile')),
-    action('Archived rankings', () => navigate('camp-history')))
-  region.append(state, board.section, ranked, pending, links)
+  region.append(state, board.section, ranked, pending)
   return region
 }
 

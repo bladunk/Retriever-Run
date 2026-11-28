@@ -114,6 +114,7 @@ export function legacyInterior(player, context) {
     room.append(portrait)
   }
   const shelf = node('div', null, 'legacy-mantel')
+  shelf.dataset.tier = tier.id
   shelf.setAttribute('role','region')
   shelf.setAttribute('aria-label','Earned displays')
   const caption = node('section', null, 'legacy-inspection')
@@ -169,12 +170,14 @@ export function legacyInterior(player, context) {
     }, 'legacy-shelf-item')
     button.setAttribute('aria-pressed','false')
     button.dataset.exhibit = item.key
+    button.setAttribute('aria-label','Inspect ' + item.name)
     button.append(exhibitImage(item),node('span',item.name))
     shelf.append(button)
   }
   if (!shelf.children.length)
     shelf.append(node('p','The first shelf is ready for your field finds.','legacy-empty-shelf'))
-  scene.append(room,shelf,caption,transport)
+  room.append(shelf)
+  scene.append(room,caption,transport)
 
   const next = lodgeTiers[tierIndex + 1]
   const progressPanel = node('div', null, 'legacy-next')

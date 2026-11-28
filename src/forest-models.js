@@ -5,6 +5,7 @@ import { seededRandom } from './trail.js'
 export const forestProfiles = Object.fromEntries(landscapeProfiles.map(region => [region.key, region.species]))
 
 const northernStands = {
+  timber: [['bottomlandOak','willowOak'],['willowOak','bottomlandOak'],['bottomlandOak','tupelo']],
   parklands: [['aspen','birch'],['aspen','aspen'],['birch','aspen'],['aspen','snag']],
   boreal: [['blackSpruce','jackPine'],['fir','blackSpruce'],['blackSpruce','snag'],['spruce','blackSpruce'],['jackPine','tamarack']],
   foothills: [['jackPine','fir'],['fir','aspen'],['spruce','fir'],['jackPine','snag'],['fir','spruce']],
@@ -21,9 +22,11 @@ const shapes = {
   cypress: [.25, .29, .89, 0x69614b, [0x647549, 0x717845, 0x82804a]],
   tupelo: [.30, .20, .90, 0x615347, [0x587044, 0x71794a, 0x8b8149]],
   cottonwood: [.37, .21, .87, 0x696452, [0x8a8c50, 0xa49850, 0xb59a50]],
+  bottomlandOak: [.46, .44, .91, 0x514535, [0x84915b, 0x6e8050, 0x9c9259]],
+  willowOak: [.39, .37, .96, 0x625440, [0x8d9454, 0xa39253, 0x728352]],
   oak: [.43, .40, .86, 0x66513f, [0x976843, 0xaf7444, 0x786f45]],
   maple: [.31, .37, .90, 0x6a5848, [0xa96a46, 0xbc8245, 0x864d35]],
-  aspen: [.21, .17, .91, 0x9b9581, [0xc19850, 0xb69b55, 0x918b4d]],
+  aspen: [.23, .27, .96, 0xc8c3a7, [0xc19850, 0xb69b55, 0x918b4d]],
   birch: [.23, .18, .92, 0xc4bc9f, [0xa2a163, 0x92965d, 0xaf9b61]],
   snag: [.25, .27, .79, 0x6e6151, []],
   spruce: [.29, .17, .98, 0x5e5749, [0x496758, 0x587568, 0x425f53]],
@@ -144,14 +147,16 @@ export function forestModel(kind, compact = false, form = 0) {
   const crotch = [trunkRatio * (form ? .22 : .10), .48, -.025]
   const crown = [trunkRatio * .16, .79, -.019]
   const tip = [trunkRatio * .20, top, .006]
-  const diameter = kind === 'oak' || kind === 'cypress' ? .044 : kind === 'birch' ? .021 : .033
+  const oak = ['oak','bottomlandOak','willowOak'].includes(kind)
+  const pale = kind === 'birch' || kind === 'aspen'
+  const diameter = kind === 'bottomlandOak' ? .061 : oak || kind === 'cypress' ? .044 : pale ? .021 : .033
   const root = [0, .125, 0]
   wood(foot, root, kind === 'cypress' ? diameter * 2.49 : kind === 'tupelo' ? diameter * 1.92 : diameter * 1.37, diameter)
   wood(root, crotch, diameter, diameter * .69)
   wood(crotch, crown, diameter * .69, diameter * .41)
   wood(crown, tip, diameter * .41, .005)
 
-  if (kind === 'cypress' || kind === 'oak' || kind === 'tupelo') {
+  if (kind === 'cypress' || oak || kind === 'tupelo') {
     for (let n = 0; n < 5; n++) {
       const angle = n * 2.4
       const reach = .069 + random() * (kind === 'cypress' ? .131 : .077)
@@ -161,6 +166,14 @@ export function forestModel(kind, compact = false, form = 0) {
         [x * 1.14, .025 + random() * .045, z * 1.14], .017, .006, bark, 5)
     }
   }
+  const stemLine = [root,crotch,crown,tip]
+  function branchBase(y) {
+    const upper = stemLine.findIndex(at => at[1]>=y)
+    if (upper < 1) return upper < 0 ? tip : [0,y,0]
+    const a=stemLine[upper-1], b=stemLine[upper]
+    const t=(y-a[1])/(b[1]-a[1])
+    return [a[0]+(b[0]-a[0])*t,y,a[2]+(b[2]-a[2])*t]
+  }
   const branches = conifer ? (mobile ? 15 : 21) : kind === 'snag' ? 8 : mobile ? 10 : 12
   for (let n = 0; n < branches; n++) {
     const t = n / branches
@@ -169,7 +182,8 @@ export function forestModel(kind, compact = false, form = 0) {
     const willow = kind === 'willow'
     const roundCrown = !conifer && !['cypress', 'snag'].includes(kind)
     const y = conifer ? trunkRatio + t * (.935 - trunkRatio) + Math.sin(n * 2.7) * .025 : roundCrown
-      ? .52 + Math.sin(n * 1.69) * .14 + random() * .19 : trunkRatio + t * (.89 - trunkRatio)
+      ? (oak ? .49 : kind === 'willow' ? .38 : .54) + t*.29 + Math.sin(n*1.69)*.08
+      : trunkRatio + t * (.89 - trunkRatio)
     const h = willow ? .045 - t * .082 : conifer ? (kind === 'blackSpruce' ? -.084 : kind === 'spruce' ? -.063 : kind === 'jackPine' ? .018 : -.029) * (1 - t)
       + .067 * t : .080 + random() * .089
     const radius = spread * (conifer ? (1 - t) ** (kind === 'fir' ? 1.05 : .78) + .10 : roundCrown
@@ -177,7 +191,7 @@ export function forestModel(kind, compact = false, form = 0) {
       (.71 + random() * .35)
     const fork = [x * radius * .63, y + h * .55 - (conifer ? .019 * (1 - t) : 0), z * radius * .63]
     const twig = [x * radius, y + h, z * radius]
-    wood([trunkRatio * .09, y, -.017], fork, .013 * (1 - t) + .004, .007, bark, 5)
+    wood(branchBase(y),fork,(oak ? .027 : .014)*(1-t)+.004,oak ? .009 : .006,bark,5)
     wood(fork, twig, .008, .0022, bark, 4)
     if (!foliage.length) {
       wood(fork, [twig[0] * .87 - z * .055, twig[1] + .067, twig[2] * .87 + x * .055], .006, .0018, bark, 4)
@@ -186,20 +200,20 @@ export function forestModel(kind, compact = false, form = 0) {
     const tint = foliage[n % foliage.length]
     const width = conifer ? radius * .47 + .025 : spread * .52 * (1 - t * .30)
     if (roundCrown) {
-      for (let j = 0; j < 2; j++) {
-        const along = j ? .91 : .61
-        const offset = (j ? 1 : -1)*width*(.28 + random()*.16)
-        const crownX = twig[0]*along + z*offset
-        const crownY = y + h*(.61 + j*.32) + (willow ? -.018 : .032)
-        const crownZ = twig[2]*along - x*offset
-        wood(fork,[crownX,crownY,crownZ],.0055,.0021,bark,4)
-        crownCluster(crownX,crownY,crownZ,width*(j ? 1.12 : 1.28),width*.80,
-          width*(willow ? .55 : .71),angle + (j ? .33 : -.54),foliage[(n+j)%foliage.length])
-        // Leaf fringes intersect the solid crown. They soften its outline
-        // without carrying the silhouette or floating off the branch.
-        if (j === 1 && (!mobile || n % 2 === 0)) {
-          spray(crownX,crownY+.016,crownZ,width*1.15,width*.85,angle+.57,.46,tint,7,-.54)
-        }
+      // Interleaved sprigs trace real forks. Their ragged cutout edges and
+      // differing planes supply the canopy shape at running-camera height.
+      const clusters = mobile ? 3 : 4
+      for (let j = 0; j < clusters; j++) {
+        const along = .52 + j * .18
+        const offset = (j % 2 ? 1 : -1)*width*(.24 + random()*.52)
+        const end = [twig[0]*along+z*offset, y+h*(.69+j*.18)+(willow ? -.032*j : .026*j), twig[2]*along-x*offset]
+        wood(fork,end,(oak ? .0068 : .0048),.0017,bark,4)
+        const w=width*(.78+random()*.35)
+        const leaf=foliage[(n+j)%foliage.length]
+        const yaw=angle+(j%2 ? .70 : -.57)
+        spray(...end,w*1.41,w*.91,yaw,willow ? -.57 : .30,leaf,8,j%2 ? .65 : -.48)
+        spray(end[0],end[1]-.012,end[2],w*1.14,w*.84,yaw+1.2,j%2 ? .86 : -.74,
+          foliage[(n+j+1)%foliage.length],7,j%2 ? -.40 : .58)
       }
       continue
     }
