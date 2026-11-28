@@ -80,3 +80,25 @@ Additional RPC estimates include four reads per player, one ticket call per rank
 6. Run several consecutive native hunts, including the Boreal/Foothills transition and long Endless conditions. Capture unrecorded local diagnostics for frame timing and geometry, and separate screen recordings for visual readability. [Live game](https://bladunk.github.io/Retriever-Run/) · [Local diagnostics](https://bladunk.github.io/Retriever-Run/?perf=1)
 
 [Activation, backup and rollback](CONNECTED_OPERATIONS.md) · [Updated roadmap and Wild Heritage handoff](MASTER_ROADMAP.md) · [Actual visual evidence](evidence/connected/REVIEW.md)
+
+## Rendered offline and resource checks
+
+The final candidate ran the complete 15-territory course continuously offline in software WebKit at Low and a 102 × 181 buffer with the accelerated verification clock. It reached **630.07 seconds**, including 180 seconds of Endless. The scene retained the original 130-geometry guard. A pass during other browser checks is included so timing differences remain visible. These are instrumented software tests with accelerated-clock discards. They cannot establish native device pacing, zero ordinary simulation discards or an improvement in physical latency.
+
+| Measure | RC.11 | RC.12 concurrent | RC.12 final |
+| --- | ---: | ---: | ---: |
+| Continuous duration | 630.05 s | 630.07 s | 630.07 s |
+| Sampled scene checkpoints | 1,261 | 1,261 | 1,261 |
+| Peak geometries / textures | 126 / 12 | 126 / 12 | 126 / 12 |
+| Maximum sampled draw calls / final shader programs | 81 / 29 | 80 / 29 | 81 / 29 |
+| Software average FPS | 20.3 | 8.4 | 21.2 |
+| Average / worst presentation interval | 49.34 / 440 ms | 119.35 / 1,577 ms | 47.22 / 518 ms |
+| Over 20 / 33.3 / 50 ms | 2,628 / 2,508 / 784 | 2,630 / 2,599 / 1,985 | 2,629 / 2,469 / 728 |
+| Average / worst CPU frame | 31.92 / 909 ms | 75.83 / 3,014 ms | 30.61 / 732 ms |
+| Accelerated-clock discards | 2,554 | 2,555 | 2,555 |
+| Startup readiness | 4,322 ms | 14,540 ms | 4,721 ms |
+| First frame submitted / first sampled interval | 945 / 279 ms | 4,190 / 1,065 ms | 1,035 / 302 ms |
+
+The six live terrain tiles and stable geometry peak at the end show the tested route stayed inside the residency limit. Sharing uses short-lived canvases outside hunting. Portrait composition uses approximately 4.9 MB of RGBA backing store plus a 2.8 MB source canvas for the dog. It reuses the existing WebGL context and restores the previous drawing buffer. The release asset package is 18,655,597 bytes, with 18,550,040 required for offline installation and 1,332,621 changed required bytes by manifest hash against RC.11. It adds no gameplay textures, models or audio. The isolated Chromium replay observation submitted at about 1,047 ms under software conditions. Native responsiveness and the reported resource issues still require the owner checklist. [Full software comparison](evidence/connected/software-performance.json) · [Endless capture](evidence/connected/screens/endless-1030.jpg)
+
+The verified code candidate is `7ca02c0ca551cb00179fe32c25d45dda220dea0a`. GitHub Actions built it, passed all automated tests and verified the production manifest. The execution skipped deployment. The draft PR's current head includes this final evidence. A scan of 13 public JavaScript chunks found no Supabase secret-key or service-role JWT formats. [Code CI](https://github.com/bladunk/Retriever-Run/actions/runs/46114527685) · [Draft head](https://github.com/bladunk/Retriever-Run/pull/51)
