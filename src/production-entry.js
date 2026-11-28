@@ -329,4 +329,10 @@ async function boot() {
     else status.textContent = 'Reconnect once to save the trail. Downloaded files may have been removed by this browser.'
   }
 }
-void boot()
+const command = new URLSearchParams(location.search).get('command')
+const previewCommand = command === 'preview' && (import.meta.env.DEV || import.meta.env.MODE === 'art-studio')
+if (command === '1' || previewCommand) {
+  import('./command-center.js').then(({ openCommandCenter }) => openCommandCenter({ preview: previewCommand })).catch(() => {
+    status.textContent = 'The Developer Command Center could not load. Reconnect or reload.'
+  })
+} else void boot()

@@ -21,18 +21,28 @@ shadowMap.needsUpdate = true
 const plane = new T.PlaneGeometry(1, 1)
 const timberMaterial = new T.MeshBasicMaterial({ map: shadowMap, transparent: true,
   opacity: .62, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 })
-const stamps = new Map()
+let leaningStamp
 
 export function contactShadow(kind = 'dog') {
   if (kind === 'dog') return new T.Mesh(plane, timberMaterial.clone())
-  if (!stamps.has(kind)) {
-    const patches = kind === 'leaning-tree' ? [[-3.16, 1.75, 1.19], [3.66, 1.54, 1.57]]
-      : kind === 'branch' ? [[.91, 1.48, 1.28]] : kind === 'snowmobile' ? [[0, 1.65, 3.05]]
-        : kind === 'tractor' ? [[0, 2.42, 2.80]] : [[0, 2.26, 1.19]]
-    const pieces = patches.map(([x, width, depth]) => plane.clone()
-      .rotateX(-Math.PI / 2).scale(width, 1, depth).translate(x, .029, 0))
-    stamps.set(kind, mergeGeometries(pieces))
-    for (const part of pieces) part.dispose()
+  if (kind === 'leaning-tree') {
+    if (!leaningStamp) {
+      const patches = [[-3.16, 1.75, 1.19], [3.66, 1.54, 1.57]]
+      const pieces = patches.map(([x, width, depth]) => plane.clone()
+        .rotateX(-Math.PI / 2).scale(width, 1, depth).translate(x, .029, 0))
+      leaningStamp = mergeGeometries(pieces)
+      for (const part of pieces) part.dispose()
+    }
+    return new T.Mesh(leaningStamp, timberMaterial)
   }
-  return new T.Mesh(stamps.get(kind), timberMaterial)
+  // Single stamps use the same quad as the dog. Scaling in mesh space
+  // preserves the footprint while avoiding a resident buffer per hazard.
+  const [x, width, depth] = kind === 'branch' ? [.91, 1.48, 1.28]
+    : kind === 'snowmobile' ? [0, 1.65, 3.05]
+      : kind === 'tractor' ? [0, 2.42, 2.80] : [0, 2.26, 1.19]
+  const stamp = new T.Mesh(plane, timberMaterial)
+  stamp.position.set(x, .029, 0)
+  stamp.rotation.x = -Math.PI / 2
+  stamp.scale.set(width, depth, 1)
+  return stamp
 }
