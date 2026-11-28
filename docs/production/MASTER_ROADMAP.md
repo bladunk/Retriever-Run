@@ -136,18 +136,32 @@ Worldwide public reads verified closed and empty. RC.11 clarifies the closed sta
 
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 62 | Private friend leaderboards and statistics comparison | Partial | Existing Camp permissions and verified results | Verify member-only data, compare independent verified records and protect private relationships. |
-| 63 | Shareable personal record cards | Planned | Verified records and deliberate player sharing | Let a player preview the card and choose when to share. Avoid account identifiers or private data. |
-| 64 | Share customized dog images | Planned | RC.7 Kennel and snapshot rendering | Use player-initiated export and safe imagery without device or private photo metadata. |
-| 65 | Share hunting cabin images | Planned | RC.8 Lodge and snapshot rendering | Use meaningful camera views with permission and exclude private profile data by default. |
-| 66 | Worldwide career profiles | Partial | Opt-in public identity and verified career boundaries | Separate reported cosmetics from verified records. Never attach a participation requirement to the local game. |
-| 67 | Worldwide percentile and unified standings | Partial, hosted submissions pending | Signed replay, score standings, board and fallback APIs | Rank by score, label independently verified metric columns and confirm hosted verification before activation. |
+| 62 | Private friend leaderboards and statistics comparison | Implemented in draft, hosted check pending | Existing Camp permissions and verified results | Verify member-only data, compare independent verified records and protect private relationships. |
+| 63 | Shareable personal record cards | Implemented in draft, native sharing pending | Verified records and deliberate player sharing | Let a player preview the card and choose when to share. Avoid account identifiers or private data. |
+| 64 | Share customized dog images | Implemented in draft, native sharing pending | RC.7 Kennel and snapshot rendering | Use player-initiated export and safe imagery without device or private photo metadata. |
+| 65 | Share hunting cabin images | Implemented in draft, native sharing pending | RC.8 Lodge and snapshot rendering | Use meaningful camera views with permission and exclude private profile data by default. |
+| 66 | Worldwide career profiles | Opt-in snapshot and verified records implemented in draft, privacy approval pending | Opt-in public identity and verified career boundaries | Separate reported cosmetics from verified records. Never attach a participation requirement to the local game. |
+| 67 | Worldwide percentile and unified standings | Implemented in draft, hosted Mastery verification pending | Signed replay, score standings, board and fallback APIs | Rank by score, label independently verified metric columns and confirm hosted verification before activation. |
+
+Owner-requested equipped/owned/locked ordering is implemented across Kennel categories. Keep production Worldwide closed, verify hosted Mastery independently and leave feedback and telemetry controls unchanged. [Connected report](CONNECTED_REPORT.md) · [Separate activation and reset plan](CONNECTED_OPERATIONS.md)
+
+## RC.12.1 · Wild Heritage
+
+- Use Cypress Swamp as the quality benchmark and build a species-specific tree library with connected branches, realistic bark, convincing foliage silhouettes and believable forest depth.
+- Improve water, puddles, adjoining shorelines, readable natural hazards, trail surfaces and lighting. Give all 15 territories distinct identities and cinematic entrance announcements.
+- Plan a cleaner five-destination navigation, consolidate the competitive surfaces into Worldwide Camp, simplify the HUD, group achievement families and integrate earned trophies into redesigned Lodges.
+- Refine Labrador and equipment art and menu presentation. Replace repetitive vest thumbnails with clearly differentiated materials, stitching, construction, camouflage and hardware. Master Gun Dog equipment should look and feel more prestigious. Improve Hunt Over celebrations and the website-like feedback and competitive screens.
+- Preserve prior video-review findings in their existing evidence and review them when deciding the redesign priorities. Larger optimized offline assets are acceptable when they improve quality. Measure runtime memory, keep download progress transparent and retain interrupted-download recovery.
+
+## RC.12.2 · The Great Migration
+
+Build an approximately 30-second skippable and replayable first-launch cinematic after Wild Heritage. Introduce the animated North American migration map, all 15 territories, wildlife discoveries, the actual Labrador and earned equipment, the evolving Lodge, escalating challenge, Canadian wilderness and a dramatic title reveal. Use upgraded in-game environments and original or licensed music. Make the trailer available offline after download and plan staged downloads with transparent recovery. The feature remains planned.
 
 ## RC.13 · Proving Grounds
 
 | ID | Description | Status | Dependencies | Acceptance and outstanding work |
 | --- | --- | --- | --- | --- |
-| 68 | Independent uncoached playtesting | Planned | Private beta and owner-approved recruitment | Include casual and experienced players and record real friction with controls, deaths, reward cues and menus. |
+| 68 | Independent uncoached playtesting | Planned | Private beta and owner-approved recruitment | Include casual and experienced players and record real friction with first-hunt usability, voluntary replay, deaths, menus, equipment discovery, Lodge motivation and social features. |
 | 69 | Device coverage, battery and heat | Partial | Native build, older and newer phones | Compare extended tests; capture battery and heat observations, frame pacing and interrupted-session behavior. |
 | 70 | Automated visual and fairness regression | Partial | Capture scripts and deterministic course checks | Exercise adverse lighting, presets, reaction margins and stored captures consistently. |
 | 71 | Internal Art Studio and asset inspection | Implemented, keeps evolving | Developer-only tooling and isolated state | Expose production views that never grant rewards or alter normal saves. |

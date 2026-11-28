@@ -1,3 +1,6 @@
+import { careerStanding } from './career.js'
+import { completeMigrations } from './lodge-progress.js'
+import { masteryReplayVersion, rankedVersion } from './ranked-replay.js'
 import { node, number, meters, rows } from './lodge-elements.js'
 import { nameMessages } from './camp-ui.js'
 import { rankedMetrics, verifiedHonorNames } from './ranked-camp.js'
@@ -19,6 +22,8 @@ const messages = {
   expired: 'This ranked ticket expired. Your local hunt was saved.',
   rate_limited: 'Too many requests recently. Try again later.',
   invalid_code: 'That code did not match an available invitation.',
+  feature_closed: 'Public career snapshots are awaiting approval.',
+  invalid: 'Check the profile details and try again.',
   invalid_name: 'Use 3–20 characters, with letters or numbers at each end.',
   not_found: 'This entry is no longer available to you.',
   already_exists: 'A friendship or request already exists.',
@@ -50,17 +55,6 @@ function action(label, click, className) {
   return button
 }
 
-function select(label) {
-  const control = node('select')
-  control.setAttribute('aria-label', label)
-  for (const [key, name] of Object.entries(rankedMetrics)) {
-    const option = node('option', name)
-    option.value = key
-    control.append(option)
-  }
-  return control
-}
-
 function inputForm(label, submit, invoke, maxLength = 36) {
   const form = node('form', null, 'ranked-form')
   const field = node('input')
@@ -89,7 +83,18 @@ function shareCode(label, code) {
   field.setAttribute('aria-label', label)
   field.addEventListener('focus', () => field.select())
   const group = node('div', null, 'ranked-code')
-  group.append(node('p', label, 'room-note'), field)
+  const status = node('p', '', 'room-note')
+  status.setAttribute('role','status')
+  const copy = action('Copy code', async () => {
+    try { await navigator.clipboard.writeText(code); status.textContent = 'Code copied.' }
+    catch { field.focus(); field.select(); status.textContent = 'Select and copy the code above.' }
+  })
+  group.append(node('p', label, 'room-note'), field, copy)
+  if (typeof navigator.share === 'function') group.append(action('Share code', async () => {
+    try { await navigator.share({ title:'Retriever Run invitation', text:'Retriever Run · ' + label + ' ' + code }) }
+    catch (error) { if (error.name !== 'AbortError') status.textContent = 'Sharing is unavailable. Copy the code instead.' }
+  }))
+  group.append(status)
   return group
 }
 
@@ -106,20 +111,20 @@ function recordRows(records) {
       records[key] > 0).map(([key, label]) => [label, moveValue(key, records[key])]))
 }
 
-function ranking(camp, player, scope, campId, onReady) {
+function ranking(camp, player, scope, campId, onReady, season = masteryReplayVersion) {
   const worldwide = scope === 'worldwide'
-  const { section, status } = shell(worldwide ? 'Worldwide standings' : 'Verified standings')
-  const version = node('p', '', 'room-note ranked-version')
+  const { section, status } = shell(worldwide ? 'Worldwide standings' :
+    scope === 'friends' ? 'Friends standings' : 'Private Camp standings')
+  const version = node('div', '', 'room-note ranked-version')
   const population = node('p', '', 'room-note')
-  const picker = worldwide ? null : select('Ranking category')
   const own = node('section', null, 'own-ranking')
   const rivals = node('section', null, 'ranked-rivals')
-  const list = node(worldwide ? 'tbody' : 'ol', null, worldwide ? undefined : 'camp-board')
+  const list = node('tbody')
   const table = node('table', null, 'worldwide-table')
   const viewport = node('div', null, 'worldwide-table-scroll')
   viewport.tabIndex = 0
-  viewport.setAttribute('aria-label', 'Worldwide top 100 standings')
-  if (worldwide) {
+  viewport.setAttribute('aria-label', worldwide ? 'Worldwide top 100 standings' : 'Private score standings')
+  {
     const header = node('tr')
     for (const [short, full] of [['#', 'Official rank'], ['Hunter', 'Hunter'], ['Score', 'Highest score'],
       ['Dist.', 'Longest distance'], ['Time', 'Longest hunt'], ['Ret.', 'Most retrieves'], ['Combo', 'Longest combo']]) {
@@ -143,25 +148,29 @@ function ranking(camp, player, scope, campId, onReady) {
   const retry = action('Refresh', () => void load(0, true))
   retry.setAttribute('aria-label', 'Refresh rankings')
   const toolbar = node('div', null, worldwide ? 'worldwide-toolbar' : 'ranked-toolbar')
-  if (picker) {
-    toolbar.append(picker)
-    picker.addEventListener('change', () => void load())
-  } else toolbar.append(population)
+  toolbar.append(population)
   toolbar.append(retry)
   next.hidden = true
   section.append(version, own, toolbar)
-  section.append(worldwide ? viewport : list)
-  if (worldwide) section.append(compatibility)
+  section.append(viewport, compatibility)
   section.append(next, rivals, profile)
 
-  function showProfile(nickname, button) {
+  let currentSeason = season
+  let ownBests
+  function showProfile(nickname, button, verified) {
     const stamp = ++profileRequest
     profile.textContent = 'Loading verified profile…'
-    void camp.publicProfile(nickname).then(result => {
+    void camp.publicProfile(nickname, currentSeason).then(result => {
       if (stamp !== profileRequest || !profile.isConnected) return
       profile.replaceChildren()
-      if (result.status !== 'ok') profile.textContent = feedback(result)
-      else profile.append(node('h4', result.nickname), node('p', 'Replay-verified personal bests', 'room-note'), ...recordRows(result.records))
+      if (result.status !== 'ok' && !verified) profile.textContent = feedback(result)
+      else {
+        profile.append(node('h4', nickname), node('p', 'Replay-verified personal bests', 'room-note'),
+          ...recordRows(result.records ?? verified))
+        if (result.career) profile.append(node('p', 'Shared local career · Level ' + result.career.level +
+          (result.career.migration_complete ? ' · Great Migration completed' : '') + ' · Unverified', 'room-note'))
+        if (scope === 'friends' && ownBests) profile.append(node('h4','Your verified bests'), ...recordRows(ownBests))
+      }
       profile.append(action('Close competitive profile', () => {
         profile.replaceChildren()
         button.focus()
@@ -172,7 +181,7 @@ function ranking(camp, player, scope, campId, onReady) {
 
   async function load(from = 0, refresh = false) {
     const stamp = ++request
-    const metric = picker?.value ?? 'score'
+    const metric = 'score'
     if (!from) {
       ++profileRequest
       profile.replaceChildren()
@@ -182,30 +191,38 @@ function ranking(camp, player, scope, campId, onReady) {
       list.replaceChildren()
       population.textContent = ''
       compatibility.textContent = ''
-      if (worldwide) viewport.hidden = true
+      viewport.hidden = true
     }
     next.disabled = true
     status.textContent = 'Loading verified rankings…'
-    const result = await camp.board(player.id, metric, scope, campId, from, refresh)
+    const result = await camp.board(player.id, metric, scope, campId, from, refresh, season)
     if (stamp !== request || !section.isConnected) return
     next.disabled = false
     next.hidden = result.status !== 'ok' || !result.has_more || Boolean(result.stale)
     onReady?.(result)
     if (result.status !== 'ok') { status.textContent = feedback(result); return }
     if (!from) {
-      if (worldwide) compatibility.textContent = result.scoresOnly
+      currentSeason = result.season
+      ownBests = result.mine?.bests ?? result.rows.find(row => row.nickname === result.mine?.nickname)?.bests
+      compatibility.textContent = result.scoresOnly
         ? 'Official score rankings are available. The other verified bests are temporarily unavailable.'
         : 'Official rank follows verified score. Each column shows a separate personal best.'
-      version.textContent = 'Great Migration 1 · ' + (result.open ? 'Open' : 'Competition closed')
-      if (worldwide) version.append(node('small', result.course))
-      if (result.as_of && Number.isFinite(Date.parse(result.as_of))) version.append(node('small', 'Last synced ' + playedAt.format(new Date(result.as_of))))
-      if (worldwide && Number.isSafeInteger(result.total_ranked)) population.textContent = 'Worldwide top 100 · ' + number(result.total_ranked) + ' ranked'
+      const name = (result.season === masteryReplayVersion ? 'Mastery' : 'Great Migration 1') +
+        (season === rankedVersion ? ' · Archived' : result.open ? ' · Open' : ' · Competition closed')
+      const details = node('details')
+      details.append(node('summary','Season details'), node('p', result.course))
+      if (result.as_of && Number.isFinite(Date.parse(result.as_of))) details.append(node('p','Last synced ' + playedAt.format(new Date(result.as_of))))
+      version.replaceChildren(node('span',name), details)
+      if (Number.isSafeInteger(result.total_ranked)) population.textContent = (worldwide ? 'Top 100 · ' : '') + number(result.total_ranked) + ' ranked'
+      if (result.open && camp.member(player.id) && !result.mine && !result.stale && !result.authStatus)
+        own.append(node('p','You have no verified score this season.','room-note'))
       if (result.mine) {
         own.dataset.nickname = result.mine.nickname
         own.append(node('strong', 'Your rank #' + result.mine.rank),
           node('p', 'Verified best · ' + moveValue(metric, result.mine.value), 'room-note'))
       }
-      if (result.mine && Number.isFinite(result.percentile)) own.append(node('p', 'Ahead of ' + result.percentile + '% of other ranked players', 'room-note'))
+      if (result.mine && result.total_ranked >= 5 && !result.stale && !result.legacyFallback && Number.isFinite(result.percentile))
+        own.append(node('p', 'Scored above ' + result.percentile + '% of other ranked hunters', 'room-note'))
       if (result.rivals.length) rivals.append(node('h4', 'Nearby rivals'))
       for (const rival of result.rivals) {
         const above = rival.rank < result.mine?.rank
@@ -218,11 +235,11 @@ function ranking(camp, player, scope, campId, onReady) {
     for (const item of result.rows) {
       if (onPage.has(item.nickname)) continue
       onPage.add(item.nickname)
-      const row = node(worldwide ? 'tr' : 'li')
+      const row = node('tr')
       row.dataset.nickname = item.nickname
       if (item.nickname === own.dataset.nickname) row.classList.add('your-run')
-      const details = action(item.nickname, () => showProfile(item.nickname, details), 'ranked-player')
-      if (worldwide) {
+      const details = action(item.nickname, () => showProfile(item.nickname, details, item.bests ?? {score:item.value}), 'ranked-player')
+      {
         const hunter = node('th')
         hunter.scope = 'row'
         hunter.append(details)
@@ -235,11 +252,10 @@ function ranking(camp, player, scope, campId, onReady) {
           if (!known) cell.setAttribute('aria-label', 'No verified best')
           row.append(cell)
         }
-      } else row.append(node('span', '#' + number(item.rank), 'board-rank'), details,
-        node('strong', moveValue(metric, item.value), 'board-score'))
+      }
       list.append(row)
     }
-    if (worldwide) viewport.hidden = !list.children.length
+    viewport.hidden = !list.children.length
     status.textContent = result.stale ? (result.staleReason === 'offline' ? 'Offline. Showing the last downloaded standings.'
       : 'Refresh failed. Showing the last downloaded standings.') : result.authStatus ? feedback({ status: result.authStatus }) :
       !list.children.length ? (worldwide ? 'No eligible verified scores are available for this season.' : 'No verified records in this category yet.') : ''
@@ -254,6 +270,7 @@ function worldwide(camp, player, start, navigate) {
   const state = node('p', '', 'room-note')
   state.setAttribute('role', 'status')
   let ticket
+  let activeCourse
   const ranked = action('Prepare a ranked hunt', async () => {
     if (ticket && Date.parse(ticket.expires) > Date.now()) {
       if (!start(ticket)) state.textContent = 'Ranked entry needs prepared game content and a connection.'
@@ -261,12 +278,14 @@ function worldwide(camp, player, start, navigate) {
     }
     ranked.disabled = true
     state.textContent = 'Requesting a ranked entry…'
-    const response = await camp.ticket(player.id)
+    const response = await camp.ticket(player.id, activeCourse)
     if (!region.isConnected) return
     ranked.disabled = false
     if (response.status === 'ok') {
       ticket = response
-      state.textContent = 'Entry ready. Ranked verification covers up to 15 minutes or 2,048 accepted moves. Longer hunts continue with local records and rewards.'
+      state.textContent = 'Entry ready. Ranked verification covers up to ' +
+        (response.season === masteryReplayVersion ? '60 minutes or 8,192 accepted moves.' : '15 minutes or 2,048 accepted moves.') +
+        ' Longer hunts continue locally.'
       ranked.textContent = 'Start ranked hunt'
     } else state.textContent = feedback(response)
   }, 'primary')
@@ -283,13 +302,22 @@ function worldwide(camp, player, start, navigate) {
   })
   pending.hidden = !camp.pending(player.id)
   const board = ranking(camp, player, 'worldwide', null, result => {
-    ranked.hidden = !result.open || !camp.member(player.id) || Boolean(result.stale || result.authStatus)
+    activeCourse = result.course
+    if (ticket?.course !== activeCourse || !result.open) {
+      ticket = undefined
+      ranked.textContent = 'Prepare a ranked hunt'
+    }
+    ranked.hidden = !result.open || result.season !== masteryReplayVersion || !camp.member(player.id) ||
+      Boolean(result.stale || result.authStatus)
     state.textContent = result.stale || result.status !== 'ok' || result.authStatus ? '' : result.open ?
-      (camp.member(player.id) ? 'Ranked hunts use the original Great Migration course. Ordinary hunts use the Raptor course.' : 'Join in Competitive profile to enter.') : messages.closed
+      (result.season !== masteryReplayVersion ? 'Mastery entry is awaiting server setup.' : camp.member(player.id)
+        ? 'Get a connected ticket to qualify. Ordinary hunts and Play Again save local records.'
+        : 'Join in Competitive profile to enter.') : messages.closed
   })
   const links = node('div', null, 'worldwide-toolbar')
-  links.append(action('Competitive profile', () => navigate('camp-profile')),
-    action('Archived rankings', () => navigate('camp-archives')))
+  links.append(action('Friends', () => navigate('friends')), action('Private Camps', () => navigate('private-camps')),
+    action('Competitive profile', () => navigate('camp-profile')),
+    action('Archived rankings', () => navigate('camp-history')))
   region.append(state, board.section, ranked, pending, links)
   return region
 }
@@ -299,17 +327,37 @@ function friends(camp, player) {
   const list = node('div')
   const standings = node('div')
   section.append(node('p', 'Connect by exact code. Both players must agree before records are compared.', 'room-note'),
-    inputForm('Friend code', 'Send request', value => change('friend_request', { value })), list, standings)
+    inputForm('Friend code', 'Send request', value => {
+      if (value.toLowerCase() === code) { status.textContent = 'Share your code with another hunter.'; return false }
+      return change('friend_request', { value })
+    }), list, standings)
+  let code
   async function show() {
     const result = await camp.social(player.id, 'friends')
     if (!section.isConnected) return
     if (result.status !== 'ok') { status.textContent = feedback(result); return }
-    list.replaceChildren(shareCode('Your friend code', result.code))
+    code = result.code
+    list.replaceChildren(shareCode('Your friend code', code),
+      action('Rotate friend code', () => ask(list, 'Replace your code? Existing friends and requests stay connected.',
+        () => change('friend_rotate', {}))))
     if (!result.rows.length) list.append(node('p', 'No friends or requests yet.', 'room-note'))
     for (const friend of result.rows) {
       const entry = node('article', null, 'ranked-entry')
       entry.append(node('strong', friend.nickname), node('small',
         friend.state === 'incoming' ? 'Incoming request' : friend.state === 'outgoing' ? 'Request sent' : 'Friend'))
+      if (friend.state === 'friend') entry.append(action('View career profile', async event => {
+        const details = entry.querySelector('.friend-profile') ?? node('div','', 'friend-profile')
+        entry.append(details)
+        details.textContent = 'Loading profile…'
+        const response = await camp.publicProfile(friend.nickname,masteryReplayVersion)
+        details.replaceChildren()
+        if (response.status !== 'ok') details.textContent = 'No published Mastery career or verified records yet.'
+        else {
+          details.append(...recordRows(response.records))
+          if (response.career) details.append(node('p','Shared local level ' + response.career.level +
+            (response.career.migration_complete ? ' · Great Migration completed' : '') + ' · Unverified', 'room-note'))
+        }
+      }))
       if (friend.state === 'incoming') entry.append(action('Accept', () => void change('friend_accept', { target: friend.key })))
       entry.append(action(friend.state === 'incoming' ? 'Decline' : friend.state === 'outgoing' ? 'Cancel request' : 'Remove',
         () => void change('friend_remove', { target: friend.key })))
@@ -425,12 +473,37 @@ function competitiveProfile(camp, legacy, player, onJoin, onErase) {
     if (result.status === 'ok') { onJoin(player, legacy.member(player.id)); await show() }
     return false
   }, 20)
+  const sharing = node('div', null, 'ranked-entry')
+  async function shareCareer(publish) {
+    const result = await camp.social(player.id,'career_visibility', { publish, level:careerStanding(player.career).level,
+      migration:completeMigrations(player)>0 })
+    status.textContent = result.status === 'ok' ? publish ? 'Local career snapshot published.' : 'Local career snapshot removed.' : feedback(result)
+  }
+  sharing.append(node('p','Optional career snapshot · Shares your local level and Migration completion alongside your public nickname. These details are unverified.'),
+    action('Publish career snapshot', () => ask(sharing,'Publish this local career snapshot?', () => shareCareer(true))),
+    action('Remove career snapshot', () => shareCareer(false)))
+  const profileLookup = node('section',null,'ranked-entry')
+  const publicResult = node('div')
+  publicResult.setAttribute('role','status')
+  profileLookup.append(inputForm('Look up a public nickname','Find profile',async nickname => {
+    publicResult.textContent = 'Reading public profile…'
+    const response = await camp.publicProfile(nickname,masteryReplayVersion)
+    if (!profileLookup.isConnected) return false
+    publicResult.replaceChildren()
+    if (response.status !== 'ok') publicResult.textContent = feedback(response)
+    else {
+      publicResult.append(node('h4',response.nickname),...recordRows(response.records))
+      if (response.career) publicResult.append(node('p','Shared local level ' + response.career.level +
+        (response.career.migration_complete ? ' · Great Migration completed' : '') + ' · Unverified','room-note'))
+    }
+    return false
+  },20),publicResult)
   section.append(node('p', 'Camp shares your nickname and verified bests. Friends and private Camp members are visible within their groups.', 'room-note'),
-    form, resultArea, erase,
+    form, resultArea, sharing, profileLookup, erase,
     node('p', 'Camp uses an anonymous identity stored in this browser. Clearing site data or changing devices can lose access. Account recovery is unavailable. Career, dog and ownership stay on this device.', 'room-note'))
   async function show() {
     form.querySelector('input').value = legacy.member(player.id)?.nickname ?? player.nickname
-    erase.hidden = !legacy.member(player.id)
+    sharing.hidden = erase.hidden = !legacy.member(player.id)
     resultArea.replaceChildren()
     if (erase.hidden) return
     const result = await camp.social(player.id, 'profile')
@@ -450,6 +523,12 @@ export function rankedRoom(room, camp, legacy, player, { start, navigate, onJoin
     const { section, status } = shell(room === 'worldwide' ? 'Rankings' : 'Online Camp')
     status.textContent = 'This build has no Worldwide connection configured. Local hunts and records are ready.'
     return section
+  }
+  if (room === 'camp-history') {
+    const archive = node('div')
+    archive.append(ranking(camp,player,'worldwide',null,undefined,rankedVersion).section,
+      action('Earlier archives', () => navigate('camp-archives')), action('Back to Worldwide', () => navigate('worldwide')))
+    return archive
   }
   if (room === 'friends') return friends(camp, player)
   if (room === 'private-camps') return privateCamps(camp, player)

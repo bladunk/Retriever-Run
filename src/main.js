@@ -1,3 +1,6 @@
+import { shareFrom } from './share-entry.js'
+import { huntShareModel } from './share-model.js'
+import { kennelItems } from './kennel-catalog.js'
 import { createIncidentCapture, submittedPerformance } from './support-incident.js'
 import { createHuntRecap } from './hunt-recap.js'
 import { renderHuntResults } from './hunt-results.js'
@@ -236,6 +239,8 @@ let dog
 let spray
 let resize
 let showKennel
+let capturePortrait
+let shareHunt
 let needsRedraw = true
 let trailReady = false
 let contextReady = true
@@ -272,6 +277,16 @@ const lodgeUI = createLodgeUI(ui, lodge, {
   onKennel(stage) { showKennel?.(stage) },
   onDestination(destination) { sound.selectScene(destination === 'kennel' ? 'kennel' : 'lodge') },
   onAppearance(equipment) { dog?.appearance(equipment) },
+  onPortrait(source,player,restore) {
+    shareFrom(source, () => {
+      const image = capturePortrait?.(player.kennel,restore)
+      if (!image) throw Error('Equipped dog is still loading')
+      const equipment = Object.values(player.kennel.equipment).map(id => kennelItems.find(item => item.id === id)?.name).filter(Boolean)
+      return { kind:'dog', title:player.kennel.breed === 'boyd' ? 'Boyd' : 'Working Labrador',
+        name:player.kennel.name, image, notes:[equipment.slice(0,2).join(' · '),equipment.slice(2).join(' · ')],
+        footer:studioRequested ? 'ART STUDIO · PREVIEW' : 'KENNEL PORTRAIT · MODEL CC BY 4.0, KENCHOO & ALL OF LIFE' }
+    })
+  },
   onStart(ticket) {
     if (!contextReady || !trailReady || productionSession.locked() ||
         (ticket && (!productionSession.prepared() || !navigator.onLine || Date.parse(ticket.expires) <= Date.now()))) return false
@@ -418,6 +433,13 @@ function initialize() {
       if (trailPose && mode !== 'title') dog.pose({ ...trailPose, dt: .25 })
     }
     resize()
+  }
+
+  capturePortrait = (outfit,restore) => {
+    if (!kennelStage || !dog.modelReady() || dog.activeBreed() !== outfit.breed || mode === 'running') return
+    dog.appearance(outfit.equipment)
+    try { return kennel.portrait(renderer,dog) }
+    finally { restore() }
   }
 
   if (studioRequested) runCourse = masteryCourseRuleset
@@ -1159,6 +1181,7 @@ function setMode(value, options = {}) {
   const title = value === 'title'
   const over = value === 'over'
   if (!over && oldMode === 'over') {
+    shareHunt = undefined
     finishResults?.()
     finishResults = undefined
   }
@@ -1197,6 +1220,8 @@ function setMode(value, options = {}) {
       fillCareerReport(ui, report, player, (button, id) => lodgeUI.open(button, 'kennel', id), button => lodgeUI.open(button))
       finishResults = renderHuntResults(ui, report, { player, motion: !reduceMotion(),
         openRoom: (button, room, id) => lodgeUI.open(button, room, id) })
+      if (!diagnosticsRequested && player) shareHunt = huntShareModel(report, camp.member(player.id)?.nickname,
+        report.improved.includes('score'))
       reportRankedResult()
       newRecord = report.improved.includes('score') || report.improved.includes('distance')
       rewardCue = rewardGroups(report)[0]?.type
@@ -1207,6 +1232,7 @@ function setMode(value, options = {}) {
   ui['field-report'].hidden = !over
   ui['run-again'].textContent = example ? 'Back to Art Studio' : 'Play Again'
   ui['report-watch'].hidden = !over || Boolean(example) || !recap.canWatch()
+  ui['report-share'].hidden = !over || !shareHunt
   ui['report-unfair'].hidden = !over || diagnosticsRequested
   ui['report-lodge'].hidden = Boolean(example)
   ui['main-menu'].hidden = Boolean(example)
@@ -1325,8 +1351,9 @@ function start(ticket, inputAt) {
   runPlayer = lodge.current().id
   runPermit = !diagnosticsRequested && ticket?.profile === runPlayer &&
     ticket.owner === camp.member(runPlayer)?.identity ? ticket : null
-  runTrace = runPermit ? recordRankedActions() : null
-  if (runPermit || collisionRequested && flags.get('course') === 'phase05') runCourse = courseRuleset
+  runTrace = runPermit ? recordRankedActions(runPermit.course) : null
+  if (runPermit) runCourse = runPermit.course
+  else if (collisionRequested && flags.get('course') === 'phase05') runCourse = courseRuleset
   else if (collisionRequested && flags.get('course') !== 'mastery') runCourse = localCourseRuleset
   else runCourse = masteryCourseRuleset
   const trailStart = performanceProbe?.stamp()
@@ -1367,7 +1394,8 @@ function reportRankedResult() {
   if (!runPermit) return
   const trace = runTrace?.finish(ticks)
   const posting = rankedCamp.finish(runPermit, trace)
-  const local = !trace ? 'Local result saved · Ranked verification covers up to 15 minutes and 2,048 accepted moves.' :
+  const limit = runPermit.course === masteryCourseRuleset ? '60 minutes and 8,192 accepted moves' : '15 minutes and 2,048 accepted moves'
+  const local = !trace ? 'Local result saved · Ranked verification covers up to ' + limit + '.' :
     posting.status === 'expired' ? 'Local result saved · Ranked entry expired.' :
     posting.status === 'queue_full' ? 'Local result saved · The ranked submission queue is full.' :
     'Local result saved · This hunt did not meet ranked verification requirements.'
@@ -1448,6 +1476,11 @@ function retryHuntSave() {
 function bindInput() {
   window.addEventListener('pagehide', retryHuntSave)
   ui['report-watch'].addEventListener('click', watchRecap)
+  ui['report-share'].addEventListener('click', () => {
+    if (!shareHunt) return
+    const result = shareHunt
+    shareFrom(ui['report-share'], () => result)
+  })
   ui['replay-exit'].addEventListener('click', closeRecap)
   window.visualViewport?.addEventListener('resize', fitReport)
   window.visualViewport?.addEventListener('scroll', fitReport)

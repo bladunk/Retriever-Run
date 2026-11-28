@@ -1,3 +1,5 @@
+import { shareFrom } from './share-entry.js'
+import { huntShareModel } from './share-model.js'
 import { collectionSearch, matchesCollection } from './collection-browser.js'
 import './lodge-gallery.css'
 import { careerStanding } from './career.js'
@@ -274,7 +276,7 @@ function history(player, lodge) {
   return [room]
 }
 
-function recordPanels(player, lodge) {
+function recordPanels(player, lodge, nickname) {
   const { profile, records, stats, migration: route } = player
   const room = node('section',null,'legacy-records')
   const section = node('div', null, 'record-grid')
@@ -307,7 +309,8 @@ function recordPanels(player, lodge) {
     values.append(...rows(selected.slice(0,3).map((entry,index) => [
       index ? date(entry.date) : 'Best · ' + date(entry.date), number(entry.score) + ' pts · ' + meters(entry.distance),
     ])))
-    book.append(values)
+    book.append(values, action('Share personal best', event => shareFrom(event.currentTarget,
+      () => huntShareModel(selected[0], nickname, true))))
     books.append(book)
   }
   room.append(heading('Field records'),node('h4','Personal bests'),section,node('h4','Tracked career totals'),totals,books)
@@ -321,5 +324,5 @@ export function showLodgeRoom(room, player, context) {
   if (room === 'migration') return migration(player, context.lodge, context.navigate)
   if (room === 'equipment') return equipment(player, context.navigate)
   if (room === 'shame') return hall(player, context.navigate)
-  return recordPanels(player, context.lodge)
+  return recordPanels(player, context.lodge, context.preview ? undefined : context.publicNickname)
 }

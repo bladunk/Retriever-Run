@@ -46,6 +46,8 @@ export function huntHandler({ origin = '', publishable = '', service = '', autho
   return async request => {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (request.method !== 'POST') return reply(405, { status: 'invalid_method' })
+    const encoding = request.headers.get('Content-Encoding')
+    if (encoding && encoding !== 'identity') return reply(415, { status: 'invalid_run' })
     const bearer = request.headers.get('Authorization')
     if (!bearer || !/^Bearer [\w.-]{20,4000}$/i.test(bearer)) return reply(200, { status: 'auth_required' })
     if (!origin || !publishable || !service) return reply(503, { status: 'unavailable' })

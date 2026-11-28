@@ -1,3 +1,5 @@
+import { masteryCourseRuleset } from './ruleset.js'
+
 export const campPublicConfig = typeof __CAMP_PUBLIC_CONFIG__ === 'undefined' ? null : __CAMP_PUBLIC_CONFIG__
 const rpcMissing = error => ['PGRST202', '42883'].includes(error.cause?.code)
 
@@ -45,6 +47,7 @@ export function createCampTransport(settings = campPublicConfig, {
     },
   }
   const campFetch = fetchForCamp(fetcher)
+  const verifyFetch = fetchForCamp(fetcher, 18000)
   async function client(profile = 'public') {
     if (!clients.has(profile)) {
       const pending = loadSdk().then(({ createClient }) => createClient(settings.url, settings.key, {
@@ -100,16 +103,27 @@ export function createCampTransport(settings = campPublicConfig, {
       try {
         const worldwide = args.p_scope === 'worldwide'
         let result
+        if (args.p_season) {
+          try {
+            result = await rpc(api, 'rr_connected_standings', {
+              p_scope: args.p_scope, p_camp: args.p_camp, p_offset: args.p_offset, p_season: args.p_season,
+            })
+            return { ...result, authStatus }
+          } catch (error) {
+            if (!rpcMissing(error)) throw error
+          }
+        }
+        const { p_season, ...legacyArgs } = args
         if (worldwide) {
           try {
             result = await rpc(api, 'rr_worldwide_standings', { p_offset: args.p_offset ?? 0 })
           } catch (error) {
             if (!rpcMissing(error)) throw error
-            result = await rpc(api, 'rr_ranked_board', { ...args, p_metric: 'score' })
+            result = await rpc(api, 'rr_ranked_board', { ...legacyArgs, p_metric: 'score' })
             result = { ...result, scoresOnly: true }
           }
-        } else result = await rpc(api, 'rr_ranked_board', args)
-        return { ...result, authStatus }
+        } else result = await rpc(api, 'rr_ranked_board', legacyArgs)
+        return { ...result, authStatus, ...(p_season && { legacyFallback:true }) }
       } catch (error) {
         if (rpcMissing(error)) return { status: 'schema_missing' }
         throw error
@@ -118,7 +132,7 @@ export function createCampTransport(settings = campPublicConfig, {
     async rankedTicket(profile, owner, course) {
       const membership = await asMember(profile, owner)
       if (!membership) return { status: 'reconnect' }
-      try { return await rpc(membership.api, 'rr_ranked_ticket', { p_course: course }) }
+      try { return await rpc(membership.api, course === masteryCourseRuleset ? 'rr_mastery_ticket' : 'rr_ranked_ticket', { p_course: course }) }
       catch (error) {
         if (rpcMissing(error)) return { status: 'schema_missing' }
         throw error
@@ -127,7 +141,7 @@ export function createCampTransport(settings = campPublicConfig, {
     async rankedVerify(profile, owner, body) {
       const membership = await asMember(profile, owner)
       if (!membership) return { status: 'reconnect' }
-      const response = await campFetch(settings.url + '/functions/v1/verify-hunt', {
+      const response = await verifyFetch(settings.url + '/functions/v1/verify-hunt', {
         method: 'POST', headers: { Authorization: 'Bearer ' + membership.active.access_token,
           apikey: settings.key, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
       })
@@ -136,12 +150,25 @@ export function createCampTransport(settings = campPublicConfig, {
       const result = await response.json()
       return typeof result?.status === 'string' ? result : { status: 'unavailable' }
     },
-    async rankedProfile(nickname) {
-      return rpc(await client(), 'rr_ranked_profile', { p_nickname: nickname })
+    async rankedProfile(nickname, season) {
+      const api = await client()
+      if (season) {
+        try { return await rpc(api, 'rr_connected_profile', { p_nickname: nickname, p_season: season }) }
+        catch (error) { if (!rpcMissing(error) || season !== 'great-migration-1') throw error }
+      }
+      return rpc(api, 'rr_ranked_profile', { p_nickname: nickname })
     },
     async social(profile, owner, action, options = {}) {
       const membership = await asMember(profile, owner)
       if (!membership) return { status: 'reconnect' }
+      try {
+        if (action === 'friend_rotate') return await rpc(membership.api, 'rr_friend_rotate')
+        if (action === 'career_visibility') return await rpc(membership.api, 'rr_connected_visibility',
+          { p_publish:options.publish, p_level:options.level ?? null, p_migration:options.migration ?? null })
+      } catch (error) {
+        if (rpcMissing(error)) return { status:'schema_missing' }
+        throw error
+      }
       return rpc(membership.api, 'rr_camp_social', { p_action: action, p_camp: options.camp ?? null,
         p_value: options.value ?? null, p_target: options.target ?? null })
     },

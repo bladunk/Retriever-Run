@@ -10,7 +10,12 @@ import { checkLabel, honorById } from './field-honors.js'
 const categories = { coat: 'Coats', vest: 'Vests', collar: 'Collars', bandana: 'Bandanas' }
 const slot = category => category === 'bandana' ? 'collar' : category
 
-export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog, previewId) {
+export function equipmentOrder(items, equipped, available) {
+  const priority = item => item.id === equipped ? 0 : available(item) ? 1 : 2
+  return items.slice().sort((a,b) => priority(a)-priority(b))
+}
+
+export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog, previewId, onPortrait) {
   const player = lodge.current()
   const standing = careerStanding(player.career)
   const stage = node('div', null, 'kennel-stage')
@@ -67,6 +72,12 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog, previe
     sit.setAttribute('aria-pressed', String(seated))
   })
   angles.append(sit)
+  if (onPortrait) {
+    const share = node('button','Share portrait')
+    share.type = 'button'
+    share.addEventListener('click', () => onPortrait(share,player, () => update()))
+    angles.append(share)
+  }
 
   const feedback = node('div', null, 'kennel-selection')
   const equip = node('button', 'Equip', 'kennel-equip')
@@ -117,7 +128,7 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog, previe
       return ownership !== 'Favorites' || player.kennel.favorites.includes(item.id)
     })
     if (!items.some(item => item.id === selected)) selected = items[0]?.id
-    cards = items.map(item => {
+    cards = equipmentOrder(items,equipped(),available).map(item => {
         const button = node('button', null, 'gear-option')
         button.type = 'button'
         button.dataset.gear = item.id
@@ -140,7 +151,11 @@ export function kennelRoom(lodge, showAppearance, inspectDogs, changeDog, previe
     button.addEventListener('click', () => switchCategory(id))
     filters.append(button)
   }
-  equip.addEventListener('click', () => { if (lodge.equip(slot(category), selected)) update() })
+  equip.addEventListener('click', () => {
+    if (!lodge.equip(slot(category),selected)) return
+    switchCategory(category,selected)
+    if (document.activeElement === document.body) options.querySelector('[aria-pressed="true"]')?.focus({ preventScroll:true })
+  })
   favorite.addEventListener('click', () => {
     lodge.favorite(selected)
     if (ownership === 'Favorites') switchCategory(category)

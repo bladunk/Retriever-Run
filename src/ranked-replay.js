@@ -16,16 +16,19 @@ export const rankedMoves = Object.freeze(['left', 'right', 'jump', 'slide'])
 // Record accepted controls on the fixed tick before advance, including the
 // input buffer's accepted action. The server neither trusts client stats
 // nor needs device timestamps, rendering events or unaccepted gestures.
-export function recordRankedActions() {
+export function recordRankedActions(course = rankedCourse) {
+  const mastery = course === masteryCourseRuleset
+  const ticksLimit = mastery ? maxMasteryTicks : lastRankedTick
+  const actionsLimit = mastery ? maxMasteryActions : maxRankedActions
   const actions = []
   let full = false
   return {
     add(tick, move) {
-      if (tick >= lastRankedTick || actions.length >= maxRankedActions) full = true
+      if (tick >= ticksLimit || actions.length >= actionsLimit) full = true
       if (!full) actions.push(tick * 4 + rankedMoves.indexOf(move))
     },
     finish(ticks) {
-      return full || ticks > lastRankedTick ? null : { ticks, actions }
+      return full || ticks > ticksLimit ? null : { ticks, actions }
     },
   }
 }

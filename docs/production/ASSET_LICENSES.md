@@ -164,3 +164,7 @@ The review captures are documentation and add zero install bytes. RC.9 adds no s
 ## RC.11 · Developer Command Center
 
 Original project interface and test fixtures. Review screenshots and footage use existing licensed game assets and synthetic report data. Obstacle contact shadows now share the existing unit quad without changing the original material or textures. RC.11 introduced no third-party art, recordings, typefaces, meshes or textures. [Evidence index](evidence/command-center/REVIEW.md)
+
+## RC.12 · Connected
+
+Record cards and local photo compositions are original project code. They reuse the installed Lodge route drawing and already credited Lodge art and Kennel Labrador. The Kennel export includes the existing CC BY model attribution. No new third-party models, fonts, images or audio enter the installed package. [Visual evidence](evidence/connected/REVIEW.md)
