@@ -1092,7 +1092,8 @@ function updateConditions(weather) {
     const endless = run.mastery && run.elapsed >= masteryStart
     const first = !diagnosticsRequested && currentTerritory !== region.key && region.index > 0 &&
       (lodge.current().migration.farthest ?? 0) <= region.index
-    chapter.show(region,run.elapsed,{ first,endless })
+    const previewingArrival = studioRequested && flags.get('arrival') === 'first' && region === previewRegion
+    chapter.show(region,run.elapsed,{ first:first || previewingArrival,endless })
     chapter.update(region,run.elapsed,endless)
   }
   currentTerritory = region.key

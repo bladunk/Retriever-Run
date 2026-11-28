@@ -97,7 +97,7 @@ function recordAudio(page, milliseconds) {
 }
 
 try {
-  const audition = ['audio-only','studio-only','gameplay-audio','mastery-hunt','mastery-fixtures','mastery-endless'].some(mode => process.argv.includes(mode))
+  const audition = ['audio-only','studio-only','gameplay-audio','mastery-hunt','mastery-fixtures','mastery-endless','heritage-arrival'].some(mode => process.argv.includes(mode))
   const editions = process.argv.includes('after-only') ? ['after'] : ['before','after']
   for (const version of audition ? [] : editions) await review(version, async ({page,url,shot,context}) => {
     if (process.argv.includes('report-only')) {
@@ -239,6 +239,16 @@ try {
       }, minute,{timeout:55000})
       await shot('minute-'+minute)
     }
+  })
+  if (process.argv.includes('heritage-arrival')) await review('studio',async ({page,url,shot}) => {
+    await page.goto(url+'?studio=1&territory=11&offset=0.15&arrival=first&quality=low&seed=7')
+    await page.locator('#content-download').click()
+    await page.locator('#art-studio summary').click()
+    const before = await page.evaluate(key => localStorage.getItem(key),saveKey)
+    await page.getByRole('button',{name:'Run isolated practice',exact:true}).click()
+    await page.getByText('First arrival in Canada',{exact:true}).waitFor()
+    await shot('first-arrival-in-canada')
+    assert.equal(await page.evaluate(key => localStorage.getItem(key),saveKey),before)
   })
   if (process.argv.includes('mastery-fixtures')) await review('studio',async ({page,url,context,shot}) => {
     await page.addInitScript(() => {

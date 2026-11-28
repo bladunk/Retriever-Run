@@ -47,10 +47,16 @@ async function review(version, callback, { large = false, record = false } = {})
     const request = route.request()
     const url = new URL(request.url())
     if (url.origin === origin) return route.continue()
-    const cors = { 'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'*','Access-Control-Allow-Methods':'POST, GET, OPTIONS' }
+    const cors = { 'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':
+      'authorization, apikey, content-type, x-client-info, x-supabase-api-version, accept-profile, content-profile, prefer','Access-Control-Allow-Methods':'POST, GET, OPTIONS' }
     if (request.method() === 'OPTIONS') return route.fulfill({ status:204,headers:cors })
     const reply = (json,status = 200) => route.fulfill({ json,status,headers:cors })
-    if (/rr_worldwide_standings|rr_ranked_board/.test(url.pathname)) return reply(failWorld ?
+    if (url.pathname.endsWith('/rr_connected_standings') && !failWorld) {
+      const season = request.postDataJSON().p_season
+      return reply({ ...worldwide, season, total_ranked:0,
+        course: season === 'one-more-hunt-1' ? 'migration-30-mastery-1' : worldwide.course })
+    }
+    if (/rr_worldwide_standings|rr_ranked_board|rr_connected_standings/.test(url.pathname)) return reply(failWorld ?
       { code:'QA_UNAVAILABLE',message:'Simulated downtime' } : worldwide, failWorld ? 503 : 200)
     if (url.pathname.endsWith('/rr_support_status')) return reply({ status:'ok' })
     if (url.pathname.endsWith('/auth/v1/signup')) return reply(session)
@@ -103,7 +109,7 @@ try {
   await review('before',async ({page,url,shot}) => {
     await title(page,url)
     await page.locator('#open-worldwide').click()
-    await page.getByText('No verified worldwide scores yet.',{exact:true}).waitFor()
+    await page.getByText(/^(?:No verified worldwide scores yet\.|No eligible verified scores are available for this season\.)$/).waitFor()
     await shot('worldwide-before')
   })
   await review('after',async ({page,url,shot,context,reports,outage}) => {

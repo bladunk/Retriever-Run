@@ -32,7 +32,8 @@
 #chapter-subtitle { font-size: .7rem; font-style: italic; }
 #chapter-milestone:not(:empty) { margin-top: .26rem; }
 #callout { top: max(176px,calc(env(safe-area-inset-top) + 150px)); }
-#flight-warning { top: max(168px,calc(env(safe-area-inset-top) + 142px)); z-index: 2; }
+#flight-warning { top: max(176px,calc(env(safe-area-inset-top) + 150px)); z-index: 2; }
+#flight-warning:not([hidden]) + #callout { visibility: hidden; }
 #game[data-mode="running"] #conditions { gap: .2rem .45rem; }
 #game[data-mode="running"] #controls button { background: #172921a8; }
 

@@ -90,7 +90,7 @@ try {
       const tierKey = ['shack','cabin','waterfowl','estate','legendary'][tier-1]
       const stage = page.locator('[data-tier="'+tierKey+'"]').first()
       await stage.waitFor({timeout:55_000})
-      const art = stage.locator(edition === 'before' ? '.lodge-interior-art' : '.legacy-interior-art')
+      const art = stage.locator(edition === 'before' && !process.argv.includes('heritage-tiers') ? '.lodge-interior-art' : '.legacy-interior-art')
       await art.evaluate(image => image.decode())
       const overflow = await page.locator('#lodge-panel').evaluate(el => el.scrollWidth > el.clientWidth+3)
       assert.equal(overflow,false)
@@ -153,10 +153,16 @@ try {
     }
     for (let tier=1; tier<=5; tier++) {
       const stage = await enter(tier)
-      const shot = edition === 'after' ? stage.locator('.legacy-interior') : stage.locator('.lodge-interior-art')
+      const shot = edition === 'after' || process.argv.includes('heritage-tiers')
+        ? stage.locator('.legacy-interior') : stage.locator('.lodge-interior-art')
       await image('tier-'+tier,shot)
       if (tier === 1 || tier === 5) await image('cabin-'+tier)
       await page.locator('#close-lodge').tap()
+    }
+    if (process.argv.includes('heritage-tiers')) {
+      assert.deepEqual(errors, [])
+      await context.close()
+      continue
     }
     if (edition === 'before') {
       const stage = await enter(3)

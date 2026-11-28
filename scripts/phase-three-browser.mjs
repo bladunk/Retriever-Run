@@ -214,7 +214,7 @@ try {
       else if (qa.soak && state.elapsed < qa.soak.duration) {
         const replay = qa.soak
         if (initial.mastery)
-          stamp += Math.max(0,Math.min(replay.ticksPerCallback,(replay.stopTick ?? Infinity)-state.ticks)) * (1000/120)
+          stamp += Math.max(0,Math.min(replay.ticksPerCallback ?? 15,(replay.stopTick ?? Infinity)-state.ticks)) * (1000/120)
         else if (replay.precise) {
           // Deliver the scripted input on its original simulation tick.
           // The number of ticks between frames can vary while tiles stream.
@@ -302,7 +302,7 @@ try {
   }
 
   async function settle(distance, sceneQuality) {
-    await page.waitForFunction(({ distance, isPhaseThree, quality, small }) => {
+    await page.waitForFunction(({ distance, isPhaseThree, quality, small, pausedCapture }) => {
       const s = window.retrieverDebug
       if (!s || s.mode !== 'running') return false
       if (!isPhaseThree) return s.tiles === 7 && s.drawCalls >= 36
@@ -311,9 +311,9 @@ try {
       const ready = Array.from({ length: count }, (_, i) => center + i).every(i => s.world?.some(t => t.index === i))
       // The fixture freezes the simulation clock at a view. A Low-presets
       // capture still needs a redraw to let staged terrain finish attaching.
-      if (!ready && quality === 'low') window.dispatchEvent(new Event('resize'))
+      if (!ready && (quality === 'low' || pausedCapture)) window.dispatchEvent(new Event('resize'))
       return ready
-    }, { distance, isPhaseThree, quality: sceneQuality, small: args.includes('small') }, { polling: 300, timeout: 60_000 }).catch(async error => {
+    }, { distance, isPhaseThree, quality: sceneQuality, small: args.includes('small'), pausedCapture: args.includes('heritage-chapters') }, { polling: 300, timeout: 60_000 }).catch(async error => {
       console.error(await page.evaluate(() => ({ state: window.retrieverDebug, perf: window.retrieverPerformance?.() })))
       throw error
     })
@@ -354,7 +354,18 @@ try {
     console.log(engine.name() + ' captured ' + label)
   }
 
-  if (args.includes('cypress-showcase')) {
+  if (args.includes('heritage-chapters')) {
+    const wanted = args.filter(value => value.startsWith('only=')).map(value => value.slice(5))
+    const regions = expeditionRegions.filter(region => wanted.length ? wanted.includes(region.key) : ['gulf','cypress','parklands','foothills'].includes(region.key))
+    for (const region of regions) {
+      const at = region.seconds ? distanceAtTime(region.seconds + .15, localDirector) : 0
+      await runAt(at,7)
+      await page.locator('#migration-chapter').waitFor()
+      assert.equal(await page.locator('#chapter-title').textContent(), region.name)
+      assert.equal(await page.locator('#migration-ribbon').getAttribute('aria-valuenow'), String(region.index+1))
+      await capture('chapter-' + region.key, { seed:7, at })
+    }
+  } else if (args.includes('cypress-showcase')) {
     const seed = 7
     const hazards = rowsFor(seed, 61).flatMap(row => row.entities).filter(item => item.hazard)
     const camp = buildTile(16, seed).landmark
