@@ -90,7 +90,7 @@ try {
       const tierKey = ['shack','cabin','waterfowl','estate','legendary'][tier-1]
       const stage = page.locator('[data-tier="'+tierKey+'"]').first()
       await stage.waitFor({timeout:55_000})
-      const art = stage.locator(edition === 'before' ? '.lodge-interior-art' : '.legacy-interior-art')
+      const art = stage.locator(edition === 'before' && !process.argv.includes('heritage-tiers') ? '.lodge-interior-art' : '.legacy-interior-art')
       await art.evaluate(image => image.decode())
       const overflow = await page.locator('#lodge-panel').evaluate(el => el.scrollWidth > el.clientWidth+3)
       assert.equal(overflow,false)
@@ -153,15 +153,23 @@ try {
     }
     for (let tier=1; tier<=5; tier++) {
       const stage = await enter(tier)
-      const shot = edition === 'after' ? stage.locator('.legacy-interior') : stage.locator('.lodge-interior-art')
+      const shot = edition === 'after' || process.argv.includes('heritage-tiers')
+        ? stage.locator('.legacy-interior') : stage.locator('.lodge-interior-art')
       await image('tier-'+tier,shot)
       if (tier === 1 || tier === 5) await image('cabin-'+tier)
       await page.locator('#close-lodge').tap()
     }
+    if (process.argv.includes('heritage-tiers')) {
+      assert.deepEqual(errors, [])
+      await context.close()
+      continue
+    }
     if (edition === 'before') {
       const stage = await enter(3)
       await stage.waitFor()
-      await page.locator('#lodge-room').selectOption('collection')
+      const collection = page.locator('[data-lodge-room="collection"]')
+      if (await collection.isVisible()) await collection.tap()
+      else await page.locator('#lodge-room').selectOption('collection')
       await page.locator('.lodge-trophy').first().waitFor()
       await image('trophies')
       assert.deepEqual(errors,[])
@@ -186,11 +194,15 @@ try {
     await page.getByRole('button',{name:'Field finds',exact:true}).tap()
     await page.locator('.lodge-trophy').first().waitFor()
     await image('trophies')
-    await page.locator('[data-lodge-room=migration]').tap()
+    const route = page.locator('[data-lodge-room=migration]')
+    if (!await route.isVisible()) await page.locator('[data-lodge-room=overview]').tap()
+    await route.tap()
     assert.equal(await page.locator('.legacy-route-wall').getAttribute('data-complete'),'true')
     await page.locator('.legacy-route-wall').scrollIntoViewIfNeeded()
     await image('migration')
-    await page.locator('[data-lodge-room=history]').tap()
+    const history = page.locator('[data-lodge-room=history]')
+    if (!await history.isVisible()) await page.locator('[data-lodge-room=career]').tap()
+    await history.tap()
     await page.locator('.legacy-timeline').first().waitFor()
     await image('timeline')
     await page.locator('[data-lodge-room=records]').tap()

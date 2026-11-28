@@ -1,0 +1,108 @@
+/* Hunt chrome leaves the middle of the moving camera open. */
+#game[data-mode="running"] #art-studio { display: none; }
+#game[data-mode="running"] #hud {
+  inset: max(8px, env(safe-area-inset-top)) max(70px, calc(env(safe-area-inset-right) + 62px)) auto max(9px, env(safe-area-inset-left));
+  min-width: 0; max-width: 28rem; padding: .39rem .55rem .40rem; gap: .24rem;
+  border: 0; border-radius: 7px; display: grid;
+  background: linear-gradient(94deg, #14271eed, #14271eab 80%, #14271e75);
+  box-shadow: 0 1px 8px #0c100e53;
+}
+#game #hud dl { display: flex; justify-content: space-between; margin: 0; gap: 6px; }
+#game #hud dt { font-size: .54rem; letter-spacing: .035em; }
+#game #hud dd { font-size: .91rem; line-height: 1.1; }
+#game #hud .difficulty-readout { padding-inline-start: 4px; }
+#game #hud .meter { display: grid; grid-template-columns: max-content 1fr; gap: .38rem; align-items: center; }
+#game #hud .meter label { font-size: .48rem; letter-spacing: 0; }
+#game #combo { margin: 0; }
+#migration-ribbon { display: grid; grid-template-columns: repeat(15,minmax(0,1fr)); gap: 2px; min-height: 3px; }
+#migration-ribbon i { background: #dbd3bc3c; border-radius: 1px; }
+#migration-ribbon i[data-complete] { background: #c99453; }
+#migration-ribbon i[data-current] { background: #ffdda1; }
+#game[data-mode="running"] header { right: max(9px,env(safe-area-inset-right)); top: max(8px,env(safe-area-inset-top)); }
+#game[data-mode="running"] #pause { background: #14271ed6; padding-inline: .57rem; }
+#migration-chapter {
+  position: absolute; top: max(83px,calc(env(safe-area-inset-top) + 72px)); left: 50%;
+  translate: -50% 0; z-index: 1; pointer-events: none; width: min(94%, 28rem);
+  display: grid; justify-items: center; padding: .35rem .5rem .5rem;
+  background: radial-gradient(ellipse at center, #132018df, #12201991 56%, #13201800 77%);
+  color: #fff0d0; text-align: center; text-shadow: 0 1px 4px #07120f, 0 2px 13px #07120f;
+}
+#game:not([data-mode="running"]) #migration-chapter { display: none; }
+#chapter-series, #chapter-milestone { text-transform: uppercase; letter-spacing: .13em; color: #f4d093; font-size: .54rem; font-weight: 800; }
+#chapter-title { font: 660 clamp(1.08rem, 4.95vw, 1.91rem)/1.1 var(--field-display, Georgia, serif); margin-block: .19rem; }
+#chapter-subtitle { font-size: .7rem; font-style: italic; }
+#chapter-milestone:not(:empty) { margin-top: .26rem; }
+#callout { top: max(176px,calc(env(safe-area-inset-top) + 150px)); }
+#flight-warning { top: max(176px,calc(env(safe-area-inset-top) + 150px)); z-index: 2; }
+#flight-warning:not([hidden]) + #callout { visibility: hidden; }
+#game[data-mode="running"] #conditions { gap: .2rem .45rem; }
+#game[data-mode="running"] #controls button { background: #172921a8; }
+
+/* Shared field-book surfaces. The primary tabs keep the same place in every room. */
+#lodge .lodge-tabs { grid-template-columns: repeat(5,minmax(0,1fr)); }
+#lodge .lodge-tabs #tab-worldwide { font-size: .62rem; }
+#title-rooms { grid-template-columns: repeat(4,minmax(0,1fr)); }
+#title-rooms #open-worldwide { line-height: 1.12; }
+#lodge .legacy-room-nav { display: grid; border: 0; padding: .35rem .65rem; }
+.heritage-room-tabs, .heritage-room-details { display: flex; flex-wrap: wrap; gap: .25rem; }
+#lodge .legacy-room-nav button {
+  flex: 1 0 auto; min-height: 44px; border: 0; background: transparent;
+  border-radius: 0; font-size: .76rem; border-bottom: 1px solid #82987952;
+}
+#lodge .legacy-room-nav button[aria-current="page"] {
+  color: #ffdda0; box-shadow: inset 0 -2px #c79e67; background: linear-gradient(transparent,#b89b6622);
+}
+#lodge .heritage-room-details button { flex: 0 1 auto; min-height: 44px; font-size: .7rem; }
+#lodge .ranked-camp .section-title, #lodge .ranked-overview .section-title { font-weight: 580; }
+#lodge .lodge-heading, #preferences .preferences-heading { border-block-end: 1px solid #c3a57558; }
+#preferences .application-actions button { border-radius: 5px; }
+
+/* The same earned objects rest on an in-room walnut rail. Their labels are read
+   on inspection, so the cabin can read as an interior before an inventory. */
+#lodge .legacy-interior .legacy-mantel {
+  position: absolute; inset: auto 43% 11% 6%; gap: 2px; min-height: 0; padding: 0 2px 5px;
+  grid-template-columns: repeat(3,minmax(0,1fr)); align-items: end;
+  border: 0; border-bottom: clamp(2px, .65vw, 5px) solid #875b36;
+  background: linear-gradient(transparent 69%, #37231827 70%, #2a1a15e3 100%);
+  box-shadow: 0 5px 10px #190e089c;
+}
+#lodge .legacy-mantel .legacy-shelf-item {
+  height: auto; min-height: 44px; grid-template-rows: auto; padding: 0;
+  border: 1px solid transparent; background: transparent; border-radius: 1px;
+}
+#lodge .legacy-shelf-item[aria-pressed="true"], #lodge .legacy-shelf-item:focus-visible { border-color: #f0d7a1; }
+#lodge .legacy-shelf-item > span:last-child { display: none; }
+#lodge .legacy-mantel .exhibit-art img { max-height: clamp(40px,16vw,90px); }
+#lodge .legacy-empty-shelf { grid-column: span 3; font-size: .68rem; margin: 0; padding: .5rem; }
+#lodge .legacy-return { grid-template-columns: repeat(3,minmax(0,1fr)); }
+#lodge .legacy-return button { font-size: .79rem; }
+#lodge .heritage-honor-family {
+  grid-column: 1 / -1; border-block-end: 1px solid #ac91654f; padding-block: .38rem;
+}
+#lodge .heritage-honor-family > summary { min-height: 44px; display: grid; align-content: center; cursor: pointer; }
+#lodge .heritage-honor-family small { color: #d0b283; font-size: .67rem; }
+#lodge .heritage-honor-tiers { display: grid; gap: 6px; grid-template-columns: repeat(auto-fit,minmax(115px,1fr)); }
+#lodge .heritage-honor-filters > summary { min-height: 44px; cursor: pointer; display: grid; align-content: center; }
+
+/* Rewards share the richer title typography and sit above the optional report. */
+#field-report .hunt-record { color: #f2cb8d; font: 650 1.06rem var(--field-display,Georgia,serif); }
+#field-report[data-celebration] .report-intro { border-top: 2px solid #e1b773; }
+#field-report[data-celebration] .report-intro::before {
+  content: ''; height: 3px; display: block; margin-block: .21rem .52rem;
+  background: linear-gradient(90deg,#d7b376,transparent 76%);
+}
+#field-report .earned-card:first-child { border-color: #ae8f5f; background-color: #343a2c; }
+#field-report #run-again { min-height: 50px; }
+.support-panel { border-top: 3px solid #b49b6a; border-radius: 8px; }
+.support-panel .support-heading h2 { font: 620 1.42rem var(--field-display,Georgia,serif); }
+.support-panel form { padding-top: .3rem; }
+.support-panel .support-field { margin-block: .58rem; }
+.support-panel .support-preview { border-left: 2px solid #a98d62; }
+.support-panel .support-routes { display: grid; margin-block: .85rem 1rem; border-block: 1px solid #c3a57558; }
+.support-panel .support-routes button {
+  width: 100%; min-height: 48px; margin: 0; padding: .7rem .35rem; border: 0; border-radius: 0;
+  background: none; text-align: start; font-family: var(--field-display, Georgia, serif); font-size: 1rem;
+}
+.support-panel .support-routes button + button { border-block-start: 1px solid #c3a57535; }
+.support-panel .support-routes button::after { content: '›'; float: inline-end; margin-inline-end: .2rem; color: #dfbb81; }
+.support-panel .support-routes button:focus-visible { outline-offset: -2px; }

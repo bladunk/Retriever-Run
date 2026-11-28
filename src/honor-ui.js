@@ -5,6 +5,18 @@ import { node, number } from './lodge-elements.js'
 import { kennelItems } from './kennel-catalog.js'
 import { verifiedHonorRequirements } from './ranked-camp.js'
 
+export function honorFamilies(items) {
+  const families = new Map()
+  for (const honor of items) {
+    const suffix = ' · ' + honor.tier
+    const isSeries = !honor.secret && honor.name.endsWith(suffix) && /-[1-4]$/.test(honor.id)
+    const id = isSeries ? honor.id.slice(0,-2) : honor.id
+    if (!families.has(id)) families.set(id,{ label:isSeries ? honor.name.slice(0,-suffix.length) : honor.name, tiers:[] })
+    families.get(id).tiers.push(honor)
+  }
+  return [...families.values()]
+}
+
 export function fieldHonorsRoom(player, insignia, legacyPanels, category, competitive = []) {
   const earned = player.progression.honors
   const verified = new Set(competitive)
@@ -23,8 +35,10 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category, compet
   const rarity = collectionSelect('Honor rarity', { all: 'All tiers', Bronze: 'Bronze', Silver: 'Silver', Gold: 'Gold', Platinum: 'Platinum' })
   const sort = collectionSelect('Order Field Honors', { catalog: 'Catalog order', recent: 'Recently earned', name: 'Name' })
   const tools = node('div', null, 'collection-tools')
-  tools.append(search, filters)
-  filters.append(section, status, rarity, sort)
+  const preferences = node('details',null,'heritage-honor-filters')
+  preferences.append(node('summary','Filter Field Honors'),filters)
+  tools.replaceChildren(search,preferences)
+  filters.append(section,status,rarity,sort)
   const grid = node('div', null, 'patch-grid')
   const pageControls = node('div', null, 'board-filters')
   const back = node('button', 'Previous')
@@ -48,7 +62,8 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category, compet
       Number(owns(b)) - Number(owns(a)))
     if (sort.value === 'name') filtered.sort((a, b) => (a.secret && !owns(a) ? 'Secret Field Honor' : a.name)
       .localeCompare(b.secret && !owns(b) ? 'Secret Field Honor' : b.name))
-    const articles = filtered.slice(page * size, page * size + size).map(honor => {
+    const families = honorFamilies(filtered)
+    function card(honor) {
       const owned = owns(honor)
       const hidden = honor.secret && !owned
       const isLegend = honor.category === 'Legendary'
@@ -79,12 +94,26 @@ export function fieldHonorsRoom(player, insignia, legacyPanels, category, compet
         if (owned) details.append(node('small', earned[honor.id] ? earned[honor.id].slice(0, 10) : 'Recognized from field records'))
       }
       return details
+    }
+    const articles = families.slice(page*size,page*size+size).map(family => {
+      if (family.tiers.length === 1) return card(family.tiers[0])
+      const group = node('details',null,'heritage-honor-family')
+      const tiers = [...family.tiers].sort((a,b) => a.id.localeCompare(b.id))
+      const earned = tiers.filter(owns)
+      const next = tiers.find(tier => !owns(tier))
+      const label = node('summary',family.label)
+      label.append(node('small', (earned.at(-1)?.tier ?? 'Unstarted') + ' · ' + earned.length + '/' + tiers.length +
+        (next ? ' · Next ' + next.tier : ' · Complete')))
+      const content = node('div',null,'heritage-honor-tiers')
+      content.append(...tiers.map(card))
+      group.append(label,content)
+      return group
     })
     grid.replaceChildren(...(articles.length ? articles : [node('p', 'No honors in this view.', 'room-note')]))
     back.disabled = page === 0
-    next.disabled = (page + 1) * size >= filtered.length
-    pageLabel.textContent = (filtered.length ? page * size + 1 : 0) + '–' +
-      Math.min((page + 1) * size, filtered.length) + ' of ' + filtered.length
+    next.disabled = (page + 1) * size >= families.length
+    pageLabel.textContent = (families.length ? page * size + 1 : 0) + '–' +
+      Math.min((page+1)*size,families.length) + ' of ' + families.length
   }
 
   search.addEventListener('input', () => { page = 0; render() })

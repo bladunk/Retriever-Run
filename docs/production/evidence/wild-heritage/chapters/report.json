@@ -1,0 +1,51 @@
+{
+  "engine": "webkit",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "quality": "balanced",
+  "offline": false,
+  "captures": [
+    {
+      "label": "chapter-gulf",
+      "elapsed": 0,
+      "distance": 0,
+      "weather": "Autumn sunrise",
+      "hud": "Gulf Coast Marsh",
+      "stageLabel": "1 / 30",
+      "drawCalls": 63,
+      "geometries": 46
+    },
+    {
+      "label": "chapter-cypress",
+      "elapsed": 30.150000058651564,
+      "distance": 437.17835579999996,
+      "weather": "Autumn sunrise",
+      "hud": "Southern Cypress Swamp",
+      "stageLabel": "3 / 30",
+      "drawCalls": 69,
+      "geometries": 53
+    },
+    {
+      "label": "chapter-parklands",
+      "elapsed": 330.15004008677454,
+      "distance": 8117.340124619999,
+      "weather": "Overcast",
+      "hud": "Saskatchewan Parklands",
+      "stageLabel": "23 / 30",
+      "drawCalls": 65,
+      "geometries": 55
+    },
+    {
+      "label": "chapter-foothills",
+      "elapsed": 390.15001854491936,
+      "distance": 9853.95147285,
+      "weather": "Light rain",
+      "hud": "Canadian Rocky Mountain Foothills",
+      "stageLabel": "27 / 30",
+      "drawCalls": 80,
+      "geometries": 64
+    }
+  ]
+}

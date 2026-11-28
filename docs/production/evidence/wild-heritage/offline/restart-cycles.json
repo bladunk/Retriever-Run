@@ -1,0 +1,673 @@
+{
+  "seed": 7,
+  "quality": "low",
+  "cycles": 5,
+  "samples": [
+    {
+      "hunt": {
+        "id": 1,
+        "discarded": 0,
+        "peakTextures": 11,
+        "peakGeometries": 47,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 1181,
+          "over20": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "averageMs": 315.32
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 1793,
+          "over20": 26,
+          "over33_3": 26,
+          "over50": 25,
+          "averageMs": 233.85
+        },
+        "averageFPS": 3.2
+      },
+      "restart": 2751,
+      "restartTrace": {
+        "inputAt": 18392,
+        "handlerAt": 18471,
+        "before": {
+          "geometries": 21,
+          "textures": 10,
+          "programs": 12
+        },
+        "firstFrameSubmittedMs": 2830,
+        "firstFrameCpuMs": 1793,
+        "firstRenderMs": 1747,
+        "after": {
+          "geometries": 33,
+          "textures": 10,
+          "programs": 16
+        },
+        "firstOperations": [
+          {
+            "at": 18472,
+            "hunt": 1,
+            "name": "hunt-trail-reset",
+            "detail": "state and replay setup",
+            "durationMs": 1
+          },
+          {
+            "at": 19326,
+            "hunt": 1,
+            "name": "audio-initialize",
+            "detail": "Web Audio",
+            "durationMs": 846
+          },
+          {
+            "at": 19332,
+            "hunt": 1,
+            "name": "hunt-scene-entry",
+            "detail": "HUD and gesture audio",
+            "durationMs": 859
+          },
+          {
+            "at": 19337,
+            "hunt": 1,
+            "name": "hunt-opening-entities",
+            "detail": "trail entity population",
+            "durationMs": 5
+          },
+          {
+            "at": 19371,
+            "hunt": 1,
+            "name": "audio-decode-start",
+            "detail": "instruments"
+          },
+          {
+            "at": 19432,
+            "hunt": 1,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 1
+          },
+          {
+            "at": 19432,
+            "hunt": 1,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 19432,
+            "hunt": 1,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          },
+          {
+            "at": 19476,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 0"
+          },
+          {
+            "at": 19476,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / 1"
+          },
+          {
+            "at": 19476,
+            "hunt": 1,
+            "name": "geometry-upload",
+            "detail": "gulf / solid / -1"
+          }
+        ],
+        "nextAnimationCallbackMs": 3918,
+        "firstPresentationIntervalMs": 1181
+      },
+      "final": {
+        "geometries": 43,
+        "textures": 11,
+        "programs": 18,
+        "tiles": 6,
+        "wildlife": 0,
+        "pool": {
+          "keys": 6,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-mastery-1",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 2,
+        "discarded": 0,
+        "peakTextures": 11,
+        "peakGeometries": 46,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 385,
+          "over20": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "averageMs": 251.2
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 283,
+          "over20": 26,
+          "over33_3": 26,
+          "over50": 26,
+          "averageMs": 171.54
+        },
+        "averageFPS": 4
+      },
+      "restart": 193,
+      "restartTrace": {
+        "inputAt": 30498,
+        "handlerAt": 30506,
+        "before": {
+          "geometries": 43,
+          "textures": 11,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 201,
+        "firstFrameCpuMs": 172,
+        "firstRenderMs": 130,
+        "after": {
+          "geometries": 43,
+          "textures": 11,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 30510,
+            "hunt": 2,
+            "name": "hunt-trail-reset",
+            "detail": "state and replay setup",
+            "durationMs": 4
+          },
+          {
+            "at": 30515,
+            "hunt": 2,
+            "name": "hunt-scene-entry",
+            "detail": "HUD and gesture audio",
+            "durationMs": 5
+          },
+          {
+            "at": 30521,
+            "hunt": 2,
+            "name": "hunt-opening-entities",
+            "detail": "trail entity population",
+            "durationMs": 6
+          },
+          {
+            "at": 30534,
+            "hunt": 2,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 3
+          },
+          {
+            "at": 30534,
+            "hunt": 2,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 30534,
+            "hunt": 2,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 310,
+        "firstPresentationIntervalMs": 229
+      },
+      "final": {
+        "geometries": 43,
+        "textures": 11,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-mastery-1",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 3,
+        "discarded": 0,
+        "peakTextures": 11,
+        "peakGeometries": 46,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 425,
+          "over20": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "averageMs": 222.52
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 337,
+          "over20": 26,
+          "over33_3": 26,
+          "over50": 26,
+          "averageMs": 152.27
+        },
+        "averageFPS": 4.5
+      },
+      "restart": 156,
+      "restartTrace": {
+        "inputAt": 38070,
+        "handlerAt": 38078,
+        "before": {
+          "geometries": 43,
+          "textures": 11,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 164,
+        "firstFrameCpuMs": 133,
+        "firstRenderMs": 131,
+        "after": {
+          "geometries": 43,
+          "textures": 11,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 38079,
+            "hunt": 3,
+            "name": "hunt-trail-reset",
+            "detail": "state and replay setup",
+            "durationMs": 1
+          },
+          {
+            "at": 38086,
+            "hunt": 3,
+            "name": "hunt-scene-entry",
+            "detail": "HUD and gesture audio",
+            "durationMs": 7
+          },
+          {
+            "at": 38090,
+            "hunt": 3,
+            "name": "hunt-opening-entities",
+            "detail": "trail entity population",
+            "durationMs": 4
+          },
+          {
+            "at": 38103,
+            "hunt": 3,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 1
+          },
+          {
+            "at": 38103,
+            "hunt": 3,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 38103,
+            "hunt": 3,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 302,
+        "firstPresentationIntervalMs": 275
+      },
+      "final": {
+        "geometries": 43,
+        "textures": 11,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-mastery-1",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 4,
+        "discarded": 0,
+        "peakTextures": 11,
+        "peakGeometries": 46,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 555,
+          "over20": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "averageMs": 223.8
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 473,
+          "over20": 26,
+          "over33_3": 26,
+          "over50": 26,
+          "averageMs": 148.42
+        },
+        "averageFPS": 4.5
+      },
+      "restart": 188,
+      "restartTrace": {
+        "inputAt": 44413,
+        "handlerAt": 44419,
+        "before": {
+          "geometries": 43,
+          "textures": 11,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 194,
+        "firstFrameCpuMs": 122,
+        "firstRenderMs": 110,
+        "after": {
+          "geometries": 43,
+          "textures": 11,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 44420,
+            "hunt": 4,
+            "name": "hunt-trail-reset",
+            "detail": "state and replay setup",
+            "durationMs": 1
+          },
+          {
+            "at": 44423,
+            "hunt": 4,
+            "name": "hunt-scene-entry",
+            "detail": "HUD and gesture audio",
+            "durationMs": 3
+          },
+          {
+            "at": 44428,
+            "hunt": 4,
+            "name": "hunt-opening-entities",
+            "detail": "trail entity population",
+            "durationMs": 5
+          },
+          {
+            "at": 44496,
+            "hunt": 4,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 4
+          },
+          {
+            "at": 44496,
+            "hunt": 4,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 44496,
+            "hunt": 4,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 301,
+        "firstPresentationIntervalMs": 221
+      },
+      "final": {
+        "geometries": 43,
+        "textures": 11,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-mastery-1",
+        "territory": "gulf",
+        "stage": 1
+      }
+    },
+    {
+      "hunt": {
+        "id": 5,
+        "discarded": 0,
+        "peakTextures": 11,
+        "peakGeometries": 46,
+        "presentation": {
+          "samples": 25,
+          "maxMs": 397,
+          "over20": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "averageMs": 162.56
+        },
+        "cpu": {
+          "samples": 26,
+          "maxMs": 372,
+          "over20": 26,
+          "over33_3": 26,
+          "over50": 24,
+          "averageMs": 113.38
+        },
+        "averageFPS": 6.2
+      },
+      "restart": 136,
+      "restartTrace": {
+        "inputAt": 50534,
+        "handlerAt": 50536,
+        "before": {
+          "geometries": 43,
+          "textures": 11,
+          "programs": 18
+        },
+        "firstFrameSubmittedMs": 138,
+        "firstFrameCpuMs": 83,
+        "firstRenderMs": 80,
+        "after": {
+          "geometries": 43,
+          "textures": 11,
+          "programs": 18
+        },
+        "firstOperations": [
+          {
+            "at": 50536,
+            "hunt": 5,
+            "name": "hunt-trail-reset",
+            "detail": "state and replay setup",
+            "durationMs": 0
+          },
+          {
+            "at": 50538,
+            "hunt": 5,
+            "name": "hunt-scene-entry",
+            "detail": "HUD and gesture audio",
+            "durationMs": 2
+          },
+          {
+            "at": 50573,
+            "hunt": 5,
+            "name": "hunt-opening-entities",
+            "detail": "trail entity population",
+            "durationMs": 35
+          },
+          {
+            "at": 50592,
+            "hunt": 5,
+            "name": "wildlife-art",
+            "detail": "mallard",
+            "durationMs": 1
+          },
+          {
+            "at": 50592,
+            "hunt": 5,
+            "name": "wildlife-fallback",
+            "detail": {
+              "species": "mallard",
+              "reason": "battery saver"
+            }
+          },
+          {
+            "at": 50592,
+            "hunt": 5,
+            "name": "wildlife-visible",
+            "detail": "mallard"
+          }
+        ],
+        "nextAnimationCallbackMs": 164,
+        "firstPresentationIntervalMs": 74
+      },
+      "final": {
+        "geometries": 43,
+        "textures": 11,
+        "programs": 18,
+        "tiles": 7,
+        "wildlife": 0,
+        "pool": {
+          "keys": 9,
+          "idle": 5
+        }
+      },
+      "contact": {
+        "fraction": 0.2728281191296865,
+        "type": "stream",
+        "part": "front paws",
+        "solid": "wet channel",
+        "obstacleDistance": 37.147644719999995,
+        "obstacleLane": 0,
+        "distance": 35.866847311142806,
+        "lateral": 0,
+        "targetLane": 0,
+        "lane": 0,
+        "jumpRemaining": 0,
+        "slideRemaining": 0,
+        "action": "run",
+        "elapsed": 3.1606069009927467,
+        "pattern": "creek-crossing",
+        "origin": 35.84025431481482,
+        "contactX": 0.18934823931124983,
+        "contactY": 0.0769445557722472,
+        "contactZ": -0.4827575403240385,
+        "height": 0,
+        "seed": 7,
+        "ruleset": "migration-30-mastery-1",
+        "territory": "gulf",
+        "stage": 1
+      }
+    }
+  ]
+}

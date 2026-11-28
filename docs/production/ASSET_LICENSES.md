@@ -168,3 +168,12 @@ Original project interface and test fixtures. Review screenshots and footage use
 ## RC.12 · Connected
 
 Record cards and local photo compositions are original project code. They reuse the installed Lodge route drawing and already credited Lodge art and Kennel Labrador. The Kennel export includes the existing CC BY model attribution. No new third-party models, fonts, images or audio enter the installed package. [Visual evidence](evidence/connected/REVIEW.md)
+
+## Wild Heritage additions
+
+| Asset | Source and rights | Runtime use |
+| --- | --- | --- |
+| `forest-needles.webp` | Original Retriever Run foliage atlas. The original conifer and bark portions are retained. The original broadleaf branchlets are baked by `scripts/art/heritage-canopy.py`. No outside stock images enter the atlas. | One 1024² alpha WebP, 147,060 bytes. Shared cutout texture with a full RGBA mip estimate of 5.33 MiB. |
+| `public/gear/*.webp` | 154 original in-engine studio renders made by `scripts/art/heritage-gear.mjs`. They incorporate existing approved Labrador/Boyd render assets and Retriever Run cosmetics. Existing canine source terms and Boyd reference restrictions above continue to apply. No photography, external marks or sampler metadata is embedded. | 360 × 248 WebP each, 1,690,136 bytes total. Individual SHA-256 hashes, bytes, paths and usage are included in the offline release manifest under `equipment-art`. |
+| Forest branches, bank color and vest panels | Original project procedural geometry, shaders and construction detail. No imported mesh or texture. Existing environmental source attribution still applies. | Shared buffers, materials and current environment assets. |
+| Photos, music and type | Existing licensed Journal artwork and sound library, with Source Serif 4 under OFL 1.1 and existing system fallback. | No new font, book images or audio package. |

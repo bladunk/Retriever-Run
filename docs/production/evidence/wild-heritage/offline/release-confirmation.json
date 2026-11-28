@@ -1,0 +1,64 @@
+{
+  "build": "5bc0fd2",
+  "engine": "webkit",
+  "seed": 7,
+  "duration": 635,
+  "elapsed": 635.1816666666666,
+  "offline": true,
+  "quality": "low",
+  "recorded": false,
+  "acceleratedClock": true,
+  "hunt": {
+    "id": 1,
+    "discarded": 2626,
+    "peakTextures": 12,
+    "peakGeometries": 126,
+    "presentation": {
+      "samples": 2648,
+      "maxMs": 464,
+      "over20": 2647,
+      "over33_3": 2543,
+      "over50": 923,
+      "averageMs": 50.86
+    },
+    "cpu": {
+      "samples": 2649,
+      "maxMs": 634,
+      "over20": 2597,
+      "over33_3": 662,
+      "over50": 102,
+      "averageMs": 32.22
+    },
+    "averageFPS": 19.7
+  },
+  "programs": 29,
+  "presentationMs": {
+    "samples": 720,
+    "median": 43,
+    "p95": 62,
+    "p99": 96,
+    "max": 199,
+    "over16_7": 720,
+    "over20": 720,
+    "over33_3": 689,
+    "over50": 163,
+    "slow": 689,
+    "average": 45.64
+  },
+  "cpuMs": {
+    "samples": 720,
+    "median": 28,
+    "p95": 41,
+    "p99": 55,
+    "max": 163,
+    "over16_7": 720,
+    "over20": 716,
+    "over33_3": 143,
+    "over50": 11,
+    "slow": 143,
+    "average": 30.21
+  },
+  "ready": 4453,
+  "restart": 1019,
+  "discarded": 2626
+}

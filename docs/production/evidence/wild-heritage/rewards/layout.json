@@ -1,0 +1,98 @@
+[
+  {
+    "version": "studio",
+    "name": "ordinary",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "record",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "partial",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "level",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "multi",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "rank",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "equipment",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "trophy",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "lodge",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "rare",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "migration",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "studio",
+    "name": "master",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  }
+]

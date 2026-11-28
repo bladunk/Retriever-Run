@@ -1,0 +1,31 @@
+{
+  "engine": "chromium",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "shots": [
+    "closed",
+    "populated",
+    "leaderboard-rows",
+    "public-profile",
+    "friend-invitation",
+    "friends-standings",
+    "friend-comparison",
+    "private-camp",
+    "offline-standings",
+    "outage",
+    "verification-pending",
+    "hunt-share",
+    "feedback",
+    "lodge-share",
+    "owned-first",
+    "labrador-share",
+    "immediate-replay"
+  ],
+  "verifiedPublicWrites": "synthetic fixture only",
+  "offlineImages": false,
+  "secondProfilePreserved": true,
+  "nativeShare": "cancelled using browser fixture",
+  "submittedRuns": 1
+}

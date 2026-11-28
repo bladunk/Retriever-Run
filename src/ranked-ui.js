@@ -265,7 +265,7 @@ function ranking(camp, player, scope, campId, onReady, season = masteryReplayVer
   return { section, refresh: () => load(0, true) }
 }
 
-function worldwide(camp, player, start, navigate) {
+function worldwide(camp, player, start) {
   const region = node('div', null, 'ranked-overview')
   const state = node('p', '', 'room-note')
   state.setAttribute('role', 'status')
@@ -314,11 +314,7 @@ function worldwide(camp, player, start, navigate) {
         ? 'Get a connected ticket to qualify. Ordinary hunts and Play Again save local records.'
         : 'Join in Competitive profile to enter.') : messages.closed
   })
-  const links = node('div', null, 'worldwide-toolbar')
-  links.append(action('Friends', () => navigate('friends')), action('Private Camps', () => navigate('private-camps')),
-    action('Competitive profile', () => navigate('camp-profile')),
-    action('Archived rankings', () => navigate('camp-history')))
-  region.append(state, board.section, ranked, pending, links)
+  region.append(state, board.section, ranked, pending)
   return region
 }
 
@@ -533,5 +529,5 @@ export function rankedRoom(room, camp, legacy, player, { start, navigate, onJoin
   if (room === 'friends') return friends(camp, player)
   if (room === 'private-camps') return privateCamps(camp, player)
   if (room === 'camp-profile') return competitiveProfile(camp, legacy, player, onJoin, onErase)
-  return worldwide(camp, player, start, navigate)
+  return worldwide(camp, player, start)
 }

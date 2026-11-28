@@ -34,9 +34,8 @@ function award(target, { title, label, description, image, room, ref }, openRoom
 function exhibits(report, player) {
   const cards = []
   for (const item of report.gear ?? []) {
-    const category = Object.hasOwn(item, 'coat') ? 'coat' : item.bandana ? 'bandana' : item.id?.endsWith('-vest') ? 'vest' : 'collar'
     cards.push({ title: item.name, label: 'Equipment earned', room: 'kennel', ref: item.id,
-      image: gearIllustration(item, category), description: item.description ??
+      image: gearIllustration(item), description: item.description ??
         (item.honor ? honorById.get(item.honor)?.name : item.level ? 'Unlocked at career level ' + item.level : undefined) })
   }
   for (const honor of report.newHonors ?? []) {
@@ -77,6 +76,9 @@ function exhibits(report, player) {
 }
 
 export function renderHuntResults(ui, report, { player, motion, openRoom } = {}) {
+  const celebration = report.boyd || report.presentation?.migrationCompleted || report.lodge?.tier ||
+    report.gear?.length || report.improved?.includes('score')
+  ui['field-report'].toggleAttribute('data-celebration',Boolean(celebration))
   const panel = ui['report-journey']
   panel.replaceChildren()
   const awards = ui['report-earned']

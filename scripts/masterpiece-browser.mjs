@@ -97,7 +97,7 @@ function recordAudio(page, milliseconds) {
 }
 
 try {
-  const audition = ['audio-only','studio-only','gameplay-audio','mastery-hunt','mastery-fixtures','mastery-endless'].some(mode => process.argv.includes(mode))
+  const audition = ['audio-only','studio-only','gameplay-audio','mastery-hunt','mastery-fixtures','mastery-endless','heritage-arrival'].some(mode => process.argv.includes(mode))
   const editions = process.argv.includes('after-only') ? ['after'] : ['before','after']
   for (const version of audition ? [] : editions) await review(version, async ({page,url,shot,context}) => {
     if (process.argv.includes('report-only')) {
@@ -127,7 +127,10 @@ try {
     await page.locator('.lodge-interior img').first().evaluate(image => image.decode())
     await shot('lodge')
     for (const name of ['migration','records','trophies']) {
-      await page.locator('[data-lodge-room="'+name+'"]').click()
+      const destination = page.locator('[data-lodge-room="'+name+'"]')
+      const parent = { records:'career', trophies:'collection' }[name]
+      if (parent && !await destination.isVisible()) await page.locator('[data-lodge-room="'+parent+'"]').click()
+      await destination.click()
       await shot(name)
     }
     await page.locator('#tab-journal').click()
@@ -141,6 +144,12 @@ try {
     await page.locator('#tab-kennel').click()
     await page.locator('.kennel-stage canvas').waitFor()
     await shot('kennel')
+    const gear = page.locator('.kennel-items .gear-illustration').first()
+    if (await gear.count()) {
+      await gear.scrollIntoViewIfNeeded()
+      await gear.evaluate(image => image.decode())
+      await shot('kennel-gear')
+    }
     await page.locator('#close-lodge').click()
     if (process.argv.includes('menus-only')) return
     await context.setOffline(true)
@@ -230,6 +239,18 @@ try {
       }, minute,{timeout:55000})
       await shot('minute-'+minute)
     }
+  })
+  if (process.argv.includes('heritage-arrival')) await review('studio',async ({page,url,shot}) => {
+    await page.goto(url+'?studio=1&territory=11&offset=0.15&arrival=first&quality=low&seed=7')
+    await page.locator('#content-download').click()
+    await page.locator('#art-studio summary').click()
+    const before = await page.evaluate(key => localStorage.getItem(key),saveKey)
+    await page.waitForFunction(() => !document.querySelector('#primary').disabled)
+    await page.getByRole('button',{name:'Run isolated practice',exact:true}).click()
+    await page.waitForFunction(() => document.querySelector('#game').dataset.mode === 'running')
+    await page.getByText('First arrival in Canada',{exact:true}).waitFor()
+    await shot('first-arrival-in-canada')
+    assert.equal(await page.evaluate(key => localStorage.getItem(key),saveKey),before)
   })
   if (process.argv.includes('mastery-fixtures')) await review('studio',async ({page,url,context,shot}) => {
     await page.addInitScript(() => {

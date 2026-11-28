@@ -169,7 +169,8 @@ export function buildTile(index, seed = 0) {
       const x = offsets[col]
       const edge = Math.abs(x)
       const y = earth(distance, x, zone)
-      const edgeFade = Math.min(1, Math.max(0, (edge - trailEdge(distance, x, zone) + .44) / .88))
+      const verge = Math.sin(distance*.58 + x*1.12)*.17 + Math.cos(distance*.21 - x*3.6)*.12
+      const edgeFade = T.MathUtils.smoothstep(edge - trailEdge(distance,x,zone) + verge,-.53,.56)
       uvs.push(x / 2.5, -distance / 2.5)
       terrainStyle.push(T.MathUtils.lerp(bedStyles[zone.from.kind] ?? 0, bedStyles[zone.to.kind] ?? 0, zone.blend))
       const surface = T.MathUtils.lerp(surfaceOrder[zone.from.key], surfaceOrder[zone.to.key], zone.blend)
@@ -180,7 +181,9 @@ export function buildTile(index, seed = 0) {
       tint.copy(soil).lerp(olive, edgeFade)
       const bankBand = edgeFade * Math.max(0, 1 - Math.abs(y - waterline - .11) / .38)
       const shadowBand = bankBand * (.12 + .09 * Math.cos(distance * .24 - x * 1.9))
-      tint.multiplyScalar(1 - shadowBand)
+      const wetSoil = edgeFade * Math.max(0,1-Math.abs(y-waterline-.07)/.27) *
+        (.17+.10*Math.sin(distance*.81+x*1.66))
+      tint.multiplyScalar(1 - shadowBand - wetSoil)
       const braid = T.MathUtils.lerp(Number(zone.from.kind === 'braids'),Number(zone.to.kind === 'braids'),zone.blend)
       if (braid && edge > 5) {
         const bar = Math.max(0,1-Math.abs(y-waterline-.23)/.54)

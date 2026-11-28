@@ -266,10 +266,11 @@ export function createAtmosphere(scene) {
       sun.position.copy(dawnDirection).multiplyScalar(28)
       const shade = (region.from.treesPerSide + (region.to.treesPerSide - region.from.treesPerSide) * region.blend) / 12
       const swamp = T.MathUtils.lerp(Number(region.from.key === 'cypress'), Number(region.to.key === 'cypress'), region.blend)
-      fill.intensity = (1.67 - lerp('cloud') * .14 - shade * .24 - swamp * .11) *
+      const rainFill = lerp('rain') * (1 - result.frost)
+      fill.intensity = (1.67 - lerp('cloud') * .14 - shade * .24 - swamp * .11 + rainFill * .11) *
         T.MathUtils.lerp(lightFrom[2], lightTo[2], region.blend)
       fill.groundColor.setHex(region.from.bank).lerp(tone.setHex(region.to.bank), region.blend).multiplyScalar(.72)
-      sun.intensity *= 1.08 - shade * .10 + swamp * .33 + T.MathUtils.lerp(lightFrom[3], lightTo[3], region.blend)
+      sun.intensity *= 1.08 - shade * .10 + swamp * .33 - rainFill * .08 + T.MathUtils.lerp(lightFrom[3], lightTo[3], region.blend)
       // Twilight affects distant visibility and sky color. Neutral fill and
       // a mild moon contribution preserve the trail and hazard silhouettes.
       fill.intensity *= 1 + .11*night

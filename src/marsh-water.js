@@ -58,13 +58,15 @@ export const marshWater = new T.ShaderMaterial({
 
     vec3 trailPool(vec2 p, float edge) {
       float variation = sin(p.x*73. + sin(p.y*57.)*2.) * cos(p.y*64.-p.x*39.);
-      float margin = ${puddleMargin.toFixed(2)} * (.73 + .22*sin(p.x*17. + p.y*13.) + .05*variation);
+      float fringe = sin(p.x*9.6+p.y*12.2 + .7*sin(p.x*19. - p.y*4.));
+      float margin = ${puddleMargin.toFixed(2)} * (.61 + .24*fringe + .13*variation);
       if (edge > margin) discard;
-      float water = 1.-smoothstep(-.027,.006,edge);
+      float water = 1.-smoothstep(-.012,.026+.013*fringe,edge);
       float graze = pow(1.-max(0.,normalize(cameraPosition-waterPoint).y),2.);
       float bands = sin(p.y*15.+p.x*8.3+waterClock*2.6+sin(p.x*9.)*.48);
       float textureFade = 1.-smoothstep(.025,.16,length(fwidth(p)));
-      vec3 wetGravel = mix(vec3(.095,.077,.050),vec3(.13,.107,.077),smoothstep(.0,margin, edge));
+      vec3 wetGravel = mix(vec3(.066,.058,.041),vec3(.139,.122,.091),smoothstep(.0,margin, edge));
+      wetGravel = mix(wetGravel,mix(wetGravel,waterTint,.22),waterWeather*.45);
       wetGravel *= 1. + variation*.31*textureFade;
       vec3 skyImage = mix(waterSky,waterHorizon, .35 + .20*bands*textureFade);
       skyImage = mix(skyImage,max(skyImage,vec3(.185,.242,.251)),twilight*.88);
@@ -80,7 +82,9 @@ export const marshWater = new T.ShaderMaterial({
       vec2 p = waterPoint.xz + worldOrigin;
       if (bedDepth > 2.) {
         vec2 pool = abs(puddleUV);
-        vec3 edges = max(pool.x-puddleWidths, pool.y-puddleLengths);
+        vec3 x = pool.x-puddleWidths, z = pool.y-puddleLengths;
+        vec3 corner = max(x,0.)*max(x,0.) + max(z,0.)*max(z,0.);
+        vec3 edges = sqrt(corner) + min(max(x,z),0.);
         gl_FragColor = vec4(trailPool(p,min(edges.x,min(edges.y,edges.z))),1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -147,6 +151,11 @@ export const marshWater = new T.ShaderMaterial({
       vec3 channel = mix(waterTint * .82, vec3(.048,.074,.061), coast);
       lake = mix(lake, mix(mud * .82, channel, .28 + deep * .63), crossing);
       lake *= 1. - .26 * (1. - smoothstep(.012, .095, depth));
+      // Broad lenses of sediment and root shadow follow the actual depth.
+      // Independent irregularity prevents an identical band around all banks.
+      float bankPattern = sin(dot(p,vec2(.71,1.42)) + .65*sin(p.y*.88-p.x*1.19));
+      float stain = (1.-smoothstep(.026,.19+.039*bankPattern,depth))*(1.-crossing);
+      lake = mix(lake, lake*mix(vec3(.69,.78,.70),vec3(.95,.86,.69),stream), stain*.47);
       float rim = smoothstep(.013,.049,depth) * (1. - smoothstep(.074,.139,depth));
       rim *= .77 + .23 * sin(dot(p, vec2(1.77,.97)) + broad * .41);
       lake += rim * (.5 + crossWave * .5) * vec3(.017,.018,.010);
