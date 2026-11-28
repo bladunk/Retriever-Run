@@ -52,7 +52,8 @@ export function createMasteryCourse(seed) {
     const at = distanceAtTime(time, masteryDirector)
     const row = { at, time, lane, id: index++, pattern: 'endless-switch',
       exits: action === 'stream' ? [...lanes] : [lane], entities: [],
-      sequence: length, recovery, decisionGap: time - previous.time }
+      sequence: length, recovery, decisionGap: time - previous.time,
+      decisionReserve: time - provisionalTime - lead(tail) - Math.max(laneTime, lead(action)) }
     const add = (type, slot, distance, hazard, wide = false) => row.entities.push({
       type, lane: slot, distance, hazard, wide,
     })

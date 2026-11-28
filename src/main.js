@@ -430,6 +430,21 @@ function initialize() {
       lodge: (button, room, exhibit, preview) => lodgeUI.open(button,room,exhibit,preview),
       renderer: () => renderer.info.memory,
       practice: () => start(null, performance.now()),
+      feedback: kind => {
+        const at = run.distance
+        if (kind === 'water' || kind === 'mud')
+          spray.step(at, run.x, visualTime, kind === 'water', preset.detail, kind)
+        if (kind === 'pickup' || kind === 'combo') {
+          spray.pickup(at, run.x, visualTime)
+          announce(kind === 'combo' ? '25 in a row' : '+6', 2)
+          sound.selectScene('studio', { gesture:true })
+          sound.play(kind === 'combo' ? 'combo' : 'treat', undefined, 25)
+        }
+        if (kind === 'near' || kind === 'clean') {
+          sound.selectScene('studio', { gesture:true })
+          announceSkill(kind, kind === 'near' ? 24 : 36)
+        }
+      },
       report: exampleReport => setMode('over', { exampleReport }),
       sound,
     })
@@ -1306,7 +1321,7 @@ function start(ticket, inputAt) {
   else if (collisionRequested && flags.get('course') !== 'mastery') runCourse = localCourseRuleset
   else runCourse = masteryCourseRuleset
   const trailStart = performanceProbe?.stamp()
-  resetTrail(runPermit?.seed ?? debug?.seed ?? Math.floor(Math.random() * 0x100000000))
+  resetTrail(runPermit?.seed ?? debug?.seed ?? (studioRequested ? studioSeed : Math.floor(Math.random() * 0x100000000)))
   performanceProbe?.operation('hunt-trail-reset', 'state and replay setup', trailStart)
   coaching = lodge.current().stats.runs < 3
   const onSkill = debug ? event => debug.skill(event) : undefined

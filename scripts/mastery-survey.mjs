@@ -51,7 +51,7 @@ export function simulateMastery(seed, duration, { coastAt = Infinity, timing = 0
         controls.enqueue(run.lane < target.lane ? 'right' : 'left')
         lastTurn = run.elapsed
       }
-      if (!usedGate && target.gate && target.at - run.distance <= run.speed * (target.gate.duration / 2 - timing)) {
+      if (!usedGate && target.gate && target.at - run.distance <= run.speed * (target.gate.duration / 2 - (target.sequence === undefined ? 0 : timing))) {
         controls.enqueue(target.gate.action)
         usedGate = true
       }
@@ -103,6 +103,7 @@ export function measures(seed, at, mastery) {
   for (let row = next(); row.time < at; row = next()) if (row.time >= start) window.push(row)
   const withHazards = window.filter(row => row.entities.some(item => item.hazard))
   const gaps = window.slice(1).map((row, i) => row.time - window[i].time).sort((a,b) => a - b)
+  const reserves = window.map(row=>row.decisionReserve).filter(Number.isFinite).sort((a,b)=>a-b)
   const formatted = value => Number(value.toFixed(3))
   return { time: at, edition: mastery ? 'mastery' : 'raptor',
     speed: formatted(speedAtTime(at, mastery ? masteryDirector : localDirector)),
@@ -110,6 +111,7 @@ export function measures(seed, at, mastery) {
     decisions: withHazards.length, gates: withHazards.filter(row=>row.gate).length,
     laneChanges: withHazards.filter((row,i)=>i && row.lane !== withHazards[i-1].lane).length,
     strings: mastery && at >= 510 ? endlessPressure(at).stringLength : null,
+    decisionReserve: reserves.length ? [formatted(reserves[0]), formatted(reserves[Math.floor(reserves.length*.5)])] : null,
     medianGap: formatted(gaps[Math.floor(gaps.length*.5)] ?? 0),
     longestGap: formatted(gaps.at(-1) ?? 0) }
 }
@@ -119,11 +121,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   for (const seed of seeds.length ? seeds : [0,1,2,7,11,13,17,19,23,29,83,391]) {
     const { trace, ...result } = simulateMastery(seed, 3600)
     console.log(JSON.stringify(result))
+    if (result.contact) process.exitCode = 1
   }
   const comparison = checkpoints.flatMap(t => [measures(7,t,false), measures(7,t,true)])
   console.log(JSON.stringify({comparison}))
-  const signed = simulateMastery(7, 1100, { coastAt:1050 })
-  assert.ok(signed.contact)
-  assert.deepEqual(verifyMasteryReplay(signed.seed,signed.trace),signed.metrics)
-  console.log(JSON.stringify({replay:signed.metrics, ticks:signed.ticks, inputs:signed.trace.actions.length}))
+  const verified = simulateMastery(7, 1100, { coastAt:1050 })
+  assert.ok(verified.contact)
+  assert.deepEqual(verifyMasteryReplay(verified.seed,verified.trace),verified.metrics)
+  console.log(JSON.stringify({replay:verified.metrics, ticks:verified.ticks, inputs:verified.trace.actions.length}))
 }

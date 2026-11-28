@@ -144,3 +144,36 @@ test('version six personal records stay archived and finalizing Mastery twice ne
   assert.equal(saved.players()[1].stats.runs,0)
   assert.equal(saved.board('score',masteryCourseRuleset)[0].score,218)
 })
+
+test('the staged verifier requires explicit opt-in and an isolated claim bound to the Mastery season', async () => {
+  const { huntHandler } = await import('../supabase/functions/verify-hunt/handler.js')
+  const result = simulateMastery(7,720,{coastAt:610})
+  const ticket = '23e4567c-e89b-42d3-a456-426614174000'
+  const player = '23e4567c-e89b-42d3-a456-426614174001'
+  const endpoints = []
+  let stagedSeason = 'great-migration-1'
+  const fetcher = async (url,options) => {
+    endpoints.push(new URL(url).pathname)
+    if (url.endsWith('/user')) return Response.json({id:player,is_anonymous:true})
+    if (url.endsWith('/rr_mastery_claim')) {
+      assert.equal(JSON.parse(options.body).p_ticket,ticket)
+      return Response.json({status:'ok',seed:7,lease:'fixture',course:masteryCourseRuleset,season:stagedSeason})
+    }
+    assert.ok(url.endsWith('/rr_mastery_commit'))
+    const body = JSON.parse(options.body)
+    assert.equal(body.p_lease,'fixture')
+    assert.deepEqual(body.p_metrics,result.metrics)
+    return Response.json({status:'ok'})
+  }
+  const config = {origin:'https://example.test',publishable:'fixture',service:'fixture',fetcher}
+  const request = () => new Request('https://example.test/verify-hunt',{method:'POST',
+    headers:{Authorization:'Bearer fixture-fixture-fixture'},body:JSON.stringify({...result.trace,ticket})})
+  assert.equal((await(await huntHandler(config)(request())).json()).status,'invalid_run')
+  assert.deepEqual(endpoints,[])
+  const staged = huntHandler({...config,authorizeMastery:true})
+  assert.equal((await(await staged(request())).json()).status,'invalid_run')
+  assert.equal(endpoints.at(-1),'/rest/v1/rpc/rr_mastery_claim')
+  stagedSeason = masteryReplayVersion
+  assert.equal((await(await staged(request())).json()).status,'ok')
+  assert.equal(endpoints.at(-1),'/rest/v1/rpc/rr_mastery_commit')
+})

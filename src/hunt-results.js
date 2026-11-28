@@ -1,5 +1,6 @@
 import { xpTransitions } from './career.js'
 import { gearIllustration } from './kennel-illustration.js'
+import { checkLabel, honorById } from './field-honors.js'
 import { hazardName } from './field-stats.js'
 import { trophyFor, honorDisplay, lodgeTiers } from './lodge-progress.js'
 import { exhibitImage } from './legacy-room.js'
@@ -35,13 +36,14 @@ function exhibits(report, player) {
   for (const item of report.gear ?? []) {
     const category = Object.hasOwn(item, 'coat') ? 'coat' : item.bandana ? 'bandana' : item.id?.endsWith('-vest') ? 'vest' : 'collar'
     cards.push({ title: item.name, label: 'Equipment earned', room: 'kennel', ref: item.id,
-      image: gearIllustration(item, category), description: item.description })
+      image: gearIllustration(item, category), description: item.description ??
+        (item.honor ? honorById.get(item.honor)?.name : item.level ? 'Unlocked at career level ' + item.level : undefined) })
   }
   for (const honor of report.newHonors ?? []) {
     const key = 'honor:' + honor.id
     const trophy = player && trophyFor(player, key) || { name: honor.name, ...honorDisplay(honor), badge: honor.tier }
     cards.push({ title: trophy.name, label: trophy.badge ?? 'Field Honor', image: exhibitImage(trophy),
-      description: trophy.description, room: 'collection', ref: key })
+      description: trophy.description ?? honor.checks?.map(checkLabel).join(' · '), room: 'collection', ref: key })
   }
   for (const id of report.newWildlife ?? []) {
     const animal = fieldSpecies[id]

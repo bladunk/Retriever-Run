@@ -407,6 +407,10 @@ export function fillReport(ui, report, { heckle, previousBest = 0, player } = {}
     ['Logs jumped', number(report.logs)], ['Branches cleared', number(report.slidesCleared)],
     ['Geese dodged', number(report.geese)], ['Retrieves', number(report.retrieves)],
     ['Hunt score', number(report.score)], ['Distance', meters(report.distance)],
+    ...(Number.isFinite(report.nearMisses) ? [
+      ['Best treat chain', number(report.bestStreak ?? 0)],
+      ['Near misses', number(report.nearMisses)], ['Best clean sequence', number(report.bestCleanStreak)],
+    ] : []),
     ['Territories reached', expeditionRegions.slice(0, report.territory).map(place => place.name).join(' · ')],
     ['Species encountered', Object.entries(report.wildlife ?? {}).filter(([, item]) => item.seen)
       .map(([id, item]) => fieldSpecies[id].name + ' ×' + item.seen).join(' · ') || '—'],

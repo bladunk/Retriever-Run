@@ -191,7 +191,7 @@ try {
     qa.landmarkFrames = []
     if (initial.mastery) window.retrieverTestTick = tick => {
       const replay = qa.soak
-      while (Math.round(replay?.inputs[replay.next]?.at * 120) === tick)
+      while (Math.round(replay?.inputs[replay.next]?.at * 120) - (replay?.firstTick ?? 0) === tick)
         window.dispatchEvent(new KeyboardEvent('keydown', { key: replay.inputs[replay.next++].key }))
     }
 
@@ -213,7 +213,8 @@ try {
       } else if (state?.mode !== 'running') stamp += 40
       else if (qa.soak && state.elapsed < qa.soak.duration) {
         const replay = qa.soak
-        if (initial.mastery) stamp += replay.ticksPerCallback * (1000 / 120)
+        if (initial.mastery)
+          stamp += Math.max(0,Math.min(replay.ticksPerCallback,(replay.stopTick ?? Infinity)-state.ticks)) * (1000/120)
         else if (replay.precise) {
           // Deliver the scripted input on its original simulation tick.
           // The number of ticks between frames can vary while tiles stream.
@@ -766,8 +767,11 @@ try {
     for (let frame=0;frame<18;frame++) {
       const stopTick = 25+frame*12
       await page.evaluate(stop => { window.phaseThreeQA.soak.stopTick = stop },stopTick)
-      await page.waitForFunction(stop => window.retrieverDebug?.mode !== 'running' || window.retrieverDebug.ticks >= stop,
-        stopTick,{timeout:60000})
+      await page.waitForFunction(stop => {
+        const state = window.retrieverSimulationState?.() ?? window.retrieverDebug
+        return state?.mode !== 'running' || state.ticks >= stop
+      },stopTick,{timeout:60000})
+      if (mastery) await page.evaluate(() => window.dispatchEvent(new Event('resize')))
       await capture('moving-'+String(frame).padStart(2,'0'),{seed,sceneSeconds:from+stopTick*tickSeconds})
     }
   } else if (args.includes('puddle-views')) {

@@ -1,0 +1,88 @@
+[
+  {
+    "version": "after",
+    "name": "ordinary-result",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "after",
+    "name": "watch-final-moments",
+    "layout": {
+      "width": 320,
+      "documentWidth": 320
+    }
+  },
+  {
+    "version": "after",
+    "offline": true,
+    "completed": 2,
+    "retainedProfiles": 2,
+    "replay": {
+      "inputAt": 94318.5,
+      "handlerAt": 94320.09999996424,
+      "before": {
+        "geometries": 49,
+        "textures": 13,
+        "programs": 19
+      },
+      "firstFrameSubmittedMs": 1113.1,
+      "firstFrameCpuMs": 7.3,
+      "firstRenderMs": 5.5,
+      "after": {
+        "geometries": 49,
+        "textures": 13,
+        "programs": 19
+      },
+      "firstOperations": [
+        {
+          "at": 94320.30000001192,
+          "hunt": 3,
+          "name": "hunt-trail-reset",
+          "detail": "state and replay setup",
+          "durationMs": 0.2
+        },
+        {
+          "at": 94329.69999998808,
+          "hunt": 3,
+          "name": "hunt-scene-entry",
+          "detail": "HUD and gesture audio",
+          "durationMs": 9.3
+        },
+        {
+          "at": 94330.69999998808,
+          "hunt": 3,
+          "name": "hunt-opening-entities",
+          "detail": "trail entity population",
+          "durationMs": 1
+        },
+        {
+          "at": 95425.89999997616,
+          "hunt": 3,
+          "name": "wildlife-art",
+          "detail": "mallard",
+          "durationMs": 0.6
+        },
+        {
+          "at": 95425.89999997616,
+          "hunt": 3,
+          "name": "wildlife-fallback",
+          "detail": {
+            "species": "mallard",
+            "reason": "battery saver"
+          }
+        },
+        {
+          "at": 95425.89999997616,
+          "hunt": 3,
+          "name": "wildlife-visible",
+          "detail": "mallard"
+        }
+      ],
+      "nextAnimationCallbackMs": 1169.9,
+      "firstPresentationIntervalMs": 58.7
+    }
+  }
+]

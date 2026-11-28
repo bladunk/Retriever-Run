@@ -1,5 +1,5 @@
-#field-report .report-intro .campfire-card { margin: .3rem 0 .45rem; }
-#field-report .report-intro .campfire-card blockquote {
+#field-report .report-field-note { margin: .4rem clamp(12px, 4vw, 24px) .55rem; }
+#field-report .report-field-note blockquote {
   font-family: var(--field-display);
   font-weight: 400;
   line-height: 1.22;
@@ -31,7 +31,15 @@
 .earned-card > :is(p, button) { margin: .45rem .7rem; }
 .earned-card > p { font-size: .85rem; }
 .earned-card button { min-block-size: 44px; }
-#field-report #report-skip { min-height: 44px; }
+#field-report .report-extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin-inline: clamp(12px, 4vw, 24px);
+}
+#field-report .report-extras button { min-height: 44px; padding-inline: .65rem; }
+#field-report .report-intro { padding-block: .65rem .5rem; }
+#field-report #report-headline { margin-block: .25rem; }
 #replay-exit {
   position: absolute;
   z-index: 10;

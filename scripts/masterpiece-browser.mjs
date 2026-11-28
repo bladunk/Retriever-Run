@@ -97,7 +97,7 @@ function recordAudio(page, milliseconds) {
 }
 
 try {
-  const audition = ['audio-only','studio-only','gameplay-audio','mastery-hunt','mastery-fixtures'].some(mode => process.argv.includes(mode))
+  const audition = ['audio-only','studio-only','gameplay-audio','mastery-hunt','mastery-fixtures','mastery-endless'].some(mode => process.argv.includes(mode))
   const editions = process.argv.includes('after-only') ? ['after'] : ['before','after']
   for (const version of audition ? [] : editions) await review(version, async ({page,url,shot,context}) => {
     if (process.argv.includes('report-only')) {
@@ -194,6 +194,10 @@ try {
     assert.equal(initial.players[1].profile.best,1703)
     assert.ok(initial.players[0].career.xp > 110)
     assert.ok(initial.players[0].masteryBest > 0)
+    assert.equal(await page.locator('.result-career progress').evaluate(meter => {
+      const visible = meter.closest('.report-scroll').getBoundingClientRect()
+      return meter.getBoundingClientRect().bottom <= visible.bottom
+    }),true,'Career XP meter should be visible on the initial results view')
     await shot('ordinary-result')
     await watch.click()
     await page.locator('#replay-exit').waitFor()
@@ -213,6 +217,19 @@ try {
     await page.waitForFunction(() => window.retrieverPerformance().restartTrace?.firstPresentationIntervalMs > 0)
     results.push({version:'after',offline:true,completed:2,retainedProfiles:2,
       replay:await page.evaluate(() => window.retrieverPerformance().restartTrace)})
+  })
+  if (process.argv.includes('mastery-endless')) await review('studio',async ({page,url,shot}) => {
+    for (const minute of [5,10,15,20,30]) {
+      await page.goto(url+'?studio=1&view=endless&minute='+minute+'&seed=7&quality=low&perf=1')
+      if (minute === 5) await page.locator('#content-download').click()
+      await page.locator('#art-studio').waitFor()
+      await page.locator('#art-studio summary').click()
+      await page.waitForFunction(t => {
+        const live = window.retrieverPerformance?.()
+        return live?.fairness?.elapsed >= t * 60 + .6 && live?.residentTiles >= 6
+      }, minute,{timeout:55000})
+      await shot('minute-'+minute)
+    }
   })
   if (process.argv.includes('mastery-fixtures')) await review('studio',async ({page,url,context,shot}) => {
     await page.addInitScript(() => {
@@ -244,7 +261,7 @@ try {
       await shot(key)
       assert.equal(await page.evaluate(key => localStorage.getItem(key),saveKey),saved)
     }
-    await context.emulateMedia({ reducedMotion: 'reduce' })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto(build('multi'))
     await page.locator('.result-career progress').waitFor()
     assert.equal(await page.locator('#report-skip').isHidden(),true)

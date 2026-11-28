@@ -222,10 +222,6 @@
           <p class="lodge-kicker" id="report-nickname"></p>
           <h2 id="report-title" tabindex="-1">Hunt <em>over</em></h2>
           <p id="report-record" class="hunt-record" hidden></p>
-          <figure class="campfire-card">
-
-            <blockquote id="report-message"></blockquote>
-          </figure>
           <div id="report-headline" class="record-grid"></div>
           <p id="report-outcome" class="report-comparison"></p>
           <p id="report-summary-context" class="report-comparison"></p>
@@ -234,6 +230,13 @@
           <p id="report-ranked" class="room-note" role="status" hidden></p>
         </div>
         <div id="report-journey" class="report-journey" hidden></div>
+        <div class="report-extras">
+          <button id="report-skip" type="button" hidden>Skip animation</button>
+          <button id="report-watch" type="button" hidden>Watch final moments</button>
+        </div>
+        <figure class="campfire-card report-field-note">
+          <blockquote id="report-message"></blockquote>
+        </figure>
         <section id="report-earned" class="report-earned" hidden aria-label="Earned this hunt"></section>
         <div id="report-details" class="report-notes" hidden>
           <h3 id="report-details-title" tabindex="-1">Full Field Report</h3>
@@ -250,8 +253,6 @@
         <button id="run-again" class="primary" type="button">Play Again</button>
         <div>
           <button id="report-details-toggle" type="button" aria-controls="report-details" aria-expanded="false">Full Field Report</button>
-          <button id="report-skip" type="button" hidden>Skip animation</button>
-          <button id="report-watch" type="button" hidden>Watch final moments</button>
           <button id="report-lodge" type="button">Lodge</button>
           <button id="main-menu" type="button">Main Menu</button>
         </div>

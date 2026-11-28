@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mastery pace, planned sequence length and recovery compared at fixed duration checkpoints" viewBox="0 0 780 457">
+<rect x="0" y="0" width="780" height="457" fill="#172820" rx="10"/>
+<g fill="#f2e5cc" font-family="system-ui,sans-serif">
+<text x="24" y="32" font-size="20" font-weight="650">Endless progression</text>
+<text x="24" y="57" font-size="13">Speed in metres per second</text>
+<path d="M111,153.00H738" stroke="#908c6b" stroke-opacity=".55"/>
+<text x="40" y="156.00" font-size="11">29</text>
+<path d="M111,71.00H738" stroke="#908c6b" stroke-opacity=".55"/>
+<text x="40" y="74.00" font-size="11">29.4</text>
+<polyline fill="none" stroke="#a3baa7" stroke-width="2.2" points="140.86,154.02 200.57,154.02 260.29,154.02 379.71,154.02 738.00,154.02"/>
+<circle cx="140.86" cy="154.02" r="3" fill="#a3baa7"/>
+<circle cx="200.57" cy="154.02" r="3" fill="#a3baa7"/>
+<circle cx="260.29" cy="154.02" r="3" fill="#a3baa7"/>
+<circle cx="379.71" cy="154.02" r="3" fill="#a3baa7"/>
+<circle cx="738.00" cy="154.02" r="3" fill="#a3baa7"/>
+<polyline fill="none" stroke="#efc794" stroke-width="2.2" points="140.86,134.34 200.57,113.85 260.29,103.39 379.71,92.73 738.00,82.07"/>
+<circle cx="140.86" cy="134.34" r="3" fill="#efc794"/>
+<circle cx="200.57" cy="113.85" r="3" fill="#efc794"/>
+<circle cx="260.29" cy="103.39" r="3" fill="#efc794"/>
+<circle cx="379.71" cy="92.73" r="3" fill="#efc794"/>
+<circle cx="738.00" cy="82.07" r="3" fill="#efc794"/>
+<text x="590" y="57" fill="#efc794" font-size="11">Mastery</text><text x="652" y="57" fill="#a3baa7" font-size="11">Raptor</text>
+<text x="24" y="182" font-size="13">Decisions in a planned sequence</text>
+<path d="M111,278.00H738" stroke="#908c6b" stroke-opacity=".55"/>
+<text x="40" y="281.00" font-size="11">4</text>
+<path d="M111,196.00H738" stroke="#908c6b" stroke-opacity=".55"/>
+<text x="40" y="199.00" font-size="11">13</text>
+<polyline fill="none" stroke="#efc794" stroke-width="2.2" points="140.86,259.78 200.57,241.56 260.29,232.44 379.71,223.33 738.00,214.22"/>
+<circle cx="140.86" cy="259.78" r="3" fill="#efc794"/>
+<circle cx="200.57" cy="241.56" r="3" fill="#efc794"/>
+<circle cx="260.29" cy="232.44" r="3" fill="#efc794"/>
+<circle cx="379.71" cy="223.33" r="3" fill="#efc794"/>
+<circle cx="738.00" cy="214.22" r="3" fill="#efc794"/>
+<text x="24" y="307" font-size="13">Added recovery in seconds</text>
+<path d="M111,403.00H738" stroke="#908c6b" stroke-opacity=".55"/>
+<text x="40" y="406.00" font-size="11">0.25</text>
+<path d="M111,321.00H738" stroke="#908c6b" stroke-opacity=".55"/>
+<text x="40" y="324.00" font-size="11">0.9</text>
+<polyline fill="none" stroke="#efc794" stroke-width="2.2" points="140.86,341.24 200.57,359.54 260.29,368.91 379.71,378.43 738.00,388.11"/>
+<circle cx="140.86" cy="341.24" r="3" fill="#efc794"/>
+<circle cx="200.57" cy="359.54" r="3" fill="#efc794"/>
+<circle cx="260.29" cy="368.91" r="3" fill="#efc794"/>
+<circle cx="379.71" cy="378.43" r="3" fill="#efc794"/>
+<circle cx="738.00" cy="388.11" r="3" fill="#efc794"/>
+<text x="140.86" y="421" text-anchor="middle" font-size="11">10 min</text>
+<text x="200.57" y="421" text-anchor="middle" font-size="11">15 min</text>
+<text x="260.29" y="421" text-anchor="middle" font-size="11">20 min</text>
+<text x="379.71" y="421" text-anchor="middle" font-size="11">30 min</text>
+<text x="738.00" y="421" text-anchor="middle" font-size="11">60 min</text>
+</g></svg>

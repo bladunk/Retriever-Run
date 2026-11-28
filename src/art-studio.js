@@ -1,3 +1,5 @@
+import { masteryDirector, speedAtTime } from './difficulty.js'
+import { endlessPressure } from './mastery-pace.js'
 import { careerStanding, xpAt } from './career.js'
 import { honorById } from './field-honors.js'
 import { kennelItems } from './kennel-catalog.js'
@@ -225,6 +227,27 @@ export function openArtStudio(game, flags, api) {
   }
   const legacy = button('Open Lodge preview',event => preview(event.currentTarget))
   if (flags.get('view') === 'lodge' || flags.get('view') === 'journal' || flags.get('view') === 'map') queueMicrotask(() => preview(legacy))
+  if (['endless','effects','recap'].includes(flags.get('view'))) details.open = true
+  const minutes = [5,10,15,20,30]
+  const minute = Number(flags.get('minute'))
+  select('Practice minute', [['', 'Territory start'], ...minutes.map(value => [value,value + ' min'])],
+    minutes.includes(minute) ? String(minute) : '', value => {
+      saved.searchParams.set('view','endless')
+      load('minute',value)
+    })
+  if (minutes.includes(minute)) {
+    const seconds = minute * 60
+    const demand = endlessPressure(seconds)
+    const readout = document.createElement('output')
+    readout.textContent = speedAtTime(seconds,masteryDirector).toFixed(2) + ' m/s · ' +
+      (seconds >= 450 ? demand.stringLength + ' decisions per sequence · ' + demand.relief.toFixed(2) + ' s recovery addition'
+        : 'Great Migration')
+    form.append(readout)
+  }
+  const effects = select('Feedback preview', [['pickup','Treat'],['combo','Retrieve combo'],['near','Near miss'],
+    ['clean','Clean obstacle run'],['water','Water splash'],['mud','Mud']],flags.get('effect') ?? 'pickup',() => {})
+  const feedback = button('Show feedback', () => api.feedback(effects.value))
+  if (flags.get('view') === 'effects') queueMicrotask(() => feedback.scrollIntoView({block:'nearest'}))
   button('Run isolated practice', api.practice)
   const fixtures = ['ordinary','record','partial','level','multi','rank','equipment','trophy','lodge','rare','migration','master']
   const requestedResult = fixtures.includes(flags.get('result')) ? flags.get('result') : 'multi'
