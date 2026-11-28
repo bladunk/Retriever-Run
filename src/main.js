@@ -1,4 +1,4 @@
-import { createIncidentCapture } from './support-incident.js'
+import { createIncidentCapture, submittedPerformance } from './support-incident.js'
 import { createHuntRecap } from './hunt-recap.js'
 import { renderHuntResults } from './hunt-results.js'
 import fontLicense from './assets/fonts/SOURCE-SERIF-OFL.txt?url'
@@ -1597,7 +1597,11 @@ function bindInput() {
 async function openSupport(kind, source) {
   const { showSupport } = await import('./support-ui.js')
   showSupport({ kind, source, build: runningBuild, fixture: diagnosticsRequested ? 'success' : undefined,
-    diagnostics: () => incidentCapture.diagnostics(profile.quality, kind === 'unfair') })
+    diagnostics: () => {
+      const details = incidentCapture.diagnostics(profile.quality, kind === 'unfair')
+      const performance = submittedPerformance(performanceProbe?.read())
+      return performance ? { ...details, performance } : details
+    } })
 }
 for (const [id, kind] of [['open-feedback','feedback'], ['open-release-notes','updates'], ['report-unfair','unfair']]) {
   ui[id].addEventListener('click', () => void openSupport(kind, ui[id]))

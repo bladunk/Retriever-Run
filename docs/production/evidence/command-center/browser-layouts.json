@@ -24,6 +24,10 @@
           [
             280,
             280
+          ],
+          [
+            280,
+            280
           ]
         ]
       }
@@ -103,6 +107,24 @@
     {
       "version": "after",
       "name": "developer-note",
+      "layout": {
+        "width": 320,
+        "documentWidth": 320,
+        "dialogs": [
+          [
+            280,
+            280
+          ],
+          [
+            280,
+            280
+          ]
+        ]
+      }
+    },
+    {
+      "version": "after",
+      "name": "verified-fix-receipt",
       "layout": {
         "width": 320,
         "documentWidth": 320,

@@ -67,3 +67,13 @@ export function inspectIncident(incident, builtWith, reviewBuild) {
       volumes: actual ? obstacleVolumes(actual) ?? null : null }
   } catch { return { status: 'insufficient' } }
 }
+
+export function submittedPerformance(sample) {
+  if (!sample) return undefined
+  const summary = pick(sample.hunt ?? {}, ['peakTextures','peakGeometries','discarded'])
+  const cpu = pick(sample.hunt?.cpu ?? {}, ['samples','averageMs','maxMs'])
+  const startup = pick(sample.startupPhases ?? {}, ['readyMs','rendererReadyMs','firstSceneSubmitMs'])
+  const entry = pick(sample.restartTrace ?? {}, ['firstFrameSubmittedMs','firstFrameCpuMs',
+    'firstRenderMs','nextAnimationCallbackMs','firstPresentationIntervalMs'])
+  return { summary, cpu, startup, entry }
+}

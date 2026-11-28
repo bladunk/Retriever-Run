@@ -4,7 +4,7 @@ These images and the video come from the running builds in Chromium at 320 × 56
 
 - Player Settings and forms. [Feedback](screens/feedback.jpg) · [Bug](screens/report-bug.jpg) · [Improvement](screens/suggestion.jpg) · [Note](screens/developer-note.jpg)
 - Explicit attachments. [Unfair-death form and consent](screens/unfair-consent.jpg) · [Screenshot preview](screens/screenshot-preview.jpg)
-- Offline and updates. [Saved report](screens/offline-queue.jpg) · [Delivered acknowledgment](screens/receipt.jpg) · [Release notes and known issues](screens/release-notes.jpg)
+- Offline and updates. [Saved report](screens/offline-queue.jpg) · [Delivered acknowledgment](screens/receipt.jpg) · [Verified-fix receipt](screens/verified-fix-receipt.jpg) · [Release notes and known issues](screens/release-notes.jpg)
 - Developer review. [Private login](screens/private-login.jpg) · [Synthetic overview](screens/overview.jpg) · [Inbox](screens/inbox.jpg) · [Incident and Codex package](screens/incident.jpg) · [Reported counts and frame samples](screens/evidence.jpg) · [Release health](screens/release-health.jpg) · [Worldwide health](screens/worldwide-health.jpg)
 - Matched Worldwide closed fixture. [RC.10](screens/worldwide-before.jpg) · [RC.11](screens/worldwide-after.jpg) · [Service unavailable](screens/worldwide-unavailable.jpg)
 - Moving interface footage. [Inbox, collision review, consent and screenshot preview](review-motion.mp4)

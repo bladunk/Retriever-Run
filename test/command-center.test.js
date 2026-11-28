@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import test from 'node:test'
 import { isolatedCamp, reviewPlayers } from '../scripts/camp-isolated-db.mjs'
 import { createFeedback, feedbackStore } from '../src/support-report.js'
-import { createIncidentCapture, inspectIncident } from '../src/support-incident.js'
+import { createIncidentCapture, inspectIncident, submittedPerformance } from '../src/support-incident.js'
 import { diagnostics } from '../src/command-preview.js'
 import { contactShadow } from '../src/contact-shadow.js'
 import { Vector3 } from 'three'
@@ -63,11 +63,13 @@ test('command center RPCs separate players and developers and scope report recei
   const expired = (await call(three,'detail',[first.id],false)).report
   assert.equal(expired.screenshot,null)
   assert.equal(expired.diagnostics,null)
-  assert.equal((await call(three,'triage',[first.id, { state:'released', severity:'high', issue:'#51' }],false)).status,'ok')
+  assert.equal((await call(three,'triage',[first.id, { state:'released', severity:'high', issue:'#51', classification:'possible_performance' }],false)).status,'ok')
   assert.equal((await call(null,'receipt',[first.id,first.secret,'status'])).status,'received')
-  assert.equal((await call(three,'triage',[first.id, { state:'verified', severity:'high', issue:'#51' }],false)).status,'ok')
+  assert.equal((await call(three,'triage',[first.id, { state:'verified', severity:'high', issue:'#51', classification:'confirmed_defect' }],false)).status,'ok')
   assert.equal((await call(null,'receipt',[first.id,first.secret,'status'])).status,'verified')
-  assert.deepEqual((await call(three,'detail',[first.id],false)).report.state_history.map(item => item.to),['released','verified'])
+  const verified = (await call(three,'detail',[first.id],false)).report
+  assert.deepEqual(verified.state_history.map(item => item.to),['released','verified'])
+  assert.equal(verified.classification,'confirmed_defect')
   assert.equal((await call(null,'receipt',[first.id,first.secret,'delete'])).status,'deleted')
   assert.equal((await call(null,'receipt',[first.id,first.secret,'status'])).status,'unknown')
   for (let i = 0; i < 2; i++) assert.equal((await call(one,'submit',[report()])).status,'ok')
@@ -111,6 +113,9 @@ test('incident bounds and build identity distinguish a reproduced step from insu
   assert.equal(capture.diagnostics('low',true).timing.samples,90)
   capture.reset()
   assert.deepEqual(capture.diagnostics('low',true), { graphics:'low' })
+  assert.deepEqual(submittedPerformance({ hunt:{ peakGeometries:122, cpu:{ averageMs:4 }, account:'private' },
+    token:'private', restartTrace:{ firstFrameSubmittedMs:9, firstOperations:[{ url:'private' }] } }),
+  { summary:{ peakGeometries:122 }, cpu:{averageMs:4}, startup:{}, entry:{firstFrameSubmittedMs:9} })
 })
 
 test('single contact stamps preserve footprint on the shared unit quad', () => {

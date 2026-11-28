@@ -29,6 +29,7 @@ create table rr_support.reports (
   state text not null default 'new',
   state_history jsonb not null default '[]'::jsonb,
   severity text not null default 'unclassified',
+  classification text not null default 'unreviewed',
   developer_note text not null default '',
   issue text not null default '',
   changed_at timestamptz not null default now()
@@ -128,7 +129,7 @@ begin
 
   details := p_record->'diagnostics';
   if details is not null and (jsonb_typeof(details) is distinct from 'object' or octet_length(details::text) > 12000
-    or details - array['graphics','timing','incident'] <> '{}'::jsonb)
+    or details - array['graphics','timing','incident','performance'] <> '{}'::jsonb)
     then return jsonb_build_object('status','invalid'); end if;
   if p_record ? 'screenshot' then
     if jsonb_typeof(p_record->'screenshot') is distinct from 'string'
@@ -191,7 +192,7 @@ begin
   if not rr_support.authorized() then return jsonb_build_object('status','denied'); end if;
   start_at := case when p_filters->>'offset' ~ '^[0-9]{1,5}$' then least(10000,(p_filters->>'offset')::integer) else 0 end;
   select coalesce(jsonb_agg(to_jsonb(r)), '[]'::jsonb) into rows from (
-    select id, created_at, kind, subject, topic, version, build, state, severity, issue,
+    select id, created_at, kind, subject, topic, version, build, state, severity, classification, issue,
       diagnostics is not null as has_diagnostics, screenshot is not null as has_screenshot,
       diagnostics->'incident'->>'territory' as territory,
       case when jsonb_typeof(diagnostics#>'{timing,averageMs}')='number'
@@ -230,6 +231,8 @@ begin
   if coalesce(p_change->>'state','') not in ('new','review','reproduce','confirmed','development','fix_review',
       'released','verified','duplicate','archived')
     or coalesce(p_change->>'severity','') not in ('unclassified','critical','high','medium','low','suggestion')
+    or coalesce(p_change->>'classification','unreviewed') not in ('unreviewed','valid_failure','possible_input',
+      'possible_visibility','possible_collision','possible_generation','possible_performance','confirmed_defect','insufficient')
     or length(coalesce(p_change->>'developer_note',''))>4000
     or coalesce(p_change->>'issue','') !~ '^[a-zA-Z0-9#._/-]{0,100}$'
     then return jsonb_build_object('status','invalid'); end if;
@@ -237,6 +240,7 @@ begin
     state_history=case when state=p_change->>'state' then state_history
       else (case when jsonb_array_length(state_history)>=20 then state_history-0 else state_history end)
         || jsonb_build_object('from',state,'to',p_change->>'state','at',now()) end,
+    classification=coalesce(p_change->>'classification','unreviewed'),
     developer_note=coalesce(p_change->>'developer_note',''), issue=coalesce(p_change->>'issue',''), changed_at=now()
     where id=p_id;
   return jsonb_build_object('status',case when found then 'ok' else 'unknown' end);
